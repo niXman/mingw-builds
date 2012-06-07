@@ -1,0 +1,447 @@
+#!/bin/bash
+
+#
+# The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
+#
+# This file is part of 'mingw-builds' project.
+# Copyright (c) 2011,2012, by niXman (i dotty nixman doggy gmail dotty com)
+# All rights reserved.
+#
+# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+#
+# Redistribution and use in source and binary forms, with or without 
+# modification, are permitted provided that the following conditions are met:
+# - Redistributions of source code must retain the above copyright 
+#     notice, this list of conditions and the following disclaimer.
+# - Redistributions in binary form must reproduce the above copyright 
+#     notice, this list of conditions and the following disclaimer in 
+#     the documentation and/or other materials provided with the distribution.
+# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+#     be used to endorse or promote products derived from this software 
+#     without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR 
+# A PARTICULAR PURPOSE ARE DISCLAIMED.
+# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY 
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
+# USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
+# **************************************************************************
+# **************************************************************************
+# **************************************************************************
+
+x32_HOST_MINGW_PATH=/d/mingw32
+x64_HOST_MINGW_PATH=/d/mingw64
+
+ENABLE_LANGUAGES=c,c++,fortran
+
+BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer -momit-leaf-frame-pointer"
+BASE_CXXFLAGS="$BASE_CFLAGS"
+BASE_CPPFLAGS=""
+BASE_LDFLAGS="-pipe -s"
+
+LINK_TYPE_STATIC="--enable-static --disable-shared"
+LINK_TYPE_SHARED="--disable-static --enable-shared"
+LINK_TYPE_BOTH="--enable-shared --enable-static"
+GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
+
+#LOGVIEWER="c:/progra~1/notepad++/notepad++.exe"
+LOGVIEWER="c:/progra~2/notepad++/notepad++.exe"
+
+SHOW_LOG_ON_ERROR=yes
+PACK_IN_ARCHIVES=yes
+
+# **************************************************************************
+
+BUG_URL=http://sourceforge.net/projects/mingwbuilds/
+PKGVERSION="MinGW-builds: $BUG_URL"
+
+JOBS=1
+
+ORIGINAL_PATH=$PATH
+
+ROOT_DIR=
+SRCS_DIR=$ROOT_DIR/mingw-src
+
+TOP_DIR=$PWD
+PATCHES_DIR=$TOP_DIR/patches
+TESTS_DIR=$TOP_DIR/tests
+
+# **************************************************************************
+
+function func_usage {
+	echo "usage:"
+	echo "  ./build <--preload> <--dwarf> <gcc version> x32|x64"
+	echo "  help:"
+	echo "    --preload   - firstly downloads then builds"
+	echo "    --dwarf     - build GCC with DWARF exceptions"
+	echo "  available gcc versions:"
+	echo "    gcc-4.6.2 (4.6.2 release)"
+	echo "    gcc-4.6.3 (4.6.3 release)"
+	#echo "    gcc-4.6.4"
+	#echo "    gcc-4.6.5"
+	#echo "    gcc-4.6.6"
+	echo "    gcc-4.7.0 (4.7.0 release)"
+	#echo "    gcc-4.7.1"
+	#echo "    gcc-4.8.0"
+	#echo "    gcc-4.8.1"
+	echo "    gcc-4_6-branch (currently 4.6.4-prerelease)"
+	echo "    gcc-4_7-branch (currently 4.7.1-prerelease)"
+	#echo "    gcc-4_8-branch"
+	echo "    cxx-conversion (currently based on the trunk version)"
+	echo "    gcc-trunk (currently 4.8.0-snapshot)"
+}
+
+# **************************************************************************
+
+[[ $# == 1 && ${@:1:1} != -v || $[ $# == 0 || $# > 5 ] == 1 ]] && {
+	func_usage
+	exit 0
+}
+
+[[ $PACK_IN_ARCHIVES == yes && ! -f /bin/7za.exe ]] && {
+	echo "7za.exe is not found in your /bin directory. terminate."
+	exit 1
+}
+
+[[ $SHOW_LOG_ON_ERROR == yes && ! -f $LOGVIEWER ]] && {
+	echo "set properly path to the log-viewer or set \
+\"SHOW_LOG_ON_ERROR\" to 'no'. terminate."
+	exit 1
+}
+
+[[ -d /mingw ]] && {
+	echo "please remove \"/mingw\" directory. terminate."
+	exit 1
+}
+
+[[ -n $(which "gcc.exe" 2>/dev/null) || \
+	-n $(which "i686-pc-mingw32-gcc.exe" 2>/dev/null) || \
+	-n $(which "i686-w64-mingw32-gcc.exe" 2>/dev/null) || \
+	-n $(which "x86_64-w64-mingw32-gcc.exe" 2>/dev/null) \
+]] && {
+	echo "remove from PATH any existing MinGW directory and set \
+\"x32_HOST_MINGW_PATH\" and \"x64_HOST_MINGW_PATH\" variables. terminate."
+	exit 1
+}
+
+[[ -f $x32_HOST_MINGW_PATH/bin/make.exe || -f $x64_HOST_MINGW_PATH/bin/make.exe ]] && {
+	echo "MinGW make should be named as 'mingw32-make.exe'. Please rename it."
+	exit 1
+}
+
+# **************************************************************************
+
+PRELOAD_MODE=no
+BUILD_ARCHITECTURE_x32=no
+BUILD_ARCHITECTURE_x64=no
+BUILD_ARCHITECTURES=()
+USE_DWARF_EXCEPTIONS=no
+GCC_NAME=""
+
+[[ $# == 1 && ${@:1:1} == -v ]] && {
+	echo "MinGW-builds version 0.1.0"; exit 0;
+} || {
+	while [[ $# > 0 ]]; do
+		case $1 in
+			--preload) PRELOAD_MODE=yes ;;
+			--dwarf) USE_DWARF_EXCEPTIONS=yes ;;
+			x32)
+				BUILD_ARCHITECTURE_x32=yes
+				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
+			;;
+			x64)
+				BUILD_ARCHITECTURE_x64=yes
+				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x64 )
+			;;
+			gcc-*)
+				[[ ! -f scripts/$1.sh ]] && {
+					echo "bad gcc version. terminate."; exit 1;
+				} || {
+					GCC_NAME=$1
+				}
+			;;
+			*) echo "bad command line. terminate."; exit 1 ;;
+		esac
+		shift
+	done
+}
+
+[[ -z $GCC_NAME ]] && {
+	echo "please specify GCC version. terminate."
+	exit 1
+}
+[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
+	${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
+	echo "error in build architectures. terminate."
+	exit 1
+}
+[[ $USE_DWARF_EXCEPTIONS == yes ]] && {
+	[[ $BUILD_ARCHITECTURE_x64 == yes ]] && {
+		echo "DWARF exceptions not allowed on x86_64 architecture. terminate."
+		exit 1
+	}
+	[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
+		echo "error in build architectures. terminate."
+		exit 1
+	}
+}
+
+# **************************************************************************
+
+SUBTARGETS=(
+	libiconv-x32-pre
+	libiconv-x32
+	libiconv-x32-post
+	$( [[ $USE_DWARF_EXCEPTIONS == no ]] \
+		&& echo "libiconv-x64-pre libiconv-x64 libiconv-x64-post" \
+	)
+	#terminator
+	gmp
+	#terminator
+	mpfr
+	mpc
+	ppl
+	cloog
+	#terminator
+	mingw-w64-api
+	mingw-w64-api-post
+	#terminator
+	mingw-w64-crt
+	mingw-w64-crt-post
+	#terminator
+	winpthreads-x32-pre
+	winpthreads-x32
+	winpthreads-x32-post
+	$( [[ $USE_DWARF_EXCEPTIONS == no ]] \
+		&& echo "winpthreads-x64-pre winpthreads-x64 winpthreads-x64-post" \
+	)
+	#terminator
+	mingw-deps-post
+	#terminator
+	binutils
+	#terminator
+	$GCC_NAME
+	#terminator
+	gcc-post
+	#terminator
+	python
+	expat
+	gdb
+	make
+	cleanup
+	#terminator
+	licenses
+	#put-logs
+	put-versions
+	#terminator
+	tests
+	#terminator
+	$([[ $PACK_IN_ARCHIVES == yes ]] && echo mingw-compress)
+)
+
+# **************************************************************************
+
+. ./scripts/functions.sh
+[[ $PRELOAD_MODE == yes ]] && {
+	for sub in ${SUBTARGETS[@]}; do
+		[[ -n $( grep 'URL=' $TOP_DIR/scripts/${sub}.sh ) ]] && {
+			echo -e "-> \E[32;40m$sub\E[37;40m"
+			[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
+				echo "script for subtarget \"$sub\" is not exists. terminate."
+				exit 1
+			}
+
+			NAME=""
+			cd $TOP_DIR
+			. ./scripts/$sub.sh
+
+			[[ -z $NAME ]] && continue
+			
+			DOWNLOAD_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_download.marker
+			UNCOMPRESS_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker
+
+			mkdir -p $SRCS_DIR/$SRC_DIR_NAME
+
+			func_download \
+				$SRC_DIR_NAME \
+				$TYPE \
+				$URL \
+				$DOWNLOAD_MARKER \
+				"/dev/null"
+			[[ $_function_result != 0 ]] && exit $_function_result
+
+			func_uncompress \
+				$SRC_DIR_NAME \
+				$TYPE \
+				$UNCOMPRESS_MARKER \
+				"/dev/null"
+			[[ $_function_result != 0 ]] && exit $_function_result
+		}
+	done
+}
+
+# **************************************************************************
+
+for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
+	BUILDS_DIR=$ROOT_DIR/mingw-$GCC_NAME-build-$ARCHITECTURE
+	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-libs-$ARCHITECTURE
+	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-logs-$ARCHITECTURE
+	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-$ARCHITECTURE
+
+	[[ $ARCHITECTURE == x32 ]] && {
+		HOST=i686-w64-mingw32
+		BUILD=i686-w64-mingw32
+		TARGET=i686-w64-mingw32
+		ENABLE_TARGETS=i686-w64-mingw32,x86_64-w64-mingw32
+		[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc.exe ]] && {
+			echo "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\". terminate."
+			exit 1
+		}
+		export PATH=$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+	} || {
+		HOST=x86_64-w64-mingw32
+		BUILD=x86_64-w64-mingw32
+		TARGET=x86_64-w64-mingw32
+		ENABLE_TARGETS=x86_64-w64-mingw32,i686-w64-mingw32
+		[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc.exe ]] && {
+			echo "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\". terminate."
+			exit 1
+		}
+		export PATH=$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+	}
+	
+	mkdir -p $BUILDS_DIR $LIBS_DIR $LOGS_DIR $PREFIX
+
+	COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include"
+	COMMON_CXXFLAGS="$BASE_CFLAGS"
+	COMMON_CPPFLAGS="$BASE_CPPFLAGS"
+	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib"
+
+   for sub in ${SUBTARGETS[@]}; do
+      echo -e "-> \E[32;40m$sub\E[37;40m"
+		[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
+			echo "script for subtarget \"$sub\" is not exists. terminate."
+			exit 1
+		}
+
+		NAME=""
+		cd $TOP_DIR
+		. ./scripts/$sub.sh
+
+		[[ -z $NAME ]] && continue
+		
+		DOWNLOAD_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_download.marker
+		DOWNLOAD_LOG=$LOGS_DIR/$SRC_DIR_NAME/download.log
+		UNCOMPRESS_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker
+		UNCOMPRESS_LOG=$LOGS_DIR/$SRC_DIR_NAME/uncompress.log
+		CONFIGURE_MARKER=$BUILDS_DIR/$NAME/_configure.marker
+		CONFIGURE_LOG=$LOGS_DIR/$NAME/configure.log
+		MAKE_MARKER=$BUILDS_DIR/$NAME/_make.marker
+		MAKE_LOG=$LOGS_DIR/$NAME/make.log
+		INSTALL_MARKER=$BUILDS_DIR/$NAME/_install.marker
+		INSTALL_LOG=$LOGS_DIR/$NAME/install.log
+
+		mkdir -p {$SRCS_DIR/,$BUILDS_DIR/,$LOGS_DIR/}$SRC_DIR_NAME
+		[[ $NAME != $SRC_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$NAME
+		
+			func_download \
+				$SRC_DIR_NAME \
+				$TYPE \
+				$URL \
+				$DOWNLOAD_MARKER \
+				$DOWNLOAD_LOG
+			[[ $_function_result != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG
+				exit $_function_result
+			}
+		
+			func_uncompress \
+				$SRC_DIR_NAME \
+				$TYPE \
+				$UNCOMPRESS_MARKER \
+				$UNCOMPRESS_LOG
+			[[ $_function_result != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $UNCOMPRESS_LOG
+				exit $_function_result
+			}
+		
+		[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
+			func_execute \
+				$SRC_DIR_NAME \
+				"execute commands..." \
+				EXECUTE_AFTER_UNCOMPRESS[@]
+			[[ $_function_result != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
+				exit $_function_result
+			}
+		}
+		
+		func_apply_patches \
+			$SRC_DIR_NAME \
+			PATCHES[@]
+		[[ $_function_result != 0 ]] && {
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/patch-$_index.log
+			exit $_function_result
+		}
+		
+		configure_flags="${CONFIGURE_FLAGS[@]}"
+		func_configure \
+			$NAME \
+			$SRC_DIR_NAME \
+			"$configure_flags" \
+			$CONFIGURE_MARKER \
+			$CONFIGURE_LOG
+		[[ $_function_result != 0 ]] && {
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG
+			exit $_function_result
+		}
+		
+		make_flags="/bin/make ${MAKE_FLAGS[@]}"
+		func_make \
+			$NAME \
+			$NAME \
+			"$make_flags" \
+			$MAKE_MARKER \
+			$MAKE_LOG \
+			"building..." \
+			"built"
+		[[ $_function_result != 0 ]] && {
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG
+			exit $_function_result
+		}
+		
+		install_flags="/bin/make ${INSTALL_FLAGS[@]}"
+		func_make \
+			$NAME \
+			$NAME \
+			"$install_flags" \
+			$INSTALL_MARKER \
+			$INSTALL_LOG \
+			"installing..." \
+			"installed"
+		[[ $_function_result != 0 ]] && {
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG
+			exit $_function_result
+		}
+   done
+done
+
+# ***************************************************************************
+
+[[ $PACK_IN_ARCHIVES == yes ]] && {
+	echo -e "-> \E[32;40mcompress mingw sources\E[37;40m"
+	cd $TOP_DIR; . ./scripts/srcs-compress.sh
+}
+
+#cd $TOP_DIR; . ./scripts/mingw-upload.sh
+#cd $TOP_DIR; . ./scripts/srcs-upload.sh
+
+# ***************************************************************************

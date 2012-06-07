@@ -1,0 +1,18 @@
+Index: src/thread.c
+===================================================================
+--- a/src/thread.c	(revision 4978)
++++ b/src/thread.c	(working copy)
+@@ -747,11 +747,13 @@
+ void *
+ pthread_getspecific (pthread_key_t key)
+ {
++  DWORD lasterror=GetLastError();
+   void *r;
+   _pthread_v *t = __pthread_self_lite ();
+   _spin_lite_lock (&t->spin_keys);
+   r = (key >= t->keymax || t->keyval_set[key] == 0 ? NULL : t->keyval[key]);
+   _spin_lite_unlock (&t->spin_keys);
++  SetLastError(lasterror);
+   return r;
+ }
+ 
