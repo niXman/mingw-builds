@@ -1,5 +1,5 @@
 
-The scripts provided by the MinGW-builds project[1][2] are designed 
+The scripts provided by the MinGW-builds project[1][2] are designed
 for building the dual-target(i686/x86_64) MinGW compiler for i686/x86_64 hosts.
 
 The scripts are distributed under the 'BSD 3' license[3].
@@ -10,66 +10,66 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
 2. Install MSYS: http://sourceforge.net/projects/mingwbuilds/files/External%20binary%20packages/
 
 3. Install MinGW for i686 and x86_64 architectures:
-	i686: http://sourceforge.net/projects/mingwbuilds/files/windows-host/4.6.3/release/i686-mingw-w64-gcc-4.6.3-release-c%2Cc%2B%2B%2Cfortran.7z/download
-	x86_64: http://sourceforge.net/projects/mingwbuilds/files/windows-host/4.6.3/release/x86_64-mingw-w64-gcc-4.6.3-release-c%2Cc%2B%2B%2Cfortran.7z/download
+  i686: http://sourceforge.net/projects/mingwbuilds/files/windows-host/4.6.3/release/i686-mingw-w64-gcc-4.6.3-release-c%2Cc%2B%2B%2Cfortran.7z/download
+  x86_64: http://sourceforge.net/projects/mingwbuilds/files/windows-host/4.6.3/release/x86_64-mingw-w64-gcc-4.6.3-release-c%2Cc%2B%2B%2Cfortran.7z/download
 
 4. If you want to compress MinGW binaries and sources in archives, then in
-	the <msys root>/home/<user>/MinGW-builds/build file set the
-	PACK_IN_ARCHIVES variable into 'yes'.
+  the <msys root>/home/<user>/MinGW-builds/build file set the
+  PACK_IN_ARCHIVES variable into 'yes'.
 
 5. In the <msys root>/home/<user>/MinGW-builds/build file set the variables:
-	"x32_HOST_MINGW_PATH=/d/mingw32"
-	"x64_HOST_MINGW_PATH=/d/mingw64"
+  "x32_HOST_MINGW_PATH=/d/mingw32"
+  "x64_HOST_MINGW_PATH=/d/mingw64"
 
 6. In the MSYS file structure delete the '/MinGW' directory.
 
-7. Delete the paths pointining to any preinstalled MinGW from the 'PATH' 
-	environment variable.
+7. Delete the paths pointining to any preinstalled MinGW from the 'PATH'
+  environment variable.
 
 8. Get the scripts into <msys root>/home/<user>/MinGW-builds:
-	"git clone git://git.code.sf.net/p/mingwbuilds/code MinGW-builds"
+  "git clone git://github.com/niXman/mingw-builds.git"
 
 9. Go to in the MinGW-builds root directory.
 
 10. Run:
-	"./build gcc-4.6.3 x32" for building i686-MinGW
-	"./build gcc-4.6.3 x64" for building x86_64-MinGW
-	"./build gcc-4.6.3 x32 x64" for building i686-MinGW and x86_64-MinGW
-	"./build --preload gcc-4.6.3 x32 x64" for building i686-MinGW and x86_64-MinGW
-	"./build --dwarf x32 gcc-4.6.3" for building i686-MinGW with DWARF
-	
-	The --preload option specifies to the script to pre-download all the sources 
-	and only after that, to begin the building. This allows to build different 
-	versions of GCC simultaneously.
+  "./build gcc-4.6.3 x32" for building i686-MinGW
+  "./build gcc-4.6.3 x64" for building x86_64-MinGW
+  "./build gcc-4.6.3 x32 x64" for building i686-MinGW and x86_64-MinGW
+  "./build --preload gcc-4.6.3 x32 x64" for building i686-MinGW and x86_64-MinGW
+  "./build --dwarf x32 gcc-4.6.3" for building i686-MinGW with DWARF
 
-For example, during the process of building of the i686 will 
-	be created the following directories:
-	/mingw-gcc-4.6.3-build-x32
-	/mingw-gcc-4.6.3-libs-x32
-	/mingw-gcc-4.6.3-logs-x32
-	/mingw-gcc-4.6.3-x32
+  The --preload option specifies to the script to pre-download all the sources
+  and only after that, to begin the building. This allows to build different
+  versions of GCC simultaneously.
+
+For example, during the process of building of the i686 will
+  be created the following directories:
+  /mingw-gcc-4.6.3-build-x32
+  /mingw-gcc-4.6.3-libs-x32
+  /mingw-gcc-4.6.3-logs-x32
+  /mingw-gcc-4.6.3-x32
 
 For x86_64:
-	/mingw-gcc-4.6.3-build-x64
-	/mingw-gcc-4.6.3-libs-x64
-	/mingw-gcc-4.6.3-logs-x64
-	/mingw-gcc-4.6.3-x64
+  /mingw-gcc-4.6.3-build-x64
+  /mingw-gcc-4.6.3-libs-x64
+  /mingw-gcc-4.6.3-logs-x64
+  /mingw-gcc-4.6.3-x64
 
 And the sources directory:
-	/mingw-src
+  /mingw-src
 
 
 
 The archives with the built MinGW will be created in <msys root>/home/<user>/
 
 At the moment, successfully building the following versions:
-	gcc-4.6.2
-	gcc-4.6.3
-	gcc-4.7.0
-	gcc-4_6-branch (currently 4.6.4 prerelease)
-	gcc-4_7-branch (currently 4.7.1 prerelease)
-	gcc-trunk (currently 4.8.0 snapshot)
-	gcc-cxx-trunk (currently 4.8.0 snapshot)
+  gcc-4.6.2
+  gcc-4.6.3
+  gcc-4.7.0
+  gcc-4_6-branch (currently 4.6.4 prerelease)
+  gcc-4_7-branch (currently 4.7.1 prerelease)
+  gcc-trunk (currently 4.8.0 snapshot)
+  cxx-conversion (currently 4.8.0 snapshot)
 
 [1] http://code.google.com/p/mingw-builds/
 [2] http://sourceforge.net/projects/mingwbuilds/
