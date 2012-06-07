@@ -7,11 +7,11 @@ The scripts are distributed under the 'BSD 3' license[3].
 In order to use the scripts provided by the MinGW-builds project it is needed:
 1. Windows-64bit or Linux+Wine-64bit
 
-2. Install MSYS: http://sourceforge.net/projects/mingwbuilds/files/External%20binary%20packages/
+2. Install MSYS: http://tinyurl.com/c2jqh9p
 
 3. Install MinGW for i686 and x86_64 architectures:
-  i686: http://sourceforge.net/projects/mingwbuilds/files/windows-host/4.6.3/release/i686-mingw-w64-gcc-4.6.3-release-c%2Cc%2B%2B%2Cfortran.7z/download
-  x86_64: http://sourceforge.net/projects/mingwbuilds/files/windows-host/4.6.3/release/x86_64-mingw-w64-gcc-4.6.3-release-c%2Cc%2B%2B%2Cfortran.7z/download
+  i686: http://tinyurl.com/cd9fvuw
+  x86_64: http://tinyurl.com/bw4djo7
 
 4. If you want to compress MinGW binaries and sources in archives, then in
   the <msys root>/home/<user>/MinGW-builds/build file set the
