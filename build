@@ -347,9 +347,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$SRC_DIR_NAME \
 				"execute commands..." \
 				EXECUTE_AFTER_UNCOMPRESS[@]
-			[[ $? != 0 ]] && {
+			local result_exec=$?
+			[[ $result_exec != 0 ]] && {
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
-				exit $?
+				exit $result_exec
 			}
 		}
 		
