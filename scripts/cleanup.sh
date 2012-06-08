@@ -38,10 +38,7 @@
 [[ ! -f $BUILDS_DIR/cleanup.marker ]] && {
 	find $PREFIX -type f -name "*.la" -exec rm -f {} \;
 
-	rm -rf $PREFIX/mingw
-	rm -rf $PREFIX/share/info
-	rm -rf $PREFIX/share/man
-	rm -rf $PREFIX/mingw
-	
+	rm -rf $PREFIX/{mingw,share/info,share/man}
+
 	touch $BUILDS_DIR/cleanup.marker
 }
