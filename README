@@ -5,6 +5,7 @@ for building the dual-target(i686/x86_64) MinGW compiler for i686/x86_64 hosts.
 The scripts are distributed under the 'BSD 3' license[3].
 
 In order to use the scripts provided by the MinGW-builds project it is needed:
+
 1. Windows-64bit or Linux+Wine-64bit
 
 2. Install MSYS: http://tinyurl.com/c2jqh9p
@@ -30,7 +31,7 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
 8. Delete the paths pointining to any preinstalled MinGW from the 'PATH'
   environment variable.
 
-9. Go to in the MinGW-builds root directory.
+9. Go in to the MinGW-builds root directory.
 
 10. Run:
   "./build gcc-4.6.3 x32" for building i686-MinGW
@@ -75,4 +76,3 @@ At the moment, successfully building the following versions:
 [1] http://code.google.com/p/mingw-builds/
 [2] http://sourceforge.net/projects/mingwbuilds/
 [3] http://www.opensource.org/licenses/BSD-3-Clause
-
