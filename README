@@ -13,21 +13,22 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
   i686: http://tinyurl.com/cd9fvuw
   x86_64: http://tinyurl.com/bw4djo7
 
-4. If you want to compress MinGW binaries and sources in archives, then in
-  the <msys root>/home/<user>/MinGW-builds/build file set the
+4. Get the scripts into <msys root>/home/<user>/mingw-builds:
+  "git clone git://github.com/niXman/mingw-builds.git"
+
+5. If you want to compress MinGW binaries and sources in archives, then in
+  the <msys root>/home/<user>/mingw-builds/build file set the
   PACK_IN_ARCHIVES variable into 'yes'.
 
-5. In the <msys root>/home/<user>/MinGW-builds/build file set the variables:
+6. In the <msys root>/home/<user>/mingw-builds/build file set the variables,
+  for example:
   "x32_HOST_MINGW_PATH=/d/mingw32"
   "x64_HOST_MINGW_PATH=/d/mingw64"
 
-6. In the MSYS file structure delete the '/MinGW' directory.
+7. In the MSYS file structure delete the '/MinGW' directory.
 
-7. Delete the paths pointining to any preinstalled MinGW from the 'PATH'
+8. Delete the paths pointining to any preinstalled MinGW from the 'PATH'
   environment variable.
-
-8. Get the scripts into <msys root>/home/<user>/MinGW-builds:
-  "git clone git://github.com/niXman/mingw-builds.git"
 
 9. Go to in the MinGW-builds root directory.
 
@@ -36,7 +37,7 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
   "./build gcc-4.6.3 x64" for building x86_64-MinGW
   "./build gcc-4.6.3 x32 x64" for building i686-MinGW and x86_64-MinGW
   "./build --preload gcc-4.6.3 x32 x64" for building i686-MinGW and x86_64-MinGW
-  "./build --dwarf x32 gcc-4.6.3" for building i686-MinGW with DWARF
+  "./build --dwarf gcc-4.6.3 x32" for building i686-MinGW with DWARF exception handling
 
   The --preload option specifies to the script to pre-download all the sources
   and only after that, to begin the building. This allows to build different
