@@ -332,14 +332,16 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		
 			func_download $SRC_DIR_NAME $TYPE $URL $DOWNLOAD_LOG
 			[[ $? != 0 ]] && {
+				local result=$?
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG
-				exit $?
+				exit $result
 			}
 		
 			func_uncompress $SRC_DIR_NAME $TYPE $UNCOMPRESS_LOG
 			[[ $? != 0 ]] && {
+				local result=$?
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $UNCOMPRESS_LOG
-				exit $?
+				exit $result
 			}
 		
 		[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
@@ -347,10 +349,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$SRC_DIR_NAME \
 				"execute commands..." \
 				EXECUTE_AFTER_UNCOMPRESS[@]
-			local result_exec=$?
-			[[ $result_exec != 0 ]] && {
+			[[ $? != 0 ]] && {
+				local result=$?
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
-				exit $result_exec
+				exit $result
 			}
 		}
 		
@@ -358,8 +360,9 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$SRC_DIR_NAME \
 			PATCHES[@]
 		[[ $? != 0 ]] && {
+			local result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/patch-$_index.log
-			exit $?
+			exit $result
 		}
 		
 		configure_flags="${CONFIGURE_FLAGS[@]}"
@@ -369,8 +372,9 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			"$configure_flags" \
 			$CONFIGURE_LOG
 		[[ $? != 0 ]] && {
+			local result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG
-			exit $?
+			exit $result
 		}
 		
 		make_flags="/bin/make ${MAKE_FLAGS[@]}"
@@ -382,8 +386,9 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			"building..." \
 			"built"
 		[[ $? != 0 ]] && {
+			local result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG
-			exit $?
+			exit $result
 		}
 		
 		install_flags="/bin/make ${INSTALL_FLAGS[@]}"
@@ -395,8 +400,9 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			"installing..." \
 			"installed"
 		[[ $? != 0 ]] && {
+			local result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG
-			exit $?
+			exit $result
 		}
    done
 done
