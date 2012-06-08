@@ -52,100 +52,94 @@ function func_absolute_to_relative {
 
 # download the sources
 function func_download {
-   # $1 - name
-   # $2 - sources type: .tar.gz, .tar.bz2 e.t.c...
-   #      if library get from a repository, choose it's type: cvs, svn, hg, git
-   # $3 - URL
-   # $4 - marker file name
-   # $5 - log file name
+	# $1 - name
+	# $2 - sources type: .tar.gz, .tar.bz2 e.t.c...
+	#      if library get from a repository, choose it's type: cvs, svn, hg, git
+	# $3 - URL
+	# $4 - log file name
 
 	local WGET_TIMEOUT=5
 	local WGET_TRIES=10
 	local WGET_WAIT=2
 
-   _function_result=0
+	local marker=$SRCS_DIR/$1/_download.marker
+	local result=0
 
 	[[ -z $3 ]] && {
 		echo "URL is empty. terminate."
 		exit 1
 	}
-	
-   [[ ! -f $4 ]] && {
-      [[ $2 == cvs || $2 == svn || $2 == hg || $2 == git ]] && {
-         local LIB_NAME=$SRCS_DIR/$1
+
+	[[ ! -f $marker ]] && {
+		[[ $2 == cvs || $2 == svn || $2 == hg || $2 == git ]] && {
+			local LIB_NAME=$SRCS_DIR/$1
 		} || {
 			local LIB_NAME=$SRCS_DIR/$1$2
-      }
-		
+		}
+
 		echo -n "--> download..."
 
 		case $2 in
 			cvs)
-				_prev_dir=$PWD
+				local _prev_dir=$PWD
 				cd $SRCS_DIR
-				eval ${3} > $5 2>&1
-				_function_result=$?
+				eval ${3} > $4 2>&1
+				result=$?
 				cd $_prev_dir
 			;;
 			svn)
-				svn co $3 $LIB_NAME > $5 2>&1
-				_function_result=$?
+				svn co $3 $LIB_NAME > $4 2>&1
+				result=$?
 			;;
 			hg)
-				hg clone $3 $LIB_NAME > $5 2>&1
-				_function_result=$?
+				hg clone $3 $LIB_NAME > $4 2>&1
+				result=$?
 			;;
 			git)
-				git clone $3 $LIB_NAME > $5 2>&1
-				_function_result=$?
+				git clone $3 $LIB_NAME > $4 2>&1
+				result=$?
 			;;
 			*)
-				[[ ! -f $4 && -f $LIB_NAME ]] && rm -f $LIB_NAME
+				[[ ! -f $marker && -f $LIB_NAME ]] && rm -rf $LIB_NAME
 				wget \
 					--tries=$WGET_TRIES \
 					--timeout=$WGET_TIMEOUT \
 					--wait=$WGET_WAIT \
-					$3 -O $LIB_NAME > $5 2>&1
-				_function_result=$?
+					$3 -O $LIB_NAME > $4 2>&1
+				result=$?
 			;;
 		esac
 
-      [[ $_function_result == 0 ]] && {
-			echo "done"
-         touch $4
-      } || {
-			echo "error!"
-         return $_function_result
-      }
+		[[ $result == 0 ]] && { echo " done"; touch $marker; } || { echo " error!"; }
 	} || {
-		echo "---> downloaded"
-		_function_result=0
-   }
-
-   return $_function_result
+		echo " ---> downloaded"
+	}
+	return $result
 }
 
 # **************************************************************************
 
 # uncompress sources
 function func_uncompress {
-   # $1 - name
-   # $2 - ext
-   # $3 - marker file name
-   # $4 - log file name
+	# $1 - name
+	# $2 - ext
+	# $3 - log file name
 
-	result=0
-	[[ ! -f $3 ]] && {
-		echo -n "---> unpack..."
+	local marker=$SRCS_DIR/$1/_uncompress.marker
+	local result=0
+	local tar_flags
+
+	[[ ! -f $marker ]] && {
+		echo -n "--> unpack..."
 		case $2 in
-			.tar.gz) tfl=f ;;
-			.tar.bz2) tfl=jf ;;
-			.tar.lzma|.tar.xz) tfl=Jf ;;
-			*) echo "error. bad archive type: $2"; return 1 ;;
+			.tar.gz) tar_flags=f ;;
+			.tar.bz2) tar_flags=jf ;;
+			.tar.lzma|.tar.xz) tar_flags=Jf ;;
+			*) echo " error. bad archive type: $2"; return 1 ;;
 		esac
-		tar xv$tfl $SRCS_DIR/$1$2 -C $SRCS_DIR > ${4} 2>&1
+		tar xv$tar_flags $SRCS_DIR/$1$2 -C $SRCS_DIR > $3 2>&1
 		result=$?
-		[[ $result == 0 ]] && { echo " done"; touch $3; }
+		[[ $result == 0 ]] && { echo " done"; touch $marker; } || { echo " error!"; }
 	} || {
 		echo " ---> unpacked"
 	}

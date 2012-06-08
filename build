@@ -265,25 +265,13 @@ SUBTARGETS=(
 
 			[[ -z $NAME ]] && continue
 			
-			DOWNLOAD_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_download.marker
-			UNCOMPRESS_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker
-
 			mkdir -p $SRCS_DIR/$SRC_DIR_NAME
 
-			func_download \
-				$SRC_DIR_NAME \
-				$TYPE \
-				$URL \
-				$DOWNLOAD_MARKER \
-				"/dev/null"
-			[[ $_function_result != 0 ]] && exit $_function_result
+			func_download $SRC_DIR_NAME $TYPE $URL "/dev/null"
+			[[ $? != 0 ]] && exit $?
 
-			func_uncompress \
-				$SRC_DIR_NAME \
-				$TYPE \
-				$UNCOMPRESS_MARKER \
-				"/dev/null"
-			[[ $_function_result != 0 ]] && exit $_function_result
+			func_uncompress $SRC_DIR_NAME $TYPE "/dev/null"
+			[[ $? != 0 ]] && exit $?
 		}
 	done
 }
@@ -338,9 +326,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 
 		[[ -z $NAME ]] && continue
 		
-		DOWNLOAD_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_download.marker
 		DOWNLOAD_LOG=$LOGS_DIR/$SRC_DIR_NAME/download.log
-		UNCOMPRESS_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker
 		UNCOMPRESS_LOG=$LOGS_DIR/$SRC_DIR_NAME/uncompress.log
 		CONFIGURE_MARKER=$BUILDS_DIR/$NAME/_configure.marker
 		CONFIGURE_LOG=$LOGS_DIR/$NAME/configure.log
@@ -352,25 +338,16 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		mkdir -p {$SRCS_DIR/,$BUILDS_DIR/,$LOGS_DIR/}$SRC_DIR_NAME
 		[[ $NAME != $SRC_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$NAME
 		
-			func_download \
-				$SRC_DIR_NAME \
-				$TYPE \
-				$URL \
-				$DOWNLOAD_MARKER \
-				$DOWNLOAD_LOG
-			[[ $_function_result != 0 ]] && {
+			func_download $SRC_DIR_NAME $TYPE $URL $DOWNLOAD_LOG
+			[[ $? != 0 ]] && {
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG
-				exit $_function_result
+				exit $?
 			}
 		
-			func_uncompress \
-				$SRC_DIR_NAME \
-				$TYPE \
-				$UNCOMPRESS_MARKER \
-				$UNCOMPRESS_LOG
-			[[ $_function_result != 0 ]] && {
+			func_uncompress $SRC_DIR_NAME $TYPE $UNCOMPRESS_LOG
+			[[ $? != 0 ]] && {
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $UNCOMPRESS_LOG
-				exit $_function_result
+				exit $?
 			}
 		
 		[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
