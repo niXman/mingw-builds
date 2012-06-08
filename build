@@ -76,9 +76,9 @@ TESTS_DIR=$TOP_DIR/tests
 
 # **************************************************************************
 
-function func_usage {
+[[ $# == 1 && ${@:1:1} != -v || $[ $# == 0 || $# > 5 ] == 1 ]] && {
 	echo "usage:"
-	echo "  ./build <--preload> <--dwarf> <gcc version> x32|x64"
+	echo "  $0 [--preload] [--dwarf] <gcc version> <x32|x64>"
 	echo "  help:"
 	echo "    --preload   - firstly downloads then builds"
 	echo "    --dwarf     - build GCC with DWARF exceptions"
@@ -97,12 +97,7 @@ function func_usage {
 	#echo "    gcc-4_8-branch"
 	echo "    cxx-conversion (currently based on the trunk version)"
 	echo "    gcc-trunk (currently 4.8.0-snapshot)"
-}
 
-# **************************************************************************
-
-[[ $# == 1 && ${@:1:1} != -v || $[ $# == 0 || $# > 5 ] == 1 ]] && {
-	func_usage
 	exit 0
 }
 
@@ -328,11 +323,8 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		
 		DOWNLOAD_LOG=$LOGS_DIR/$SRC_DIR_NAME/download.log
 		UNCOMPRESS_LOG=$LOGS_DIR/$SRC_DIR_NAME/uncompress.log
-		CONFIGURE_MARKER=$BUILDS_DIR/$NAME/_configure.marker
 		CONFIGURE_LOG=$LOGS_DIR/$NAME/configure.log
-		MAKE_MARKER=$BUILDS_DIR/$NAME/_make.marker
 		MAKE_LOG=$LOGS_DIR/$NAME/make.log
-		INSTALL_MARKER=$BUILDS_DIR/$NAME/_install.marker
 		INSTALL_LOG=$LOGS_DIR/$NAME/install.log
 
 		mkdir -p {$SRCS_DIR/,$BUILDS_DIR/,$LOGS_DIR/}$SRC_DIR_NAME
@@ -355,18 +347,18 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$SRC_DIR_NAME \
 				"execute commands..." \
 				EXECUTE_AFTER_UNCOMPRESS[@]
-			[[ $_function_result != 0 ]] && {
+			[[ $? != 0 ]] && {
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
-				exit $_function_result
+				exit $?
 			}
 		}
 		
 		func_apply_patches \
 			$SRC_DIR_NAME \
 			PATCHES[@]
-		[[ $_function_result != 0 ]] && {
+		[[ $? != 0 ]] && {
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/patch-$_index.log
-			exit $_function_result
+			exit $?
 		}
 		
 		configure_flags="${CONFIGURE_FLAGS[@]}"
@@ -374,11 +366,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$NAME \
 			$SRC_DIR_NAME \
 			"$configure_flags" \
-			$CONFIGURE_MARKER \
 			$CONFIGURE_LOG
-		[[ $_function_result != 0 ]] && {
+		[[ $? != 0 ]] && {
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG
-			exit $_function_result
+			exit $?
 		}
 		
 		make_flags="/bin/make ${MAKE_FLAGS[@]}"
@@ -386,13 +377,12 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$NAME \
 			$NAME \
 			"$make_flags" \
-			$MAKE_MARKER \
 			$MAKE_LOG \
 			"building..." \
 			"built"
-		[[ $_function_result != 0 ]] && {
+		[[ $? != 0 ]] && {
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG
-			exit $_function_result
+			exit $?
 		}
 		
 		install_flags="/bin/make ${INSTALL_FLAGS[@]}"
@@ -400,13 +390,12 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$NAME \
 			$NAME \
 			"$install_flags" \
-			$INSTALL_MARKER \
 			$INSTALL_LOG \
 			"installing..." \
 			"installed"
-		[[ $_function_result != 0 ]] && {
+		[[ $? != 0 ]] && {
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG
-			exit $_function_result
+			exit $?
 		}
    done
 done
