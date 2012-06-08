@@ -134,36 +134,22 @@ function func_uncompress {
    # $3 - marker file name
    # $4 - log file name
 
-   _function_result=0
-
-   local ARCHIVE_FILE_NAME=$SRCS_DIR/$1$2
-
-   [[ $2 == .tar || $2 == .tar.gz || $2 == .tar.bz2 || $2 == .tar.lzma || $2 == .zip ]] && {
-      [[ ! -f ${3} ]] && {
-			echo -n "--> unpack..."
-			case $2 in
-				.tar) tar -xf $ARCHIVE_FILE_NAME -C $SRCS_DIR > ${4} 2>&1; _function_result=$? ;;
-				.tar.gz) tar -xvf $ARCHIVE_FILE_NAME -C $SRCS_DIR > ${4} 2>&1; _function_result=$? ;;
-				.tar.bz2) tar -xvf $ARCHIVE_FILE_NAME -C $SRCS_DIR > ${4} 2>&1; _function_result=$? ;;
-				.tar.lzma) tar -xvJf $ARCHIVE_FILE_NAME -C $SRCS_DIR > ${4} 2>&1; _function_result=$? ;;
-				.zip) unzip $ARCHIVE_FILE_NAME -d $SRCS_DIR > ${4} 2>&1; _function_result=$? ;;
-				*) echo "error. bad archive type: $2"; _function_result=1; return $_function_result ;;
-			esac
-
-         [[ $_function_result == 0 ]] && {
-				echo "done"
-            touch $3
-         } || {
-				echo "error!"
-            return $_function_result
-         }
-      } || {
-			echo "---> unpacked"
-			_function_result=0
-      }
-   }
-
-   return $_function_result
+	result=0
+	[[ ! -f $3 ]] && {
+		echo -n "---> unpack..."
+		case $2 in
+			.tar.gz) tfl=f ;;
+			.tar.bz2) tfl=jf ;;
+			.tar.lzma|.tar.xz) tfl=Jf ;;
+			*) echo "error. bad archive type: $2"; return 1 ;;
+		esac
+		tar xv$tfl $SRCS_DIR/$1$2 -C $SRCS_DIR > ${4} 2>&1
+		result=$?
+		[[ $result == 0 ]] && { echo " done"; touch $3; }
+	} || {
+		echo " ---> unpacked"
+	}
+	return $result
 }
 
 # **************************************************************************
