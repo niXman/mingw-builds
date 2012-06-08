@@ -78,7 +78,7 @@ TESTS_DIR=$TOP_DIR/tests
 
 [[ $# == 1 && ${@:1:1} != -v || $[ $# == 0 || $# > 5 ] == 1 ]] && {
 	echo "usage:"
-	echo "  $0 [--preload] [--dwarf] <gcc version> <x32|x64>"
+	echo "  ./${0##*/} [--preload] [--dwarf] <gcc version> <x32|x64>"
 	echo "  help:"
 	echo "    --preload   - firstly downloads then builds"
 	echo "    --dwarf     - build GCC with DWARF exceptions"
