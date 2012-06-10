@@ -234,7 +234,6 @@ SUBTARGETS=(
 	cleanup
 	#terminator
 	licenses
-	#put-logs
 	put-versions
 	#terminator
 	tests
@@ -247,6 +246,7 @@ SUBTARGETS=(
 . ./scripts/functions.sh
 [[ $PRELOAD_MODE == yes ]] && {
 	for sub in ${SUBTARGETS[@]}; do
+		[[ $sub == put-versions ]] && continue
 		[[ -n $( grep 'URL=' $TOP_DIR/scripts/${sub}.sh ) ]] && {
 			echo -e "-> \E[32;40m$sub\E[37;40m"
 			[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
