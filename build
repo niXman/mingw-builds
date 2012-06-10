@@ -37,8 +37,8 @@
 # **************************************************************************
 # **************************************************************************
 
-x32_HOST_MINGW_PATH=/d/mingw32
-x64_HOST_MINGW_PATH=/d/mingw64
+x32_HOST_MINGW_PATH=/e/dev/gcc32
+x64_HOST_MINGW_PATH=/e/dev/gcc64
 
 ENABLE_LANGUAGES=c,c++,fortran
 
@@ -55,7 +55,7 @@ GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
 #LOGVIEWER="c:/progra~1/notepad++/notepad++.exe"
 LOGVIEWER="c:/progra~2/notepad++/notepad++.exe"
 
-SHOW_LOG_ON_ERROR=yes
+SHOW_LOG_ON_ERROR=no
 PACK_IN_ARCHIVES=yes
 
 # **************************************************************************
@@ -332,14 +332,14 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		
 			func_download $SRC_DIR_NAME $TYPE $URL $DOWNLOAD_LOG
 			[[ $? != 0 ]] && {
-				local result=$?
+				result=$?
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG
 				exit $result
 			}
 		
 			func_uncompress $SRC_DIR_NAME $TYPE $UNCOMPRESS_LOG
 			[[ $? != 0 ]] && {
-				local result=$?
+				result=$?
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $UNCOMPRESS_LOG
 				exit $result
 			}
@@ -350,7 +350,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				"execute commands..." \
 				EXECUTE_AFTER_UNCOMPRESS[@]
 			[[ $? != 0 ]] && {
-				local result=$?
+				result=$?
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
 				exit $result
 			}
@@ -360,7 +360,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$SRC_DIR_NAME \
 			PATCHES[@]
 		[[ $? != 0 ]] && {
-			local result=$?
+			result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/patch-$_index.log
 			exit $result
 		}
@@ -372,7 +372,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			"$configure_flags" \
 			$CONFIGURE_LOG
 		[[ $? != 0 ]] && {
-			local result=$?
+			result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG
 			exit $result
 		}
@@ -386,7 +386,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			"building..." \
 			"built"
 		[[ $? != 0 ]] && {
-			local result=$?
+			result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG
 			exit $result
 		}
@@ -400,7 +400,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			"installing..." \
 			"installed"
 		[[ $? != 0 ]] && {
-			local result=$?
+			result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG
 			exit $result
 		}

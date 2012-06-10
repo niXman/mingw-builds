@@ -35,10 +35,10 @@
 
 # **************************************************************************
 
-NAME=binutils-2.22.52
-SRC_DIR_NAME=binutils-2.22.52
-URL=ftp://mirrors.kernel.org/sources.redhat.com/binutils/snapshots/binutils-2.22.52.tar.bz2
+NAME=binutils-2.22.51
+SRC_DIR_NAME=binutils-2.22.51
 TYPE=.tar.bz2
+URL=ftp://mirrors.kernel.org/sources.redhat.com/binutils/snapshots/$NAME$TYPE
 
 #
 
