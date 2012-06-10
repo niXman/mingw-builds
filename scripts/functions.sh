@@ -129,19 +129,21 @@ function func_uncompress {
 	local result=0
 	local tar_flags
 
-	[[ ! -f $marker ]] && {
-		echo -n "--> unpack..."
-		case $2 in
-			.tar.gz) tar_flags=f ;;
-			.tar.bz2) tar_flags=jf ;;
-			.tar.lzma|.tar.xz) tar_flags=Jf ;;
-			*) echo " error. bad archive type: $2"; return 1 ;;
-		esac
-		tar xv$tar_flags $SRCS_DIR/$1$2 -C $SRCS_DIR > $3 2>&1
-		result=$?
-		[[ $result == 0 ]] && { echo " done"; touch $marker; } || { echo " error!"; }
-	} || {
-		echo " ---> unpacked"
+	[[ $2 == .tar.gz || $2 == .tar.bz2 || $2 == .tar.lzma || $2 == .tar.xz ]] && {
+		[[ ! -f $marker ]] && {
+			echo -n "--> unpack..."
+			case $2 in
+				.tar.gz) tar_flags=f ;;
+				.tar.bz2) tar_flags=jf ;;
+				.tar.lzma|.tar.xz) tar_flags=Jf ;;
+				*) echo " error. bad archive type: $2"; return 1 ;;
+			esac
+			tar xv$tar_flags $SRCS_DIR/$1$2 -C $SRCS_DIR > $3 2>&1
+			result=$?
+			[[ $result == 0 ]] && { echo " done"; touch $marker; } || { echo " error!"; }
+		} || {
+			echo " ---> unpacked"
+		}
 	}
 	return $result
 }
@@ -244,58 +246,52 @@ function func_configure {
    # $1 - name
 	# $2 - src dir name
    # $3 - flags
-   # $4 - marker file name
-   # $5 - log file name
+   # $4 - log file name
 
-   [[ ! -f $4 ]] && {
+	local _marker=$BUILDS_DIR/$1/_configure.marker
+	local _result=0
+
+   [[ ! -f $_marker ]] && {
       echo -n "--> configure..."
-      ( cd $BUILDS_DIR/$1 && eval $( func_absolute_to_relative $BUILDS_DIR/$2 $SRCS_DIR/$2 )/configure "${3}" > $5 2>&1 )
-      _function_result=$?
-      [[ $_function_result == 0 ]] && {
-         echo "done"
-         touch $4
-         return $_function_result
+      ( cd $BUILDS_DIR/$1 && eval $( func_absolute_to_relative $BUILDS_DIR/$2 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1 )
+      _result=$?
+      [[ $_result == 0 ]] && {
+         echo " done"
+         touch $_marker
+         return $_result
       } || {
-         echo "error!"
-         return $_function_result
+         echo " error!"
+         return $_result
       }
    } || {
       echo "---> configured"
    }
-
-   return $_function_result
+   return $_result
 }
 
 # **************************************************************************
 
 # make
 function func_make {
-   # $1 - name
+	# $1 - name
 	# $2 - src dir name
-   # $3 - command line
-   # $4 - marker file name
-   # $5 - log file name
-   # $6 - text
-   # $7 - text if completed
+	# $3 - command line
+	# $4 - log file name
+	# $5 - text
+	# $6 - text if completed
 
-   _function_result=0
+	local _marker=$BUILDS_DIR/$1/_$6.marker
+	local _result=0
 
-   [[ -z $4 || ! -f $4 ]] && {
-		echo -n "--> $6"
-      ( cd $BUILDS_DIR/$2 && eval ${3} > $5 2>&1 )
-      _function_result=$?
-      [[ $_function_result == 0 ]] && {
-         [[ -n $4 ]] && touch $4
-         echo "done"
-      } || {
-         echo "error!"
-      }
-      return $_function_result
-   } || {
-		echo "---> $7"
-   }
-
-   return $_function_result
+	[[ ! -f $_marker ]] && {
+		echo -n "--> $5"
+		( cd $BUILDS_DIR/$2 && eval ${3} > $4 2>&1 )
+		_result=$?
+		[[ $_result == 0 ]] && { echo " done"; touch $_marker; } || { echo " error!"; }
+	} || {
+		echo " ---> $6"
+	}
+	return $_result
 }
 
 # **************************************************************************
