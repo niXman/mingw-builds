@@ -62,15 +62,15 @@ function func_download {
 	local WGET_TRIES=10
 	local WGET_WAIT=2
 
-	local marker=$SRCS_DIR/$1/_download.marker
-	local result=0
+	local _marker=$SRCS_DIR/$1/_download.marker
+	local _result=0
 
 	[[ -z $3 ]] && {
 		echo "URL is empty. terminate."
 		exit 1
 	}
 
-	[[ ! -f $marker ]] && {
+	[[ ! -f $_marker ]] && {
 		[[ $2 == cvs || $2 == svn || $2 == hg || $2 == git ]] && {
 			local LIB_NAME=$SRCS_DIR/$1
 		} || {
@@ -84,37 +84,37 @@ function func_download {
 				local _prev_dir=$PWD
 				cd $SRCS_DIR
 				eval ${3} > $4 2>&1
-				result=$?
+				_result=$?
 				cd $_prev_dir
 			;;
 			svn)
 				svn co $3 $LIB_NAME > $4 2>&1
-				result=$?
+				_result=$?
 			;;
 			hg)
 				hg clone $3 $LIB_NAME > $4 2>&1
-				result=$?
+				_result=$?
 			;;
 			git)
 				git clone $3 $LIB_NAME > $4 2>&1
-				result=$?
+				_result=$?
 			;;
 			*)
-				[[ ! -f $marker && -f $LIB_NAME ]] && rm -rf $LIB_NAME
+				[[ ! -f $_marker && -f $LIB_NAME ]] && rm -rf $LIB_NAME
 				wget \
 					--tries=$WGET_TRIES \
 					--timeout=$WGET_TIMEOUT \
 					--wait=$WGET_WAIT \
 					$3 -O $LIB_NAME > $4 2>&1
-				result=$?
+				_result=$?
 			;;
 		esac
 
-		[[ $result == 0 ]] && { echo " done"; touch $marker; } || { echo " error!"; }
+		[[ $_result == 0 ]] && { echo " done"; touch $_marker; } || { echo " error!"; }
 	} || {
 		echo " ---> downloaded"
 	}
-	return $result
+	return $_result
 }
 
 # **************************************************************************
@@ -125,27 +125,27 @@ function func_uncompress {
 	# $2 - ext
 	# $3 - log file name
 
-	local marker=$SRCS_DIR/$1/_uncompress.marker
-	local result=0
-	local tar_flags
+	local _marker=$SRCS_DIR/$1/_uncompress.marker
+	local _result=0
+	local _tar_flags
 
 	[[ $2 == .tar.gz || $2 == .tar.bz2 || $2 == .tar.lzma || $2 == .tar.xz ]] && {
-		[[ ! -f $marker ]] && {
+		[[ ! -f $_marker ]] && {
 			echo -n "--> unpack..."
 			case $2 in
-				.tar.gz) tar_flags=f ;;
-				.tar.bz2) tar_flags=jf ;;
-				.tar.lzma|.tar.xz) tar_flags=Jf ;;
+				.tar.gz) _tar_flags=f ;;
+				.tar.bz2) _tar_flags=jf ;;
+				.tar.lzma|.tar.xz) _tar_flags=Jf ;;
 				*) echo " error. bad archive type: $2"; return 1 ;;
 			esac
-			tar xv$tar_flags $SRCS_DIR/$1$2 -C $SRCS_DIR > $3 2>&1
-			result=$?
-			[[ $result == 0 ]] && { echo " done"; touch $marker; } || { echo " error!"; }
+			tar xv$_tar_flags $SRCS_DIR/$1$2 -C $SRCS_DIR > $3 2>&1
+			_result=$?
+			[[ $_result == 0 ]] && { echo " done"; touch $_marker; } || { echo " error!"; }
 		} || {
 			echo " ---> unpacked"
 		}
 	}
-	return $result
+	return $_result
 }
 
 # **************************************************************************
@@ -156,15 +156,14 @@ function func_execute {
    # $2 - message
    # $3 - commands list
 
+   local _result=0
    local -a _commands=( "${!3}" )
-   _function_result=0
-
-   declare -i _index=${#_commands[@]}-1
+   local -i _index=${#_commands[@]}-1
 	local _cmd_marker_name=$SRCS_DIR/$1/exec-$_index.marker
 
    [[ -f $_cmd_marker_name ]] && {
 		echo "---> executed"
-		return $_function_result
+		return $_result
    }
    _index=0
 
@@ -178,10 +177,10 @@ function func_execute {
 
       [[ ! -f $_cmd_marker_name ]] && {
          ( cd $SRCS_DIR/$1; eval ${it} > $_cmd_log_name 2>&1 )
-         _function_result=$?
-         [[ $_function_result != 0 ]] && {
+         _result=$?
+         [[ $_result != 0 ]] && {
             echo "error!"
-            return $_function_result
+            return $_result
          } || {
             touch $_cmd_marker_name
          }
@@ -192,7 +191,7 @@ function func_execute {
 
    [[ $_index == ${#_commands[@]} ]] && echo "done"
 
-   return $_function_result
+   return $_result
 }
 
 # **************************************************************************
@@ -202,8 +201,8 @@ function func_apply_patches {
    # $1 - src dir name
    # $2 - list
 
-   _function_result=0
-
+   local _result=0
+	local _index=0
    local -a _list=( "${!2}" )
 	[[ ${#_list[@]} == 0 ]] && return 0
 	
@@ -222,11 +221,11 @@ function func_apply_patches {
       local _patch_marker_name=$SRCS_DIR/$1/_patch-$_index.marker
       [[ ! -f $_patch_marker_name ]] && {
          ( cd $SRCS_DIR/$1 && patch -p1 < "$PATCHES_DIR/${it}" > $LOGS_DIR/$1/patch-$_index.log 2>&1 )
-         _function_result=$?
-         [[ $_function_result == 0 ]] && {
+         _result=$?
+         [[ $_result == 0 ]] && {
             touch $_patch_marker_name
          } || {
-            _function_result=1
+            _result=1
             break
          }
       }
@@ -234,9 +233,9 @@ function func_apply_patches {
       ((_index++))
    done
 
-	[[ $_function_result == 0 ]] && echo "done" || echo "error!"
+	[[ $_result == 0 ]] && echo "done" || echo "error!"
    
-   return $_function_result
+   return $_result
 }
 
 # **************************************************************************
@@ -301,6 +300,7 @@ function run_test {
 	# $2 - sources names
 	# $3 - tests dir
 	
+	local _result=0
 	local -a _list=( "${!2}" )
 
 	[[ $USE_DWARF_EXCEPTIONS == no ]] && {
@@ -335,7 +335,7 @@ function run_test {
 					echo "gcc -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_cmp_log
 					( cd $3/$arch_it; gcc -m${arch_it} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_cmp_log 2>&1 )
 				}
-				local _result=$?
+				_result=$?
 				[[ $_result == 0 ]] && {
 					echo "done" 
 				} || { 
