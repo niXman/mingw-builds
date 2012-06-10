@@ -112,7 +112,7 @@ function func_download {
 
 		[[ $_result == 0 ]] && { echo " done"; touch $_marker; } || { echo " error!"; }
 	} || {
-		echo " ---> downloaded"
+		echo "---> downloaded"
 	}
 	return $_result
 }
@@ -142,7 +142,7 @@ function func_uncompress {
 			_result=$?
 			[[ $_result == 0 ]] && { echo " done"; touch $_marker; } || { echo " error!"; }
 		} || {
-			echo " ---> unpacked"
+			echo "---> unpacked"
 		}
 	}
 	return $_result
