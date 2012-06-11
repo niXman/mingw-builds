@@ -288,7 +288,7 @@ function func_make {
 		_result=$?
 		[[ $_result == 0 ]] && { echo " done"; touch $_marker; } || { echo " error!"; }
 	} || {
-		echo " ---> $6"
+		echo "---> $6"
 	}
 	return $_result
 }
