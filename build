@@ -107,9 +107,7 @@ TESTS_DIR=$TOP_DIR/tests
 }
 
 [[ $SHOW_LOG_ON_ERROR == yes && ! -f $LOGVIEWER ]] && {
-	echo "set properly path to the log-viewer or set \
-\"SHOW_LOG_ON_ERROR\" to 'no'. terminate."
-	exit 1
+	LOGVIEWER=/c/Windows/system32/notepad.exe
 }
 
 [[ -d /mingw ]] && {
