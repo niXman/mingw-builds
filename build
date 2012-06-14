@@ -89,7 +89,7 @@ TESTS_DIR=$TOP_DIR/tests
 	#echo "    gcc-4.6.5"
 	#echo "    gcc-4.6.6"
 	echo "    gcc-4.7.0 (4.7.0 release)"
-	#echo "    gcc-4.7.1"
+	echo "    gcc-4.7.1 (4.7.1 release)"
 	#echo "    gcc-4.8.0"
 	#echo "    gcc-4.8.1"
 	echo "    gcc-4_6-branch (currently 4.6.4-prerelease)"
