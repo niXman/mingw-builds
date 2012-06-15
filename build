@@ -37,10 +37,10 @@
 # **************************************************************************
 # **************************************************************************
 
-x32_HOST_MINGW_PATH=/d/mingw32
-x64_HOST_MINGW_PATH=/d/mingw64
+x32_HOST_MINGW_PATH=/c/Users/niXman/Downloads/mingw32
+x64_HOST_MINGW_PATH=/c/Users/niXman/Downloads/mingw64
 
-ENABLE_LANGUAGES=c,c++,fortran
+ENABLE_LANGUAGES=c,c++,fortran,go
 
 BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer -momit-leaf-frame-pointer"
 BASE_CXXFLAGS="$BASE_CFLAGS"

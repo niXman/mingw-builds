@@ -52,7 +52,6 @@ for sub in ${SUBTARGETS[@]}; do
 		[[ -n $( echo "${_PROCESSED_SUBS[@]}" | grep $_pack_name ) ]] && continue
 		_PROCESSED_SUBS=( ${_PROCESSED_SUBS[@]} $_pack_name )
 		
-		_revision=""
 		echo "name: $_pack_name" >> $VERSION_FILE
 		echo "url: $_pack_url" >> $VERSION_FILE
 		
@@ -60,7 +59,7 @@ for sub in ${SUBTARGETS[@]}; do
 			cvs|svn|hg|git)
 				cd $SRCS_DIR/$_pack_name
 				[[ $? != 0 ]] && { echo "error in $SRCS_DIR/$_pack_name"; exit 1; }
-				echo "_revision: $( svn info | grep '_revision: ' | sed 's|_revision: ||' )" >> $VERSION_FILE
+				echo "revision: $( svn info | grep 'revision: ' | sed 's|revision: ||' )" >> $VERSION_FILE
 			;;
 			*)
 				echo "version: $( echo $_pack_name | sed 's/[^0-9.]*\([0-9.]*\).*/\1/' )" >> $VERSION_FILE
