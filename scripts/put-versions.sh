@@ -55,11 +55,21 @@ for sub in ${SUBTARGETS[@]}; do
 		echo "name: $_pack_name" >> $VERSION_FILE
 		echo "url: $_pack_url" >> $VERSION_FILE
 		
+		cd $SRCS_DIR/$_pack_name
+		[[ $? != 0 ]] && { echo "error in $SRCS_DIR/$_pack_name"; exit 1; }
+		
 		case $_pack_type in
-			cvs|svn|hg|git)
-				cd $SRCS_DIR/$_pack_name
-				[[ $? != 0 ]] && { echo "error in $SRCS_DIR/$_pack_name"; exit 1; }
-				echo "revision: $( svn info | grep 'revision: ' | sed 's|revision: ||' )" >> $VERSION_FILE
+			cvs)
+				echo "revision: unimplemented" >> $VERSION_FILE
+			;;
+			svn)
+				echo "revision: $( svn info | grep 'Revision: ' | sed 's|Revision: ||' )" >> $VERSION_FILE
+			;;
+			hg)
+				echo "revision: unimplemented" >> $VERSION_FILE
+			;;
+			git)
+				echo "revision: unimplemented" >> $VERSION_FILE
 			;;
 			*)
 				echo "version: $( echo $_pack_name | sed 's/[^0-9.]*\([0-9.]*\).*/\1/' )" >> $VERSION_FILE
