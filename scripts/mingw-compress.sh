@@ -48,7 +48,7 @@ ARCHIVE_NAME=$TOP_DIR/../$([[ $ARCHITECTURE == x32 ]] && echo i686 || echo x86_6
 case $GCC_NAME in
 	gcc-?.?.?)			ARCHIVE_NAME=$ARCHIVE_NAME-$GCC_NAME-release-$ENABLE_LANGUAGES ;;
 	gcc-4_6-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.6.4-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
-	gcc-4_7-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.7.1-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
+	gcc-4_7-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.7.2-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
 	gcc-4_8-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.8.1-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
 	gcc-4_9-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.9.1-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
 	gcc-cxx-trunk)		ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.8.1-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
