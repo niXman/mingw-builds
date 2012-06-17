@@ -306,8 +306,8 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	COMMON_CPPFLAGS="$BASE_CPPFLAGS"
 	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib"
 
-   for sub in ${SUBTARGETS[@]}; do
-      echo -e "-> \E[32;40m$sub\E[37;40m"
+	for sub in ${SUBTARGETS[@]}; do
+		echo -e "-> \E[32;40m$sub\E[37;40m"
 		[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
 			echo "script for subtarget \"$sub\" is not exists. terminate."
 			exit 1
@@ -327,20 +327,20 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 
 		mkdir -p {$SRCS_DIR/,$BUILDS_DIR/,$LOGS_DIR/}$SRC_DIR_NAME
 		[[ $NAME != $SRC_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$NAME
+
+		func_download $SRC_DIR_NAME $TYPE $URL $DOWNLOAD_LOG
+		[[ $? != 0 ]] && {
+			result=$?
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG
+			exit $result
+		}
 		
-			func_download $SRC_DIR_NAME $TYPE $URL $DOWNLOAD_LOG
-			[[ $? != 0 ]] && {
-				result=$?
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG
-				exit $result
-			}
-		
-			func_uncompress $SRC_DIR_NAME $TYPE $UNCOMPRESS_LOG
-			[[ $? != 0 ]] && {
-				result=$?
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $UNCOMPRESS_LOG
-				exit $result
-			}
+		func_uncompress $SRC_DIR_NAME $TYPE $UNCOMPRESS_LOG
+		[[ $? != 0 ]] && {
+			result=$?
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $UNCOMPRESS_LOG
+			exit $result
+		}
 		
 		[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
 			func_execute \
