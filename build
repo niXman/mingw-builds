@@ -37,8 +37,8 @@
 # **************************************************************************
 # **************************************************************************
 
-x32_HOST_MINGW_PATH=/c/Users/niXman/Downloads/mingw32
-x64_HOST_MINGW_PATH=/c/Users/niXman/Downloads/mingw64
+x32_HOST_MINGW_PATH=/d/mingw32
+x64_HOST_MINGW_PATH=/d/mingw64
 
 ENABLE_LANGUAGES=c,c++,fortran
 
@@ -260,7 +260,7 @@ SUBTARGETS=(
 			
 			mkdir -p $SRCS_DIR/$SRC_DIR_NAME
 
-			func_download $SRC_DIR_NAME $TYPE $URL "/dev/null"
+			func_download $SRC_DIR_NAME $TYPE $URL "$SRCS_DIR/$SRC_DIR_NAME/_download.log"
 			[[ $? != 0 ]] && exit $?
 
 			func_uncompress $SRC_DIR_NAME $TYPE "/dev/null"

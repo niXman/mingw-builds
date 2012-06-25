@@ -37,7 +37,7 @@
 
 NAME=expat-2.1.0
 SRC_DIR_NAME=expat-2.1.0
-URL=http://sourceforge.net/projects/expat/files/expat/2.0.1/expat-2.1.0.tar.gz
+URL=http://sourceforge.net/projects/expat/files/expat/2.1.0/expat-2.1.0.tar.gz
 TYPE=.tar.gz
 
 #

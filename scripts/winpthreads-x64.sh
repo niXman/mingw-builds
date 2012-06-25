@@ -37,7 +37,7 @@
 
 NAME=winpthreads-x64
 SRC_DIR_NAME=winpthreads
-URL=https://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/experimental/winpthreads
+URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/experimental/winpthreads
 TYPE=svn
 
 #
