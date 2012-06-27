@@ -35,9 +35,9 @@
 
 # **************************************************************************
 
-NAME=gdb-7.4
-SRC_DIR_NAME=gdb-7.4
-URL=ftp://ftp.gnu.org/gnu/gdb/gdb-7.4.tar.bz2
+NAME=gdb-7.4.1
+SRC_DIR_NAME=gdb-7.4.1
+URL=ftp://ftp.gnu.org/gnu/gdb/gdb-7.4.1.tar.bz2
 TYPE=.tar.bz2
 
 #
