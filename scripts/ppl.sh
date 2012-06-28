@@ -35,9 +35,9 @@
 
 # **************************************************************************
 
-NAME=ppl-0.12.1
-SRC_DIR_NAME=ppl-0.12.1
-URL=ftp://ftp.cs.unipr.it/pub/ppl/releases/0.12.1/ppl-0.12.1.tar.bz2
+NAME=ppl-1.0
+SRC_DIR_NAME=ppl-1.0
+URL=http://bugseng.com/products/ppl/download/ftp/releases/1.0/ppl-1.0.tar.bz2
 TYPE=.tar.bz2
 
 #
