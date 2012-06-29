@@ -60,7 +60,7 @@ for sub in ${SUBTARGETS[@]}; do
 		
 		case $_pack_type in
 			cvs)
-				echo "revision: unimplemented" >> $VERSION_FILE
+				echo "revision: $( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )" >> $VERSION_FILE
 			;;
 			svn)
 				echo "revision: $( svn info | grep 'Revision: ' | sed 's|Revision: ||' )" >> $VERSION_FILE
