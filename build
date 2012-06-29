@@ -42,7 +42,7 @@ x64_HOST_MINGW_PATH=/d/mingw64
 
 ENABLE_LANGUAGES=c,c++,fortran
 
-BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer -momit-leaf-frame-pointer"
+BASE_CFLAGS="-O2 -march=core2 -mtune=core2 -pipe -fomit-frame-pointer -momit-leaf-frame-pointer -fgrsphite-identity -floop-interchange -floop-block -floop-parallelize-all"
 BASE_CXXFLAGS="$BASE_CFLAGS"
 BASE_CPPFLAGS=""
 BASE_LDFLAGS="-pipe -s"
@@ -76,12 +76,13 @@ TESTS_DIR=$TOP_DIR/tests
 
 # **************************************************************************
 
-[[ $# == 1 && ${@:1:1} != -v || $[ $# == 0 || $# > 5 ] == 1 ]] && {
+[[ $# == 1 && ${@:1:1} != -v || $[ $# == 0 || $# > 6 ] == 1 ]] && {
 	echo "usage:"
 	echo "  ./${0##*/} [--preload] [--dwarf] <gcc version> <x32|x64>"
 	echo "  help:"
 	echo "    --preload   - firstly downloads then builds"
 	echo "    --dwarf     - build GCC with DWARF exceptions"
+	echo "    --multilib  - build GCC with multilib support"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -137,6 +138,7 @@ BUILD_ARCHITECTURE_x32=no
 BUILD_ARCHITECTURE_x64=no
 BUILD_ARCHITECTURES=()
 USE_DWARF_EXCEPTIONS=no
+USE_MULTILIB_MODE=no
 GCC_NAME=""
 
 [[ $# == 1 && ${@:1:1} == -v ]] && {
@@ -146,6 +148,7 @@ GCC_NAME=""
 		case $1 in
 			--preload) PRELOAD_MODE=yes ;;
 			--dwarf) USE_DWARF_EXCEPTIONS=yes ;;
+			--multilib) USE_MULTILIB_MODE=yes ;;
 			x32)
 				BUILD_ARCHITECTURE_x32=yes
 				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
@@ -176,6 +179,10 @@ GCC_NAME=""
 	echo "error in build architectures. terminate."
 	exit 1
 }
+[[ $USE_DWARF_EXCEPTIONS == yes && $USE_MULTILIB_MODE == yes ]] && {
+	echo "DWARF exceptions not allowed on multilib architecture. terminate."
+	exit 1
+}
 [[ $USE_DWARF_EXCEPTIONS == yes ]] && {
 	[[ $BUILD_ARCHITECTURE_x64 == yes ]] && {
 		echo "DWARF exceptions not allowed on x86_64 architecture. terminate."
@@ -190,11 +197,9 @@ GCC_NAME=""
 # **************************************************************************
 
 SUBTARGETS=(
-	libiconv-x32-pre
-	libiconv-x32
-	libiconv-x32-post
-	$( [[ $USE_DWARF_EXCEPTIONS == no ]] \
-		&& echo "libiconv-x64-pre libiconv-x64 libiconv-x64-post" \
+	$( [[ $USE_MULTILIB_MODE == yes ]] \
+		&& echo "libiconv-x32-pre libiconv-x32 libiconv-x32-post libiconv-x64-pre libiconv-x64 libiconv-x64-post" \
+		|| echo "libiconv" \
 	)
 	#terminator
 	gmp
@@ -210,11 +215,9 @@ SUBTARGETS=(
 	mingw-w64-crt
 	mingw-w64-crt-post
 	#terminator
-	winpthreads-x32-pre
-	winpthreads-x32
-	winpthreads-x32-post
-	$( [[ $USE_DWARF_EXCEPTIONS == no ]] \
-		&& echo "winpthreads-x64-pre winpthreads-x64 winpthreads-x64-post" \
+	$( [[ $USE_MULTILIB_MODE == yes ]] \
+		&& echo "winpthreads-x32-pre winpthreads-x32 winpthreads-x32-post winpthreads-x64-pre winpthreads-x64 winpthreads-x64-post" \
+		|| echo "winpthreads" \
 	)
 	#terminator
 	mingw-deps-post
@@ -252,6 +255,7 @@ SUBTARGETS=(
 				exit 1
 			}
 
+			_revis=$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 			NAME=""
 			cd $TOP_DIR
 			. ./scripts/$sub.sh
@@ -260,7 +264,7 @@ SUBTARGETS=(
 			
 			mkdir -p $SRCS_DIR/$SRC_DIR_NAME
 
-			func_download $SRC_DIR_NAME $TYPE $URL "$SRCS_DIR/$SRC_DIR_NAME/_download.log"
+			func_download $SRC_DIR_NAME $TYPE $URL "$SRCS_DIR/$SRC_DIR_NAME/_download.log" $_revis
 			[[ $? != 0 ]] && exit $?
 
 			func_uncompress $SRC_DIR_NAME $TYPE "/dev/null"
@@ -281,7 +285,11 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		HOST=i686-w64-mingw32
 		BUILD=i686-w64-mingw32
 		TARGET=i686-w64-mingw32
-		ENABLE_TARGETS=i686-w64-mingw32,x86_64-w64-mingw32
+		[[ $USE_MULTILIB_MODE == yes ]] && {
+			ENABLE_TARGETS=i686-w64-mingw32,x86_64-w64-mingw32
+		} || {
+			ENABLE_TARGETS=i686-w64-mingw32
+		}
 		[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc.exe ]] && {
 			echo "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\". terminate."
 			exit 1
@@ -291,7 +299,11 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		HOST=x86_64-w64-mingw32
 		BUILD=x86_64-w64-mingw32
 		TARGET=x86_64-w64-mingw32
-		ENABLE_TARGETS=x86_64-w64-mingw32,i686-w64-mingw32
+		[[ $USE_MULTILIB_MODE == yes ]] && {
+			ENABLE_TARGETS=x86_64-w64-mingw32,i686-w64-mingw32
+		} || {
+			ENABLE_TARGETS=x86_64-w64-mingw32
+		}
 		[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc.exe ]] && {
 			echo "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\". terminate."
 			exit 1
@@ -306,12 +318,17 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	COMMON_CPPFLAGS="$BASE_CPPFLAGS"
 	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib"
 
+	EXECUTE_AFTER_PATCH=()
+	EXECUTE_AFTER_UNCOMPRESS=()
+
 	for sub in ${SUBTARGETS[@]}; do
 		echo -e "-> \E[32;40m$sub\E[37;40m"
 		[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
 			echo "script for subtarget \"$sub\" is not exists. terminate."
 			exit 1
 		}
+
+		_revis=$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 
 		NAME=""
 		cd $TOP_DIR
@@ -328,7 +345,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		mkdir -p {$SRCS_DIR/,$BUILDS_DIR/,$LOGS_DIR/}$SRC_DIR_NAME
 		[[ $NAME != $SRC_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$NAME
 
-		func_download $SRC_DIR_NAME $TYPE $URL $DOWNLOAD_LOG
+		func_download $SRC_DIR_NAME $TYPE $URL $DOWNLOAD_LOG $_revis
 		[[ $? != 0 ]] && {
 			result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG
@@ -363,6 +380,18 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			exit $result
 		}
 		
+		[[ ${#EXECUTE_AFTER_PATCH[@]} >0 ]] && {
+			func_execute \
+				$SRC_DIR_NAME \
+				"execute commands..." \
+				EXECUTE_AFTER_PATCH[@]
+			[[ $? != 0 ]] && {
+				result=$?
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
+				exit $result
+			}
+		}
+
 		configure_flags="${CONFIGURE_FLAGS[@]}"
 		func_configure \
 			$NAME \
