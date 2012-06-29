@@ -231,7 +231,7 @@ SUBTARGETS=(
 	python
 	expat
 	gdb
-	make
+	make_cvs
 	cleanup
 	#terminator
 	licenses
