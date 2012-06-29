@@ -39,9 +39,8 @@
 	rm -f $BUILDS_DIR/mingw-deps-post.marker
 }
 
-[[ $USE_DWARF_EXCEPTIONS == no ]] && {
-	mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,lib64,include}
-	[[ ! -f $BUILDS_DIR/mingw-deps-post.marker ]] && {
+[[ ! -f $BUILDS_DIR/mingw-deps-post.marker ]] && {
+	[[ $USE_MULTILIB_MODE == yes ]] && {
 		[[ $ARCHITECTURE == x32 ]] && {
 			mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,lib64,include}
 			
@@ -84,9 +83,7 @@
 
 		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
 		touch $BUILDS_DIR/mingw-deps-post.marker || exit 1
-	}
-} || {
-	[[ ! -f $BUILDS_DIR/mingw-deps-post.marker ]] && {
+	} || {
 		mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
 		
 		cp -f $BUILDS_DIR/libiconv-32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
