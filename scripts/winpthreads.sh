@@ -39,7 +39,7 @@ NAME=winpthreads
 SRC_DIR_NAME=winpthreads
 URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/experimental/winpthreads
 TYPE=svn
-REV=last
+REV=
 #
 
 PATCHES=( winpthreads_lasterror.patch )

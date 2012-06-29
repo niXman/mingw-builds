@@ -39,7 +39,7 @@ NAME=mingw-w64-crt
 SRC_DIR_NAME=mingw-w64-crt
 URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-crt
 TYPE=svn
-REV=last
+REV=
 
 #
 
