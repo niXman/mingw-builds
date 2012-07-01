@@ -55,7 +55,7 @@
 			[[ $USE_MULTILIB_MODE == yes ]] && {
 				# libgcc_s.a
 				cp -f $PREFIX/lib/gcc/$TARGET/lib64/libgcc_s.a $PREFIX/$TARGET/lib64/ || exit 1
-				cp -rf `find $BUILD_DIR/$GCC_NAME/$TARGET/64 -type f \( -iname "*.dll ! -iname "*winpthread*" \)` $PREFIX/$TARGET/lib64/ || exit 1
+				cp -rf `find $BUILD_DIR/$GCC_NAME/$TARGET/64 -type f \( -iname "*.dll" ! -iname "*winpthread*" \)` $PREFIX/$TARGET/lib64/ || exit 1
 				
 				strip $PREFIX/$TARGET/lib64/*.dll || exit 1
 			}
@@ -72,7 +72,7 @@
 		strip $PREFIX/$TARGET/lib/*.dll || exit 1
 			
 		# 32 bit files
-		[[ $USE_MULTILIB_MODE ==yes ]] && {
+		[[ $USE_MULTILIB_MODE == yes ]] && {
 			# libgcc_s.a
 			cp -f $PREFIX/lib/gcc/$TERGET/lib32/libgcc_s.a $PREFIX/$TARGET/lib32/ || exit 1
 			cp -rf `find $BUILD_DIR/$GCC_NAME/$TARGET/32 -type f \( -iname "*.dll" ! -iname "*winpthread*" \)` $PREFIX/$TARGET/lib32/ || exit 1
