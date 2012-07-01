@@ -85,12 +85,12 @@ function func_download {
 				local _prev_dir=$PWD
 				cd $SRCS_DIR
 				if [ -n $5 ]
-				then
+				then	
+					echo -n "---> Checkout revisin $5..."
+					cvs -d $3 co -D$5 -d $1 $1 > $4 2>&1
+				else
 					echo -n "---> Checkout last sources..."
 					cvs -d $3 co -d $1 $1 > $4 2>&1
-				else
-					echo -n "---> Checkout revision $5..."
-					cvs -d $3 co -D$5 -d $1 $1 > $4 2>&1
 				fi
 				_result=$?
 				cd $_prev_dir
@@ -98,11 +98,11 @@ function func_download {
 			svn)
 				if [ -n $5 ]
 				then
-					echo -n "---> Checkout last sources..."
-					svn co $3 $LIB_NAME > $4 2>&1
-				else
 					echo -n "---> Checkout revision $5..."
 					svn co -r $5 $3 $LIB_NAME > $4 2>&1
+				else
+					echo -n "---> Checkout last sources..."
+					svn co $3 $LIB_NAME > $4 2>&1
 				fi
 				_result=$?
 			;;
