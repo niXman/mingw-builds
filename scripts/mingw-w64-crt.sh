@@ -39,12 +39,23 @@ NAME=mingw-w64-crt
 SRC_DIR_NAME=mingw-w64-crt
 URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-crt
 TYPE=svn
+REV=
 
 #
 
 PATCHES=()
 
 #
+
+[[ $USE_MULTILIB_MODE == yes ]] && {
+	LIBCONF="--enable-lib32 --enable-lib64"
+} || {
+	[[ $ARCHITECTURE == x32 ]] && {
+		LIBCONF="--enable-lib32 --disable-lib64"
+	} || {
+		LIBCONF="--disable-lib32 --enable-lib64"
+	}
+}
 
 CONFIGURE_FLAGS=(
 	--host=$HOST
@@ -54,10 +65,7 @@ CONFIGURE_FLAGS=(
 	--prefix=$PREFIX
 	--with-sysroot=$PREFIX
 	#
-	$( [[ $USE_DWARF_EXCEPTIONS == no ]] \
-		&& echo "--enable-lib32 --enable-lib64" \
-		|| echo "--enable-lib32 --disable-lib64" \
-	)
+	$LIBCONF
 	--enable-wildcard
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""

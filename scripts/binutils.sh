@@ -54,10 +54,15 @@ CONFIGURE_FLAGS=(
 	--prefix=$PREFIX
 	--with-sysroot=$PREFIX
 	#
-	$( [[ $USE_DWARF_EXCEPTIONS == yes ]] \
-		&& echo "--disable-multilib" \
-		|| echo "--enable-targets=$ENABLE_TARGETS --enable-multilib --enable-64-bit-bfd" \
+	$( [[ $USE_MULTILIB_MODE == yes ]] \
+		&& echo "--enable-targets=$ENABLE_TARGETS --enable-multilib --enable-64-bit-bfd" \
+		|| echo "--disable-multilib"
 	)
+	#
+	$( [[ $ARCHITECTURE == x64 ]] \
+		&& echo "--enable-64-bit-bfd" \
+	)
+	#
 	--enable-lto
 	#
 	--with-libiconv-prefix=$LIBS_DIR

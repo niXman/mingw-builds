@@ -57,6 +57,12 @@ case $GCC_NAME in
 	*) echo "gcc name error: $GCC_NAME. terminate."; exit ;;
 esac
 
+[[ $USE_MULTILIB_MODE == yes ]] && {
+	ARCHIVE_NAME=$ARCHIVE_NAME-multilib
+} || {
+	ARCHIVE_NAME=$ARCHIVE_NAME-nomultilib
+}
+
 [[ $USE_DWARF_EXCEPTIONS == no ]] && {
 	ARCHIVE_NAME=$ARCHIVE_NAME-sjlj
 } || {

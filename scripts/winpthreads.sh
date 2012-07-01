@@ -35,12 +35,11 @@
 
 # **************************************************************************
 
-NAME=winpthreads-x32
+NAME=winpthreads
 SRC_DIR_NAME=winpthreads
 URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/experimental/winpthreads
 TYPE=svn
 REV=
-
 #
 
 PATCHES=( winpthreads_lasterror.patch )
@@ -52,7 +51,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$BUILDS_DIR/winpthreads-32
+	--prefix=$BUILDS_DIR/winpthreads
 	#
 	$LINK_TYPE_BOTH
 	#
