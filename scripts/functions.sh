@@ -86,7 +86,7 @@ function func_download {
 				cd $SRCS_DIR
 				if [ -n "$5" ]
 				then	
-					echo -n "---> Checkout revisin $5..."
+					echo -n "---> Checkout revision $5..."
 					cvs -z9 -d $3 co -D$5 $1 > $4 2>&1
 				else
 					echo -n "---> Checkout last sources..."
@@ -101,7 +101,7 @@ function func_download {
 					echo -n "---> Checkout revision $5..."
 					svn co -r $5 $3 $LIB_NAME > $4 2>&1
 				else
-					echo -n "---> Checkout last sources..."
+					echo -n "---> Checkout last revision..."
 					svn co $3 $LIB_NAME > $4 2>&1
 				fi
 				_result=$?
@@ -168,45 +168,43 @@ function func_uncompress {
 # execute list of commands
 function func_execute {
 	# $1 - src dir name
-   # $2 - message
-   # $3 - commands list
+	# $2 - message
+	# $3 - commands list
 
-   local _result=0
-   local -a _commands=( "${!3}" )
-   local -i _index=${#_commands[@]}-1
+	local _result=0
+	local -a _commands=( "${!3}" )
+	local -i _index=${#_commands[@]}-1
 	local _cmd_marker_name=$SRCS_DIR/$1/exec-$_index.marker
 
-   [[ -f $_cmd_marker_name ]] && {
+	[[ -f $_cmd_marker_name ]] && {
 		echo "---> executed"
 		return $_result
-   }
-   _index=0
+	}
+	_index=0
 
-   [[ ${#_commands[@]} > 0 ]] && {
+	[[ ${#_commands[@]} > 0 ]] && {
 		echo -n "--> $2"
-   }
+	}
 
-   for it in "${_commands[@]}"; do
+	for it in "${_commands[@]}"; do
 		_cmd_marker_name=$SRCS_DIR/$1/exec-$_index.marker
 		local _cmd_log_name=$LOGS_DIR/$1/exec-$_index.log
+		[[ ! -f $_cmd_marker_name ]] && {
+		( cd $SRCS_DIR/$1; eval ${it} > $_cmd_log_name 2>&1 )
+			_result=$?
+			[[ $_result != 0 ]] && {
+				echo "error!"
+				return $_result
+			} || {
+				touch $_cmd_marker_name
+			}
+		}
+		((_index++))
+	done
 
-      [[ ! -f $_cmd_marker_name ]] && {
-         ( cd $SRCS_DIR/$1; eval ${it} > $_cmd_log_name 2>&1 )
-         _result=$?
-         [[ $_result != 0 ]] && {
-            echo "error!"
-            return $_result
-         } || {
-            touch $_cmd_marker_name
-         }
-      }
+	[[ $_index == ${#_commands[@]} ]] && echo "done"
 
-      ((_index++))
-   done
-
-   [[ $_index == ${#_commands[@]} ]] && echo "done"
-
-   return $_result
+	return $_result
 }
 
 # **************************************************************************
@@ -260,74 +258,74 @@ function func_execute1 {
 
 # apply list of patches
 function func_apply_patches {
-   # $1 - src dir name
-   # $2 - list
+	# $1 - src dir name
+	# $2 - list
 
-   local _result=0
+	local _result=0
 	local _index=0
-   local -a _list=( "${!2}" )
+	local -a _list=( "${!2}" )
 	[[ ${#_list[@]} == 0 ]] && return 0
-	
-   ((_index=${#_list[@]}-1))
-   [[ -f $SRCS_DIR/$1/_patch-$_index.marker ]] && {
+
+	((_index=${#_list[@]}-1))
+	[[ -f $SRCS_DIR/$1/_patch-$_index.marker ]] && {
 		echo "---> patched"
-      return 0
-   }
-   _index=0
+		return 0
+	}
+	_index=0
 
-   [[ ${#_list[@]} > 0 ]] && {
+	[[ ${#_list[@]} > 0 ]] && {
 		echo -n "--> patching..."
-   }
+	}
 
-   for it in ${_list[@]} ; do
-      local _patch_marker_name=$SRCS_DIR/$1/_patch-$_index.marker
-      [[ ! -f $_patch_marker_name ]] && {
-         ( cd $SRCS_DIR/$1 && patch -p1 < "$PATCHES_DIR/${it}" > $LOGS_DIR/$1/patch-$_index.log 2>&1 )
-         _result=$?
-         [[ $_result == 0 ]] && {
-            touch $_patch_marker_name
-         } || {
-            _result=1
-            break
-         }
-      }
-
-      ((_index++))
-   done
+	for it in ${_list[@]} ; do
+		local _patch_marker_name=$SRCS_DIR/$1/_patch-$_index.marker
+		[[ ! -f $_patch_marker_name ]] && {
+			( cd $SRCS_DIR/$1 && patch -p1 < "$PATCHES_DIR/${it}" > $LOGS_DIR/$1/patch-$_index.log 2>&1 )
+			_result=$?
+			[[ $_result == 0 ]] && {
+				touch $_patch_marker_name
+			} || {
+				_result=1
+				break
+			}
+		}
+		((_index++))
+	done
 
 	[[ $_result == 0 ]] && echo "done" || echo "error!"
-   
-   return $_result
+
+	return $_result
 }
 
 # **************************************************************************
 
 # configure
 function func_configure {
-   # $1 - name
+	# $1 - name
 	# $2 - src dir name
-   # $3 - flags
-   # $4 - log file name
+	# $3 - flags
+	# $4 - log file name
 
 	local _marker=$BUILDS_DIR/$1/_configure.marker
 	local _result=0
 
-   [[ ! -f $_marker ]] && {
-      echo -n "--> configure..."
-      ( cd $BUILDS_DIR/$1 && eval $( func_absolute_to_relative $BUILDS_DIR/$2 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1 )
-      _result=$?
-      [[ $_result == 0 ]] && {
-         echo " done"
-         touch $_marker
-         return $_result
-      } || {
-         echo " error!"
-         return $_result
-      }
-   } || {
-      echo "---> configured"
-   }
-   return $_result
+	[[ ! -f $_marker ]] && {
+		echo -n "--> configure..."
+		( cd $BUILDS_DIR/$1 && eval $( func_absolute_to_relative $BUILDS_DIR/$2 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1 )
+		_result=$?
+		[[ $_result == 0 ]] && {
+			echo " done"
+			touch $_marker
+			return $_result
+		} || {
+			echo " error!"
+			return $_result
+		}
+	} || {
+		echo "---> configured"
+	}
+
+	return $_result
 }
 
 # **************************************************************************
