@@ -54,7 +54,12 @@ case $GCC_NAME in
 	gcc-trunk)		ARCHIVE_NAME=$TOP_DIR/../src-gcc-4.8.0-snapshot-$(date +%Y%m%d)$GCC_REVISION ;;
 	*) echo "gcc name error: \"$GCC_NAME\". terminate."; exit ;;
 esac
-#echo "ARCHIVE_NAME: $ARCHIVE_NAME"; exit 1
+
+[[ -n $REV_NUM ]] && {
+	ARCHIVE_NAME=$ARCHIVE_NAME-rev${REV_NUM}
+}
+
+# **************************************************************************
 
 [[ ! -f $ARCHIVE_NAME.tar.7z ]] && {
 	echo -n "--> compressing $SRCS_DIR..."
@@ -77,3 +82,5 @@ esac
 } || {
 	echo "---> compressed"
 }
+
+# **************************************************************************

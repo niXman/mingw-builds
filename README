@@ -39,11 +39,16 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
   "./build --preload gcc-4.6.3 x32 x64" for building i686-MinGW and x86_64-MinGW
   "./build --dwarf gcc-4.6.3 x32" for building i686-MinGW with DWARF exception handling
 
-  The --preload option specifies to the script to pre-download all the sources
-  and only after that, to begin the building. This allows to build different
-  versions of GCC simultaneously.
+  The '--preload' option specifies to the script to pre-download all the sources
+    and only after that, to begin the building. This allows to build different
+    versions of GCC simultaneously.
+  The '--download' option specifies to the script to download only the sources.
+  The '--dwarf' option specifies to the script to use DWARF exeptions handling
+    instead of SJLJ. This allows building for i686 host only, and i686 target only.
+  The '--multilib' option specifies to the script to build multilib MinGW.
+  The '--rev' option specifies to the script the number of the build revision.
 
-For example, during the process of building of the i686 will
+For example, during the process of building of the i686-gcc-4.6.3 will
   be created the following directories:
   /mingw-gcc-4.6.3-build-x32
   /mingw-gcc-4.6.3-libs-x32

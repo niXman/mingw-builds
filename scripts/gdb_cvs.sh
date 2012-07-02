@@ -45,7 +45,12 @@ REV=
 
 PATCHES=()
 
-EXECUTE_AFTER_DOWNLOAD=("cp -rf src/* $SRC_DIR_NAME/"  "rm -rf src")
+#
+
+EXECUTE_AFTER_DOWNLOAD=(
+	"mv src $SRC_DIR_NAME"
+)
+
 #
 
 CONFIGURE_FLAGS=(
