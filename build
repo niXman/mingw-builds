@@ -42,7 +42,7 @@ x64_HOST_MINGW_PATH=/c/mbuild/mingw64
 
 ENABLE_LANGUAGES=c,c++,fortran,java
 
-BASE_CFLAGS="-O2 -march=core2 -mtune=core2 -pipe -fomit-frame-pointer -momit-leaf-frame-pointer -fgraphite-identity -floop-interchange -floop-block -floop-parallelize-all"
+BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer -momit-leaf-frame-pointer"
 BASE_CXXFLAGS="$BASE_CFLAGS"
 BASE_CPPFLAGS=""
 BASE_LDFLAGS="-pipe -s"
@@ -63,7 +63,7 @@ PACK_IN_ARCHIVES=yes
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 PKGVERSION="MinGW-builds: $BUG_URL"
 
-JOBS=3
+JOBS=1
 
 ORIGINAL_PATH=$PATH
 
