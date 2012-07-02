@@ -86,7 +86,7 @@ function func_download {
 				cd $SRCS_DIR
 				if [ -n $5 ]
 				then	
-					echo -n "---> Checkout revisin $5..."
+					echo -n "---> Checkout revision $5..."
 					cvs -d $3 co -D$5 -d $1 $1 > $4 2>&1
 				else
 					echo -n "---> Checkout last sources..."
