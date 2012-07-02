@@ -78,11 +78,11 @@ TESTS_DIR=$TOP_DIR/tests
 
 [[ $# == 1 && ${@:1:1} != -v || $[ $# == 0 || $# > 6 ] == 1 ]] && {
 	echo "usage:"
-	echo "  ./${0##*/} [--preload] [--dwarf] <gcc version> <x32|x64>"
+	echo "  ./${0##*/} [--preload] [--no-multilib] [--dwarf] <gcc version> <x32|x64>"
 	echo "  help:"
 	echo "    --preload   - firstly downloads then builds"
 	echo "    --dwarf     - build GCC with DWARF exceptions"
-	echo "    --multilib  - build GCC with multilib support"
+	echo "    --no-multilib  - build GCC without multilib support"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -138,7 +138,7 @@ BUILD_ARCHITECTURE_x32=no
 BUILD_ARCHITECTURE_x64=no
 BUILD_ARCHITECTURES=()
 USE_DWARF_EXCEPTIONS=no
-USE_MULTILIB_MODE=no
+USE_MULTILIB_MODE=yes
 GCC_NAME=""
 
 [[ $# == 1 && ${@:1:1} == -v ]] && {
@@ -147,8 +147,11 @@ GCC_NAME=""
 	while [[ $# > 0 ]]; do
 		case $1 in
 			--preload) PRELOAD_MODE=yes ;;
-			--dwarf) USE_DWARF_EXCEPTIONS=yes ;;
-			--multilib) USE_MULTILIB_MODE=yes ;;
+			--dwarf) 
+				USE_DWARF_EXCEPTIONS=yes
+				USE_MULTILIB_MODE=no
+			;;
+			--no-multilib) USE_MULTILIB_MODE=no ;;
 			x32)
 				BUILD_ARCHITECTURE_x32=yes
 				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
