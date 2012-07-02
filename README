@@ -45,7 +45,7 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
   The '--download' option specifies to the script to download only the sources.
   The '--dwarf' option specifies to the script to use DWARF exeptions handling
     instead of SJLJ. This allows building for i686 host only, and i686 target only.
-  The '--multilib' option specifies to the script to build multilib MinGW.
+  The '--no-multilib' option specifies to the script to build without multilib support.
   The '--rev' option specifies to the script the number of the build revision.
 
 For example, during the process of building of the i686-gcc-4.6.3 will
