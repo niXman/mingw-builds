@@ -46,7 +46,7 @@
 		[[ $USE_DWARF_EXCEPTIONS == no ]] && {
 			# 32bit dlls
 			cp -rf `find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune -o -type f -name "*.dll"` $PREFIX/bin/
-			cp -rf `find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune -o -type f -name "*.dll"` $PREFIX/$TARGET/bin/
+			cp -rf `find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune -o -type f -name "*.dll"` $PREFIX/$TARGET/lib/
 			
 			strip $PREFIX/bin/*.dll || exit 1
 			strip $PREFIX/$TARGET/lib/*.dll || exit 1

@@ -256,6 +256,7 @@ SUBTARGETS=(
 			}
 
 			NAME=""
+			EXECUTE_AFTER_DOWNLOAD=()
 			cd $TOP_DIR
 			. ./scripts/$sub.sh
 
@@ -268,8 +269,20 @@ SUBTARGETS=(
 				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 			[[ $? != 0 ]] && exit $?
 
-			func_uncompress $SRC_DIR_NAME $TYPE \
-				"$SRCS_DIR/$SRC_DIR_NAME/_uncompress.log"
+			[[ ${#EXECUTE_AFTER_DOWNLOAD[@]} >0 ]] && {
+				func_execute1 \
+					$SRCS_DIR \
+					$SRC_DIR_NAME \
+					"execute commands..." \
+					EXECUTE_AFTER_DOWNLOAD[@]
+				[[ $? != 0 ]] && {
+					result=$?
+					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME-exec-$_index.log
+					exit $result
+					}
+			}
+		
+			func_uncompress $SRC_DIR_NAME $TYPE "/dev/null"
 			[[ $? != 0 ]] && exit $?
 		}
 	done
@@ -322,6 +335,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 
 	EXECUTE_AFTER_PATCH=()
 	EXECUTE_AFTER_UNCOMPRESS=()
+	EXECUTE_AFTER_DOWNLOAD=()
 
 	for sub in ${SUBTARGETS[@]}; do
 		echo -e "-> \E[32;40m$sub\E[37;40m"
@@ -351,6 +365,19 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG
 			exit $result
+		}
+		
+		[[ ${#EXECUTE_AFTER_DOWNLOAD[@]} >0 ]] && {
+			func_execute1 \
+				$SRCS_DIR \
+				$SRC_DIR_NAME \
+				"execute commands..." \
+				EXECUTE_AFTER_DOWNLOAD[@]
+			[[ $? != 0 ]] && {
+				result=$?
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/${sub}-exec-$_index.log
+				exit $result
+			}
 		}
 		
 		func_uncompress $SRC_DIR_NAME $TYPE $UNCOMPRESS_LOG
@@ -432,6 +459,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG
 			exit $result
 		}
+		
+		EXECUTE_AFTER_PATCH=()
+		EXECUTE_AFTER_UNCOMPRESS=()
+		EXECUTE_AFTER_DOWNLOAD=()
    done
 done
 

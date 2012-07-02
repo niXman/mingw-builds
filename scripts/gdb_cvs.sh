@@ -35,34 +35,34 @@
 
 # **************************************************************************
 
-NAME=make
-SRC_DIR_NAME=make
-URL=":pserver:anonymous:@cvs.sv.gnu.org:/sources/make"
+NAME=gdb
+SRC_DIR_NAME=gdb
+URL=":pserver:anoncvs:anoncvs@sourceware.org:/cvs/src"
 TYPE=cvs
-REV=01/01/2012
-
-
-#
-
-PATCHES=(make-postcvs.patch)
+REV=
 
 #
 
-EXECUTE_AFTER_PATCH=(
-	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make/doc/"
-	"autoreconf -i"
-)
+PATCHES=()
 
+EXECUTE_AFTER_DOWNLOAD=("cp -rf src/* $SRC_DIR_NAME/"  "rm -rf src")
 #
 
 CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$TARGET
 	--prefix=$PREFIX
-	--enable-case-insensitive-file-system
-	--program-prefix=mingw32-
-	--enable-job-server
-	CFLAGS="\"$COMMON_CFLAGS\""
+	#
+	--disable-nls
+	--disable-werror
+	--disable-win32-registry
+	--disable-rpath
+	#
+	--with-python
+	--with-expat
+	--with-libiconv
+	#
+	CFLAGS="\"$COMMON_CFLAGS -I$LIBS_DIR/include/python $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
 )
 

@@ -84,19 +84,19 @@ function func_download {
 			cvs)
 				local _prev_dir=$PWD
 				cd $SRCS_DIR
-				if [ -n $5 ]
+				if [ -n "$5" ]
 				then	
 					echo -n "---> Checkout revision $5..."
-					cvs -d $3 co -D$5 -d $1 $1 > $4 2>&1
+					cvs -z9 -d $3 co -D$5 $1 > $4 2>&1
 				else
 					echo -n "---> Checkout last sources..."
-					cvs -d $3 co -d $1 $1 > $4 2>&1
+					cvs -z9 -d $3 co $1 > $4 2>&1
 				fi
 				_result=$?
 				cd $_prev_dir
 			;;
 			svn)
-				if [ -n $5 ]
+				if [ -n "$5" ]
 				then
 					echo -n "---> Checkout revision $5..."
 					svn co -r $5 $3 $LIB_NAME > $4 2>&1
@@ -205,6 +205,53 @@ function func_execute {
 	[[ $_index == ${#_commands[@]} ]] && echo "done"
 
 	return $_result
+}
+
+# **************************************************************************
+
+# execute list of commands
+function func_execute1 {
+	# $1 - execute dir
+	# $2 - src dir name
+	# $3 - message
+	# $4 - commands list
+
+	local _result=0
+	local -a _commands=( "${!4}" )
+	local -i _index=${#_commands[@]}-1
+	local _cmd_marker_name=$1/$2-exec-$_index.marker
+
+   [[ -f $_cmd_marker_name ]] && {
+		echo "---> executed"
+		return $_result
+   }
+   _index=0
+
+   [[ ${#_commands[@]} > 0 ]] && {
+		echo -n "--> $3"
+   }
+
+   for it in "${_commands[@]}"; do
+		_cmd_marker_name=$1/$2-exec-$_index.marker
+		local _cmd_log_name=$1/$2-exec-$_index.log
+
+      [[ ! -f $_cmd_marker_name ]] && {
+         ( cd $1; eval ${it} > $_cmd_log_name 2>&1 )
+         _result=$?
+         [[ $_result != 0 ]] && {
+            echo "error!"
+            return $_result
+         } || {
+            touch $_cmd_marker_name
+         }
+      }
+
+      ((_index++))
+   done
+
+   [[ $_index == ${#_commands[@]} ]] && echo "done"
+
+   return $_result
 }
 
 # **************************************************************************
