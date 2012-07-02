@@ -37,10 +37,10 @@
 # **************************************************************************
 # **************************************************************************
 
-x32_HOST_MINGW_PATH=/c/mbuild/mingw32
-x64_HOST_MINGW_PATH=/c/mbuild/mingw64
+x32_HOST_MINGW_PATH=/d/mingw32
+x64_HOST_MINGW_PATH=/d/mingw64
 
-ENABLE_LANGUAGES=c,c++,fortran,java
+ENABLE_LANGUAGES=c,c++,fortran
 
 BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer -momit-leaf-frame-pointer"
 BASE_CXXFLAGS="$BASE_CFLAGS"
@@ -255,7 +255,6 @@ SUBTARGETS=(
 				exit 1
 			}
 
-			_revis=$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 			NAME=""
 			cd $TOP_DIR
 			. ./scripts/$sub.sh
@@ -264,10 +263,13 @@ SUBTARGETS=(
 			
 			mkdir -p $SRCS_DIR/$SRC_DIR_NAME
 
-			func_download $SRC_DIR_NAME $TYPE $URL "$SRCS_DIR/$SRC_DIR_NAME/_download.log" $_revis
+			func_download $SRC_DIR_NAME $TYPE $URL \
+				"$SRCS_DIR/$SRC_DIR_NAME/_download.log" $REV \
+				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 			[[ $? != 0 ]] && exit $?
 
-			func_uncompress $SRC_DIR_NAME $TYPE "/dev/null"
+			func_uncompress $SRC_DIR_NAME $TYPE \
+				"$SRCS_DIR/$SRC_DIR_NAME/_uncompress.log"
 			[[ $? != 0 ]] && exit $?
 		}
 	done
@@ -328,8 +330,6 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			exit 1
 		}
 
-		_revis=$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
-
 		NAME=""
 		cd $TOP_DIR
 		. ./scripts/$sub.sh
@@ -345,7 +345,8 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		mkdir -p {$SRCS_DIR/,$BUILDS_DIR/,$LOGS_DIR/}$SRC_DIR_NAME
 		[[ $NAME != $SRC_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$NAME
 
-		func_download $SRC_DIR_NAME $TYPE $URL $DOWNLOAD_LOG $_revis
+		func_download $SRC_DIR_NAME $TYPE $URL $DOWNLOAD_LOG \
+			$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 		[[ $? != 0 ]] && {
 			result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG

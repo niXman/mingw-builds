@@ -41,18 +41,18 @@ URL=":pserver:anonymous:@cvs.sv.gnu.org:/sources/make"
 TYPE=cvs
 REV=01/01/2012
 MODULES=()
+
 #
-
-#rm -rf /home/$USERNAME/.cvspass
-#echo "/1 :pserver:anonymous@cvs.sv.gnu.org:2401/sources/make A" > /home/$USERNAME/.cvspass
-
-#cd $SRCS_DIR
-
-#cvs co -D'01/01/2012' make
 
 PATCHES=(make-postcvs.patch)
 
-EXECUTE_AFTER_PATCH=("cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make/doc/" "autoreconf -i")
+#
+
+EXECUTE_AFTER_PATCH=(
+	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make/doc/"
+	"autoreconf -i"
+)
+
 #
 
 CONFIGURE_FLAGS=(
@@ -81,5 +81,3 @@ INSTALL_FLAGS=(
 )
 
 #
-
-#export CVSROOT=:pserver:anonymous@cvs.sv.gnu.org:/sources/make
