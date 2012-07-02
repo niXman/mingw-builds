@@ -35,15 +35,14 @@
 
 # **************************************************************************
 
-NAME=winpthreads-x32
-SRC_DIR_NAME=winpthreads
-URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/experimental/winpthreads
-TYPE=svn
-REV=
+NAME=libiconv
+SRC_DIR_NAME=libiconv-1.14
+URL=http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz
+TYPE=.tar.gz
 
 #
 
-PATCHES=( winpthreads_lasterror.patch )
+PATCHES=()
 
 #
 
@@ -52,9 +51,9 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$BUILDS_DIR/winpthreads-32
+	--prefix=$BUILDS_DIR/libiconv
 	#
-	$LINK_TYPE_BOTH
+	$GCC_DEPS_LINK_TYPE
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
@@ -73,7 +72,7 @@ MAKE_FLAGS=(
 
 INSTALL_FLAGS=(
 	-j$JOBS
-	install-strip
+	install
 )
 
 #

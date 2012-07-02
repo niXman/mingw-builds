@@ -57,6 +57,7 @@ function func_download {
 	#      if library get from a repository, choose it's type: cvs, svn, hg, git
 	# $3 - URL
 	# $4 - log file name
+	# $5 - revision
 
 	local WGET_TIMEOUT=5
 	local WGET_TRIES=10
@@ -83,12 +84,26 @@ function func_download {
 			cvs)
 				local _prev_dir=$PWD
 				cd $SRCS_DIR
-				eval ${3} > $4 2>&1
+				if [ -n $5 ]
+				then	
+					echo -n "---> Checkout revisin $5..."
+					cvs -d $3 co -D$5 -d $1 $1 > $4 2>&1
+				else
+					echo -n "---> Checkout last sources..."
+					cvs -d $3 co -d $1 $1 > $4 2>&1
+				fi
 				_result=$?
 				cd $_prev_dir
 			;;
 			svn)
-				svn co $3 $LIB_NAME > $4 2>&1
+				if [ -n $5 ]
+				then
+					echo -n "---> Checkout revision $5..."
+					svn co -r $5 $3 $LIB_NAME > $4 2>&1
+				else
+					echo -n "---> Checkout last sources..."
+					svn co $3 $LIB_NAME > $4 2>&1
+				fi
 				_result=$?
 			;;
 			hg)
@@ -303,10 +318,14 @@ function run_test {
 	local _result=0
 	local -a _list=( "${!2}" )
 
-	[[ $USE_DWARF_EXCEPTIONS == no ]] && {
-		local -a _archs=(32 64)
+	[[ $USE_MULTILIB_MODE == no ]] && {
+		[[ $ARCHITECTURE == x32 ]] && {
+			local -a _archs=(32)
+		} || {
+			local -a _archs=(64)
+		}
 	} || {
-		local -a _archs=(32)
+		local -a _archs=(32 64)
 	}
 	
 	for arch_it in ${_archs[@]}; do

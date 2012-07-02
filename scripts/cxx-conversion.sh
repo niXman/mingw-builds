@@ -57,9 +57,9 @@ CONFIGURE_FLAGS=(
 	$LINK_TYPE_BOTH
 	#
 	--enable-build-with-cxx
-	$( [[ $USE_DWARF_EXCEPTIONS == yes ]] \
-		&& echo "--disable-multilib" \
-		|| echo "--enable-targets=all --enable-multilib" \
+	$( [[ $USE_MULTILIB_MODE == yes ]] \
+		&& echo "--enable-targets=all --enable-multilib" \
+		|| echo "--disable-multilib" \
 	)
 	--enable-languages=$ENABLE_LANGUAGES,lto
 	--enable-libstdcxx-time=yes

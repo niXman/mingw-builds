@@ -35,31 +35,35 @@
 
 # **************************************************************************
 
-NAME=winpthreads-x32
-SRC_DIR_NAME=winpthreads
-URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/experimental/winpthreads
-TYPE=svn
-REV=
-
+NAME=make
+SRC_DIR_NAME=make
+URL=":pserver:anonymous:@cvs.sv.gnu.org:/sources/make"
+TYPE=cvs
+REV=01/01/2012
+MODULES=()
 #
 
-PATCHES=( winpthreads_lasterror.patch )
+#rm -rf /home/$USERNAME/.cvspass
+#echo "/1 :pserver:anonymous@cvs.sv.gnu.org:2401/sources/make A" > /home/$USERNAME/.cvspass
 
+#cd $SRCS_DIR
+
+#cvs co -D'01/01/2012' make
+
+PATCHES=(make-postcvs.patch)
+
+EXECUTE_AFTER_PATCH=("cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make/doc/" "autoreconf -i")
 #
 
 CONFIGURE_FLAGS=(
 	--host=$HOST
-	--build=$BUILD
-	--target=$TARGET
-	#
-	--prefix=$BUILDS_DIR/winpthreads-32
-	#
-	$LINK_TYPE_BOTH
-	#
+	--build=$TARGET
+	--prefix=$PREFIX
+	--enable-case-insensitive-file-system
+	--program-prefix=mingw32-
+	--enable-job-server
 	CFLAGS="\"$COMMON_CFLAGS\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
 )
 
 #
@@ -73,7 +77,9 @@ MAKE_FLAGS=(
 
 INSTALL_FLAGS=(
 	-j$JOBS
-	install-strip
+	install
 )
 
 #
+
+#export CVSROOT=:pserver:anonymous@cvs.sv.gnu.org:/sources/make
