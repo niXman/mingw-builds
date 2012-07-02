@@ -35,35 +35,47 @@
 
 # **************************************************************************
 
-NAME=make
-SRC_DIR_NAME=make
-URL=":pserver:anonymous:@cvs.sv.gnu.org:/sources/make"
+NAME=binutils
+SRC_DIR_NAME=binutils
+URL=":pserver:anoncvs:anoncvs@sourceware.org:/cvs/src"
 TYPE=cvs
-REV=01/01/2012
-
-
+REV=
 #
 
-PATCHES=(make-postcvs.patch)
+PATCHES=()
 
-#
-
-EXECUTE_AFTER_PATCH=(
-	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make/doc/"
-	"autoreconf -i"
-)
-
+EXECUTE_AFTER_DOWNLOAD=("cp -rf src/* $SRC_DIR_NAME/" "rm -rf src")
 #
 
 CONFIGURE_FLAGS=(
 	--host=$HOST
-	--build=$TARGET
+	--build=$BUILD
+	--target=$TARGET
+	#
 	--prefix=$PREFIX
-	--enable-case-insensitive-file-system
-	--program-prefix=mingw32-
-	--enable-job-server
+	--with-sysroot=$PREFIX
+	#
+	$( [[ $USE_MULTILIB_MODE == yes ]] \
+		&& echo "--enable-targets=$ENABLE_TARGETS --enable-multilib --enable-64-bit-bfd" \
+		|| echo "--disable-multilib"
+	)
+	#
+	$( [[ $ARCHITECTURE == x64 ]] \
+		&& echo "--enable-64-bit-bfd" \
+	)
+	#
+	--enable-lto
+	#
+	--with-libiconv-prefix=$LIBS_DIR
+	#
+	--disable-nls
+	#
+	$LINK_TYPE_BOTH
+	#
 	CFLAGS="\"$COMMON_CFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $ARCHITECTURE == x32 ]] && echo -Wl,--large-address-aware )\""
 )
 
 #
