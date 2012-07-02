@@ -39,13 +39,13 @@ export PATH=$PREFIX/bin:$ORIGINAL_PATH
 
 TESTS_ROOT_DIR=$BUILDS_DIR/tests
 
-[[ $USE_DWARF_EXCEPTIONS == no ]] && {
+[[ $USE_MULTILIB_MODE == yes ]] && {
 	mkdir -p $TESTS_ROOT_DIR/{32,64}
 	[[ $ARCHITECTURE == x32 ]] && {
-		cp -f $PREFIX/$TARGET/lib64/{libgcc_s_sjlj-1.dll,libgfortran-3.dll,libgomp-1.dll,libquadmath-0.dll,libssp-0.dll,libstdc++-6.dll,libwinpthread-1.dll} \
+		cp -f `find $PREFIX/$TARGET/lib64 -type f \( -iname "*.dll" \)` \
 			$TESTS_ROOT_DIR/64/
 	} || {
-		cp -f $PREFIX/$TARGET/lib32/{libgcc_s_sjlj-1.dll,libgfortran-3.dll,libgomp-1.dll,libquadmath-0.dll,libssp-0.dll,libstdc++-6.dll,libwinpthread-1.dll} \
+		cp -f `find $PREFIX/$TARGET/lib32 -type f \( iname "*.dll" \)` \
 			$TESTS_ROOT_DIR/32/
 	}
 } || {
