@@ -111,8 +111,6 @@ TESTS_DIR=$TOP_DIR/tests
 
 PRELOAD_MODE=no
 DOWNLOAD_MODE=no
-BUILD_ARCHITECTURE_x32=no
-BUILD_ARCHITECTURE_x64=no
 BUILD_ARCHITECTURES=()
 USE_DWARF_EXCEPTIONS=no
 USE_MULTILIB_MODE=yes
@@ -135,11 +133,17 @@ GCC_NAME=""
 				REV_NUM=$( echo $1 | sed 's|--rev=||' )
 			;;
 			x32)
-				BUILD_ARCHITECTURE_x32=yes
+				[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
+					echo "option \"x32\" is given twice. terminate."
+					exit 1
+				}
 				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
 			;;
 			x64)
-				BUILD_ARCHITECTURE_x64=yes
+				[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
+					echo "option \"x64\" is given twice. terminate."
+					exit 1
+				}
 				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x64 )
 			;;
 			gcc-*|cxx-conversion)
@@ -173,7 +177,7 @@ GCC_NAME=""
 		exit 1
 	}
 	[[ $USE_DWARF_EXCEPTIONS == yes ]] && {
-		[[ $BUILD_ARCHITECTURE_x64 == yes ]] && {
+		[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
 			echo "DWARF exceptions not allowed on x86_64 architecture. terminate."
 			exit 1
 		}
