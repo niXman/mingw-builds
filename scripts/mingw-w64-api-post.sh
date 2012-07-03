@@ -41,3 +41,5 @@
 	cp -rf $PREFIX/$TARGET/* $PREFIX/mingw || exit 1
 	touch $BUILDS_DIR/mingw-w64-api-post.marker
 }
+
+# **************************************************************************

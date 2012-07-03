@@ -107,7 +107,9 @@ ZIP_ARCHIVE_NAME=$ARCHIVE_NAME.zip
 
 	[[ ! -f $SEVENZIP_ARCHIVE_NAME ]] && {
 		echo -n "---> \"$(basename $SEVENZIP_ARCHIVE_NAME)\" ... "
-		( cd $BUILDS_DIR && 7za a -t7z -mx=9 -mfb=64 -md=64m -ms=on "$SEVENZIP_ARCHIVE_NAME" "$MINGW_ROOT" >/dev/null 2>&1 )
+		( cd $BUILDS_DIR && 7za a -t7z -mx=9 -mfb=64 -md=64m -ms=on \
+			"$SEVENZIP_ARCHIVE_NAME" "$MINGW_ROOT" >/dev/null 2>&1 \
+		)
 		[[ $? == 0 ]] && {
 			echo "done"
 		} || {
@@ -118,7 +120,9 @@ ZIP_ARCHIVE_NAME=$ARCHIVE_NAME.zip
 
 	[[ ! -f $ZIP_ARCHIVE_NAME ]] && {
 		echo -n "---> \"$(basename $ZIP_ARCHIVE_NAME)\" ... "
-		( cd $BUILDS_DIR && 7za a -tzip -mx=9 -mfb=64 -md=64m "$ZIP_ARCHIVE_NAME" "$MINGW_ROOT" >/dev/null 2>&1 )
+		( cd $BUILDS_DIR && 7za a -tzip -mx=9 -mfb=64 -md=64m \
+			"$ZIP_ARCHIVE_NAME" "$MINGW_ROOT" >/dev/null 2>&1 \
+		)
 		[[ $? == 0 ]] && {
 			echo "done"
 		} || {
