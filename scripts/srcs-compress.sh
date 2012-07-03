@@ -64,9 +64,9 @@ esac
 [[ ! -f $ARCHIVE_NAME.tar.7z ]] && {
 	echo -n "--> compressing $SRCS_DIR..."
 
-	LIST_OF_DIRS_FOR_COMPRESS=( $(find $SRCS_DIR -maxdepth 1 -type d -not -name "gcc-*") )
+	LIST_OF_DIRS_FOR_COMPRESS=( $(find $SRCS_DIR -maxdepth 1 -type d -not -name gcc-* -not -name cxx-conversion) )
 	LIST_OF_DIRS_FOR_COMPRESS[0]=$SRCS_DIR/$GCC_NAME
-	#echo "${LIST_OF_DIRS_FOR_COMPRESS[@]}"; exit 1
+
 	tar -cf - -C$SRCS_DIR/../ \
 		--dereference --hard-dereference --exclude-vcs \
 		${LIST_OF_DIRS_FOR_COMPRESS[@]} 2>/dev/null \
