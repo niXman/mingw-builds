@@ -52,13 +52,6 @@ TESTS_DIR=$TOP_DIR/tests
 
 [[ $# == 1 && ${@:1:1} != -v || $[ $# == 0 || $# > 6 ] == 1 ]] && {
 	echo "usage:"
-<<<<<<< HEAD
-	echo "  ./${0##*/} [--preload] [--no-multilib] [--dwarf] <gcc version> <x32|x64>"
-	echo "  help:"
-	echo "    --preload   - firstly downloads then builds"
-	echo "    --dwarf     - build GCC with DWARF exceptions"
-	echo "    --no-multilib  - build GCC without multilib support"
-=======
 	echo "  ./${0##*/} [ OPTIONS ] <gcc version> <x32|x64>"
 	echo "  help:"
 	echo "    --preload     - firstly downloads then builds"
@@ -66,7 +59,6 @@ TESTS_DIR=$TOP_DIR/tests
 	echo "    --dwarf       - build GCC with DWARF exceptions"
 	echo "    --no-multilib - build GCC without multilib support"
 	echo "    --rev=N       - specifies number of the build revision"
->>>>>>> nixman/master
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -124,10 +116,7 @@ BUILD_ARCHITECTURE_x64=no
 BUILD_ARCHITECTURES=()
 USE_DWARF_EXCEPTIONS=no
 USE_MULTILIB_MODE=yes
-<<<<<<< HEAD
-=======
 REV_NUM=""
->>>>>>> nixman/master
 GCC_NAME=""
 
 [[ $# == 1 && ${@:1:1} == -v ]] && {
@@ -136,22 +125,15 @@ GCC_NAME=""
 	while [[ $# > 0 ]]; do
 		case $1 in
 			--preload) PRELOAD_MODE=yes ;;
-<<<<<<< HEAD
-			--dwarf) 
-=======
 			--download) DOWNLOAD_MODE=yes ;;
 			--dwarf)
->>>>>>> nixman/master
 				USE_DWARF_EXCEPTIONS=yes
 				USE_MULTILIB_MODE=no
 			;;
 			--no-multilib) USE_MULTILIB_MODE=no ;;
-<<<<<<< HEAD
-=======
 			--rev=*)
 				REV_NUM=$( echo $1 | sed 's|--rev=||' )
 			;;
->>>>>>> nixman/master
 			x32)
 				BUILD_ARCHITECTURE_x32=yes
 				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
