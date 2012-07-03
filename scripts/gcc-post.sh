@@ -76,7 +76,7 @@
 		# 32 bit files
 		[[ $USE_MULTILIB_MODE == yes ]] && {
 			# libgcc_s.a
-			cp -f $PREFIX/lib/gcc/$TERGET/lib32/libgcc_s.a $PREFIX/$TARGET/lib32/ || exit 1
+			cp -f $PREFIX/lib/gcc/$TARGET/lib32/libgcc_s.a $PREFIX/$TARGET/lib32/ || exit 1
 			cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/32 -type f \( -iname *.dll ! -iname *winpthread* \)) $PREFIX/$TARGET/lib32/
 			
 			strip $PREFIX/$TARGET/lib32/*.dll || exit 1
