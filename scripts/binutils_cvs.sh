@@ -40,11 +40,17 @@ SRC_DIR_NAME=binutils
 URL=":pserver:anoncvs:anoncvs@sourceware.org:/cvs/src"
 TYPE=cvs
 REV=
+
 #
 
 PATCHES=()
 
-EXECUTE_AFTER_DOWNLOAD=("cp -rf src/* $SRC_DIR_NAME/" "rm -rf src")
+#
+
+EXECUTE_AFTER_DOWNLOAD=(
+	"mv src $SRC_DIR_NAME"
+)
+
 #
 
 CONFIGURE_FLAGS=(
@@ -92,4 +98,4 @@ INSTALL_FLAGS=(
 	install
 )
 
-#
+# **************************************************************************

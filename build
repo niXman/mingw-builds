@@ -34,55 +34,39 @@
 #
 
 # **************************************************************************
-# **************************************************************************
-# **************************************************************************
-
-x32_HOST_MINGW_PATH=/d/mingw32
-x64_HOST_MINGW_PATH=/d/mingw64
-
-ENABLE_LANGUAGES=c,c++,fortran
-
-BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer -momit-leaf-frame-pointer"
-BASE_CXXFLAGS="$BASE_CFLAGS"
-BASE_CPPFLAGS=""
-BASE_LDFLAGS="-pipe -s"
-
-LINK_TYPE_STATIC="--enable-static --disable-shared"
-LINK_TYPE_SHARED="--disable-static --enable-shared"
-LINK_TYPE_BOTH="--enable-shared --enable-static"
-GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
-
-#LOGVIEWER="c:/progra~1/notepad++/notepad++.exe"
-LOGVIEWER="c:/progra~2/notepad++/notepad++.exe"
-
-SHOW_LOG_ON_ERROR=yes
-PACK_IN_ARCHIVES=yes
-
-# **************************************************************************
 
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 PKGVERSION="MinGW-builds: $BUG_URL"
 
-JOBS=1
-
 ORIGINAL_PATH=$PATH
 
-ROOT_DIR=
+ROOT_DIR=""
 SRCS_DIR=$ROOT_DIR/mingw-src
-
 TOP_DIR=$PWD
 PATCHES_DIR=$TOP_DIR/patches
 TESTS_DIR=$TOP_DIR/tests
+
+. ./scripts/config.sh
 
 # **************************************************************************
 
 [[ $# == 1 && ${@:1:1} != -v || $[ $# == 0 || $# > 6 ] == 1 ]] && {
 	echo "usage:"
+<<<<<<< HEAD
 	echo "  ./${0##*/} [--preload] [--no-multilib] [--dwarf] <gcc version> <x32|x64>"
 	echo "  help:"
 	echo "    --preload   - firstly downloads then builds"
 	echo "    --dwarf     - build GCC with DWARF exceptions"
 	echo "    --no-multilib  - build GCC without multilib support"
+=======
+	echo "  ./${0##*/} [ OPTIONS ] <gcc version> <x32|x64>"
+	echo "  help:"
+	echo "    --preload     - firstly downloads then builds"
+	echo "    --download    - download only the sources"
+	echo "    --dwarf       - build GCC with DWARF exceptions"
+	echo "    --no-multilib - build GCC without multilib support"
+	echo "    --rev=N       - specifies number of the build revision"
+>>>>>>> nixman/master
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -134,11 +118,16 @@ TESTS_DIR=$TOP_DIR/tests
 # **************************************************************************
 
 PRELOAD_MODE=no
+DOWNLOAD_MODE=no
 BUILD_ARCHITECTURE_x32=no
 BUILD_ARCHITECTURE_x64=no
 BUILD_ARCHITECTURES=()
 USE_DWARF_EXCEPTIONS=no
 USE_MULTILIB_MODE=yes
+<<<<<<< HEAD
+=======
+REV_NUM=""
+>>>>>>> nixman/master
 GCC_NAME=""
 
 [[ $# == 1 && ${@:1:1} == -v ]] && {
@@ -147,11 +136,22 @@ GCC_NAME=""
 	while [[ $# > 0 ]]; do
 		case $1 in
 			--preload) PRELOAD_MODE=yes ;;
+<<<<<<< HEAD
 			--dwarf) 
+=======
+			--download) DOWNLOAD_MODE=yes ;;
+			--dwarf)
+>>>>>>> nixman/master
 				USE_DWARF_EXCEPTIONS=yes
 				USE_MULTILIB_MODE=no
 			;;
 			--no-multilib) USE_MULTILIB_MODE=no ;;
+<<<<<<< HEAD
+=======
+			--rev=*)
+				REV_NUM=$( echo $1 | sed 's|--rev=||' )
+			;;
+>>>>>>> nixman/master
 			x32)
 				BUILD_ARCHITECTURE_x32=yes
 				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
@@ -173,36 +173,43 @@ GCC_NAME=""
 	done
 }
 
+# **************************************************************************
+
 [[ -z $GCC_NAME ]] && {
 	echo "please specify GCC version. terminate."
 	exit 1
 }
-[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
-	${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
-	echo "error in build architectures. terminate."
-	exit 1
-}
-[[ $USE_DWARF_EXCEPTIONS == yes && $USE_MULTILIB_MODE == yes ]] && {
-	echo "DWARF exceptions not allowed on multilib architecture. terminate."
-	exit 1
-}
-[[ $USE_DWARF_EXCEPTIONS == yes ]] && {
-	[[ $BUILD_ARCHITECTURE_x64 == yes ]] && {
-		echo "DWARF exceptions not allowed on x86_64 architecture. terminate."
+
+[[ $DOWNLOAD_MODE == no ]] && {
+	[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
+		${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
+		echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
 		exit 1
 	}
-	[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
-		echo "error in build architectures. terminate."
+	[[ $USE_DWARF_EXCEPTIONS == yes && $USE_MULTILIB_MODE == yes ]] && {
+		echo "DWARF exceptions not allowed on multilib architecture. terminate."
 		exit 1
+	}
+	[[ $USE_DWARF_EXCEPTIONS == yes ]] && {
+		[[ $BUILD_ARCHITECTURE_x64 == yes ]] && {
+			echo "DWARF exceptions not allowed on x86_64 architecture. terminate."
+			exit 1
+		}
+		[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
+			echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
+			exit 1
+		}
 	}
 }
 
 # **************************************************************************
 
 SUBTARGETS=(
+	libiconv-x32-pre
+	libiconv-x32
+	libiconv-x32-post
 	$( [[ $USE_MULTILIB_MODE == yes ]] \
-		&& echo "libiconv-x32-pre libiconv-x32 libiconv-x32-post libiconv-x64-pre libiconv-x64 libiconv-x64-post" \
-		|| echo "libiconv" \
+		&& echo "libiconv-x64-pre libiconv-x64 libiconv-x64-post" \
 	)
 	#terminator
 	gmp
@@ -218,9 +225,11 @@ SUBTARGETS=(
 	mingw-w64-crt
 	mingw-w64-crt-post
 	#terminator
+	winpthreads-x32-pre
+	winpthreads-x32
+	winpthreads-x32-post
 	$( [[ $USE_MULTILIB_MODE == yes ]] \
-		&& echo "winpthreads-x32-pre winpthreads-x32 winpthreads-x32-post winpthreads-x64-pre winpthreads-x64 winpthreads-x64-post" \
-		|| echo "winpthreads" \
+		&& echo "winpthreads-x64-pre winpthreads-x64 winpthreads-x64-post" \
 	)
 	#terminator
 	mingw-deps-post
@@ -234,7 +243,7 @@ SUBTARGETS=(
 	python
 	expat
 	gdb
-	make_cvs
+	make
 	cleanup
 	#terminator
 	licenses
@@ -248,7 +257,7 @@ SUBTARGETS=(
 # **************************************************************************
 
 . ./scripts/functions.sh
-[[ $PRELOAD_MODE == yes ]] && {
+[[ $PRELOAD_MODE == yes || $DOWNLOAD_MODE == yes ]] && {
 	for sub in ${SUBTARGETS[@]}; do
 		[[ $sub == put-versions ]] && continue
 		[[ -n $( grep 'URL=' $TOP_DIR/scripts/${sub}.sh ) ]] && {
@@ -268,27 +277,33 @@ SUBTARGETS=(
 			mkdir -p $SRCS_DIR/$SRC_DIR_NAME
 
 			func_download $SRC_DIR_NAME $TYPE $URL \
-				"$SRCS_DIR/$SRC_DIR_NAME/_download.log" $REV \
+				"$SRCS_DIR/$SRC_DIR_NAME/download.log" \
 				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 			[[ $? != 0 ]] && exit $?
 
-			[[ ${#EXECUTE_AFTER_DOWNLOAD[@]} >0 ]] && {
+			[[ ${#EXECUTE_AFTER_DOWNLOAD[@]} > 0 ]] && {
 				func_execute1 \
 					$SRCS_DIR \
 					$SRC_DIR_NAME \
 					"execute commands..." \
 					EXECUTE_AFTER_DOWNLOAD[@]
+				
 				[[ $? != 0 ]] && {
 					result=$?
 					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME-exec-$_index.log
 					exit $result
-					}
+				}
 			}
 		
-			func_uncompress $SRC_DIR_NAME $TYPE "/dev/null"
+			func_uncompress $SRC_DIR_NAME $TYPE "$SRCS_DIR/$SRC_DIR_NAME/uncompress.log"
 			[[ $? != 0 ]] && exit $?
 		}
 	done
+}
+
+[[ $DOWNLOAD_MODE == yes ]] && {
+	echo "sources downloaded successfully."
+	exit 0
 }
 
 # **************************************************************************

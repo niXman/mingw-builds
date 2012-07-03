@@ -39,3 +39,5 @@
 	BEFORE_LIBICONV64_PRE_PATH=$PATH
 	export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 }
+
+# **************************************************************************

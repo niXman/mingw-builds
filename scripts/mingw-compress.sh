@@ -57,19 +57,17 @@ case $GCC_NAME in
 	*) echo "gcc name error: $GCC_NAME. terminate."; exit ;;
 esac
 
-[[ $USE_MULTILIB_MODE == yes ]] && {
-	ARCHIVE_NAME=$ARCHIVE_NAME-multilib
-} || {
-	ARCHIVE_NAME=$ARCHIVE_NAME-nomultilib
-}
-
 [[ $USE_DWARF_EXCEPTIONS == no ]] && {
 	ARCHIVE_NAME=$ARCHIVE_NAME-sjlj
 } || {
 	ARCHIVE_NAME=$ARCHIVE_NAME-dwarf
 }
 
-#echo "ARCHIVE_NAME: $ARCHIVE_NAME"
+[[ -n $REV_NUM ]] && {
+	ARCHIVE_NAME=$ARCHIVE_NAME-rev${REV_NUM}
+}
+
+# **************************************************************************
 
 SEVENZIP_ARCHIVE_NAME=$ARCHIVE_NAME.7z
 ZIP_ARCHIVE_NAME=$ARCHIVE_NAME.zip
@@ -109,7 +107,9 @@ ZIP_ARCHIVE_NAME=$ARCHIVE_NAME.zip
 
 	[[ ! -f $SEVENZIP_ARCHIVE_NAME ]] && {
 		echo -n "---> \"$(basename $SEVENZIP_ARCHIVE_NAME)\" ... "
-		( cd $BUILDS_DIR && 7za a -t7z -mx=9 -mfb=64 -md=64m -ms=on "$SEVENZIP_ARCHIVE_NAME" "$MINGW_ROOT" >/dev/null 2>&1 )
+		( cd $BUILDS_DIR && 7za a -t7z -mx=9 -mfb=64 -md=64m -ms=on \
+			"$SEVENZIP_ARCHIVE_NAME" "$MINGW_ROOT" >/dev/null 2>&1 \
+		)
 		[[ $? == 0 ]] && {
 			echo "done"
 		} || {
@@ -120,7 +120,9 @@ ZIP_ARCHIVE_NAME=$ARCHIVE_NAME.zip
 
 	[[ ! -f $ZIP_ARCHIVE_NAME ]] && {
 		echo -n "---> \"$(basename $ZIP_ARCHIVE_NAME)\" ... "
-		( cd $BUILDS_DIR && 7za a -tzip -mx=9 -mfb=64 -md=64m "$ZIP_ARCHIVE_NAME" "$MINGW_ROOT" >/dev/null 2>&1 )
+		( cd $BUILDS_DIR && 7za a -tzip -mx=9 -mfb=64 -md=64m \
+			"$ZIP_ARCHIVE_NAME" "$MINGW_ROOT" >/dev/null 2>&1 \
+		)
 		[[ $? == 0 ]] && {
 			echo "done"
 		} || {
@@ -138,3 +140,5 @@ ZIP_ARCHIVE_NAME=$ARCHIVE_NAME.zip
 } || {
 	echo "---> compressed"
 }
+
+# **************************************************************************

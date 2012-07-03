@@ -45,8 +45,9 @@
 
 		[[ $USE_DWARF_EXCEPTIONS == no ]] && {
 			# 32bit dlls
-			cp -rf `find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune -o -type f -name "*.dll"` $PREFIX/bin/
-			cp -rf `find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune -o -type f -name "*.dll"` $PREFIX/$TARGET/lib/
+			DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune -o -type f -name *.dll) )
+			cp -f ${DLLS[@]} $PREFIX/bin/
+			cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/
 			
 			strip $PREFIX/bin/*.dll || exit 1
 			strip $PREFIX/$TARGET/lib/*.dll || exit 1
@@ -55,7 +56,7 @@
 			[[ $USE_MULTILIB_MODE == yes ]] && {
 				# libgcc_s.a
 				cp -f $PREFIX/lib/gcc/$TARGET/lib64/libgcc_s.a $PREFIX/$TARGET/lib64/ || exit 1
-				cp -rf `find $BUILDS_DIR/$GCC_NAME/$TARGET/64 -type f \( -iname "*.dll" ! -iname "*winpthread*" \)` $PREFIX/$TARGET/lib64/
+				cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/64 -type f \( -iname *.dll ! -iname *winpthread* \)) $PREFIX/$TARGET/lib64/
 				
 				strip $PREFIX/$TARGET/lib64/*.dll || exit 1
 			}
@@ -65,8 +66,9 @@
 		cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ || exit 1
 			
 		# 64bit dlls
-		cp -rf `find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune -o -type f -name "*.dll"` $PREFIX/bin/
-		cp -rf `find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune -o -type f -name "*.dll"` $PREFIX/$TARGET/lib/
+		DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune -o -type f -name *.dll) )
+		cp -f ${DLLS[@]} $PREFIX/bin/
+		cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/
 			
 		strip $PREFIX/bin/*.dll || exit 1
 		strip $PREFIX/$TARGET/lib/*.dll || exit 1
@@ -75,7 +77,7 @@
 		[[ $USE_MULTILIB_MODE == yes ]] && {
 			# libgcc_s.a
 			cp -f $PREFIX/lib/gcc/$TERGET/lib32/libgcc_s.a $PREFIX/$TARGET/lib32/ || exit 1
-			cp -rf `find $BUILDS_DIR/$GCC_NAME/$TARGET/32 -type f \( -iname "*.dll" ! -iname "*winpthread*" \)` $PREFIX/$TARGET/lib32/
+			cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/32 -type f \( -iname *.dll ! -iname *winpthread* \)) $PREFIX/$TARGET/lib32/
 			
 			strip $PREFIX/$TARGET/lib32/*.dll || exit 1
 		}
@@ -83,3 +85,5 @@
 	
 	touch $BUILDS_DIR/gcc-post.marker
 }
+
+# **************************************************************************
