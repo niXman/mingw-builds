@@ -142,7 +142,7 @@ GCC_NAME=""
 				BUILD_ARCHITECTURE_x64=yes
 				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x64 )
 			;;
-			gcc-*)
+			gcc-*|cxx-conversion)
 				[[ ! -f scripts/$1.sh ]] && {
 					echo "bad gcc version. terminate."; exit 1;
 				} || {
