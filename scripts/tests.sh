@@ -42,10 +42,10 @@ TESTS_ROOT_DIR=$BUILDS_DIR/tests
 [[ $USE_MULTILIB_MODE == yes ]] && {
 	mkdir -p $TESTS_ROOT_DIR/{32,64}
 	[[ $ARCHITECTURE == x32 ]] && {
-		cp -f $( find $PREFIX/$TARGET/lib64 -type f \( -iname "*.dll" \) ) \
+		cp -f $( find $PREFIX/$TARGET/lib64 -type f \( -iname *.dll \) ) \
 			$TESTS_ROOT_DIR/64/
 	} || {
-		cp -f $( find $PREFIX/$TARGET/lib32 -type f \( iname "*.dll" \) ) \
+		cp -f $( find $PREFIX/$TARGET/lib32 -type f \( -iname *.dll \) ) \
 			$TESTS_ROOT_DIR/32/
 	}
 } || {
