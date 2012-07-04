@@ -35,9 +35,9 @@
 
 # **************************************************************************
 
-NAME=mpfr-3.1.0
-SRC_DIR_NAME=mpfr-3.1.0
-URL=ftp://ftp.gnu.org/gnu/mpfr/mpfr-3.1.0.tar.bz2
+NAME=mpfr-3.1.1
+SRC_DIR_NAME=mpfr-3.1.1
+URL=ftp://ftp.gnu.org/gnu/mpfr/mpfr-3.1.1.tar.bz2
 TYPE=.tar.bz2
 
 #
