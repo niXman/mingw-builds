@@ -215,37 +215,35 @@ function func_execute1 {
 	local -i _index=${#_commands[@]}-1
 	local _cmd_marker_name=$1/$2-exec-$_index.marker
 
-   [[ -f $_cmd_marker_name ]] && {
+	[[ -f $_cmd_marker_name ]] && {
 		echo "---> executed"
 		return $_result
-   }
-   _index=0
+	}
+	_index=0
 
-   [[ ${#_commands[@]} > 0 ]] && {
+	[[ ${#_commands[@]} > 0 ]] && {
 		echo -n "--> $3"
-   }
+	}
 
-   for it in "${_commands[@]}"; do
+	for it in "${_commands[@]}"; do
 		_cmd_marker_name=$1/$2-exec-$_index.marker
 		local _cmd_log_name=$1/$2-exec-$_index.log
+		[[ ! -f $_cmd_marker_name ]] && {
+			( cd $1 && eval ${it} > $_cmd_log_name 2>&1 )
+			_result=$?
+			[[ $_result != 0 ]] && {
+				echo "error!"
+				return $_result
+			} || {
+				touch $_cmd_marker_name
+			}
+		}
+		((_index++))
+	done
 
-      [[ ! -f $_cmd_marker_name ]] && {
-         ( cd $1; eval ${it} > $_cmd_log_name 2>&1 )
-         _result=$?
-         [[ $_result != 0 ]] && {
-            echo "error!"
-            return $_result
-         } || {
-            touch $_cmd_marker_name
-         }
-      }
+	[[ $_index == ${#_commands[@]} ]] && echo "done"
 
-      ((_index++))
-   done
-
-   [[ $_index == ${#_commands[@]} ]] && echo "done"
-
-   return $_result
+	return $_result
 }
 
 # **************************************************************************
@@ -379,14 +377,8 @@ function run_test {
 				#echo "$PREFIX/bin/g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last"
 				#echo "$PREFIX/bin/gcc -m${arch_it} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last"
 				
+				echo -n "--> $([[ ${_prev%% *} =~ .cpp ]] && echo -n G++ || echo -n GCC) compile $arch_it: \"$_first\" ... "
 				[[ ${_prev%% *} =~ .cpp ]] && {
-					local _gcc_or_gpp=gpp
-				} || {
-					local _gcc_or_gpp=gcc
-				}
-				
-				echo -n "--> $([[ $_gcc_or_gpp == gpp ]] && echo -n G++ || echo -n GCC) compile $arch_it: \"$_first\" ... "
-				[[ $_gcc_or_gpp == gpp ]] && {
 					echo "g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_cmp_log
 					( cd $3/$arch_it; g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_cmp_log 2>&1 )
 				} || {
@@ -395,18 +387,19 @@ function run_test {
 				}
 				_result=$?
 				[[ $_result == 0 ]] && {
-					echo "done" 
+					echo "-> $_result -> done" 
 				} || { 
-					echo "error. terminate."; exit $_result
+					echo "-> $_result -> error. terminate."
+					exit $_result
 				}
 				[[ $_last =~ .exe ]] && {
-					echo -n "--> execute $arch_it: \"$_last\" -> "
+					echo -n "--> execute     $arch_it: \"$_last\" ... "
 					( cd $3/$arch_it; $_last > $_run_log 2>&1 )
 					_result=$?
 					[[ $_result == 0 ]] && {
-						echo "$_result -> done"
+						echo "-> $_result -> done"
 					} || {
-						echo "$_result -> error"
+						echo "-> $_result -> error. terminate."
 						exit $_result
 					}
 				}
