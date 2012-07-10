@@ -47,6 +47,7 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
     instead of SJLJ. This allows building for i686 host only, and i686 target only.
   The '--no-multilib' option specifies to the script to build without multilib support.
   The '--rev=N' option specifies to the script the number of the build revision.
+  The '--threads' option specifies to the script the used threads model.
 
 For example, during the process of building of the i686-gcc-4.6.3 will
   be created the following directories:
