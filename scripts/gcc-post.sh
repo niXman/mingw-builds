@@ -64,7 +64,7 @@
 	} || {
 		# libgcc_s.a
 		cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ || exit 1
-			
+		
 		# 64bit dlls
 		DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune -o -type f -name *.dll) )
 		cp -f ${DLLS[@]} $PREFIX/bin/

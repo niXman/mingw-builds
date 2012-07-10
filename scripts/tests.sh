@@ -49,7 +49,11 @@ TESTS_ROOT_DIR=$BUILDS_DIR/tests
 			$TESTS_ROOT_DIR/32/
 	}
 } || {
-	mkdir -p $TESTS_ROOT_DIR/32
+	[[ $ARCHITECTURE == x32 ]] && {
+		mkdir -p $TESTS_ROOT_DIR/32
+	} || {
+		mkdir -p $TESTS_ROOT_DIR/64
+	}
 }
 
 # **************************************************************************
