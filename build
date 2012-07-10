@@ -75,7 +75,7 @@ TESTS_DIR=$TOP_DIR/tests
 
 [[ $# == 1 && ${@:1:1} != -v || $[ $# == 0 || $# > 6 ] == 1 ]] && {
 	echo "usage:"
-	echo "  ./${0##*/} [ OPTIONS ] <gcc version> <x32|x64>"
+	echo "  ./${0##*/} <gcc version> [OPTIONS] <x32|x64>"
 	echo "  help:"
 	echo "    --preload     - firstly downloads then builds"
 	echo "    --download    - download only the sources"
@@ -84,6 +84,7 @@ TESTS_DIR=$TOP_DIR/tests
 	echo "    --rev=N       - specifies number of the build revision"
 	echo "    --threads=m   - specifies the threads model for GCC/libstdc++"
 	echo "                    available: win32, posix"
+	echo "    --version     - pring the version of the MinGW-builds scripts"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -188,7 +189,14 @@ GCC_NAME=""
 					GCC_NAME=$1
 				}
 			;;
-			*) echo "bad command line. terminate."; exit 1 ;;
+			--version)
+				echo "MinGW-builds-0.2, release date-10.07.2012"
+				exit 0
+			;;
+			*)
+				echo "bad command line. terminate."
+				exit 1
+			;;
 		esac
 		shift
 	done
