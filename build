@@ -35,6 +35,31 @@
 
 # **************************************************************************
 
+x32_HOST_MINGW_PATH=/d/mingw32
+x64_HOST_MINGW_PATH=/d/mingw64
+
+ENABLE_LANGUAGES=c,c++,fortran
+
+BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer -momit-leaf-frame-pointer"
+BASE_CXXFLAGS="$BASE_CFLAGS"
+BASE_CPPFLAGS=""
+BASE_LDFLAGS="-pipe -s"
+
+LINK_TYPE_STATIC="--enable-static --disable-shared"
+LINK_TYPE_SHARED="--disable-static --enable-shared"
+LINK_TYPE_BOTH="--enable-shared --enable-static"
+GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
+
+#LOGVIEWER="c:/progra~1/notepad++/notepad++.exe"
+LOGVIEWER="c:/progra~2/notepad++/notepad++.exe"
+
+SHOW_LOG_ON_ERROR=yes
+PACK_IN_ARCHIVES=yes
+
+JOBS=1
+
+# **************************************************************************
+
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 PKGVERSION="MinGW-builds: $BUG_URL"
 
@@ -45,8 +70,6 @@ SRCS_DIR=$ROOT_DIR/mingw-src
 TOP_DIR=$PWD
 PATCHES_DIR=$TOP_DIR/patches
 TESTS_DIR=$TOP_DIR/tests
-
-. ./scripts/config.sh
 
 # **************************************************************************
 
