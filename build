@@ -73,7 +73,8 @@ TESTS_DIR=$TOP_DIR/tests
 
 # **************************************************************************
 
-[[ $# == 1 && ${@:1:1} != -v || $[ $# == 0 || $# > 6 ] == 1 ]] && {
+
+[[ $# == 1 && $1 == --help	|| $[ $# == 0 || $# > 6 ] == 1 ]] && {
 	echo "usage:"
 	echo "  ./${0##*/} <gcc version> [OPTIONS] <x32|x64>"
 	echo "  help:"
@@ -144,63 +145,59 @@ THREADS_MODEL=posix
 REV_NUM=""
 GCC_NAME=""
 
-[[ $# == 1 && ${@:1:1} == -v ]] && {
-	echo "MinGW-builds version 0.1.0"; exit 0;
-} || {
-	while [[ $# > 0 ]]; do
-		case $1 in
-			--preload)
-				PRELOAD_MODE=yes
-			;;
-			--download)
-				DOWNLOAD_MODE=yes
-			;;
-			--dwarf)
-				USE_DWARF_EXCEPTIONS=yes
-				USE_MULTILIB_MODE=no
-			;;
-			--no-multilib)
-				USE_MULTILIB_MODE=no
-			;;
-			--threads)
-				THREADS_MODEL=$( echo $1 | sed 's|--threads=||' )
-			;;
-			--rev=*)
-				REV_NUM=$( echo $1 | sed 's|--rev=||' )
-			;;
-			x32)
-				[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
-					echo "option \"x32\" is given twice. terminate."
-					exit 1
-				}
-				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
-			;;
-			x64)
-				[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-					echo "option \"x64\" is given twice. terminate."
-					exit 1
-				}
-				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x64 )
-			;;
-			gcc-*|cxx-conversion)
-				[[ ! -f scripts/$1.sh ]] && {
-					echo "bad gcc version. terminate."; exit 1;
-				} || {
-					GCC_NAME=$1
-				}
-			;;
-			--version)
-				echo "MinGW-builds-0.2, release date-10.07.2012"
-				exit 0
-			;;
-			*)
-				echo "bad command line. terminate."
+while [[ $# > 0 ]]; do
+	case $1 in
+		--preload)
+			PRELOAD_MODE=yes
+		;;
+		--download)
+			DOWNLOAD_MODE=yes
+		;;
+		--dwarf)
+			USE_DWARF_EXCEPTIONS=yes
+			USE_MULTILIB_MODE=no
+		;;
+		--no-multilib)
+			USE_MULTILIB_MODE=no
+		;;
+		--threads)
+			THREADS_MODEL=$( echo $1 | sed 's|--threads=||' )
+		;;
+		--rev=*)
+			REV_NUM=$( echo $1 | sed 's|--rev=||' )
+		;;
+		x32)
+			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
+				echo "option \"x32\" is given twice. terminate."
 				exit 1
-			;;
-		esac
-		shift
-	done
-}
+			}
+			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
+		;;
+		x64)
+			[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
+				echo "option \"x64\" is given twice. terminate."
+				exit 1
+			}
+			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x64 )
+		;;
+		gcc-*|cxx-conversion)
+			[[ ! -f scripts/$1.sh ]] && {
+				echo "bad gcc version. terminate."; exit 1;
+			} || {
+				GCC_NAME=$1
+			}
+		;;
+		--version)
+			echo "MinGW-builds version 0.2.0"
+			exit 0
+		;;
+		*)
+			echo "bad command line. terminate."
+			exit 1
+		;;
+	esac
+	shift
+done
 
 # **************************************************************************
 
