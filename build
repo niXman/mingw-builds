@@ -59,6 +59,8 @@ TESTS_DIR=$TOP_DIR/tests
 	echo "    --dwarf       - build GCC with DWARF exceptions"
 	echo "    --no-multilib - build GCC without multilib support"
 	echo "    --rev=N       - specifies number of the build revision"
+	echo "    --threads=m   - specifies the threads model for GCC/libstdc++"
+	echo "                    available: win32, posix"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -114,6 +116,7 @@ DOWNLOAD_MODE=no
 BUILD_ARCHITECTURES=()
 USE_DWARF_EXCEPTIONS=no
 USE_MULTILIB_MODE=yes
+THREADS_MODEL=posix
 REV_NUM=""
 GCC_NAME=""
 
@@ -134,6 +137,9 @@ GCC_NAME=""
 			;;
 			--no-multilib)
 				USE_MULTILIB_MODE=no
+			;;
+			--threads)
+				THREADS_MODEL=$( echo $1 | sed 's|--threads=||' )
 			;;
 			--rev=*)
 				REV_NUM=$( echo $1 | sed 's|--rev=||' )
@@ -175,6 +181,11 @@ GCC_NAME=""
 [[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
 	${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
 	echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
+	exit 1
+}
+
+[[ $THREADS_MODEL != win32 && $THREADS_MODEL != posix ]] && {
+	echo "bad threads model. terminate."
 	exit 1
 }
 
