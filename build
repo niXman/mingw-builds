@@ -35,6 +35,31 @@
 
 # **************************************************************************
 
+x32_HOST_MINGW_PATH=/d/mingw32
+x64_HOST_MINGW_PATH=/d/mingw64
+
+ENABLE_LANGUAGES=c,c++,fortran
+
+BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer -momit-leaf-frame-pointer"
+BASE_CXXFLAGS="$BASE_CFLAGS"
+BASE_CPPFLAGS=""
+BASE_LDFLAGS="-pipe -s"
+
+LINK_TYPE_STATIC="--enable-static --disable-shared"
+LINK_TYPE_SHARED="--disable-static --enable-shared"
+LINK_TYPE_BOTH="--enable-shared --enable-static"
+GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
+
+#LOGVIEWER="c:/progra~1/notepad++/notepad++.exe"
+LOGVIEWER="c:/progra~2/notepad++/notepad++.exe"
+
+SHOW_LOG_ON_ERROR=yes
+PACK_IN_ARCHIVES=yes
+
+JOBS=1
+
+# **************************************************************************
+
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 PKGVERSION="MinGW-builds: $BUG_URL"
 
@@ -46,19 +71,21 @@ TOP_DIR=$PWD
 PATCHES_DIR=$TOP_DIR/patches
 TESTS_DIR=$TOP_DIR/tests
 
-. ./scripts/config.sh
-
 # **************************************************************************
 
-[[ $# == 1 && ${@:1:1} != -v || $[ $# == 0 || $# > 6 ] == 1 ]] && {
+
+[[ $# == 1 && $1 == --help	|| $[ $# == 0 || $# > 6 ] == 1 ]] && {
 	echo "usage:"
-	echo "  ./${0##*/} [ OPTIONS ] <gcc version> <x32|x64>"
+	echo "  ./${0##*/} <gcc version> [OPTIONS] <x32|x64>"
 	echo "  help:"
 	echo "    --preload     - firstly downloads then builds"
 	echo "    --download    - download only the sources"
 	echo "    --dwarf       - build GCC with DWARF exceptions"
 	echo "    --no-multilib - build GCC without multilib support"
 	echo "    --rev=N       - specifies number of the build revision"
+	echo "    --threads=m   - specifies the threads model for GCC/libstdc++"
+	echo "                    available: win32, posix"
+	echo "    --version     - pring the version of the MinGW-builds scripts"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -114,50 +141,63 @@ DOWNLOAD_MODE=no
 BUILD_ARCHITECTURES=()
 USE_DWARF_EXCEPTIONS=no
 USE_MULTILIB_MODE=yes
+THREADS_MODEL=posix
 REV_NUM=""
 GCC_NAME=""
 
-[[ $# == 1 && ${@:1:1} == -v ]] && {
-	echo "MinGW-builds version 0.1.0"; exit 0;
-} || {
-	while [[ $# > 0 ]]; do
-		case $1 in
-			--preload) PRELOAD_MODE=yes ;;
-			--download) DOWNLOAD_MODE=yes ;;
-			--dwarf)
-				USE_DWARF_EXCEPTIONS=yes
-				USE_MULTILIB_MODE=no
-			;;
-			--no-multilib) USE_MULTILIB_MODE=no ;;
-			--rev=*)
-				REV_NUM=$( echo $1 | sed 's|--rev=||' )
-			;;
-			x32)
-				[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
-					echo "option \"x32\" is given twice. terminate."
-					exit 1
-				}
-				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
-			;;
-			x64)
-				[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-					echo "option \"x64\" is given twice. terminate."
-					exit 1
-				}
-				BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x64 )
-			;;
-			gcc-*|cxx-conversion)
-				[[ ! -f scripts/$1.sh ]] && {
-					echo "bad gcc version. terminate."; exit 1;
-				} || {
-					GCC_NAME=$1
-				}
-			;;
-			*) echo "bad command line. terminate."; exit 1 ;;
-		esac
-		shift
-	done
-}
+while [[ $# > 0 ]]; do
+	case $1 in
+		--preload)
+			PRELOAD_MODE=yes
+		;;
+		--download)
+			DOWNLOAD_MODE=yes
+		;;
+		--dwarf)
+			USE_DWARF_EXCEPTIONS=yes
+			USE_MULTILIB_MODE=no
+		;;
+		--no-multilib)
+			USE_MULTILIB_MODE=no
+		;;
+		--threads)
+			THREADS_MODEL=$( echo $1 | sed 's|--threads=||' )
+		;;
+		--rev=*)
+			REV_NUM=$( echo $1 | sed 's|--rev=||' )
+		;;
+		x32)
+			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
+				echo "option \"x32\" is given twice. terminate."
+				exit 1
+			}
+			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
+		;;
+		x64)
+			[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
+				echo "option \"x64\" is given twice. terminate."
+				exit 1
+			}
+			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x64 )
+		;;
+		gcc-*|cxx-conversion)
+			[[ ! -f scripts/$1.sh ]] && {
+				echo "bad gcc version. terminate."; exit 1;
+			} || {
+				GCC_NAME=$1
+			}
+		;;
+		--version)
+			echo "MinGW-builds version 0.2.0"
+			exit 0
+		;;
+		*)
+			echo "bad command line. terminate."
+			exit 1
+		;;
+	esac
+	shift
+done
 
 # **************************************************************************
 
@@ -166,12 +206,18 @@ GCC_NAME=""
 	exit 1
 }
 
+[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
+	${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
+	echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
+	exit 1
+}
+
+[[ $THREADS_MODEL != win32 && $THREADS_MODEL != posix ]] && {
+	echo "bad threads model. terminate."
+	exit 1
+}
+
 [[ $DOWNLOAD_MODE == no ]] && {
-	[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
-		${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
-		echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
-		exit 1
-	}
 	[[ $USE_DWARF_EXCEPTIONS == yes && $USE_MULTILIB_MODE == yes ]] && {
 		echo "DWARF exceptions not allowed on multilib architecture. terminate."
 		exit 1
@@ -190,60 +236,106 @@ GCC_NAME=""
 
 # **************************************************************************
 
-SUBTARGETS=(
+LIBICONV_X32_SUBTARGETS=(
 	libiconv-x32-pre
 	libiconv-x32
 	libiconv-x32-post
-	$( [[ $USE_MULTILIB_MODE == yes ]] \
-		&& echo "libiconv-x64-pre libiconv-x64 libiconv-x64-post" \
-	)
-	#terminator
+)
+
+LIBICONV_X64_SUBTARGETS=(
+	libiconv-x64-pre
+	libiconv-x64
+	libiconv-x64-post
+)
+
+WINPTHREADS_X32_SUBTARGETS=(
+	winpthreads-x32-pre
+	winpthreads-x32
+	winpthreads-x32-post
+)
+
+WINPTHREADS_X64_SUBTARGETS=(
+	winpthreads-x64-pre
+	winpthreads-x64
+	winpthreads-x64-post
+)
+
+SUBTARGETS_PART1=(
 	gmp
-	#terminator
 	mpfr
 	mpc
 	ppl
 	cloog
-	#terminator
 	mingw-w64-api
 	mingw-w64-api-post
-	#terminator
 	mingw-w64-crt
 	mingw-w64-crt-post
-	#terminator
-	winpthreads-x32-pre
-	winpthreads-x32
-	winpthreads-x32-post
-	$( [[ $USE_MULTILIB_MODE == yes ]] \
-		&& echo "winpthreads-x64-pre winpthreads-x64 winpthreads-x64-post" \
-	)
-	#terminator
+)
+
+SUBTARGETS_PART2=(
 	mingw-deps-post
-	#terminator
 	binutils
-	#terminator
 	$GCC_NAME
-	#terminator
 	gcc-post
-	#terminator
 	python
 	expat
 	gdb
-	make
+	make_cvs
 	cleanup
-	#terminator
 	licenses
 	put-versions
-	#terminator
 	tests
-	#terminator
 	$([[ $PACK_IN_ARCHIVES == yes ]] && echo mingw-compress)
 )
+
+[[ -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x32 ) && -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x64 ) ]] \
+&& build_for_both=1 \
+|| build_for_both=0
+
+[[ $USE_MULTILIB_MODE == yes || $build_for_both == 1 ]] && {
+	SUBTARGETS=(
+		${LIBICONV_X32_SUBTARGETS[@]}
+		${LIBICONV_X64_SUBTARGETS[@]}
+		${SUBTARGETS_PART1[@]}
+		${WINPTHREADS_X32_SUBTARGETS[@]}
+		${WINPTHREADS_X64_SUBTARGETS[@]}
+		${SUBTARGETS_PART2[@]}
+	)
+} || {
+	[[ -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x32 ) ]] && {
+		SUBTARGETS=(
+			${LIBICONV_X32_SUBTARGETS[@]}
+			${SUBTARGETS_PART1[@]}
+			${WINPTHREADS_X32_SUBTARGETS[@]}
+			${SUBTARGETS_PART2[@]}
+		)
+	} || {
+		SUBTARGETS=(
+			${LIBICONV_X64_SUBTARGETS[@]}
+			${SUBTARGETS_PART1[@]}
+			${WINPTHREADS_X64_SUBTARGETS[@]}
+			${SUBTARGETS_PART2[@]}
+		)
+	}
+}
 
 # **************************************************************************
 
 . ./scripts/functions.sh
 [[ $PRELOAD_MODE == yes || $DOWNLOAD_MODE == yes ]] && {
+	[[ $PRELOAD_MODE == yes ]] && {
+		echo -n "-> preload sources for building MinGW-${GCC_NAME}-"
+	} || {
+		[[ $DOWNLOAD_MODE == yes ]] && {
+			echo -n "-> download sources for MinGW-${GCC_NAME}-"
+		}
+	}
+	[[ $USE_MULTILIB_MODE == yes ]] && echo -n "multilib-"
+	[[ $build_for_both == 1 ]] && {
+		echo "x32/x64"
+	} || {
+		[[ -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x32 ) ]] && echo "x32" || echo "x64"
+	}
 	for sub in ${SUBTARGETS[@]}; do
 		[[ $sub == put-versions ]] && continue
 		[[ -n $( grep 'URL=' $TOP_DIR/scripts/${sub}.sh ) ]] && {
@@ -268,7 +360,7 @@ SUBTARGETS=(
 			[[ $? != 0 ]] && exit $?
 
 			[[ ${#EXECUTE_AFTER_DOWNLOAD[@]} > 0 ]] && {
-				func_execute1 \
+				func_execute \
 					$SRCS_DIR \
 					$SRC_DIR_NAME \
 					"execute commands..." \
@@ -276,7 +368,7 @@ SUBTARGETS=(
 				
 				[[ $? != 0 ]] && {
 					result=$?
-					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME-exec-$_index.log
+					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
 					exit $result
 				}
 			}
@@ -288,7 +380,7 @@ SUBTARGETS=(
 }
 
 [[ $DOWNLOAD_MODE == yes ]] && {
-	echo "sources downloaded successfully."
+	echo "-> sources downloaded successfully."
 	exit 0
 }
 
@@ -299,7 +391,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-libs-$ARCHITECTURE
 	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-logs-$ARCHITECTURE
 	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-$ARCHITECTURE
-
+	echo "-> start building MinGW-$GCC_NAME-$([[ $USE_MULTILIB_MODE == yes ]] && echo -n multilib-)$ARCHITECTURE"
 	[[ $ARCHITECTURE == x32 ]] && {
 		HOST=i686-w64-mingw32
 		BUILD=i686-w64-mingw32
@@ -337,10 +429,37 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	COMMON_CPPFLAGS="$BASE_CPPFLAGS"
 	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib"
 
-	EXECUTE_AFTER_PATCH=()
-	EXECUTE_AFTER_UNCOMPRESS=()
 	EXECUTE_AFTER_DOWNLOAD=()
+	EXECUTE_AFTER_UNCOMPRESS=()
+	EXECUTE_AFTER_PATCH=()
 
+	[[ $USE_MULTILIB_MODE == yes ]] && {
+		SUBTARGETS=(
+			${LIBICONV_X32_SUBTARGETS[@]}
+			${LIBICONV_X64_SUBTARGETS[@]}
+			${SUBTARGETS_PART1[@]}
+			${WINPTHREADS_X32_SUBTARGETS[@]}
+			${WINPTHREADS_X64_SUBTARGETS[@]}
+			${SUBTARGETS_PART2[@]}
+		)
+	} || {
+		[[ $ARCHITECTURE == x32 ]] && {
+			SUBTARGETS=(
+				${LIBICONV_X32_SUBTARGETS[@]}
+				${SUBTARGETS_PART1[@]}
+				${WINPTHREADS_X32_SUBTARGETS[@]}
+				${SUBTARGETS_PART2[@]}
+			)
+		} || {
+			SUBTARGETS=(
+				${LIBICONV_X64_SUBTARGETS[@]}
+				${SUBTARGETS_PART1[@]}
+				${WINPTHREADS_X64_SUBTARGETS[@]}
+				${SUBTARGETS_PART2[@]}
+			)
+		}
+	}
+	
 	for sub in ${SUBTARGETS[@]}; do
 		echo -e "-> \E[32;40m$sub\E[37;40m"
 		[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
@@ -372,14 +491,14 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		}
 		
 		[[ ${#EXECUTE_AFTER_DOWNLOAD[@]} >0 ]] && {
-			func_execute1 \
+			func_execute \
 				$SRCS_DIR \
 				$SRC_DIR_NAME \
 				"execute commands..." \
 				EXECUTE_AFTER_DOWNLOAD[@]
 			[[ $? != 0 ]] && {
 				result=$?
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/${sub}-exec-$_index.log
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
 				exit $result
 			}
 		}
@@ -393,6 +512,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		
 		[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
 			func_execute \
+				$SRCS_DIR \
 				$SRC_DIR_NAME \
 				"execute commands..." \
 				EXECUTE_AFTER_UNCOMPRESS[@]
@@ -414,6 +534,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		
 		[[ ${#EXECUTE_AFTER_PATCH[@]} >0 ]] && {
 			func_execute \
+				$SRCS_DIR \
 				$SRC_DIR_NAME \
 				"execute commands..." \
 				EXECUTE_AFTER_PATCH[@]
@@ -476,8 +597,5 @@ done
 	echo -e "-> \E[32;40mcompress mingw sources\E[37;40m"
 	cd $TOP_DIR; . ./scripts/srcs-compress.sh
 }
-
-#cd $TOP_DIR; . ./scripts/mingw-upload.sh
-#cd $TOP_DIR; . ./scripts/srcs-upload.sh
 
 # ***************************************************************************

@@ -52,8 +52,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREFIX
-	--with-sysroot=$PREFIX
+	--prefix=$PREFIX/$HOST
 	#
 	--enable-sdk=all
 	--enable-secure-api

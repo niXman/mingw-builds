@@ -86,13 +86,23 @@
 	} || {
 		mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
 		
-		cp -f $BUILDS_DIR/libiconv-32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-		cp -f $BUILDS_DIR/libiconv-32/include/*.h $PREFIX/$TARGET/include/ || exit 1
+		[[ $ARCHITECTURE == x32 ]] && {
+			cp -f $BUILDS_DIR/libiconv-32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $BUILDS_DIR/libiconv-32/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
-		cp -f $BUILDS_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
-		cp -f $BUILDS_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
-		cp -f $BUILDS_DIR/winpthreads-32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-		cp -f $BUILDS_DIR/winpthreads-32/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $BUILDS_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+			cp -f $BUILDS_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $BUILDS_DIR/winpthreads-32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $BUILDS_DIR/winpthreads-32/include/*.h $PREFIX/$TARGET/include/ || exit 1
+		} || {
+			cp -f $BUILDS_DIR/libiconv-64/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $BUILDS_DIR/libiconv-64/include/*.h $PREFIX/$TARGET/include/ || exit 1
+
+			cp -f $BUILDS_DIR/winpthreads-64/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+			cp -f $BUILDS_DIR/winpthreads-64/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $BUILDS_DIR/winpthreads-64/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $BUILDS_DIR/winpthreads-64/include/*.h $PREFIX/$TARGET/include/ || exit 1
+		}
 
 		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
 		touch $BUILDS_DIR/mingw-deps-post.marker || exit 1

@@ -41,7 +41,6 @@ URL=":pserver:anonymous:@cvs.sv.gnu.org:/sources/make"
 TYPE=cvs
 REV=01/01/2012
 
-
 #
 
 PATCHES=(make-postcvs.patch)

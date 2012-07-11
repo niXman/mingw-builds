@@ -161,50 +161,6 @@ function func_uncompress {
 
 # execute list of commands
 function func_execute {
-	# $1 - src dir name
-	# $2 - message
-	# $3 - commands list
-
-	local _result=0
-	local -a _commands=( "${!3}" )
-	local -i _index=${#_commands[@]}-1
-	local _cmd_marker_name=$SRCS_DIR/$1/exec-$_index.marker
-
-	[[ -f $_cmd_marker_name ]] && {
-		echo "---> executed"
-		return $_result
-	}
-	_index=0
-
-	[[ ${#_commands[@]} > 0 ]] && {
-		echo -n "--> $2"
-	}
-
-	for it in "${_commands[@]}"; do
-		_cmd_marker_name=$SRCS_DIR/$1/exec-$_index.marker
-		local _cmd_log_name=$LOGS_DIR/$1/exec-$_index.log
-		[[ ! -f $_cmd_marker_name ]] && {
-		( cd $SRCS_DIR/$1; eval ${it} > $_cmd_log_name 2>&1 )
-			_result=$?
-			[[ $_result != 0 ]] && {
-				echo "error!"
-				return $_result
-			} || {
-				touch $_cmd_marker_name
-			}
-		}
-		((_index++))
-	done
-
-	[[ $_index == ${#_commands[@]} ]] && echo "done"
-
-	return $_result
-}
-
-# **************************************************************************
-
-# execute list of commands
-function func_execute1 {
 	# $1 - execute dir
 	# $2 - src dir name
 	# $3 - message
@@ -212,38 +168,40 @@ function func_execute1 {
 
 	local _result=0
 	local -a _commands=( "${!4}" )
-	local -i _index=${#_commands[@]}-1
-	local _cmd_marker_name=$1/$2-exec-$_index.marker
+	declare -i _index=${#_commands[@]}-1
+	local _cmd_marker_name=$1/$2/exec-$_index.marker
 
-	[[ -f $_cmd_marker_name ]] && {
+   [[ -f $_cmd_marker_name ]] && {
 		echo "---> executed"
 		return $_result
-	}
-	_index=0
+   }
+   _index=0
 
-	[[ ${#_commands[@]} > 0 ]] && {
+   [[ ${#_commands[@]} > 0 ]] && {
 		echo -n "--> $3"
-	}
+   }
 
-	for it in "${_commands[@]}"; do
-		_cmd_marker_name=$1/$2-exec-$_index.marker
-		local _cmd_log_name=$1/$2-exec-$_index.log
-		[[ ! -f $_cmd_marker_name ]] && {
-			( cd $1 && eval ${it} > $_cmd_log_name 2>&1 )
-			_result=$?
-			[[ $_result != 0 ]] && {
-				echo "error!"
-				return $_result
-			} || {
-				touch $_cmd_marker_name
-			}
-		}
-		((_index++))
-	done
+   for it in "${_commands[@]}"; do
+		_cmd_marker_name=$1/$2/exec-$_index.marker
+		local _cmd_log_name=$LOGS_DIR/$2/exec-$_index.log
 
-	[[ $_index == ${#_commands[@]} ]] && echo "done"
+      [[ ! -f $_cmd_marker_name ]] && {
+         ( cd $1/$2 && eval ${it} > $_cmd_log_name 2>&1 )
+         _result=$?
+         [[ $_result != 0 ]] && {
+            echo "error!"
+            return $_result
+         } || {
+            touch $_cmd_marker_name
+         }
+      }
 
-	return $_result
+      ((_index++))
+   done
+
+   [[ $_index == ${#_commands[@]} ]] && echo "done"
+
+   return $_result
 }
 
 # **************************************************************************

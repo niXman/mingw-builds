@@ -38,7 +38,7 @@
 [[ ! -d $PREFIX/mingw ]] && mkdir -p $PREFIX/mingw
 
 [[ ! -f $BUILDS_DIR/mingw-w64-api-post.marker ]] && {
-	cp -rf $PREFIX/$TARGET/* $PREFIX/mingw || exit 1
+	cp -rf $PREFIX/$HOST/* $PREFIX/mingw || exit 1
 	touch $BUILDS_DIR/mingw-w64-api-post.marker
 }
 

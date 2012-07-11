@@ -63,7 +63,7 @@ CONFIGURE_FLAGS=(
 	)
 	--enable-languages=$ENABLE_LANGUAGES,lto
 	--enable-libstdcxx-time=yes
-	--enable-threads=posix
+	--enable-threads=$THREADS_MODEL
 	--enable-libgomp
 	--enable-lto
 	--enable-graphite
