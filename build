@@ -160,7 +160,7 @@ while [[ $# > 0 ]]; do
 		--no-multilib)
 			USE_MULTILIB_MODE=no
 		;;
-		--threads)
+		--threads=*)
 			THREADS_MODEL=$( echo $1 | sed 's|--threads=||' )
 		;;
 		--rev=*)

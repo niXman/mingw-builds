@@ -42,7 +42,11 @@ TYPE=svn
 
 #
 
-PATCHES=( gcc-4.7-stdthreads.patch gcc-4.7-iconv.patch )
+[[ $THREADS_MODEL == posix ]] && {
+	PATCHES=( gcc-4.7-stdthreads.patch gcc-4.7-iconv.patch )
+} || {
+	PATCHES=( gcc-4.7-iconv.patch )
+}
 
 #
 

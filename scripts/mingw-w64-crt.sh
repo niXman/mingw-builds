@@ -62,7 +62,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREFIX
+	--prefix=$PREFIX/$HOST
 	--with-sysroot=$PREFIX
 	#
 	$LIBCONF

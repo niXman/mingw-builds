@@ -118,14 +118,16 @@ run_test \
 
 # **************************************************************************
 
-list6=(
-	"thtest.cpp -std=c++0x -o thtest.exe"
-)
+[[ $THREADS_MODEL == posix ]] && {
+	list6=(
+		"thtest.cpp -std=c++0x -o thtest.exe"
+	)
 
-run_test \
-	"thtest" \
-	list6[@] \
-	$TESTS_ROOT_DIR
+	run_test \
+		"thtest" \
+		list6[@] \
+		$TESTS_ROOT_DIR
+}
 
 # **************************************************************************
 
