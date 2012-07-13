@@ -42,11 +42,7 @@ TYPE=.tar.bz2
 
 #
 
-[[ $THREADS_MODEL == posix ]] && {
-	PATCHES=( gcc-4.6-cloog_lang_c.patch gcc-4.6-stdthreads.patch gcc-4.6-iconv.patch )
-} || {
-	PATCHES=( gcc-4.6-cloog_lang_c.patch gcc-4.6-iconv.patch )
-}
+PATCHES=( gcc-4.6-cloog_lang_c.patch gcc-4.6-stdthreads.patch gcc-4.6-iconv.patch )
 
 #
 

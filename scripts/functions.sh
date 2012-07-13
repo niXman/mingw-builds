@@ -212,7 +212,7 @@ function func_apply_patches {
 	# $2 - list
 
 	local _result=0
-	local _index=0
+	_index=0
 	local -a _list=( "${!2}" )
 	[[ ${#_list[@]} == 0 ]] && return 0
 
@@ -230,7 +230,7 @@ function func_apply_patches {
 	for it in ${_list[@]} ; do
 		local _patch_marker_name=$SRCS_DIR/$1/_patch-$_index.marker
 		[[ ! -f $_patch_marker_name ]] && {
-			( cd $SRCS_DIR/$1 && patch -p1 < "$PATCHES_DIR/${it}" > $LOGS_DIR/$1/patch-$_index.log 2>&1 )
+			( cd $SRCS_DIR/$1 && patch -p1 < $PATCHES_DIR/${it} > $LOGS_DIR/$1/patch-$_index.log 2>&1 )
 			_result=$?
 			[[ $_result == 0 ]] && {
 				touch $_patch_marker_name
@@ -331,33 +331,32 @@ function run_test {
 				local _last=$( echo $src_it | sed 's/^.* //' )
 				local _cmp_log=$3/$arch_it/$_first-compilation.log
 				local _run_log=$3/$arch_it/$_first-execution.log
-
-				#echo "$PREFIX/bin/g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last"
-				#echo "$PREFIX/bin/gcc -m${arch_it} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last"
 				
-				echo -n "--> $([[ ${_prev%% *} =~ .cpp ]] && echo -n G++ || echo -n GCC) compile $arch_it: \"$_first\" ... "
+				printf "%-50s" "--> $([[ ${_prev%% *} =~ .cpp ]] && echo -n G++ || echo -n GCC) compile $arch_it: \"$_first\" ... "
 				[[ ${_prev%% *} =~ .cpp ]] && {
 					echo "g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_cmp_log
-					( cd $3/$arch_it; g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_cmp_log 2>&1 )
+					( cd $3/$arch_it && g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_cmp_log 2>&1 )
 				} || {
 					echo "gcc -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_cmp_log
-					( cd $3/$arch_it; gcc -m${arch_it} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_cmp_log 2>&1 )
+					( cd $3/$arch_it && gcc -m${arch_it} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_cmp_log 2>&1 )
 				}
 				_result=$?
 				[[ $_result == 0 ]] && {
 					echo "-> $_result -> done" 
 				} || { 
 					echo "-> $_result -> error. terminate."
+					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_cmp_log
 					exit $_result
 				}
 				[[ $_last =~ .exe ]] && {
-					echo -n "--> execute     $arch_it: \"$_last\" ... "
-					( cd $3/$arch_it; $_last > $_run_log 2>&1 )
+					printf "%-50s" "--> execute     $arch_it: \"$_last\" ... "
+					( cd $3/$arch_it && $_last > $_run_log 2>&1 )
 					_result=$?
 					[[ $_result == 0 ]] && {
 						echo "-> $_result -> done"
 					} || {
 						echo "-> $_result -> error. terminate."
+						[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_run_log
 						exit $_result
 					}
 				}

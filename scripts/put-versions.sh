@@ -35,48 +35,52 @@
 
 # **************************************************************************
 
-VERSION_FILE=$PREFIX/versions.txt
-echo "" > $VERSION_FILE
+[[ ! -f $BUILDS_DIR/put-versions.marker ]] && {
+	VERSION_FILE=$PREFIX/versions.txt
+	echo "" > $VERSION_FILE
 
-_PROCESSED_SUBS=()
+	_PROCESSED_SUBS=()
 
-for sub in ${SUBTARGETS[@]}; do
-	[[ $sub == "put-versions" ]] && continue
-	
-	_pack_type=$( grep 'TYPE=' $TOP_DIR/scripts/${sub}.sh )
-	_pack_url=$( grep 'URL=' $TOP_DIR/scripts/${sub}.sh | sed 's|URL=||' )
-	[[ -n $_pack_type ]] && {
-		_pack_type=$( echo "$_pack_type" | sed 's|TYPE=||g' )
-		_pack_name=$( grep 'SRC_DIR_NAME=' $TOP_DIR/scripts/${sub}.sh | sed 's|SRC_DIR_NAME=||' )
+	for sub in ${SUBTARGETS[@]}; do
+		[[ $sub == "put-versions" ]] && continue
 		
-		[[ -n $( echo "${_PROCESSED_SUBS[@]}" | grep $_pack_name ) ]] && continue
-		_PROCESSED_SUBS=( ${_PROCESSED_SUBS[@]} $_pack_name )
-		
-		echo "name: $_pack_name" >> $VERSION_FILE
-		echo "url: $_pack_url" >> $VERSION_FILE
-		
-		cd $SRCS_DIR/$_pack_name
-		[[ $? != 0 ]] && { echo "error in $SRCS_DIR/$_pack_name"; exit 1; }
-		
-		case $_pack_type in
-			cvs)
-				echo "revision: $( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )" >> $VERSION_FILE
-			;;
-			svn)
-				echo "revision: $( svn info | grep 'Revision: ' | sed 's|Revision: ||' )" >> $VERSION_FILE
-			;;
-			hg)
-				echo "revision: unimplemented" >> $VERSION_FILE
-			;;
-			git)
-				echo "revision: unimplemented" >> $VERSION_FILE
-			;;
-			*)
-				echo "version: $( echo $_pack_name | sed 's/[^0-9.]*\([0-9.]*\).*/\1/' )" >> $VERSION_FILE
-			;;
-		esac
-		echo "" >> $VERSION_FILE
-	}
-done
+		_pack_type=$( grep 'TYPE=' $TOP_DIR/scripts/${sub}.sh )
+		_pack_url=$( grep 'URL=' $TOP_DIR/scripts/${sub}.sh | sed 's|URL=||' )
+		[[ -n $_pack_type ]] && {
+			_pack_type=$( echo "$_pack_type" | sed 's|TYPE=||g' )
+			_pack_name=$( grep 'SRC_DIR_NAME=' $TOP_DIR/scripts/${sub}.sh | sed 's|SRC_DIR_NAME=||' )
+			
+			[[ -n $( echo "${_PROCESSED_SUBS[@]}" | grep $_pack_name ) ]] && continue
+			_PROCESSED_SUBS=( ${_PROCESSED_SUBS[@]} $_pack_name )
+			
+			echo "name: $_pack_name" >> $VERSION_FILE
+			echo "url: $_pack_url" >> $VERSION_FILE
+			
+			cd $SRCS_DIR/$_pack_name
+			[[ $? != 0 ]] && { echo "error in $SRCS_DIR/$_pack_name"; exit 1; }
+			
+			case $_pack_type in
+				cvs)
+					echo "revision: $( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )" >> $VERSION_FILE
+				;;
+				svn)
+					echo "revision: $( svn info | grep 'Revision: ' | sed 's|Revision: ||' )" >> $VERSION_FILE
+				;;
+				hg)
+					echo "revision: unimplemented" >> $VERSION_FILE
+				;;
+				git)
+					echo "revision: unimplemented" >> $VERSION_FILE
+				;;
+				*)
+					echo "version: $( echo $_pack_name | sed 's/[^0-9.]*\([0-9.]*\).*/\1/' )" >> $VERSION_FILE
+				;;
+			esac
+			echo "" >> $VERSION_FILE
+		}
+	done
+
+	touch $BUILDS_DIR/put-versions.marker
+}
 
 # **************************************************************************

@@ -35,6 +35,10 @@
 
 # **************************************************************************
 
-cp -rf $TOP_DIR/licenses $PREFIX/
+[[ ! -f $BUILDS_DIR/licenses.marker ]] && {
+	cp -rf $TOP_DIR/licenses $PREFIX/
+
+	touch $BUILDS_DIR/licenses.marker
+}
 
 # **************************************************************************

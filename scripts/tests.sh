@@ -108,7 +108,7 @@ run_test \
 # **************************************************************************
 
 list5=(
-	"pthtest.c -mthreads -o pthtest.exe"
+	"pthtest.c -mthreads -lpthread -o pthtest.exe"
 )
 
 run_test \
@@ -143,7 +143,7 @@ run_test \
 # **************************************************************************
 
 list8=(
-	"timetest.c -o timetest.exe"
+	"timetest.c -lpthread -o timetest.exe"
 )
 
 run_test \
@@ -153,14 +153,16 @@ run_test \
 
 # **************************************************************************
 
-list9=(
-	"sleeptest.cpp -std=c++0x -o sleeptest.exe"
-)
+[[ $THREADS_MODEL == posix ]] && {
+	list9=(
+		"sleeptest.cpp -std=c++0x -o sleeptest.exe"
+	)
 
-run_test \
-	"sleeptest" \
-	list9[@] \
-	$TESTS_ROOT_DIR
+	run_test \
+		"sleeptest" \
+		list9[@] \
+		$TESTS_ROOT_DIR
+}
 
 # **************************************************************************
 
