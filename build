@@ -54,7 +54,6 @@ GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
 LOGVIEWER="c:/progra~2/notepad++/notepad++.exe"
 
 SHOW_LOG_ON_ERROR=yes
-PACK_IN_ARCHIVES=yes
 
 JOBS=1
 
@@ -74,18 +73,20 @@ TESTS_DIR=$TOP_DIR/tests
 # **************************************************************************
 
 
-[[ $# == 1 && $1 == --help	|| $[ $# == 0 || $# > 6 ] == 1 ]] && {
+[[ $# == 1 && $1 == --help	|| $[ $# == 0 || $# > 7 ] == 1 ]] && {
 	echo "usage:"
 	echo "  ./${0##*/} <gcc version> [OPTIONS] <x32|x64>"
 	echo "  help:"
-	echo "    --preload     - firstly downloads then builds"
-	echo "    --download    - download only the sources"
-	echo "    --dwarf       - build GCC with DWARF exceptions"
-	echo "    --no-multilib - build GCC without multilib support"
-	echo "    --rev=N       - specifies number of the build revision"
-	echo "    --threads=m   - specifies the threads model for GCC/libstdc++"
-	echo "                    available: win32, posix"
-	echo "    --version     - pring the version of the MinGW-builds scripts"
+	echo "    --preload        - firstly downloads then builds"
+	echo "    --download       - download only the sources"
+	echo "    --dwarf          - build GCC with DWARF exceptions"
+	echo "    --no-multilib    - build GCC without multilib support"
+	echo "    --rev=N          - specifies number of the build revision"
+	echo "    --threads=m      - specifies the threads model for GCC/libstdc++"
+	echo "                       available: win32, posix"
+	echo "    --version        - pring the version of the MinGW-builds scripts"
+	echo "    --mingw-compress - compressing MinGW"
+	echo "    --srcs-compress  - compressing sources"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -103,11 +104,6 @@ TESTS_DIR=$TOP_DIR/tests
 	echo "    gcc-trunk (currently 4.8.0-snapshot)"
 
 	exit 0
-}
-
-[[ $PACK_IN_ARCHIVES == yes && ! -f /bin/7za.exe ]] && {
-	echo "7za.exe is not found in your /bin directory. terminate."
-	exit 1
 }
 
 [[ $SHOW_LOG_ON_ERROR == yes && ! -f $LOGVIEWER ]] && {
@@ -144,6 +140,8 @@ USE_MULTILIB_MODE=yes
 THREADS_MODEL=posix
 REV_NUM=""
 GCC_NAME=""
+COMPRESSING_MINGW=no
+COMPRESSING_SRCS=no
 
 while [[ $# > 0 ]]; do
 	case $1 in
@@ -191,6 +189,12 @@ while [[ $# > 0 ]]; do
 			echo "MinGW-builds version 0.2.0"
 			exit 0
 		;;
+		--mingw-compress)
+			COMPRESSING_MINGW=yes
+		;;
+		--srcs-compress)
+			COMPRESSING_SRCS=yes
+		;;
 		*)
 			echo "bad command line. terminate."
 			exit 1
@@ -232,6 +236,11 @@ done
 			exit 1
 		}
 	}
+}
+
+[[ $[ $COMPRESSING_MINGW == yes || $COMPRESSING_SRCS == yes ] == 1 && ! -f /bin/7za.exe ]] && {
+	echo "7za.exe is not found in your /bin directory. terminate."
+	exit 1
 }
 
 # **************************************************************************
@@ -285,7 +294,7 @@ SUBTARGETS_PART2=(
 	licenses
 	put-versions
 	tests
-	$([[ $PACK_IN_ARCHIVES == yes ]] && echo mingw-compress)
+	$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
 )
 
 [[ -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x32 ) && -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x64 ) ]] \
@@ -593,7 +602,7 @@ done
 
 # ***************************************************************************
 
-[[ $PACK_IN_ARCHIVES == yes ]] && {
+[[ $COMPRESSING_SRCS == yes ]] && {
 	echo -e "-> \E[32;40mcompress mingw sources\E[37;40m"
 	cd $TOP_DIR; . ./scripts/srcs-compress.sh
 }
