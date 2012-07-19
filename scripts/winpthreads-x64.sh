@@ -43,7 +43,7 @@ REV=
 
 #
 
-PATCHES=( winpthreads_lasterror.patch )
+PATCHES=()
 
 #
 
