@@ -10,5 +10,5 @@ int Test() {
 int main(int, const char**) {
 	::SetLastError(2);
 
-	return (Test()==2)-1;
+	return Test()-2;
 }

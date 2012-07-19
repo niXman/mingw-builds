@@ -132,47 +132,47 @@ run_test \
 # **************************************************************************
 
 list7=(
-	"last_error_test.cpp -o last_error_test.exe"
+	"lasterrortest1.cpp -o lasterrortest1.exe"
 )
 
 run_test \
-	"last_error_test" \
+	"lasterrortest1" \
 	list7[@] \
 	$TESTS_ROOT_DIR
 
 # **************************************************************************
 
 list8=(
-	"timetest.c -lpthread -o timetest.exe"
+	"lasterrortest2.cpp -o lasterrortest2.exe"
 )
 
 run_test \
-	"timetest" \
+	"lasterrortest2" \
 	list8[@] \
 	$TESTS_ROOT_DIR
 
 # **************************************************************************
 
+list9=(
+	"timetest.c -lpthread -o timetest.exe"
+)
+
+run_test \
+	"timetest" \
+	list9[@] \
+	$TESTS_ROOT_DIR
+
+# **************************************************************************
+
 [[ $THREADS_MODEL == posix ]] && {
-	list9=(
+	list10=(
 		"sleeptest.cpp -std=c++0x -o sleeptest.exe"
 	)
 
 	run_test \
 		"sleeptest" \
-		list9[@] \
+		list10[@] \
 		$TESTS_ROOT_DIR
 }
-
-# **************************************************************************
-
-# list7=(
-	# "tmtest.cpp -std=c++0x -fgnu-tm -o tmtest.exe"
-# )
-
-# run_test \
-	# "tmtest" \
-	# list7[@] \
-	# $TESTS_ROOT_DIR
 
 # **************************************************************************
