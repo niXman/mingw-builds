@@ -210,18 +210,17 @@ done
 	exit 1
 }
 
-[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
-	${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
-	echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
-	exit 1
-}
-
 [[ $THREADS_MODEL != win32 && $THREADS_MODEL != posix ]] && {
 	echo "bad threads model. terminate."
 	exit 1
 }
 
 [[ $DOWNLOAD_MODE == no ]] && {
+	[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
+		${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
+		echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
+		exit 1
+	}
 	[[ $USE_DWARF_EXCEPTIONS == yes && $USE_MULTILIB_MODE == yes ]] && {
 		echo "DWARF exceptions not allowed on multilib architecture. terminate."
 		exit 1
