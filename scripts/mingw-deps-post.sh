@@ -82,7 +82,6 @@
 		}
 
 		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
-		touch $BUILDS_DIR/mingw-deps-post.marker || exit 1
 	} || {
 		mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
 		
@@ -105,8 +104,13 @@
 		}
 
 		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
-		touch $BUILDS_DIR/mingw-deps-post.marker || exit 1
 	}
+	
+	[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
+		cp -f $LIBS_DIR/bin/*.dll $PREFIX/bin/
+	}
+
+	touch $BUILDS_DIR/mingw-deps-post.marker || exit 1
 }
 
 # **************************************************************************

@@ -45,10 +45,8 @@ BASE_CXXFLAGS="$BASE_CFLAGS"
 BASE_CPPFLAGS=""
 BASE_LDFLAGS="-pipe -s"
 
-LINK_TYPE_STATIC="--enable-static --disable-shared"
-LINK_TYPE_SHARED="--disable-static --enable-shared"
 LINK_TYPE_BOTH="--enable-shared --enable-static"
-GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
+GCC_DEPS_LINK_TYPE="--enable-static --disable-shared"
 
 #LOGVIEWER="c:/progra~1/notepad++/notepad++.exe"
 LOGVIEWER="c:/progra~2/notepad++/notepad++.exe"
@@ -73,7 +71,7 @@ TESTS_DIR=$TOP_DIR/tests
 # **************************************************************************
 
 
-[[ $# == 1 && $1 == --help	|| $[ $# == 0 || $# > 7 ] == 1 ]] && {
+[[ $# == 1 && $1 == --help	|| $[ $# == 0 || $# > 8 ] == 1 ]] && {
 	echo "usage:"
 	echo "  ./${0##*/} <gcc version> [OPTIONS] <x32|x64>"
 	echo "  help:"
@@ -81,6 +79,7 @@ TESTS_DIR=$TOP_DIR/tests
 	echo "    --download       - download only the sources"
 	echo "    --dwarf          - build GCC with DWARF exceptions"
 	echo "    --no-multilib    - build GCC without multilib support"
+	echo "    --dyn-deps       - build GCC with dynamically dependencies"
 	echo "    --rev=N          - specifies number of the build revision"
 	echo "    --threads=m      - specifies the threads model for GCC/libstdc++"
 	echo "                       available: win32, posix"
@@ -157,6 +156,9 @@ while [[ $# > 0 ]]; do
 		;;
 		--no-multilib)
 			USE_MULTILIB_MODE=no
+		;;
+		--dyn-deps)
+			GCC_DEPS_LINK_TYPE="--enable-shared --disable-static"
 		;;
 		--threads=*)
 			THREADS_MODEL=$( echo $1 | sed 's|--threads=||' )
@@ -413,7 +415,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			echo "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\". terminate."
 			exit 1
 		}
-		export PATH=$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+		export PATH=$LIBS_DIR/bin:$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	} || {
 		HOST=x86_64-w64-mingw32
 		BUILD=x86_64-w64-mingw32
@@ -427,7 +429,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			echo "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\". terminate."
 			exit 1
 		}
-		export PATH=$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+		export PATH=$LIBS_DIR/bin:$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	}
 	
 	mkdir -p $BUILDS_DIR $LIBS_DIR $LOGS_DIR $PREFIX
@@ -435,7 +437,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include"
 	COMMON_CXXFLAGS="$BASE_CFLAGS"
 	COMMON_CPPFLAGS="$BASE_CPPFLAGS"
-	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib"
+	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREFIX/bin"
 
 	EXECUTE_AFTER_DOWNLOAD=()
 	EXECUTE_AFTER_UNCOMPRESS=()

@@ -88,7 +88,7 @@ CONFIGURE_FLAGS=(
 	#
 	--with-gnu-ld
 	--with-tune=generic
-	--with-host-libstdcxx="'-static -lstdc++'"
+	--with-host-libstdcxx="-static-libstdc++"
 	--with-libiconv
 	--with-{gmp,mpfr,mpc,ppl,cloog}=$LIBS_DIR
 	--with-pkgversion="\"$PKGVERSION\""
