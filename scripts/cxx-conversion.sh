@@ -89,7 +89,9 @@ CONFIGURE_FLAGS=(
 	#
 	--with-gnu-ld
 	--with-tune=generic
-	--with-host-libstdcxx="'-static -lstdc++'"
+	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
+		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
+	)
 	--with-libiconv
 	--with-{gmp,mpfr,mpc,ppl,cloog}=$LIBS_DIR
 	--with-pkgversion="\"$PKGVERSION\""
