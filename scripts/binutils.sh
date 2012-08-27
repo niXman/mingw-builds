@@ -35,9 +35,9 @@
 
 # **************************************************************************
 
-NAME=binutils-2.22.52
-SRC_DIR_NAME=binutils-2.22.52
-URL=ftp://mirrors.kernel.org/sources.redhat.com/binutils/snapshots/binutils-2.22.52.tar.bz2
+NAME=binutils-2.22.90
+SRC_DIR_NAME=binutils-2.22.90
+URL=ftp://mirrors.kernel.org/sources.redhat.com/binutils/snapshots/binutils-2.22.90.tar.bz2
 TYPE=.tar.bz2
 
 #
