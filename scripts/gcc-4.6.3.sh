@@ -86,6 +86,7 @@ CONFIGURE_FLAGS=(
 	--disable-werror
 	--disable-symvers
 	#
+	--with-gnu-as
 	--with-gnu-ld
 	--with-tune=generic
 	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
