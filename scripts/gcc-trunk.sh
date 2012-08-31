@@ -70,10 +70,11 @@ CONFIGURE_FLAGS=(
 	--enable-checking=release
 	--enable-fully-dynamic-string
 	--enable-version-specific-runtime-libs
-	$( [[ $USE_DWARF_EXCEPTIONS == yes ]] \
-		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
-		|| echo "--enable-sjlj-exceptions" \
-	)
+#	$( [[ $USE_DWARF_EXCEPTIONS == yes ]] \
+#		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
+#		|| echo "--enable-sjlj-exceptions" \
+#	)
+#	--with-dwarf2
 	#
 	--disable-ppl-version-check
 	--disable-cloog-version-check
