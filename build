@@ -38,6 +38,11 @@
 x32_HOST_MINGW_PATH=/d/mingw32
 x64_HOST_MINGW_PATH=/d/mingw64
 
+x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
+/windows-host/4.7.1/release/i686-mingw-w64-gcc-4.7.1-release-c%2Cc%2B%2B%2Cfortran-sjlj-rev3.7z/download
+x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
+/windows-host/4.7.1/release/x86_64-mingw-w64-gcc-4.7.1-release-c%2Cc%2B%2B%2Cfortran-sjlj-rev3.7z/download
+
 ENABLE_LANGUAGES=c,c++,fortran
 
 BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer -momit-leaf-frame-pointer"
@@ -237,6 +242,17 @@ done
 			exit 1
 		}
 	}
+}
+
+[[ $(env | grep PROCESSOR_ARCHITEW6432) == "PROCESSOR_ARCHITEW6432=AMD64" ]] && {
+	IS_64BIT_HOST=yes
+} || {
+	IS_64BIT_HOST=no
+}
+
+[[ $IS_64BIT_OS == no && ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
+	echo "you can`t build MinGW for x86_64 using x86 OS. terminate."
+	exit 1
 }
 
 [[ $[ $COMPRESSING_MINGW == yes || $COMPRESSING_SRCS == yes ] == 1 && ! -f /bin/7za.exe ]] && {
