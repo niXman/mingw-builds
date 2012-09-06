@@ -35,9 +35,9 @@
 
 # **************************************************************************
 
-NAME=mpc-1.0
-SRC_DIR_NAME=mpc-1.0
-URL=http://www.multiprecision.org/mpc/download/mpc-1.0.tar.gz
+NAME=mpc-1.0.1
+SRC_DIR_NAME=mpc-1.0.1
+URL=http://www.multiprecision.org/mpc/download/mpc-1.0.1.tar.gz
 TYPE=.tar.gz
 
 #
