@@ -9,27 +9,27 @@
 #
 # Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# - Redistributions of source code must retain the above copyright 
+# - Redistributions of source code must retain the above copyright
 #     notice, this list of conditions and the following disclaimer.
-# - Redistributions in binary form must reproduce the above copyright 
-#     notice, this list of conditions and the following disclaimer in 
+# - Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
-#     be used to endorse or promote products derived from this software 
+# - Neither the name of the 'mingw-builds' nor the names of its contributors may
+#     be used to endorse or promote products derived from this software
 #     without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
 # A PARTICULAR PURPOSE ARE DISCLAIMED.
-# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY 
-# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
-# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
+# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
@@ -39,9 +39,9 @@ x32_HOST_MINGW_PATH=/d/mingw32
 x64_HOST_MINGW_PATH=/d/mingw64
 
 x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/windows-host/4.7.1/release/i686-mingw-w64-gcc-4.7.1-release-c%2Cc%2B%2B%2Cfortran-sjlj-rev3.7z/download
+/windows-host/4.7.1/release/i686-mingw-w64-gcc-4.7.1-release-c,c++,fortran-sjlj-rev3.7z
 x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/windows-host/4.7.1/release/x86_64-mingw-w64-gcc-4.7.1-release-c%2Cc%2B%2B%2Cfortran-sjlj-rev3.7z/download
+/windows-host/4.7.1/release/x86_64-mingw-w64-gcc-4.7.1-release-c,c++,fortran-sjlj-rev3.7z
 
 ENABLE_LANGUAGES=c,c++,fortran
 
@@ -72,6 +72,7 @@ SRCS_DIR=$ROOT_DIR/mingw-src
 TOP_DIR=$PWD
 PATCHES_DIR=$TOP_DIR/patches
 TESTS_DIR=$TOP_DIR/tests
+TOOLCHAINS_DIR=$TOP_DIR/toolchains
 
 # **************************************************************************
 
@@ -119,6 +120,11 @@ TESTS_DIR=$TOP_DIR/tests
 	exit 1
 }
 
+[[ $x32_HOST_MINGW_PATH == $x64_HOST_MINGW_PATH ]] && {
+	echo "i686 and x86_64 toolchains can not be installed into the same directory. terminate."
+	exit 1
+}
+
 [[ -n $(which "gcc.exe" 2>/dev/null) || \
 	-n $(which "i686-pc-mingw32-gcc.exe" 2>/dev/null) || \
 	-n $(which "i686-w64-mingw32-gcc.exe" 2>/dev/null) || \
@@ -158,6 +164,8 @@ while [[ $# > 0 ]]; do
 		--dwarf)
 			USE_DWARF_EXCEPTIONS=yes
 			USE_MULTILIB_MODE=no
+			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && continue
+			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
 		;;
 		--no-multilib)
 			USE_MULTILIB_MODE=no
@@ -172,17 +180,11 @@ while [[ $# > 0 ]]; do
 			REV_NUM=$( echo $1 | sed 's|--rev=||' )
 		;;
 		x32)
-			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
-				echo "option \"x32\" is given twice. terminate."
-				exit 1
-			}
+			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && continue
 			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
 		;;
 		x64)
-			[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-				echo "option \"x64\" is given twice. terminate."
-				exit 1
-			}
+			[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && continue
 			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x64 )
 		;;
 		gcc-*|cxx-conversion)
@@ -250,14 +252,53 @@ done
 	IS_64BIT_HOST=no
 }
 
-[[ $IS_64BIT_OS == no && ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-	echo "you can`t build MinGW for x86_64 using x86 OS. terminate."
+[[ $IS_64BIT_HOST == no && ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
+	echo "you can't build MinGW for x86_64 using x86 OS. terminate."
 	exit 1
 }
 
 [[ $[ $COMPRESSING_MINGW == yes || $COMPRESSING_SRCS == yes ] == 1 && ! -f /bin/7za.exe ]] && {
 	echo "7za.exe is not found in your /bin directory. terminate."
 	exit 1
+}
+
+# **************************************************************************
+
+. ./scripts/functions.sh
+
+[[ ! -d $x32_HOST_MINGW_PATH || ! -d $x64_HOST_MINGW_PATH ]] && {
+	echo -n "host toolchains is not installed. you wish to install (y/n)?"
+	while :
+	do
+		read -s -n1
+		echo ": $REPLY"
+		[[ $REPLY != y && $REPLY != n ]] && continue
+		[[ $REPLY == n ]] && {
+			echo "you can't build MinGW without installed host toolchains. terminate."
+			exit 1
+		}
+		[[ $REPLY == y ]] && break
+	done
+	
+	mkdir -p $TOOLCHAINS_DIR
+	[[ $? != 0 ]] && {
+		echo "can't create toolchains directory. terminate."
+		exit 1
+	}
+
+	func_install_host_mingw \
+		$TOOLCHAINS_DIR \
+		BUILD_ARCHITECTURES[@] \
+		$x32_HOST_MINGW_PATH \
+		$x64_HOST_MINGW_PATH \
+		$x32_HOST_MINGW_PATH_URL \
+		$x64_HOST_MINGW_PATH_URL
+	_result=$?
+	[[ $_result != 0 ]] && {
+		echo "host toolchain install error. terminate."
+		[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER ""
+		exit $_result
+	}
 }
 
 # **************************************************************************
@@ -314,9 +355,9 @@ SUBTARGETS_PART2=(
 	$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
 )
 
-[[ -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x32 ) && -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x64 ) ]] \
-&& build_for_both=1 \
-|| build_for_both=0
+[[ -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x32 ) \
+	&& -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x64 ) \
+]] && build_for_both=1 || build_for_both=0
 
 [[ $USE_MULTILIB_MODE == yes || $build_for_both == 1 ]] && {
 	SUBTARGETS=(
@@ -377,11 +418,16 @@ SUBTARGETS_PART2=(
 			. ./scripts/$sub.sh
 
 			[[ -z $NAME ]] && continue
-			
+
 			mkdir -p $SRCS_DIR/$SRC_DIR_NAME
 
-			func_download $SRC_DIR_NAME $TYPE $URL \
-				"$SRCS_DIR/$SRC_DIR_NAME/download.log" \
+			func_download \
+				$SRCS_DIR \
+				$SRC_DIR_NAME \
+				$TYPE \
+				$URL \
+				$SRCS_DIR/$SRC_DIR_NAME/download.log \
+				$SRCS_DIR/$SRC_DIR_NAME/_download.marker \
 				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 			[[ $? != 0 ]] && exit $?
 
@@ -398,8 +444,13 @@ SUBTARGETS_PART2=(
 					exit $result
 				}
 			}
-		
-			func_uncompress $SRC_DIR_NAME $TYPE "$SRCS_DIR/$SRC_DIR_NAME/uncompress.log"
+
+			func_uncompress \
+				$SRCS_DIR \
+				$SRC_DIR_NAME \
+				$TYPE \
+				$SRCS_DIR/$SRC_DIR_NAME/_unpack.marker \
+				"$SRCS_DIR/$SRC_DIR_NAME/uncompress.log"
 			[[ $? != 0 ]] && exit $?
 		}
 	done
@@ -428,7 +479,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			ENABLE_TARGETS=i686-w64-mingw32
 		}
 		[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc.exe ]] && {
-			echo "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\". terminate."
+			echo "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
 			exit 1
 		}
 		export PATH=$LIBS_DIR/bin:$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
@@ -442,12 +493,12 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			ENABLE_TARGETS=x86_64-w64-mingw32
 		}
 		[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc.exe ]] && {
-			echo "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\". terminate."
+			echo "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
 			exit 1
 		}
 		export PATH=$LIBS_DIR/bin:$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	}
-	
+
 	mkdir -p $BUILDS_DIR $LIBS_DIR $LOGS_DIR $PREFIX
 
 	COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include"
@@ -485,7 +536,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			)
 		}
 	}
-	
+
 	for sub in ${SUBTARGETS[@]}; do
 		echo -e "-> \E[32;40m$sub\E[37;40m"
 		[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
@@ -498,8 +549,9 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		. ./scripts/$sub.sh
 
 		[[ -z $NAME ]] && continue
-		
+
 		DOWNLOAD_LOG=$LOGS_DIR/$SRC_DIR_NAME/download.log
+		DOWNLOAD_MARKER=$LOGS_DIR/$SRC_DIR_NAME/_download.marker
 		UNCOMPRESS_LOG=$LOGS_DIR/$SRC_DIR_NAME/uncompress.log
 		CONFIGURE_LOG=$LOGS_DIR/$NAME/configure.log
 		MAKE_LOG=$LOGS_DIR/$NAME/make.log
@@ -508,14 +560,20 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		mkdir -p {$SRCS_DIR/,$BUILDS_DIR/,$LOGS_DIR/}$SRC_DIR_NAME
 		[[ $NAME != $SRC_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$NAME
 
-		func_download $SRC_DIR_NAME $TYPE $URL $DOWNLOAD_LOG \
+		func_download \
+			$SRCS_DIR \
+			$SRC_DIR_NAME \
+			$TYPE \
+			$URL \
+			$DOWNLOAD_LOG \
+			$DOWNLOAD_MARKER \
 			$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 		[[ $? != 0 ]] && {
 			result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG
 			exit $result
 		}
-		
+
 		[[ ${#EXECUTE_AFTER_DOWNLOAD[@]} >0 ]] && {
 			func_execute \
 				$SRCS_DIR \
@@ -528,14 +586,19 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				exit $result
 			}
 		}
-		
-		func_uncompress $SRC_DIR_NAME $TYPE $UNCOMPRESS_LOG
+
+		func_uncompress \
+			$SRCS_DIR \
+			$SRC_DIR_NAME \
+			$TYPE \
+			$SRCS_DIR/$SRC_DIR_NAME/_unpack.marker \
+			$UNCOMPRESS_LOG
 		[[ $? != 0 ]] && {
 			result=$?
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $UNCOMPRESS_LOG
 			exit $result
 		}
-		
+
 		[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
 			func_execute \
 				$SRCS_DIR \
@@ -548,7 +611,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				exit $result
 			}
 		}
-		
+
 		func_apply_patches \
 			$SRC_DIR_NAME \
 			PATCHES[@]
@@ -557,7 +620,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/patch-$_index.log
 			exit $result
 		}
-		
+
 		[[ ${#EXECUTE_AFTER_PATCH[@]} >0 ]] && {
 			func_execute \
 				$SRCS_DIR \
@@ -582,7 +645,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG
 			exit $result
 		}
-		
+
 		make_flags="/bin/make ${MAKE_FLAGS[@]}"
 		func_make \
 			$NAME \
@@ -596,7 +659,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG
 			exit $result
 		}
-		
+
 		install_flags="/bin/make ${INSTALL_FLAGS[@]}"
 		func_make \
 			$NAME \
@@ -610,7 +673,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG
 			exit $result
 		}
-		
+
 		EXECUTE_AFTER_PATCH=()
 		EXECUTE_AFTER_UNCOMPRESS=()
 		EXECUTE_AFTER_DOWNLOAD=()

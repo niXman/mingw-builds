@@ -9,27 +9,27 @@
 #
 # Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# - Redistributions of source code must retain the above copyright 
+# - Redistributions of source code must retain the above copyright
 #     notice, this list of conditions and the following disclaimer.
-# - Redistributions in binary form must reproduce the above copyright 
-#     notice, this list of conditions and the following disclaimer in 
+# - Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
-#     be used to endorse or promote products derived from this software 
+# - Neither the name of the 'mingw-builds' nor the names of its contributors may
+#     be used to endorse or promote products derived from this software
 #     without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
 # A PARTICULAR PURPOSE ARE DISCLAIMED.
-# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY 
-# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
-# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
+# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
@@ -52,74 +52,76 @@ function func_absolute_to_relative {
 
 # download the sources
 function func_download {
-	# $1 - name
-	# $2 - sources type: .tar.gz, .tar.bz2 e.t.c...
-	#      if library get from a repository, choose it's type: cvs, svn, hg, git
-	# $3 - URL
-	# $4 - log file name
-	# $5 - revision
+	# $1 - srcs root path
+	# $2 - name
+	# $3 - sources type: .tar.gz, .tar.bz2 e.t.c...
+	#      if sources get from a repository, choose it's type: cvs, svn, hg, git
+	# $4 - URL
+	# $5 - log file name
+	# $6 - marker file name
+	# $7 - revision
 
-	local WGET_TIMEOUT=5
-	local WGET_TRIES=10
-	local WGET_WAIT=2
+	local _WGET_TIMEOUT=5
+	local _WGET_TRIES=10
+	local _WGET_WAIT=2
 
 	local _marker=$SRCS_DIR/$1/_download.marker
 	local _result=0
 
-	[[ -z $3 ]] && {
+	[[ -z $4 ]] && {
 		echo "URL is empty. terminate."
 		exit 1
 	}
 
-	[[ ! -f $_marker ]] && {
-		[[ $2 == cvs || $2 == svn || $2 == hg || $2 == git ]] && {
-			local LIB_NAME=$SRCS_DIR/$1
+	[[ ! -f $6 ]] && {
+		[[ $3 == cvs || $3 == svn || $3 == hg || $3 == git ]] && {
+			local _lib_name=$1/$2
 		} || {
-			local LIB_NAME=$SRCS_DIR/$1$2
+			local _lib_name=$1/$2$3
 		}
 
 		echo -n "--> download..."
 
-		case $2 in
+		case $3 in
 			cvs)
 				local _prev_dir=$PWD
-				cd $SRCS_DIR
-				[[ -n "$5" ]] && {
-					cvs -z9 -d $3 co -D$5 $1 > $4 2>&1
+				cd $1
+				[[ -n $7 ]] && {
+					cvs -z9 -d $4 co -D$7 $2 > $5 2>&1
 				} || {
-					cvs -z9 -d $3 co $1 > $4 2>&1
+					cvs -z9 -d $4 co $2 > $5 2>&1
 				}
 				_result=$?
 				cd $_prev_dir
 			;;
 			svn)
-				[[ -n "$5" ]] && {
-					svn co -r $5 $3 $LIB_NAME > $4 2>&1
+				[[ -n $7 ]] && {
+					svn co -r $7 $4 $_lib_name > $5 2>&1
 				} || {
-					svn co $3 $LIB_NAME > $4 2>&1
+					svn co $4 $_lib_name > $5 2>&1
 				}
 				_result=$?
 			;;
 			hg)
-				hg clone $3 $LIB_NAME > $4 2>&1
+				hg clone $4 $_lib_name > $5 2>&1
 				_result=$?
 			;;
 			git)
-				git clone $3 $LIB_NAME > $4 2>&1
+				git clone $4 $_lib_name > $5 2>&1
 				_result=$?
 			;;
 			*)
-				[[ ! -f $_marker && -f $LIB_NAME ]] && rm -rf $LIB_NAME
+				[[ ! -f $6 && -f $_lib_name ]] && rm -rf $_lib_name
 				wget \
-					--tries=$WGET_TRIES \
-					--timeout=$WGET_TIMEOUT \
-					--wait=$WGET_WAIT \
-					$3 -O $LIB_NAME > $4 2>&1
+					--tries=$_WGET_TRIES \
+					--timeout=$_WGET_TIMEOUT \
+					--wait=$_WGET_WAIT \
+					$4 -O $_lib_name > $5 2>&1
 				_result=$?
 			;;
 		esac
 
-		[[ $_result == 0 ]] && { echo " done"; touch $_marker; } || { echo " error!"; }
+		[[ $_result == 0 ]] && { echo " done"; touch $6; } || { echo " error!"; }
 	} || {
 		echo "---> downloaded"
 	}
@@ -130,26 +132,31 @@ function func_download {
 
 # uncompress sources
 function func_uncompress {
-	# $1 - name
-	# $2 - ext
-	# $3 - log file name
+	# $1 - srcs root path
+	# $2 - name
+	# $3 - ext
+	# $4 - marker file name
+	# $5 - log file name
 
 	local _marker=$SRCS_DIR/$1/_uncompress.marker
 	local _result=0
-	local _tar_flags
+	local _unpack_cmd
 
-	[[ $2 == .tar.gz || $2 == .tar.bz2 || $2 == .tar.lzma || $2 == .tar.xz ]] && {
-		[[ ! -f $_marker ]] && {
+	[[ $3 == .tar.gz || $3 == .tar.bz2 || $3 == .tar.lzma \
+	|| $3 == .tar.xz || $3 == .tar.7z || $3 == .7z ]] && {
+		[[ ! -f $4 ]] && {
 			echo -n "--> unpack..."
-			case $2 in
-				.tar.gz) _tar_flags=f ;;
-				.tar.bz2) _tar_flags=jf ;;
-				.tar.lzma|.tar.xz) _tar_flags=Jf ;;
-				*) echo " error. bad archive type: $2"; return 1 ;;
+			case $3 in
+				.tar.gz) _unpack_cmd="tar xvf $1/$2$3 -C $1 > $5 2>&1" ;;
+				.tar.bz2) _unpack_cmd="tar xvjf $1/$2$3 -C $1 > $5 2>&1" ;;
+				.tar.lzma|.tar.xz) _unpack_cmd="tar xvJf $1/$2$3 -C $1 > $5 2>&1" ;;
+				.tar.7z) echo "unimplemented. terminate."; exit 1 ;;
+				.7z) _unpack_cmd="7za x $1/$2$3 -o$1 > $5 2>&1" ;;
+				*) echo " error. bad archive type: $3"; return 1 ;;
 			esac
-			tar xv$_tar_flags $SRCS_DIR/$1$2 -C $SRCS_DIR > $3 2>&1
+			eval ${_unpack_cmd}
 			_result=$?
-			[[ $_result == 0 ]] && { echo " done"; touch $_marker; } || { echo " error!"; }
+			[[ $_result == 0 ]] && { echo " done"; touch $4; } || { echo " error!"; }
 		} || {
 			echo "---> unpacked"
 		}
@@ -309,7 +316,7 @@ function run_test {
 	# $1 - executable name
 	# $2 - sources names
 	# $3 - tests dir
-	
+
 	local _result=0
 	local -a _list=( "${!2}" )
 
@@ -322,7 +329,7 @@ function run_test {
 	} || {
 		local -a _archs=(32 64)
 	}
-	
+
 	for arch_it in ${_archs[@]}; do
 		[[ ! -f $3/$arch_it/$1.marker ]] && {
 			for src_it in "${_list[@]}"; do
@@ -331,7 +338,7 @@ function run_test {
 				local _last=$( echo $src_it | sed 's/^.* //' )
 				local _cmp_log=$3/$arch_it/$_first-compilation.log
 				local _run_log=$3/$arch_it/$_first-execution.log
-				
+
 				printf "%-50s" "--> $([[ ${_prev%% *} =~ .cpp ]] && echo -n G++ || echo -n GCC) compile $arch_it: \"$_first\" ... "
 				[[ ${_prev%% *} =~ .cpp ]] && {
 					echo "g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_cmp_log
@@ -342,8 +349,8 @@ function run_test {
 				}
 				_result=$?
 				[[ $_result == 0 ]] && {
-					echo "-> $_result -> done" 
-				} || { 
+					echo "-> $_result -> done"
+				} || {
 					echo "-> $_result -> error. terminate."
 					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_cmp_log
 					exit $_result
@@ -361,12 +368,207 @@ function run_test {
 					}
 				}
 			done
-			
+
 			touch $3/$arch_it/$1.marker
 		} || {
 			echo "---> test $arch_it: \"$1\" - passed"
 		}
 	done
+}
+
+# **************************************************************************
+
+function func_install_host_mingw {
+	# $1 - toolchains path
+	# $2 - list of architectures
+	# $3 - i686-mingw install path
+	# $4 - x86_64-mingw install path
+	# $5 - i686-mingw URL
+	# $6 - x86_64-mingw URL
+	
+	function download_mingw_x32 {
+		# $1 - toolchains path
+		# $2 - i686-mingw URL
+		
+		func_download \
+			$1 \
+			$(basename $2 | sed 's|.7z||') \
+			.7z \
+			$2 \
+			$1/mingw-x32-download.log \
+			$1/mingw-x32-download.marker \
+			""
+		return $?
+	}
+	
+	function download_mingw_x64 {
+		# $1 - toolchains path
+		# $2 - x86_64-mingw URL
+		
+		func_download \
+			$1 \
+			$(basename $2 | sed 's|.7z||') \
+			.7z \
+			$2 \
+			$1/mingw-x64-download.log \
+			$1/mingw-x64-download.marker \
+			""
+		return $?
+	}
+	
+	function uncompress_mingw_x32 {
+		# $1 - toolchains path
+		# $2 - i686-mingw archive filename
+
+		func_uncompress \
+			$1 \
+			$(basename $2 | sed 's|.7z||') \
+			.7z \
+			$1/mingw-x32-uncompress.marker \
+			$1/mingw-x32-uncompress.log
+		return $?
+	}
+	function uncompress_mingw_x64 {
+		# $1 - toolchains path
+		# $2 - x86_64-mingw archive filename
+
+		func_uncompress \
+			$1 \
+			$(basename $2 | sed 's|.7z||') \
+			.7z \
+			$1/mingw-x64-uncompress.marker \
+			$1/mingw-x64-uncompress.log
+		return $?
+	}
+	
+	function move_mingw {
+		# $1 - toolchains path
+		# $2 - destination path
+		# $3 - marker file name
+	
+		[[ ! -f $3 ]] && {
+			# check if MinGW root directory name is valid
+			[[ ! -d $1/mingw ]] && {
+				echo "bad MinGW root path name. terminate."
+				exit 1
+			}
+			
+			# rename MinGW directory
+			echo -n "--> move... "
+			mv $1/mingw $2
+			local _result=$?
+			[[ $_result != 0 ]] && {
+				echo "error when move root MinGW path. terminate."
+				exit 1
+			} || {
+				touch $3 && echo "done" || return 1
+			}
+		} || {
+			echo "---> moved"
+		}
+		return $_result
+	}
+	
+	local -a _architectures=( "${!2}" )
+	
+	[[ ${_architectures[@]} =~ x64 ]] && {
+		# x32 download
+		echo -e "-> \E[32;40mx32 toolchain\E[37;40m"
+		download_mingw_x32 \
+			$1 \
+			$5
+		local _result=$?
+		[[ $_result != 0 ]] && {
+			echo "download error. terminate."
+			return $_result
+		}
+
+		# x32 uncompress
+		uncompress_mingw_x32 \
+			$1 \
+			$5
+		local _result=$?
+		[[ $_result != 0 ]] && {
+			echo "uncompress error. terminate."
+			return $_result
+		}
+
+		move_mingw \
+			$1 \
+			$3 \
+			$1/mingw-x32-move.marker
+		local _result=$?
+		[[ $_result != 0 ]] && {
+			echo "move error. terminate."
+			return $_result
+		}
+
+		# x64 download
+		echo -e "-> \E[32;40mx64 toolchain\E[37;40m"
+		download_mingw_x64 \
+			$1 \
+			$6
+		local _result=$?
+		[[ $_result != 0 ]] && {
+			echo "download error. terminate."
+			return $_result
+		}
+
+		# x64 uncompress
+		uncompress_mingw_x64 \
+			$1 \
+			$6
+		local _result=$?
+		[[ $_result != 0 ]] && {
+			echo "uncompress error. terminate."
+			return $_result
+		}
+
+		move_mingw \
+			$1 \
+			$4 \
+			$1/mingw-x64-move.marker
+		local _result=$?
+		[[ $_result != 0 ]] && {
+			echo "move error. terminate."
+			return $_result
+		}
+
+		return $_result
+	} || {
+		# download only 32-bit toolchain
+		echo -e "-> \E[32;40mx32 toolchain\E[37;40m"
+		download_mingw_x32 \
+			$1 \
+			$5
+		local _result=$?
+		[[ $_result != 0 ]] && {
+			echo "download error. terminate."
+			return $_result
+		}
+
+		# uncompress
+		uncompress_mingw_x32 \
+			$1 \
+			$5
+		local _result=$?
+		[[ $_result != 0 ]] && {
+			echo "download error. terminate."
+			return $_result
+		}
+
+		move_mingw \
+			$1 \
+			$3 \
+			$1/mingw-x32-move.marker
+		local _result=$?
+		[[ $_result != 0 ]] && {
+			echo "move error. terminate."
+			return $_result
+		}
+		
+		return $_result
+	}
 }
 
 # **************************************************************************
