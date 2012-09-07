@@ -380,7 +380,7 @@ function run_test {
 
 function func_install_host_mingw {
 	# $1 - toolchains path
-	# $2 - list of architectures
+	# $2 - is DWARF building
 	# $3 - i686-mingw install path
 	# $4 - x86_64-mingw install path
 	# $5 - i686-mingw URL
@@ -469,9 +469,7 @@ function func_install_host_mingw {
 		return $_result
 	}
 	
-	local -a _architectures=( "${!2}" )
-	
-	[[ ${_architectures[@]} =~ x64 ]] && {
+	[[ $2 == yes ]] && {
 		# x32 download
 		echo -e "-> \E[32;40mx32 toolchain\E[37;40m"
 		download_mingw_x32 \

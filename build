@@ -288,7 +288,7 @@ done
 
 	func_install_host_mingw \
 		$TOOLCHAINS_DIR \
-		BUILD_ARCHITECTURES[@] \
+		$USE_DWARF_EXCEPTIONS \
 		$x32_HOST_MINGW_PATH \
 		$x64_HOST_MINGW_PATH \
 		$x32_HOST_MINGW_PATH_URL \
