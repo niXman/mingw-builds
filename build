@@ -180,11 +180,11 @@ while [[ $# > 0 ]]; do
 			REV_NUM=$( echo $1 | sed 's|--rev=||' )
 		;;
 		x32)
-			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && continue
+			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
 			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
 		;;
 		x64)
-			[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && continue
+			[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && { shift; continue; }
 			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x64 )
 		;;
 		gcc-*|cxx-conversion)
