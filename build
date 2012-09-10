@@ -164,7 +164,7 @@ while [[ $# > 0 ]]; do
 		--dwarf)
 			USE_DWARF=yes
 			USE_MULTILIB=no
-			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && continue
+			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
 			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
 		;;
 		--no-multilib)
