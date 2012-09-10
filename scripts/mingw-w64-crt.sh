@@ -47,7 +47,7 @@ PATCHES=()
 
 #
 
-[[ $USE_MULTILIB_MODE == yes ]] && {
+[[ $USE_MULTILIB == yes ]] && {
 	LIBCONF="--enable-lib32 --enable-lib64"
 } || {
 	[[ $ARCHITECTURE == x32 ]] && {

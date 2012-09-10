@@ -57,7 +57,7 @@ case $GCC_NAME in
 	*) echo "gcc name error: $GCC_NAME. terminate."; exit ;;
 esac
 
-[[ $USE_DWARF_EXCEPTIONS == no ]] && {
+[[ $USE_DWARF == no ]] && {
 	ARCHIVE_NAME=$ARCHIVE_NAME-sjlj
 } || {
 	ARCHIVE_NAME=$ARCHIVE_NAME-dwarf

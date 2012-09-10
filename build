@@ -145,8 +145,8 @@ TOOLCHAINS_DIR=$TOP_DIR/toolchains
 PRELOAD_MODE=no
 DOWNLOAD_MODE=no
 BUILD_ARCHITECTURES=()
-USE_DWARF_EXCEPTIONS=no
-USE_MULTILIB_MODE=yes
+USE_DWARF=no
+USE_MULTILIB=yes
 THREADS_MODEL=posix
 REV_NUM=""
 GCC_NAME=""
@@ -162,13 +162,13 @@ while [[ $# > 0 ]]; do
 			DOWNLOAD_MODE=yes
 		;;
 		--dwarf)
-			USE_DWARF_EXCEPTIONS=yes
-			USE_MULTILIB_MODE=no
+			USE_DWARF=yes
+			USE_MULTILIB=no
 			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && continue
 			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
 		;;
 		--no-multilib)
-			USE_MULTILIB_MODE=no
+			USE_MULTILIB=no
 		;;
 		--dyn-deps)
 			GCC_DEPS_LINK_TYPE="--enable-shared --disable-static"
@@ -230,11 +230,11 @@ done
 		echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
 		exit 1
 	}
-	[[ $USE_DWARF_EXCEPTIONS == yes && $USE_MULTILIB_MODE == yes ]] && {
+	[[ $USE_DWARF == yes && $USE_MULTILIB == yes ]] && {
 		echo "DWARF exceptions not allowed on multilib architecture. terminate."
 		exit 1
 	}
-	[[ $USE_DWARF_EXCEPTIONS == yes ]] && {
+	[[ $USE_DWARF == yes ]] && {
 		[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
 			echo "DWARF exceptions not allowed on x86_64 architecture. terminate."
 			exit 1
@@ -246,7 +246,7 @@ done
 	}
 }
 
-[[ $(env | grep PROCESSOR_ARCHITEW6432) == "PROCESSOR_ARCHITEW6432=AMD64" ]] && {
+[[ $(env | grep PROCESSOR_ARCHITEW6432) =~ AMD64 ]] && {
 	IS_64BIT_HOST=yes
 } || {
 	IS_64BIT_HOST=no
@@ -267,37 +267,39 @@ done
 . ./scripts/functions.sh
 
 [[ ! -d $x32_HOST_MINGW_PATH || ! -d $x64_HOST_MINGW_PATH ]] && {
-	echo -n "host toolchains is not installed. you wish to install (y/n)?"
-	while :
-	do
-		read -s -n1
-		echo ": $REPLY"
-		[[ $REPLY != y && $REPLY != n ]] && continue
-		[[ $REPLY == n ]] && {
-			echo "you can't build MinGW without installed host toolchains. terminate."
+	[[ $USE_DWARF == yes && ! -d $x32_HOST_MINGW_PATH ]] || \
+	[[ $USE_DWARF == no  && ! -d $x64_HOST_MINGW_PATH ]] && {
+		echo -n "host toolchains is not installed. you wish to install (y/n)?"
+		while :
+		do
+			read -s -n1
+			echo ": $REPLY"
+			[[ $REPLY != y && $REPLY != n ]] && continue
+			[[ $REPLY == n ]] && {
+				echo "you can't build MinGW without installed host toolchains. terminate."
+				exit 1
+			}
+			[[ $REPLY == y ]] && break
+		done
+		
+		mkdir -p $TOOLCHAINS_DIR
+		[[ $? != 0 ]] && {
+			echo "can't create toolchains directory. terminate."
 			exit 1
 		}
-		[[ $REPLY == y ]] && break
-	done
-	
-	mkdir -p $TOOLCHAINS_DIR
-	[[ $? != 0 ]] && {
-		echo "can't create toolchains directory. terminate."
-		exit 1
-	}
 
-	func_install_host_mingw \
-		$TOOLCHAINS_DIR \
-		$USE_DWARF_EXCEPTIONS \
-		$x32_HOST_MINGW_PATH \
-		$x64_HOST_MINGW_PATH \
-		$x32_HOST_MINGW_PATH_URL \
-		$x64_HOST_MINGW_PATH_URL
-	_result=$?
-	[[ $_result != 0 ]] && {
-		echo "host toolchain install error. terminate."
-		[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER ""
-		exit $_result
+		func_install_toolchain \
+			$TOOLCHAINS_DIR \
+			$x32_HOST_MINGW_PATH \
+			$x64_HOST_MINGW_PATH \
+			$x32_HOST_MINGW_PATH_URL \
+			$x64_HOST_MINGW_PATH_URL
+		_result=$?
+		[[ $_result != 0 ]] && {
+			echo "host toolchain install error. terminate."
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER ""
+			exit $_result
+		}
 	}
 }
 
@@ -355,11 +357,13 @@ SUBTARGETS_PART2=(
 	$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
 )
 
-[[ -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x32 ) \
-	&& -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x64 ) \
-]] && build_for_both=1 || build_for_both=0
+[[ ${BUILD_ARCHITECTURES[@]} =~ x32 && ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
+	build_for_both=1
+} || {
+	build_for_both=0
+}
 
-[[ $USE_MULTILIB_MODE == yes || $build_for_both == 1 ]] && {
+[[ $USE_MULTILIB == yes || $build_for_both == 1 ]] && {
 	SUBTARGETS=(
 		${LIBICONV_X32_SUBTARGETS[@]}
 		${LIBICONV_X64_SUBTARGETS[@]}
@@ -369,7 +373,7 @@ SUBTARGETS_PART2=(
 		${SUBTARGETS_PART2[@]}
 	)
 } || {
-	[[ -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x32 ) ]] && {
+	[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
 		SUBTARGETS=(
 			${LIBICONV_X32_SUBTARGETS[@]}
 			${SUBTARGETS_PART1[@]}
@@ -397,11 +401,11 @@ SUBTARGETS_PART2=(
 			echo -n "-> download sources for MinGW-${GCC_NAME}-"
 		}
 	}
-	[[ $USE_MULTILIB_MODE == yes ]] && echo -n "multilib-"
+	[[ $USE_MULTILIB == yes ]] && echo -n "multilib-"
 	[[ $build_for_both == 1 ]] && {
 		echo "x32/x64"
 	} || {
-		[[ -n $( echo ${BUILD_ARCHITECTURES[@]} | grep x32 ) ]] && echo "x32" || echo "x64"
+		[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && echo "x32" || echo "x64"
 	}
 	for sub in ${SUBTARGETS[@]}; do
 		[[ $sub == put-versions ]] && continue
@@ -429,7 +433,11 @@ SUBTARGETS_PART2=(
 				$SRCS_DIR/$SRC_DIR_NAME/download.log \
 				$SRCS_DIR/$SRC_DIR_NAME/_download.marker \
 				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
-			[[ $? != 0 ]] && exit $?
+			_result=$?
+			[[ $_result != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/download.log
+				exit $_result
+			}
 
 			[[ ${#EXECUTE_AFTER_DOWNLOAD[@]} > 0 ]] && {
 				func_execute \
@@ -437,11 +445,10 @@ SUBTARGETS_PART2=(
 					$SRC_DIR_NAME \
 					"execute commands..." \
 					EXECUTE_AFTER_DOWNLOAD[@]
-				
-				[[ $? != 0 ]] && {
-					result=$?
+				_result=$?
+				[[ $_result != 0 ]] && {
 					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
-					exit $result
+					exit $_result
 				}
 			}
 
@@ -450,8 +457,12 @@ SUBTARGETS_PART2=(
 				$SRC_DIR_NAME \
 				$TYPE \
 				$SRCS_DIR/$SRC_DIR_NAME/_unpack.marker \
-				"$SRCS_DIR/$SRC_DIR_NAME/uncompress.log"
-			[[ $? != 0 ]] && exit $?
+				$SRCS_DIR/$SRC_DIR_NAME/uncompress.log
+			_result=$?
+			[[ $_result != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/uncompress.log
+				exit $_result
+			}
 		}
 	done
 }
@@ -468,12 +479,12 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-libs-$ARCHITECTURE
 	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-logs-$ARCHITECTURE
 	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-$ARCHITECTURE
-	echo "-> start building MinGW-$GCC_NAME-$([[ $USE_MULTILIB_MODE == yes ]] && echo -n multilib-)$ARCHITECTURE"
+	echo "-> start building MinGW-$GCC_NAME-$([[ $USE_MULTILIB == yes ]] && echo -n multilib-)$ARCHITECTURE"
 	[[ $ARCHITECTURE == x32 ]] && {
 		HOST=i686-w64-mingw32
 		BUILD=i686-w64-mingw32
 		TARGET=i686-w64-mingw32
-		[[ $USE_MULTILIB_MODE == yes ]] && {
+		[[ $USE_MULTILIB == yes ]] && {
 			ENABLE_TARGETS=i686-w64-mingw32,x86_64-w64-mingw32
 		} || {
 			ENABLE_TARGETS=i686-w64-mingw32
@@ -487,7 +498,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		HOST=x86_64-w64-mingw32
 		BUILD=x86_64-w64-mingw32
 		TARGET=x86_64-w64-mingw32
-		[[ $USE_MULTILIB_MODE == yes ]] && {
+		[[ $USE_MULTILIB == yes ]] && {
 			ENABLE_TARGETS=x86_64-w64-mingw32,i686-w64-mingw32
 		} || {
 			ENABLE_TARGETS=x86_64-w64-mingw32
@@ -510,7 +521,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	EXECUTE_AFTER_UNCOMPRESS=()
 	EXECUTE_AFTER_PATCH=()
 
-	[[ $USE_MULTILIB_MODE == yes ]] && {
+	[[ $USE_MULTILIB == yes ]] && {
 		SUBTARGETS=(
 			${LIBICONV_X32_SUBTARGETS[@]}
 			${LIBICONV_X64_SUBTARGETS[@]}
@@ -551,8 +562,9 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		[[ -z $NAME ]] && continue
 
 		DOWNLOAD_LOG=$LOGS_DIR/$SRC_DIR_NAME/download.log
-		DOWNLOAD_MARKER=$LOGS_DIR/$SRC_DIR_NAME/_download.marker
+		DOWNLOAD_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_download.marker
 		UNCOMPRESS_LOG=$LOGS_DIR/$SRC_DIR_NAME/uncompress.log
+		UNCOMPRESS_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker
 		CONFIGURE_LOG=$LOGS_DIR/$NAME/configure.log
 		MAKE_LOG=$LOGS_DIR/$NAME/make.log
 		INSTALL_LOG=$LOGS_DIR/$NAME/install.log
@@ -591,7 +603,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$SRCS_DIR \
 			$SRC_DIR_NAME \
 			$TYPE \
-			$SRCS_DIR/$SRC_DIR_NAME/_unpack.marker \
+			$UNCOMPRESS_MARKER \
 			$UNCOMPRESS_LOG
 		[[ $? != 0 ]] && {
 			result=$?

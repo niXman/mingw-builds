@@ -40,7 +40,7 @@
 }
 
 [[ ! -f $BUILDS_DIR/mingw-deps-post.marker ]] && {
-	[[ $USE_MULTILIB_MODE == yes ]] && {
+	[[ $USE_MULTILIB == yes ]] && {
 		[[ $ARCHITECTURE == x32 ]] && {
 			mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,lib64,include}
 			

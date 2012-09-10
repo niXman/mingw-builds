@@ -54,7 +54,7 @@ CONFIGURE_FLAGS=(
 	--prefix=$PREFIX
 	--with-sysroot=$PREFIX
 	#
-	$( [[ $USE_MULTILIB_MODE == yes ]] \
+	$( [[ $USE_MULTILIB == yes ]] \
 		&& echo "--enable-targets=$ENABLE_TARGETS --enable-multilib --enable-64-bit-bfd" \
 		|| echo "--disable-multilib"
 	)

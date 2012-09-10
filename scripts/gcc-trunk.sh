@@ -56,7 +56,7 @@ CONFIGURE_FLAGS=(
 	#
 	$LINK_TYPE_BOTH
 	#
-	$( [[ $USE_DWARF_EXCEPTIONS == yes ]] \
+	$( [[ $USE_MULTILIB == yes ]] \
 		&& echo "--disable-multilib" \
 		|| echo "--enable-targets=all --enable-multilib" \
 	)
@@ -70,10 +70,10 @@ CONFIGURE_FLAGS=(
 	--enable-checking=release
 	--enable-fully-dynamic-string
 	--enable-version-specific-runtime-libs
-	$( [[ $USE_DWARF_EXCEPTIONS == yes ]] \
-		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
-		|| echo "--enable-sjlj-exceptions" \
-	)
+#	$( [[ $USE_DWARF == yes ]] \
+#		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
+#		|| echo "--enable-sjlj-exceptions" \
+#	)
 	#
 	--disable-ppl-version-check
 	--disable-cloog-version-check

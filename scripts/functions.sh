@@ -36,16 +36,16 @@
 # **************************************************************************
 
 function func_absolute_to_relative {
-   local common_part=$1
-   local target=$2
-   local back=""
+   local _common=$1
+   local _target=$2
+   local _back=""
 
-   while [[ "${target#$common_part}" == "${target}" ]]; do
-      common_part=$(dirname $common_part)
-      back="../${back}"
+   while [[ "${_target#$_common}" == "${_target}" ]]; do
+      _common=$(dirname $_common)
+      _back="../${_back}"
    done
 
-   echo "${back}${target#$common_part/}"
+   echo "${_back}${_target#$_common/}"
 }
 
 # **************************************************************************
@@ -53,7 +53,7 @@ function func_absolute_to_relative {
 # download the sources
 function func_download {
 	# $1 - srcs root path
-	# $2 - name
+	# $2 - src dir name
 	# $3 - sources type: .tar.gz, .tar.bz2 e.t.c...
 	#      if sources get from a repository, choose it's type: cvs, svn, hg, git
 	# $4 - URL
@@ -61,27 +61,24 @@ function func_download {
 	# $6 - marker file name
 	# $7 - revision
 
-	local _WGET_TIMEOUT=5
-	local _WGET_TRIES=10
-	local _WGET_WAIT=2
-
-	local _marker=$SRCS_DIR/$1/_download.marker
-	local _result=0
-
 	[[ -z $4 ]] && {
 		echo "URL is empty. terminate."
 		exit 1
 	}
 
+	local _WGET_TIMEOUT=5
+	local _WGET_TRIES=10
+	local _WGET_WAIT=2
+	local _result=0
+
+	[[ $3 == cvs || $3 == svn || $3 == hg || $3 == git ]] && {
+		local _lib_name=$1/$2
+	} || {
+		local _lib_name=$1/$2$3
+	}
+
 	[[ ! -f $6 ]] && {
-		[[ $3 == cvs || $3 == svn || $3 == hg || $3 == git ]] && {
-			local _lib_name=$1/$2
-		} || {
-			local _lib_name=$1/$2$3
-		}
-
 		echo -n "--> download..."
-
 		case $3 in
 			cvs)
 				local _prev_dir=$PWD
@@ -91,8 +88,8 @@ function func_download {
 				} || {
 					cvs -z9 -d $4 co $2 > $5 2>&1
 				}
-				_result=$?
 				cd $_prev_dir
+				_result=$?
 			;;
 			svn)
 				[[ -n $7 ]] && {
@@ -138,7 +135,6 @@ function func_uncompress {
 	# $4 - marker file name
 	# $5 - log file name
 
-	local _marker=$SRCS_DIR/$1/_uncompress.marker
 	local _result=0
 	local _unpack_cmd
 
@@ -320,7 +316,7 @@ function run_test {
 	local _result=0
 	local -a _list=( "${!2}" )
 
-	[[ $USE_MULTILIB_MODE == no ]] && {
+	[[ $USE_MULTILIB == no ]] && {
 		[[ $ARCHITECTURE == x32 ]] && {
 			local -a _archs=(32)
 		} || {
@@ -378,21 +374,40 @@ function run_test {
 
 # **************************************************************************
 
-function func_install_host_mingw {
+function func_install_toolchain {
 	# $1 - toolchains path
-	# $2 - is DWARF building
-	# $3 - i686-mingw install path
-	# $4 - x86_64-mingw install path
-	# $5 - i686-mingw URL
-	# $6 - x86_64-mingw URL
+	# $2 - i686-mingw install path
+	# $3 - x86_64-mingw install path
+	# $4 - i686-mingw URL
+	# $5 - x86_64-mingw URL
+
+	# local _mingw32_archive_path=$1/${4##*/}
+	# local _mingw64_archive_path=$1/${5##*/}
 	
+	# local _mingw32_download_log=$1/mingw32-download.log
+	# local _mingw64_download_log=$1/mingw64-download.log
+	# local _mingw32_download_marker=$1/mingw32-download.marker
+	# local _mingw64_download_marker=$1/mingw64-download.marker
+	# local _mingw32_uncompress_log=$1/mingw32-uncompress.log
+	# local _mingw64_uncompress_log=$1/mingw64-uncompress.log
+	# local _mingw32_uncompress_marker=$1/mingw32-uncompress.marker
+	# local _mingw64_uncompress_marker=$1/mingw64-uncompress.marker
+	# local _mingw32_move_marker=$1/mingw32-move.marker
+	# local _mingw64_move_marker=$1/mingw64-move.marker
+
+	# function func_check_toolchain {
+		# # $1 - toolchains path
+		# # $2 - is DWARF building
+		# echo
+	# }
+
 	function download_mingw_x32 {
 		# $1 - toolchains path
 		# $2 - i686-mingw URL
 		
 		func_download \
 			$1 \
-			$(basename $2 | sed 's|.7z||') \
+			$(basename $2 .7z) \
 			.7z \
 			$2 \
 			$1/mingw-x32-download.log \
@@ -400,14 +415,14 @@ function func_install_host_mingw {
 			""
 		return $?
 	}
-	
+
 	function download_mingw_x64 {
 		# $1 - toolchains path
 		# $2 - x86_64-mingw URL
 		
 		func_download \
 			$1 \
-			$(basename $2 | sed 's|.7z||') \
+			$(basename $2 .7z) \
 			.7z \
 			$2 \
 			$1/mingw-x64-download.log \
@@ -422,7 +437,7 @@ function func_install_host_mingw {
 
 		func_uncompress \
 			$1 \
-			$(basename $2 | sed 's|.7z||') \
+			$(basename $2 .7z) \
 			.7z \
 			$1/mingw-x32-uncompress.marker \
 			$1/mingw-x32-uncompress.log
@@ -434,7 +449,7 @@ function func_install_host_mingw {
 
 		func_uncompress \
 			$1 \
-			$(basename $2 | sed 's|.7z||') \
+			$(basename $2 .7z) \
 			.7z \
 			$1/mingw-x64-uncompress.marker \
 			$1/mingw-x64-uncompress.log
@@ -468,13 +483,13 @@ function func_install_host_mingw {
 		}
 		return $_result
 	}
-	
-	[[ $2 == yes ]] && {
+
+	[[ ! -d $2 || ! $2/bin/gcc.exe ]] && {
 		# x32 download
 		echo -e "-> \E[32;40mx32 toolchain\E[37;40m"
 		download_mingw_x32 \
 			$1 \
-			$5
+			$4
 		local _result=$?
 		[[ $_result != 0 ]] && {
 			echo "download error. terminate."
@@ -484,7 +499,7 @@ function func_install_host_mingw {
 		# x32 uncompress
 		uncompress_mingw_x32 \
 			$1 \
-			$5
+			$4
 		local _result=$?
 		[[ $_result != 0 ]] && {
 			echo "uncompress error. terminate."
@@ -493,80 +508,53 @@ function func_install_host_mingw {
 
 		move_mingw \
 			$1 \
-			$3 \
+			$2 \
 			$1/mingw-x32-move.marker
 		local _result=$?
 		[[ $_result != 0 ]] && {
 			echo "move error. terminate."
 			return $_result
 		}
-
-		# x64 download
-		echo -e "-> \E[32;40mx64 toolchain\E[37;40m"
-		download_mingw_x64 \
-			$1 \
-			$6
-		local _result=$?
-		[[ $_result != 0 ]] && {
-			echo "download error. terminate."
-			return $_result
-		}
-
-		# x64 uncompress
-		uncompress_mingw_x64 \
-			$1 \
-			$6
-		local _result=$?
-		[[ $_result != 0 ]] && {
-			echo "uncompress error. terminate."
-			return $_result
-		}
-
-		move_mingw \
-			$1 \
-			$4 \
-			$1/mingw-x64-move.marker
-		local _result=$?
-		[[ $_result != 0 ]] && {
-			echo "move error. terminate."
-			return $_result
-		}
-
-		return $_result
-	} || {
-		# download only 32-bit toolchain
-		echo -e "-> \E[32;40mx32 toolchain\E[37;40m"
-		download_mingw_x32 \
-			$1 \
-			$5
-		local _result=$?
-		[[ $_result != 0 ]] && {
-			echo "download error. terminate."
-			return $_result
-		}
-
-		# uncompress
-		uncompress_mingw_x32 \
-			$1 \
-			$5
-		local _result=$?
-		[[ $_result != 0 ]] && {
-			echo "download error. terminate."
-			return $_result
-		}
-
-		move_mingw \
-			$1 \
-			$3 \
-			$1/mingw-x32-move.marker
-		local _result=$?
-		[[ $_result != 0 ]] && {
-			echo "move error. terminate."
-			return $_result
-		}
-		
-		return $_result
 	}
+
+	[[ $USE_DWARF == no ]] && {
+		[[ ! -d $3 || ! $3/bin/gcc.exe ]] && {
+			# x64 download
+			echo -e "-> \E[32;40mx64 toolchain\E[37;40m"
+			download_mingw_x64 \
+				$1 \
+				$5
+			local _result=$?
+			[[ $_result != 0 ]] && {
+				echo "download error. terminate."
+				return $_result
+			}
+
+			# x64 uncompress
+			uncompress_mingw_x64 \
+				$1 \
+				$5
+			local _result=$?
+			[[ $_result != 0 ]] && {
+				echo "uncompress error. terminate."
+				return $_result
+			}
+
+			move_mingw \
+				$1 \
+				$3 \
+				$1/mingw-x64-move.marker
+			local _result=$?
+			[[ $_result != 0 ]] && {
+				echo "move error. terminate."
+				return $_result
+			}
+
+			return $_result
+		}
+	}
+	
+	return 0
 }
 
 # **************************************************************************
