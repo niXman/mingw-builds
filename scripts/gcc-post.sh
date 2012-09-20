@@ -46,8 +46,8 @@
 		[[ $USE_DWARF == no ]] && {
 			# 32bit dlls
 			DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune -o -type f -name *.dll) )
-			cp -f ${DLLS[@]} $PREFIX/bin/
-			cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/
+			cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
+			cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/ >/dev/null 2>&1
 			
 			strip $PREFIX/bin/*.dll || exit 1
 			strip $PREFIX/$TARGET/lib/*.dll || exit 1
@@ -56,7 +56,8 @@
 			[[ $USE_MULTILIB == yes ]] && {
 				# libgcc_s.a
 				cp -f $PREFIX/lib/gcc/$TARGET/lib64/libgcc_s.a $PREFIX/$TARGET/lib64/ || exit 1
-				cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/64 -type f \( -iname *.dll ! -iname *winpthread* \)) $PREFIX/$TARGET/lib64/
+				cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/64 -type f \( -iname *.dll ! -iname *winpthread* \)) \
+					$PREFIX/$TARGET/lib64/ >/dev/null 2>&1 || exit 1
 				
 				strip $PREFIX/$TARGET/lib64/*.dll || exit 1
 			}
@@ -67,8 +68,8 @@
 		
 		# 64bit dlls
 		DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune -o -type f -name *.dll) )
-		cp -f ${DLLS[@]} $PREFIX/bin/
-		cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/
+		cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
+		cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/ >/dev/null 2>&1
 			
 		strip $PREFIX/bin/*.dll || exit 1
 		strip $PREFIX/$TARGET/lib/*.dll || exit 1
