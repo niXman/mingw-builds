@@ -47,7 +47,7 @@ esac
 case $GCC_NAME in
 	gcc-?.?.?)		ARCHIVE_NAME=$TOP_DIR/../src-$GCC_NAME-release ;;
 	gcc-4_6-branch)ARCHIVE_NAME=$TOP_DIR/../src-gcc-4.6.4-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
-	gcc-4_7-branch)ARCHIVE_NAME=$TOP_DIR/../src-gcc-4.7.2-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
+	gcc-4_7-branch)ARCHIVE_NAME=$TOP_DIR/../src-gcc-4.7.3-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
 	gcc-4_8-branch)ARCHIVE_NAME=$TOP_DIR/../src-gcc-4.8.1-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
 	gcc-4_9-branch)ARCHIVE_NAME=$TOP_DIR/../src-gcc-4.9.1-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
 	cxx-conversion)ARCHIVE_NAME=$TOP_DIR/../src-gcc-4.8.1-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;

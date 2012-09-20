@@ -43,7 +43,7 @@ REV=01/01/2012
 
 #
 
-PATCHES=(make-postcvs.patch)
+PATCHES=( make-postcvs.patch )
 
 #
 

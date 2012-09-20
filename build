@@ -45,7 +45,7 @@ x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
 
 ENABLE_LANGUAGES=c,c++,fortran
 
-BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer -momit-leaf-frame-pointer"
+BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer"
 BASE_CXXFLAGS="$BASE_CFLAGS"
 BASE_CPPFLAGS=""
 BASE_LDFLAGS="-pipe -s"
@@ -67,7 +67,7 @@ PKGVERSION="MinGW-builds: $BUG_URL"
 
 ORIGINAL_PATH=$PATH
 
-ROOT_DIR=""
+ROOT_DIR=/bin/..
 SRCS_DIR=$ROOT_DIR/mingw-src
 TOP_DIR=$PWD
 PATCHES_DIR=$TOP_DIR/patches
@@ -100,6 +100,7 @@ TOOLCHAINS_DIR=$TOP_DIR/toolchains
 	#echo "    gcc-4.6.6"
 	echo "    gcc-4.7.0 (4.7.0 release)"
 	echo "    gcc-4.7.1 (4.7.1 release)"
+	echo "    gcc-4.7.2 (4.7.2 release)"
 	#echo "    gcc-4.8.0"
 	#echo "    gcc-4.8.1"
 	echo "    gcc-4_6-branch (currently 4.6.4-prerelease)"
@@ -224,7 +225,7 @@ done
 	exit 1
 }
 
-[[ $DOWNLOAD_MODE == no ]] && {
+[[ $DOWNLOAD_MODE == no && $PRELOAD_MODE == no ]] && {
 	[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
 		${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
 		echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
@@ -456,7 +457,7 @@ SUBTARGETS_PART2=(
 				$SRCS_DIR \
 				$SRC_DIR_NAME \
 				$TYPE \
-				$SRCS_DIR/$SRC_DIR_NAME/_unpack.marker \
+				$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker \
 				$SRCS_DIR/$SRC_DIR_NAME/uncompress.log
 			_result=$?
 			[[ $_result != 0 ]] && {

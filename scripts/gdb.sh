@@ -51,6 +51,9 @@ CONFIGURE_FLAGS=(
 	--build=$TARGET
 	--prefix=$PREFIX
 	#
+	--enable-targets=x86_64-w64-mingw32,i686-w64-mingw32
+	--enable-64-bit-bfd
+	#
 	--disable-nls
 	--disable-werror
 	--disable-win32-registry
