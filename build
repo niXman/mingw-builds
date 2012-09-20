@@ -39,9 +39,9 @@ x32_HOST_MINGW_PATH=/d/mingw32
 x64_HOST_MINGW_PATH=/d/mingw64
 
 x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/windows-host/4.7.1/release/i686-mingw-w64-gcc-4.7.1-release-c,c++,fortran-sjlj-rev3.7z
+/windows-host/4.7.1/release/i686-mingw-w64-gcc-4.7.1-release-c,c++,fortran-sjlj-rev4.7z
 x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/windows-host/4.7.1/release/x86_64-mingw-w64-gcc-4.7.1-release-c,c++,fortran-sjlj-rev3.7z
+/windows-host/4.7.1/release/x86_64-mingw-w64-gcc-4.7.1-release-c,c++,fortran-sjlj-rev4.7z
 
 ENABLE_LANGUAGES=c,c++,fortran
 
@@ -104,7 +104,7 @@ TOOLCHAINS_DIR=$TOP_DIR/toolchains
 	#echo "    gcc-4.8.0"
 	#echo "    gcc-4.8.1"
 	echo "    gcc-4_6-branch (currently 4.6.4-prerelease)"
-	echo "    gcc-4_7-branch (currently 4.7.2-prerelease)"
+	echo "    gcc-4_7-branch (currently 4.7.3-prerelease)"
 	#echo "    gcc-4_8-branch"
 	echo "    cxx-conversion (currently based on the trunk version)"
 	echo "    gcc-trunk (currently 4.8.0-snapshot)"
