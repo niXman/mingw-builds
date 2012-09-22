@@ -36,7 +36,7 @@
 # **************************************************************************
 
 case $GCC_NAME in
-	gcc-*-branch|gcc-trunk|gcc-cxx-trunk)
+	gcc-*-branch|gcc-trunk|cxx-conversion)
 		GCC_REVISION="-rev-$(cd $SRCS_DIR/$GCC_NAME; svn info | grep 'Revision: ' | sed 's|Revision: ||')"
 	;;
 	*)
@@ -44,7 +44,7 @@ case $GCC_NAME in
 	;;
 esac
 
-ARCHIVE_NAME=$TOP_DIR/../$([[ $ARCHITECTURE == x32 ]] && echo i686 || echo x86_64)-mingw-w64
+ARCHIVE_NAME=$ROOT_DIR/$([[ $ARCHITECTURE == x32 ]] && echo i686 || echo x86_64)-mingw-w64
 case $GCC_NAME in
 	gcc-?.?.?)			ARCHIVE_NAME=$ARCHIVE_NAME-$GCC_NAME-release-$ENABLE_LANGUAGES ;;
 	gcc-4_6-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.6.4-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
@@ -53,7 +53,6 @@ case $GCC_NAME in
 	gcc-4_9-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.9.1-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
 	gcc-cxx-trunk)		ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.8.1-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
 	gcc-trunk)			ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.8.0-snapshot-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
-	#gcc-trunk)			 ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.9.0-snapshot-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
 	*) echo "gcc name error: $GCC_NAME. terminate."; exit ;;
 esac
 

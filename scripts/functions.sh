@@ -36,6 +36,9 @@
 # **************************************************************************
 
 function func_absolute_to_relative {
+	# $1 - first path
+	# $2 - second path
+	
    local _common=$1
    local _target=$2
    local _back=""
@@ -211,16 +214,17 @@ function func_execute {
 
 # apply list of patches
 function func_apply_patches {
-	# $1 - src dir name
-	# $2 - list
+	# $1 - srcs dir name
+	# $2 - src dir name
+	# $3 - list
 
 	local _result=0
 	_index=0
-	local -a _list=( "${!2}" )
+	local -a _list=( "${!3}" )
 	[[ ${#_list[@]} == 0 ]] && return 0
 
 	((_index=${#_list[@]}-1))
-	[[ -f $SRCS_DIR/$1/_patch-$_index.marker ]] && {
+	[[ -f $1/$2/_patch-$_index.marker ]] && {
 		echo "---> patched"
 		return 0
 	}
@@ -231,9 +235,9 @@ function func_apply_patches {
 	}
 
 	for it in ${_list[@]} ; do
-		local _patch_marker_name=$SRCS_DIR/$1/_patch-$_index.marker
+		local _patch_marker_name=$1/$2/_patch-$_index.marker
 		[[ ! -f $_patch_marker_name ]] && {
-			( cd $SRCS_DIR/$1 && patch -p1 < $PATCHES_DIR/${it} > $LOGS_DIR/$1/patch-$_index.log 2>&1 )
+			( cd $1/$2 && patch -p1 < $PATCHES_DIR/${it} > $LOGS_DIR/$2/patch-$_index.log 2>&1 )
 			_result=$?
 			[[ $_result == 0 ]] && {
 				touch $_patch_marker_name

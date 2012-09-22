@@ -39,11 +39,10 @@ NAME=make
 SRC_DIR_NAME=make
 URL=":pserver:anonymous:@cvs.sv.gnu.org:/sources/make"
 TYPE=cvs
-#REV=01/01/2012
+REV=09/21/2012
 
 #
 
-# make-postcvs.patch
 PATCHES=( make-remove-double-quote.patch )
 
 #
@@ -51,6 +50,7 @@ PATCHES=( make-remove-double-quote.patch )
 EXECUTE_AFTER_PATCH=(
 	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make/doc/"
 	"autoreconf -i"
+	"patch -p1 < $PATCHES_DIR/make-configure.patch"
 )
 
 #

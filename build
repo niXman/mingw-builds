@@ -60,8 +60,6 @@ BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
 ORIGINAL_PATH=$PATH
 
-ROOT_DIR=/bin/..
-SRCS_DIR=$ROOT_DIR/mingw-src
 TOP_DIR=$PWD
 PATCHES_DIR=$TOP_DIR/patches
 TESTS_DIR=$TOP_DIR/tests
@@ -82,6 +80,7 @@ RUN_ARGS="$@"
 	echo "usage:"
 	echo "  ./${0##*/} <gcc version> [OPTIONS] <x32|x64>"
 	echo "  help:"
+	echo "    --buildroot=path - specifies the build root directory"
 	echo "    --preload        - firstly downloads then builds"
 	echo "    --download       - download only the sources"
 	echo "    --dwarf          - build GCC with DWARF exceptions"
@@ -96,17 +95,17 @@ RUN_ARGS="$@"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
-	#echo "    gcc-4.6.4"
-	#echo "    gcc-4.6.5"
-	#echo "    gcc-4.6.6"
+	#echo "    gcc-4.6.4 (4.6.4 release)"
+	#echo "    gcc-4.6.5 (4.6.5 release)"
+	#echo "    gcc-4.6.6 (4.6.6 release)"
 	echo "    gcc-4.7.0 (4.7.0 release)"
 	echo "    gcc-4.7.1 (4.7.1 release)"
 	echo "    gcc-4.7.2 (4.7.2 release)"
-	#echo "    gcc-4.8.0"
-	#echo "    gcc-4.8.1"
+	#echo "    gcc-4.8.0 (4.8.0 release)"
+	#echo "    gcc-4.8.1 (4.8.1 release)"
 	echo "    gcc-4_6-branch (currently 4.6.4-prerelease)"
 	echo "    gcc-4_7-branch (currently 4.7.3-prerelease)"
-	#echo "    gcc-4_8-branch"
+	#echo "    gcc-4_8-branch (currently 4.8.1-prerelease)"
 	echo "    cxx-conversion (currently based on the trunk version)"
 	echo "    gcc-trunk (currently 4.8.0-snapshot)"
 
@@ -133,6 +132,8 @@ RUN_ARGS="$@"
 
 # **************************************************************************
 
+ROOT_DIR=$HOME
+
 PRELOAD_MODE=no
 DOWNLOAD_MODE=no
 BUILD_ARCHITECTURES=()
@@ -146,6 +147,9 @@ COMPRESSING_SRCS=no
 
 while [[ $# > 0 ]]; do
 	case $1 in
+		--buildroot=*)
+			ROOT_DIR=${1/--buildroot=/}
+		;;
 		--preload)
 			PRELOAD_MODE=yes
 		;;
@@ -165,10 +169,10 @@ while [[ $# > 0 ]]; do
 			GCC_DEPS_LINK_TYPE="--enable-shared --disable-static"
 		;;
 		--threads=*)
-			THREADS_MODEL=$( echo $1 | sed 's|--threads=||' )
+			THREADS_MODEL=${1/--threads=/}
 		;;
 		--rev=*)
-			REV_NUM=$( echo $1 | sed 's|--rev=||' )
+			REV_NUM=${1/--rev=/}
 		;;
 		x32)
 			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
@@ -202,6 +206,20 @@ while [[ $# > 0 ]]; do
 	esac
 	shift
 done
+
+# **************************************************************************
+
+[[ ! -d $ROOT_DIR ]] && {
+	mkdir -p $ROOT_DIR
+	[[ $? == 0 ]] && {
+		rm -Rf $ROOT_DIR
+	} || {
+		echo "bad build root directory. terminate."
+		exit 1
+	}
+}
+
+SRCS_DIR=$ROOT_DIR/mingw-sources
 
 # **************************************************************************
 
@@ -469,10 +487,10 @@ SUBTARGETS_PART2=(
 # **************************************************************************
 
 for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
-	BUILDS_DIR=$ROOT_DIR/mingw-$GCC_NAME-build-$ARCHITECTURE
-	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-libs-$ARCHITECTURE
-	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-logs-$ARCHITECTURE
-	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-$ARCHITECTURE
+	BUILDS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-build-$ARCHITECTURE
+	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-libs-$ARCHITECTURE
+	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-logs-$ARCHITECTURE
+	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-$ARCHITECTURE
 	echo "-> start building MinGW-$GCC_NAME-$([[ $USE_MULTILIB == yes ]] && echo -n multilib-)\
 $ARCHITECTURE-$([[ $USE_DWARF == no ]] && echo sjlj || echo dwarf)"
 	[[ $ARCHITECTURE == x32 ]] && {
@@ -620,6 +638,7 @@ $ARCHITECTURE-$([[ $USE_DWARF == no ]] && echo sjlj || echo dwarf)"
 		}
 
 		func_apply_patches \
+			$SRCS_DIR \
 			$SRC_DIR_NAME \
 			PATCHES[@]
 		[[ $? != 0 ]] && {

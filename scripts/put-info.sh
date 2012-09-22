@@ -41,7 +41,7 @@
 	
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
-	echo ">>>>: $MINGW_BUILDS_VERSION" >> $INFO_FILE
+	echo "!!!!: $MINGW_BUILDS_VERSION" >> $INFO_FILE
 	echo "user: $(whoami)" >> $INFO_FILE
 	echo "date: $(date +%m.%d.%Y-%X)" >> $INFO_FILE
 	echo "args: $RUN_ARGS" >> $INFO_FILE
@@ -61,34 +61,24 @@
 		echo >> $INFO_FILE
 	}
 	
-	echo "host ld 32-bit:" >> $INFO_FILE
+	echo "host ld:" >> $INFO_FILE
 	$x32_HOST_MINGW_PATH/bin/ld -V 2>&1 >> $INFO_FILE
 	echo >> $INFO_FILE
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
-	[[ $USE_MULTILIB == yes ]] && {
-		echo "host ld 64-bit:" >> $INFO_FILE
-		$x64_HOST_MINGW_PATH/bin/ld -V 2>&1 >> $INFO_FILE
+	
+	for it in ${SUBTARGETS[@]}; do
+		[[ $it == put-info ]] && continue
+		[[ -z $(grep 'CONFIGURE_FLAGS=' $TOP_DIR/scripts/$it.sh) ]] && continue
+		. $TOP_DIR/scripts/$it.sh
+		echo "$NAME configuration:" >> $INFO_FILE
+		echo "${CONFIGURE_FLAGS[@]}" >> $INFO_FILE
 		echo >> $INFO_FILE
 		echo "# **************************************************************************" >> $INFO_FILE
 		echo >> $INFO_FILE
-	}
-	
-	. ./scripts/$GCC_NAME.sh
-	echo "gcc configuration: " >> $INFO_FILE
-	echo "${CONFIGURE_FLAGS[@]}" >> $INFO_FILE
-	echo >> $INFO_FILE
-	echo "# **************************************************************************" >> $INFO_FILE
-	echo >> $INFO_FILE
-	
-	. ./scripts/binutils.sh
-	echo "binutils configuration: " >> $INFO_FILE
-	echo "${CONFIGURE_FLAGS[@]}" >> $INFO_FILE
-	echo >> $INFO_FILE
-	echo "# **************************************************************************" >> $INFO_FILE
-	echo >> $INFO_FILE
+	done
 
-	#touch $BUILDS_DIR/put-info.marker
+	touch $BUILDS_DIR/put-info.marker
 }
 
 # **************************************************************************
