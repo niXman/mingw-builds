@@ -1,0 +1,11 @@
+--- make-3.82.orig/job.c
++++ make-3.82/job.c
+@@ -2367,7 +2367,7 @@
+ 			     "unset", "unsetenv", "version",
+ 			     0 };
+ #elif defined (WINDOWS32)
+-  static char sh_chars_dos[] = "\"|&<>";
++  static char sh_chars_dos[] = "|&<>";
+   static char *sh_cmds_dos[] = { "assoc", "break", "call", "cd", "chcp",
+ 				 "chdir", "cls", "color", "copy", "ctty",
+ 				 "date", "del", "dir", "echo", "echo.",

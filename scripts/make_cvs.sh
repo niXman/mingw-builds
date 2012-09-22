@@ -39,11 +39,12 @@ NAME=make
 SRC_DIR_NAME=make
 URL=":pserver:anonymous:@cvs.sv.gnu.org:/sources/make"
 TYPE=cvs
-REV=01/01/2012
+#REV=01/01/2012
 
 #
 
-PATCHES=( make-postcvs.patch )
+# make-postcvs.patch
+PATCHES=( make-remove-double-quote.patch )
 
 #
 

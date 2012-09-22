@@ -35,14 +35,6 @@
 
 # **************************************************************************
 
-x32_HOST_MINGW_PATH=/d/mingw32
-x64_HOST_MINGW_PATH=/d/mingw64
-
-x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/windows-host/4.7.1/release/i686-mingw-w64-gcc-4.7.1-release-c,c++,fortran-sjlj-rev4.7z
-x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/windows-host/4.7.1/release/x86_64-mingw-w64-gcc-4.7.1-release-c,c++,fortran-sjlj-rev4.7z
-
 ENABLE_LANGUAGES=c,c++,fortran
 
 BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer"
@@ -62,8 +54,9 @@ JOBS=1
 
 # **************************************************************************
 
+MINGW_BUILDS_VERSION="MinGW-builds-0.2.0"
+PKG_VERSION="Built by MinGW-builds project"
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
-PKGVERSION="MinGW-builds: $BUG_URL"
 
 ORIGINAL_PATH=$PATH
 
@@ -74,9 +67,17 @@ PATCHES_DIR=$TOP_DIR/patches
 TESTS_DIR=$TOP_DIR/tests
 TOOLCHAINS_DIR=$TOP_DIR/toolchains
 
+x32_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
+x64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
+
+x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files/\
+windows-host/4.7.2/release/i686-mingw-w64-gcc-4.7.2-release-c,c++,fortran-sjlj-rev0.7z
+x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files/\
+windows-host/4.7.2/release/x86_64-mingw-w64-gcc-4.7.2-release-c,c++,fortran-sjlj-rev0.7z
+
 # **************************************************************************
 
-
+RUN_ARGS="$@"
 [[ $# == 1 && $1 == --help	|| $[ $# == 0 || $# > 8 ] == 1 ]] && {
 	echo "usage:"
 	echo "  ./${0##*/} <gcc version> [OPTIONS] <x32|x64>"
@@ -121,23 +122,12 @@ TOOLCHAINS_DIR=$TOP_DIR/toolchains
 	exit 1
 }
 
-[[ $x32_HOST_MINGW_PATH == $x64_HOST_MINGW_PATH ]] && {
-	echo "i686 and x86_64 toolchains can not be installed into the same directory. terminate."
-	exit 1
-}
-
 [[ -n $(which "gcc.exe" 2>/dev/null) || \
 	-n $(which "i686-pc-mingw32-gcc.exe" 2>/dev/null) || \
 	-n $(which "i686-w64-mingw32-gcc.exe" 2>/dev/null) || \
 	-n $(which "x86_64-w64-mingw32-gcc.exe" 2>/dev/null) \
 ]] && {
-	echo "remove from PATH any existing MinGW directory and set \
-\"x32_HOST_MINGW_PATH\" and \"x64_HOST_MINGW_PATH\" variables. terminate."
-	exit 1
-}
-
-[[ -f $x32_HOST_MINGW_PATH/bin/make.exe || -f $x64_HOST_MINGW_PATH/bin/make.exe ]] && {
-	echo "MinGW make should be named as 'mingw32-make.exe'. Please rename it."
+	echo "remove from PATH any existing MinGW directory. terminate."
 	exit 1
 }
 
@@ -196,7 +186,7 @@ while [[ $# > 0 ]]; do
 			}
 		;;
 		--version)
-			echo "MinGW-builds version 0.2.0"
+			echo $MINGW_BUILDS_VERSION
 			exit 0
 		;;
 		--mingw-compress)
@@ -354,6 +344,7 @@ SUBTARGETS_PART2=(
 	cleanup
 	licenses
 	put-versions
+	put-info
 	tests
 	$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
 )
@@ -402,14 +393,16 @@ SUBTARGETS_PART2=(
 			echo -n "-> download sources for MinGW-${GCC_NAME}-"
 		}
 	}
-	[[ $USE_MULTILIB == yes ]] && echo -n "multilib-"
+	[[ $USE_MULTILIB == yes && $USE_DWARF == no ]] && echo -n "multilib-"
 	[[ $build_for_both == 1 ]] && {
-		echo "x32/x64"
+		echo -n "x32/x64-"
 	} || {
-		[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && echo "x32" || echo "x64"
+		[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && echo -n "x32-" || echo -n "x64-"
 	}
+	[[ $USE_DWARF == no ]] && echo "sjlj" || echo "dwarf"
+	
 	for sub in ${SUBTARGETS[@]}; do
-		[[ $sub == put-versions ]] && continue
+		[[ $sub == put-versions || $sub == put-info ]] && continue
 		[[ -n $( grep 'URL=' $TOP_DIR/scripts/${sub}.sh ) ]] && {
 			echo -e "-> \E[32;40m$sub\E[37;40m"
 			[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
@@ -480,7 +473,8 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-libs-$ARCHITECTURE
 	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-logs-$ARCHITECTURE
 	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-$ARCHITECTURE
-	echo "-> start building MinGW-$GCC_NAME-$([[ $USE_MULTILIB == yes ]] && echo -n multilib-)$ARCHITECTURE"
+	echo "-> start building MinGW-$GCC_NAME-$([[ $USE_MULTILIB == yes ]] && echo -n multilib-)\
+$ARCHITECTURE-$([[ $USE_DWARF == no ]] && echo sjlj || echo dwarf)"
 	[[ $ARCHITECTURE == x32 ]] && {
 		HOST=i686-w64-mingw32
 		BUILD=i686-w64-mingw32

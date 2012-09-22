@@ -95,7 +95,7 @@ CONFIGURE_FLAGS=(
 	)
 	--with-libiconv
 	--with-{gmp,mpfr,mpc,ppl,cloog}=$LIBS_DIR
-	--with-pkgversion="\"$PKGVERSION\""
+	--with-pkgversion="\"$PKG_VERSION\""
 	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
