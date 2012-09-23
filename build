@@ -54,7 +54,7 @@ JOBS=1
 
 # **************************************************************************
 
-MINGW_BUILDS_VERSION="MinGW-builds-0.2.0"
+MINGW_BUILDS_VERSION="MinGW-builds-0.3.0"
 PKG_VERSION="Built by MinGW-builds project"
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
