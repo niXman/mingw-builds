@@ -50,7 +50,6 @@ PATCHES=( make-remove-double-quote.patch )
 EXECUTE_AFTER_PATCH=(
 	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make/doc/"
 	"autoreconf -i"
-	"patch -p1 < $PATCHES_DIR/make-configure.patch"
 )
 
 #
@@ -62,6 +61,7 @@ CONFIGURE_FLAGS=(
 	--enable-case-insensitive-file-system
 	--program-prefix=mingw32-
 	--enable-job-server
+	--without-guile
 	CFLAGS="\"$COMMON_CFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
 )
