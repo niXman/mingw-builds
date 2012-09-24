@@ -1,4 +1,3 @@
-
 The scripts provided by the MinGW-builds project[1][2] are designed
 for building the dual-target(i686/x86_64) MinGW compiler for i686/x86_64 hosts.
 
@@ -38,7 +37,7 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
   The '--no-multilib' option specifies to the script to build without multilib support.
   The '--dyn-deps' option specifies to the script to build GCC with dynamically dependencies.
   The '--rev=N' option specifies to the script the number of the build revision.
-  The '--threads' option specifies to the script the used threads model.
+  The '--threads=model' option specifies to the script the used threads model.
   For more options please run: "./build --help"
 
 For example, during the process of building of the i686-gcc-4.6.3 will
