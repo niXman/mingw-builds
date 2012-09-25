@@ -487,12 +487,12 @@ SUBTARGETS_PART2=(
 # **************************************************************************
 
 for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
-	BUILDS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-build-$ARCHITECTURE
-	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-libs-$ARCHITECTURE
-	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-logs-$ARCHITECTURE
-	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-$ARCHITECTURE
+	BUILDS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-threads_$THREADS_MODEL-build-$ARCHITECTURE
+	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-threads_$THREADS_MODEL-libs-$ARCHITECTURE
+	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-threads_$THREADS_MODEL-logs-$ARCHITECTURE
+	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-threads_$THREADS_MODEL-$ARCHITECTURE
 	echo "-> start building MinGW-$GCC_NAME-$([[ $USE_MULTILIB == yes ]] && echo -n multilib-)\
-$ARCHITECTURE-$([[ $USE_DWARF == no ]] && echo sjlj || echo dwarf)"
+$ARCHITECTURE-$([[ $USE_DWARF == no ]] && echo sjlj || echo dwarf)-threads_$THREADS_MODEL"
 	[[ $ARCHITECTURE == x32 ]] && {
 		HOST=i686-w64-mingw32
 		BUILD=i686-w64-mingw32
