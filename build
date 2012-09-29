@@ -84,6 +84,7 @@ RUN_ARGS="$@"
 	echo "    --preload              - firstly downloads then builds"
 	echo "    --download             - download only the sources"
 	echo "    --dwarf                - build GCC with DWARF exceptions"
+	echo "    --use-lto              - build with LTO using"
 	echo "    --no-multilib          - build GCC without multilib support"
 	echo "    --no-strip             - don`t strip dll`s & executables on install"
 	echo "    --dyn-deps             - build GCC with dynamically dependencies"
@@ -164,6 +165,11 @@ while [[ $# > 0 ]]; do
 			USE_MULTILIB=no
 			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
 			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
+		;;
+		--use-lto)
+			BASE_CFLAGS="$BASE_CFLAGS -flto"
+			BASE_CXXFLAGS="$BASE_CXXFLAGS -flto"
+			BASE_LDFLAGS="$BASE_LDFLAGS -flto"
 		;;
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-strip) STRIP_ON_INSTALL=no ;;
