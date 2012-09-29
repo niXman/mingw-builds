@@ -36,7 +36,7 @@
 # **************************************************************************
 
 case $GCC_NAME in
-	gcc-*-branch|gcc-trunk|cxx-conversion)
+	gcc-*-branch|gcc-trunk)
 		GCC_REVISION="-rev-$(cd $SRCS_DIR/$GCC_NAME; svn info | grep 'Revision: ' | sed 's|Revision: ||')"
 	;;
 	*)
@@ -50,7 +50,6 @@ case $GCC_NAME in
 	gcc-4_7-branch)ARCHIVE_NAME=$ROOT_DIR/src-gcc-4.7.3-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
 	gcc-4_8-branch)ARCHIVE_NAME=$ROOT_DIR/src-gcc-4.8.1-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
 	gcc-4_9-branch)ARCHIVE_NAME=$ROOT_DIR/src-gcc-4.9.1-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
-	cxx-conversion)ARCHIVE_NAME=$ROOT_DIR/src-gcc-4.8.1-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
 	gcc-trunk)		ARCHIVE_NAME=$ROOT_DIR/src-gcc-4.8.0-snapshot-$(date +%Y%m%d)$GCC_REVISION ;;
 	*) echo "gcc name error: \"$GCC_NAME\". terminate."; exit ;;
 esac
@@ -67,8 +66,7 @@ esac
 	LIST_OF_DIRS_FOR_COMPRESS=( \
 		$(\
 			cd $ROOT_DIR && find $(basename $SRCS_DIR) \
-			-maxdepth 1 -type d -not -name gcc-* -not -name cxx-conversion \
-		) \
+			-maxdepth 1 -type d -not -name gcc-* ) \
 	)
 	LIST_OF_DIRS_FOR_COMPRESS[0]=$(basename $SRCS_DIR)/$GCC_NAME
 
