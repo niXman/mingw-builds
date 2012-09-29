@@ -41,8 +41,7 @@
 	PYTHON_NAME=python-2.7-x64
 }
 
-mkdir -p $LOGS_DIR/$PYTHON_NAME
-mkdir -p $BUILDS_DIR/$PYTHON_NAME
+mkdir -p $LOGS_DIR/$PYTHON_NAME $BUILDS_DIR/$PYTHON_NAME
 
 [[ ! -d $SRCS_DIR/$PYTHON_NAME ]] && mkdir -p $SRCS_DIR/$PYTHON_NAME
 
@@ -70,15 +69,16 @@ mkdir -p $BUILDS_DIR/$PYTHON_NAME
    echo "---> installed"
 } || {
    echo -n "--> installing..."
-   cd $SRCS_DIR/$PYTHON_NAME
-   
-   cp libpython2.7.a $LIBS_DIR/lib/ || exit 1
-   cp bin/python27.dll $PREFIX/bin/ || exit 1
-   mkdir -p $PREFIX/bin/lib || exit 1
-   cp -rf lib/python27/* $PREFIX/bin/lib/ || exit 1
-   mkdir -p $LIBS_DIR/include/python || exit 1
-   cp -rf include/* $LIBS_DIR/include/python/ || exit 1
-
+	(
+		cd $SRCS_DIR/$PYTHON_NAME
+		
+		cp libpython2.7.a $LIBS_DIR/lib/ || exit 1
+		cp bin/python27.dll $PREFIX/bin/ || exit 1
+		mkdir -p $PREFIX/bin/lib || exit 1
+		cp -rf lib/python27/* $PREFIX/bin/lib/ || exit 1
+		mkdir -p $LIBS_DIR/include/python || exit 1
+		cp -rf include/* $LIBS_DIR/include/python/ || exit 1
+	)
    echo "done"
    touch $BUILDS_DIR/$PYTHON_NAME/_install.marker
 }

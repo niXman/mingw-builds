@@ -80,18 +80,22 @@ RUN_ARGS="$@"
 	echo "usage:"
 	echo "  ./${0##*/} <gcc version> [OPTIONS] <x32|x64>"
 	echo "  help:"
-	echo "    --buildroot=path - specifies the build root directory"
-	echo "    --preload        - firstly downloads then builds"
-	echo "    --download       - download only the sources"
-	echo "    --dwarf          - build GCC with DWARF exceptions"
-	echo "    --no-multilib    - build GCC without multilib support"
-	echo "    --dyn-deps       - build GCC with dynamically dependencies"
-	echo "    --rev=N          - specifies number of the build revision"
-	echo "    --threads=m      - specifies the threads model for GCC/libstdc++"
-	echo "                       available: win32, posix"
-	echo "    --version        - pring the version of the MinGW-builds scripts"
-	echo "    --mingw-compress - compressing MinGW"
-	echo "    --srcs-compress  - compressing sources"
+	echo "    --buildroot=path       - specifies the build root directory"
+	echo "    --preload              - firstly downloads then builds"
+	echo "    --download             - download only the sources"
+	echo "    --dwarf                - build GCC with DWARF exceptions"
+	echo "    --no-multilib          - build GCC without multilib support"
+	echo "    --dyn-deps             - build GCC with dynamically dependencies"
+	echo "    --rev=N                - specifies number of the build revision"
+	echo "    --threads=<model>      - specifies the threads model for GCC/libstdc++"
+	echo "                             available: win32, posix"
+	echo "    --version              - pring the version of the MinGW-builds scripts"
+	echo "    --mingw-compress       - compressing MinGW"
+	echo "    --srcs-compress        - compressing sources"
+	echo "    --cflags=\"<flags>\"   - additional CFLAGS"
+	echo "    --cxxflags=\"<flags>\" - additional CXXFLAGS"
+	echo "    --cppflags=\"<flags>\" - additional CPPFLAGS"
+	echo "    --ldflags=\"<flags>\"  - additional LDFLAGS"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -146,6 +150,10 @@ COMPRESSING_SRCS=no
 
 while [[ $# > 0 ]]; do
 	case $1 in
+		--cflags=*) BASE_CFLAGS="$BASE_CFLAGS ${1/--cflags=/}" ;;
+		--cxxflags=*) BASE_CXXFLAGS="$BASE_CXXFLAGS ${1/--cxxflags=/}" ;;
+		--cppflags=*) BASE_CPPFLAGS="$BASE_CPPFLAGS ${1/--cppflags=/}" ;;
+		--ldflags=*) BASE_LDFLAGS="$BASE_LDFLAGS ${1/--ldflags=/}" ;;
 		--buildroot=*)
 			ROOT_DIR=${1/--buildroot=/}
 		;;
@@ -486,12 +494,12 @@ SUBTARGETS_PART2=(
 # **************************************************************************
 
 for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
-	BUILDS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-threads_$THREADS_MODEL-build-$ARCHITECTURE
-	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-threads_$THREADS_MODEL-libs-$ARCHITECTURE
-	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-threads_$THREADS_MODEL-logs-$ARCHITECTURE
-	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-$([[ $USE_DWARF == yes ]] && echo dwarf || echo sjlj)-threads_$THREADS_MODEL-$ARCHITECTURE
-	echo "-> start building MinGW-$GCC_NAME-$([[ $USE_MULTILIB == yes ]] && echo -n multilib-)\
-$ARCHITECTURE-$([[ $USE_DWARF == no ]] && echo sjlj || echo dwarf)-threads_$THREADS_MODEL"
+	[[ $USE_DWARF == yes ]] && GCC_DWARF_OR_SJLJ=dwarf || GCC_DWARF_OR_SJLJ=sjlj
+	BUILDS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$GCC_DWARF_OR_SJLJ-threads_$THREADS_MODEL-build-$ARCHITECTURE
+	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$GCC_DWARF_OR_SJLJ-threads_$THREADS_MODEL-libs-$ARCHITECTURE
+	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-$GCC_DWARF_OR_SJLJ-threads_$THREADS_MODEL-logs-$ARCHITECTURE
+	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-$GCC_DWARF_OR_SJLJ-threads_$THREADS_MODEL-$ARCHITECTURE
+	echo "-> start building MinGW-$GCC_NAME-$([[ $USE_MULTILIB == yes ]] && echo -n multilib)-$ARCHITECTURE-$GCC_DWARF_OR_SJLJ-threads_$THREADS_MODEL"
 	[[ $ARCHITECTURE == x32 ]] && {
 		HOST=i686-w64-mingw32
 		BUILD=i686-w64-mingw32
