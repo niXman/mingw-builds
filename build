@@ -85,6 +85,7 @@ RUN_ARGS="$@"
 	echo "    --download             - download only the sources"
 	echo "    --dwarf                - build GCC with DWARF exceptions"
 	echo "    --no-multilib          - build GCC without multilib support"
+	echo "    --no-strip             - don`t strip dll`s & executables on install"
 	echo "    --dyn-deps             - build GCC with dynamically dependencies"
 	echo "    --rev=N                - specifies number of the build revision"
 	echo "    --threads=<model>      - specifies the threads model for GCC/libstdc++"
@@ -142,6 +143,7 @@ DOWNLOAD_MODE=no
 BUILD_ARCHITECTURES=()
 USE_DWARF=no
 USE_MULTILIB=yes
+STRIP_ON_INSTALL=yes
 THREADS_MODEL=posix
 REV_NUM=""
 GCC_NAME=""
@@ -154,33 +156,20 @@ while [[ $# > 0 ]]; do
 		--cxxflags=*) BASE_CXXFLAGS="$BASE_CXXFLAGS ${1/--cxxflags=/}" ;;
 		--cppflags=*) BASE_CPPFLAGS="$BASE_CPPFLAGS ${1/--cppflags=/}" ;;
 		--ldflags=*) BASE_LDFLAGS="$BASE_LDFLAGS ${1/--ldflags=/}" ;;
-		--buildroot=*)
-			ROOT_DIR=${1/--buildroot=/}
-		;;
-		--preload)
-			PRELOAD_MODE=yes
-		;;
-		--download)
-			DOWNLOAD_MODE=yes
-		;;
+		--buildroot=*) ROOT_DIR=${1/--buildroot=/} ;;
+		--preload) PRELOAD_MODE=yes ;;
+		--download) DOWNLOAD_MODE=yes ;;
 		--dwarf)
 			USE_DWARF=yes
 			USE_MULTILIB=no
 			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
 			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
 		;;
-		--no-multilib)
-			USE_MULTILIB=no
-		;;
-		--dyn-deps)
-			GCC_DEPS_LINK_TYPE="--enable-shared --disable-static"
-		;;
-		--threads=*)
-			THREADS_MODEL=${1/--threads=/}
-		;;
-		--rev=*)
-			REV_NUM=${1/--rev=/}
-		;;
+		--no-multilib) USE_MULTILIB=no ;;
+		--no-strip) STRIP_ON_INSTALL=no ;;
+		--dyn-deps) GCC_DEPS_LINK_TYPE="--enable-shared --disable-static" ;;
+		--threads=*) THREADS_MODEL=${1/--threads=/} ;;
+		--rev=*) REV_NUM=${1/--rev=/} ;;
 		x32)
 			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
 			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )

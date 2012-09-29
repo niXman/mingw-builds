@@ -49,8 +49,10 @@
 			cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
 			cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/ >/dev/null 2>&1
 			
-			strip $PREFIX/bin/*.dll || exit 1
-			strip $PREFIX/$TARGET/lib/*.dll || exit 1
+			[[ $STRIP_ON_INSTALL == yes ]] && {
+				strip $PREFIX/bin/*.dll || exit 1
+				strip $PREFIX/$TARGET/lib/*.dll || exit 1
+			}
 
 			# 64 bit files
 			[[ $USE_MULTILIB == yes ]] && {
@@ -59,7 +61,9 @@
 				cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/64 -type f \( -iname *.dll ! -iname *winpthread* \)) \
 					$PREFIX/$TARGET/lib64/ >/dev/null 2>&1 || exit 1
 				
-				strip $PREFIX/$TARGET/lib64/*.dll || exit 1
+				[[ $STRIP_ON_INSTALL == yes ]] && {
+					strip $PREFIX/$TARGET/lib64/*.dll || exit 1
+				}
 			}
 		}
 	} || {
@@ -70,9 +74,11 @@
 		DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune -o -type f -name *.dll) )
 		cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
 		cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/ >/dev/null 2>&1
-			
-		strip $PREFIX/bin/*.dll || exit 1
-		strip $PREFIX/$TARGET/lib/*.dll || exit 1
+		
+		[[ $STRIP_ON_INSTALL == yes ]] && {
+			strip $PREFIX/bin/*.dll || exit 1
+			strip $PREFIX/$TARGET/lib/*.dll || exit 1
+		}
 			
 		# 32 bit files
 		[[ $USE_MULTILIB == yes ]] && {
@@ -80,7 +86,9 @@
 			cp -f $PREFIX/lib/gcc/$TARGET/lib32/libgcc_s.a $PREFIX/$TARGET/lib32/ || exit 1
 			cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/32 -type f \( -iname *.dll ! -iname *winpthread* \)) $PREFIX/$TARGET/lib32/
 			
-			strip $PREFIX/$TARGET/lib32/*.dll || exit 1
+			[[ $STRIP_ON_INSTALL == yes ]] && {
+				strip $PREFIX/$TARGET/lib32/*.dll || exit 1
+			}
 		}
 	}
 	

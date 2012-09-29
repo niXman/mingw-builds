@@ -75,7 +75,7 @@ MAKE_FLAGS=(
 
 INSTALL_FLAGS=(
 	-j$JOBS
-	install-strip
+	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
 # **************************************************************************
