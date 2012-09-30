@@ -40,7 +40,7 @@ ENABLE_LANGUAGES=c,c++,fortran
 BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer"
 BASE_CXXFLAGS="$BASE_CFLAGS"
 BASE_CPPFLAGS=""
-BASE_LDFLAGS="-pipe -s"
+BASE_LDFLAGS="-pipe"
 
 LINK_TYPE_BOTH="--enable-shared --enable-static"
 GCC_DEPS_LINK_TYPE="--enable-static --disable-shared"
