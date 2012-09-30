@@ -76,7 +76,7 @@ windows-host/4.7.2/release/x86_64-mingw-w64-gcc-4.7.2-release-c,c++,fortran-sjlj
 # **************************************************************************
 
 RUN_ARGS="$@"
-[[ $# == 1 && $1 == --help	|| $[ $# == 0 || $# > 18 ] == 1 ]] && {
+[[ $# == 1 && $1 == --help	|| $[ $# == 0 ] == 1 ]] && {
 	echo "usage:"
 	echo "  ./${0##*/} <gcc version> [OPTIONS] <x32|x64>"
 	echo "  help:"
