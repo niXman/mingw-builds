@@ -20,13 +20,7 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
 6. Go in to the MinGW-builds root directory.
   "cd && cd mingw-builds"
 
-7. Run:
-  "./build gcc-4.6.3 x32" for building i686-MinGW
-  "./build gcc-4.6.3 x64" for building x86_64-MinGW
-  "./build gcc-4.6.3 x32 x64" for building i686-MinGW and x86_64-MinGW
-  "./build gcc-4.6.3 --preload x32 x64" for building i686-MinGW and x86_64-MinGW
-  "./build gcc-4.6.3 --dwarf" for building i686-MinGW with DWARF exception handling
-
+7.
   The '--buildroot=<path>' option specifies to the script to use '<path>' as build directory.
   The '--preload' option specifies to the script to pre-download all the sources
     and only after that, to begin the building. This allows to build different
@@ -34,11 +28,20 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
   The '--download' option specifies to the script to download only the sources.
   The '--dwarf' option specifies to the script to use DWARF exeptions handling
     instead of SJLJ. This allows building for i686 host only, and i686 target only.
+  The '--use-lto' option specifies to the script to build with using LTO.
+  The '--no-strip' option specifies to the script to install without striping.
   The '--no-multilib' option specifies to the script to build without multilib support.
   The '--dyn-deps' option specifies to the script to build GCC with dynamically dependencies.
   The '--rev=N' option specifies to the script the number of the build revision.
   The '--threads=model' option specifies to the script the used threads model.
   For more options please run: "./build --help"
+
+8. Run:
+  "./build gcc-4.6.3 x32" for building i686-MinGW
+  "./build gcc-4.6.3 x64" for building x86_64-MinGW
+  "./build gcc-4.6.3 x32 x64" for building i686-MinGW and x86_64-MinGW
+  "./build gcc-4.6.3 --preload x32 x64" for building i686-MinGW and x86_64-MinGW
+  "./build gcc-4.6.3 --dwarf" for building i686-MinGW with DWARF exception handling
 
 For example, during the process of building of the i686-gcc-4.6.3 will
   be created the following directories:
