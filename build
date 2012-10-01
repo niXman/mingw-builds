@@ -494,7 +494,12 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ-rev$REV_NUM-libs-$ARCHITECTURE
 	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ-rev$REV_NUM-logs-$ARCHITECTURE
 	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ-rev$REV_NUM-$ARCHITECTURE
-	echo "-> start building MinGW-$GCC_NAME-$([[ $USE_MULTILIB == yes ]] && echo -n multilib)-$ARCHITECTURE-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ-rev$REV_NUM"
+	
+	MINGW_BUILD_NAME=$([[ $ARCHITECTURE == x32 ]] && echo -n i686 || echo -n x86_64)-MinGW-w64-$GCC_NAME
+	MINGW_BUILD_NAME=$MINGW_BUILD_NAME-$([[ $USE_MULTILIB == yes ]] && echo -n multilib)-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ
+	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
+	echo "-> start building $MINGW_BUILD_NAME"
+	
 	[[ $ARCHITECTURE == x32 ]] && {
 		HOST=i686-w64-mingw32
 		BUILD=i686-w64-mingw32
