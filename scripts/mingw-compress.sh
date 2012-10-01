@@ -55,13 +55,13 @@ case $GCC_NAME in
 	*) echo "gcc name error: $GCC_NAME. terminate."; exit ;;
 esac
 
+ARCHIVE_NAME=$ARCHIVE_NAME-threads_$THREADS_MODEL
+
 [[ $USE_DWARF == no ]] && {
 	ARCHIVE_NAME=$ARCHIVE_NAME-sjlj
 } || {
 	ARCHIVE_NAME=$ARCHIVE_NAME-dwarf
 }
-
-ARCHIVE_NAME=$ARCHIVE_NAME-threads_$THREADS_MODEL
 
 [[ -n $REV_NUM ]] && {
 	ARCHIVE_NAME=$ARCHIVE_NAME-rev${REV_NUM}
@@ -70,9 +70,8 @@ ARCHIVE_NAME=$ARCHIVE_NAME-threads_$THREADS_MODEL
 # **************************************************************************
 
 SEVENZIP_ARCHIVE_NAME=$ARCHIVE_NAME.7z
-ZIP_ARCHIVE_NAME=$ARCHIVE_NAME.zip
 
-[[ ! -f $SEVENZIP_ARCHIVE_NAME || ! -f $ZIP_ARCHIVE_NAME ]] && {
+[[ ! -f $SEVENZIP_ARCHIVE_NAME ]] && {
 	MINGW_COPY_MARKER=$BUILDS_DIR/mingw-copy.marker
 	MINGW_ROOT=$BUILDS_DIR/mingw
 
@@ -114,19 +113,6 @@ ZIP_ARCHIVE_NAME=$ARCHIVE_NAME.zip
 			echo "done"
 		} || {
 			echo; echo "error on compressing $MINGW_ROOT directory"
-			exit 1
-		}
-	}
-
-	[[ ! -f $ZIP_ARCHIVE_NAME ]] && {
-		echo -n "---> \"$(basename $ZIP_ARCHIVE_NAME)\" ... "
-		( cd $BUILDS_DIR && 7za a -tzip -mx=9 -mfb=64 -md=64m \
-			"$ZIP_ARCHIVE_NAME" "$MINGW_ROOT" >/dev/null 2>&1 \
-		)
-		[[ $? == 0 ]] && {
-			echo "done"
-		} || {
-			echo "error on compressing $MINGW_ROOT directory"
 			exit 1
 		}
 	}
