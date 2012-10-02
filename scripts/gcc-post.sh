@@ -39,7 +39,7 @@
 	# remove <prefix>/mingw directory
 	rm -rf $PREFIX/mingw >/dev/null 2>&1
 	
-	[[ $ARCHITECTURE == x32 ]] && {
+	if [[ $ARCHITECTURE == x32 ]]; then
 		# libgcc_s.a
 		cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ || exit 1
 
@@ -66,7 +66,7 @@
 				}
 			}
 		}
-	} || {
+	else
 		# libgcc_s.a
 		cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ || exit 1
 		
@@ -90,7 +90,7 @@
 				strip $PREFIX/$TARGET/lib32/*.dll || exit 1
 			}
 		}
-	}
+	fi
 	
 	touch $BUILDS_DIR/gcc-post.marker
 }
