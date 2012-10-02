@@ -78,7 +78,7 @@ windows-host/4.7.2/release/x86_64-mingw-w64-gcc-4.7.2-release-c,c++,fortran-sjlj
 RUN_ARGS="$@"
 [[ $# == 1 && $1 == --help	|| $[ $# == 0 ] == 1 ]] && {
 	echo "usage:"
-	echo "  ./${0##*/} <gcc version> [OPTIONS] <x32|x64>"
+	echo "  ./${0##*/} <gcc version> <x32|x64> [OPTIONS]"
 	echo "  help:"
 	echo "    --buildroot=path       - specifies the build root directory"
 	echo "    --preload              - firstly downloads then builds"
@@ -94,6 +94,7 @@ RUN_ARGS="$@"
 	echo "    --version              - pring the version of the MinGW-builds scripts"
 	echo "    --mingw-compress       - compressing MinGW"
 	echo "    --srcs-compress        - compressing sources"
+	echo "    --upload=<user>        - upload archives to sf-project"
 	echo "    --cflags=\"<flags>\"   - additional CFLAGS"
 	echo "    --cxxflags=\"<flags>\" - additional CXXFLAGS"
 	echo "    --cppflags=\"<flags>\" - additional CPPFLAGS"
@@ -150,6 +151,9 @@ REV_NUM=""
 GCC_NAME=""
 COMPRESSING_MINGW=no
 COMPRESSING_SRCS=no
+UPLOAD_TO_SF=no
+SF_USER=""
+
 
 while [[ $# > 0 ]]; do
 	case $1 in
@@ -191,20 +195,11 @@ while [[ $# > 0 ]]; do
 				GCC_NAME=$1
 			}
 		;;
-		--version)
-			echo $MINGW_BUILDS_VERSION
-			exit 0
-		;;
-		--mingw-compress)
-			COMPRESSING_MINGW=yes
-		;;
-		--srcs-compress)
-			COMPRESSING_SRCS=yes
-		;;
-		*)
-			echo "bad command line. terminate."
-			exit 1
-		;;
+		--version)echo $MINGW_BUILDS_VERSION; exit 0 ;;
+		--mingw-compress) COMPRESSING_MINGW=yes ;;
+		--srcs-compress) COMPRESSING_SRCS=yes ;;
+		--upload=*) UPLOAD_TO_SF=yes; SF_USER=${1/--upload=/} ;;
+		*) echo "bad command line. terminate."; exit 1 ;;
 	esac
 	shift
 done
@@ -490,14 +485,15 @@ SUBTARGETS_PART2=(
 
 for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	[[ $USE_DWARF == yes ]] && GCC_DWARF_OR_SJLJ=dwarf || GCC_DWARF_OR_SJLJ=sjlj
-	BUILDS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ-build-$ARCHITECTURE
-	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ-libs-$ARCHITECTURE
-	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ-logs-$ARCHITECTURE
-	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ-$ARCHITECTURE
+	[[ -n $REV_NUM ]] && REV_STRING="-rev$REV_NUM" || REV_STRING=""
+	BUILDS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-build-$ARCHITECTURE
+	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-libs-$ARCHITECTURE
+	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-logs-$ARCHITECTURE
+	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-$ARCHITECTURE
 	
 	MINGW_BUILD_NAME=$([[ $ARCHITECTURE == x32 ]] && echo -n i686 || echo -n x86_64)-MinGW-w64-$GCC_NAME
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME-$([[ $USE_MULTILIB == yes ]] && echo -n multilib)-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ
-	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
+	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n "-rev$REV_NUM")
 	echo "-> start building $MINGW_BUILD_NAME"
 	
 	[[ $ARCHITECTURE == x32 ]] && {
@@ -576,6 +572,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		}
 
 		NAME=""
+		EXECUTE_AFTER_DOWNLOAD=()
+		EXECUTE_AFTER_UNCOMPRESS=()
+		EXECUTE_AFTER_PATCH=()
+
 		cd $TOP_DIR
 		. ./scripts/$sub.sh
 
@@ -706,10 +706,6 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG
 			exit $result
 		}
-
-		EXECUTE_AFTER_PATCH=()
-		EXECUTE_AFTER_UNCOMPRESS=()
-		EXECUTE_AFTER_DOWNLOAD=()
    done
 done
 
@@ -718,6 +714,69 @@ done
 [[ $COMPRESSING_SRCS == yes ]] && {
 	echo -e "-> \E[32;40mcompress mingw sources\E[37;40m"
 	cd $TOP_DIR; . ./scripts/srcs-compress.sh
+}
+
+# ***************************************************************************
+
+[[ $UPLOAD_TO_SF == yes ]] && {
+	cd $TOP_DIR; . ./scripts/upload.sh
+	[[ -z $SF_USER ]] && {
+		echo "user name is not specified. terminate."
+		exit 0
+	}
+	
+	for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
+		echo -e -n "-> \E[32;40mupload $ARCHITECTURE archive...\E[37;40m"
+		mingw_archive_name=$( \
+			func_create_mingw_archive_name \
+				$ROOT_DIR \
+				$SRCS_DIR \
+				$GCC_NAME \
+				$ARCHITECTURE \
+				$ENABLE_LANGUAGES \
+				$USE_DWARF \
+				$THREADS_MODEL \
+				$REV_NUM \
+		)
+		#echo "mingw archive name: $mingw_archive_name"
+
+		upload_cmd=$( \
+			func_create_mingw_upload_cmd \
+				$ROOT_DIR \
+				$SF_USER \
+				$GCC_NAME \
+				$mingw_archive_name \
+				$ARCHITECTURE \
+				$THREADS_MODEL \
+				$USE_DWARF \
+		)
+		#echo "mingw upload cmd: $upload_cmd"
+		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
+		_result=$?
+		[[ $_result != 0 ]] && {
+			echo "error: $_result"
+			exit $_result
+		} || {
+			echo " done"
+		}
+	done
+
+	sources_archive_name=$( \
+		func_create_sources_archive_name \
+			$ROOT_DIR \
+			$SRCS_DIR \
+			$GCC_NAME \
+			$REV_NUM \
+	)
+	#echo "sources archive name: $sources_archive_name"
+	upload_cmd=$( \
+		func_create_sources_upload_cmd \
+			$ROOT_DIR \
+			$SF_USER \
+			$sources_archive_name \
+	)
+	#echo "sources upload cmd: $upload_cmd"
+	eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/sources-upload.log 2>&1"
 }
 
 # ***************************************************************************

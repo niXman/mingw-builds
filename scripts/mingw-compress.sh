@@ -35,43 +35,20 @@
 
 # **************************************************************************
 
-case $GCC_NAME in
-	gcc-*-branch|gcc-trunk)
-		GCC_REVISION="-rev-$(cd $SRCS_DIR/$GCC_NAME; svn info | grep 'Revision: ' | sed 's|Revision: ||')"
-	;;
-	*)
-		GCC_REVISION=""
-	;;
-esac
+ARCHIVE_NAME=\
+$( \
+	func_create_mingw_archive_name \
+		$ROOT_DIR \
+		$SRCS_DIR \
+		$GCC_NAME \
+		$ARCHITECTURE \
+		$ENABLE_LANGUAGES \
+		$USE_DWARF \
+		$THREADS_MODEL \
+		$REV_NUM \
+)
 
-ARCHIVE_NAME=$ROOT_DIR/$([[ $ARCHITECTURE == x32 ]] && echo i686 || echo x86_64)-mingw-w64
-case $GCC_NAME in
-	gcc-?.?.?)			ARCHIVE_NAME=$ARCHIVE_NAME-$GCC_NAME-release-$ENABLE_LANGUAGES ;;
-	gcc-4_6-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.6.4-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
-	gcc-4_7-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.7.3-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
-	gcc-4_8-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.8.1-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
-	gcc-4_9-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.9.1-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
-	gcc-trunk)			ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.8.0-snapshot-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
-	*) echo "gcc name error: $GCC_NAME. terminate."; exit ;;
-esac
-
-ARCHIVE_NAME=$ARCHIVE_NAME-threads_$THREADS_MODEL
-
-[[ $USE_DWARF == no ]] && {
-	ARCHIVE_NAME=$ARCHIVE_NAME-sjlj
-} || {
-	ARCHIVE_NAME=$ARCHIVE_NAME-dwarf
-}
-
-[[ -n $REV_NUM ]] && {
-	ARCHIVE_NAME=$ARCHIVE_NAME-rev${REV_NUM}
-}
-
-# **************************************************************************
-
-SEVENZIP_ARCHIVE_NAME=$ARCHIVE_NAME.7z
-
-[[ ! -f $SEVENZIP_ARCHIVE_NAME ]] && {
+[[ ! -f $ARCHIVE_NAME ]] && {
 	MINGW_COPY_MARKER=$BUILDS_DIR/mingw-copy.marker
 	MINGW_ROOT=$BUILDS_DIR/mingw
 
@@ -104,10 +81,10 @@ SEVENZIP_ARCHIVE_NAME=$ARCHIVE_NAME.7z
 	
 	rm -rf $PREFIX/mingw
 
-	[[ ! -f $SEVENZIP_ARCHIVE_NAME ]] && {
-		echo -n "---> \"$(basename $SEVENZIP_ARCHIVE_NAME)\" ... "
+	[[ ! -f $ARCHIVE_NAME ]] && {
+		echo -n "---> \"$(basename $ARCHIVE_NAME)\" ... "
 		( cd $BUILDS_DIR && 7za a -t7z -mx=9 -mfb=64 -md=64m -ms=on \
-			"$SEVENZIP_ARCHIVE_NAME" "$MINGW_ROOT" >/dev/null 2>&1 \
+			"$ARCHIVE_NAME" "$MINGW_ROOT" >/dev/null 2>&1 \
 		)
 		[[ $? == 0 ]] && {
 			echo "done"
