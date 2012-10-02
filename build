@@ -576,8 +576,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		EXECUTE_AFTER_UNCOMPRESS=()
 		EXECUTE_AFTER_PATCH=()
 
-		cd $TOP_DIR
-		. ./scripts/$sub.sh
+		cd $TOP_DIR && . ./scripts/$sub.sh
 
 		[[ -z $NAME ]] && continue
 
@@ -713,7 +712,7 @@ done
 
 [[ $COMPRESSING_SRCS == yes ]] && {
 	echo -e "-> \E[32;40mcompress mingw sources\E[37;40m"
-	cd $TOP_DIR; . ./scripts/srcs-compress.sh
+	cd $TOP_DIR && . ./scripts/srcs-compress.sh
 }
 
 # ***************************************************************************

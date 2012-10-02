@@ -563,47 +563,57 @@ function func_install_toolchain {
 
 # **************************************************************************
 
-function func_create_mingw_archive_name {
-	# $1 - build root dir
-	# $2 - sources root dir
-	# $3 - gcc name
-	# $4 - architecture
-	# $5 - enabled languages
-	# $6 - use dwarf
-	# $7 - threads model
-	# $8 - revision number
+function func_map_gcc_name_to_gcc_version {
+	# $1 - sources root dir
+	# $2 - gcc name
 
-	case $3 in
+		case $2 in
 		gcc-*-branch|gcc-trunk)
-			local _gcc_rev="rev-$(cd $2/$3 && svn info | grep 'Revision: ' | sed 's|Revision: ||')"
+			local _gcc_rev="rev-$(cd $1/$2 && svn info | grep 'Revision: ' | sed 's|Revision: ||')"
 		;;
 		*)
 			local _gcc_rev=""
 		;;
 	esac
 
-	local _archive=$1/$([[ $4 == x32 ]] && echo i686 || echo x86_64)-mingw-w64
 	local _date_str=$(date +%Y%m%d)
-	case $3 in
-		gcc-?.?.?)			_archive=$_archive-$3-release-$5 ;;
-		gcc-4_6-branch)	_archive=$_archive-gcc-4.6.4-prerelease-$_date_str-$_gcc_rev-$5 ;;
-		gcc-4_7-branch)	_archive=$_archive-gcc-4.7.3-prerelease-$_date_str-$_gcc_rev-$5 ;;
-		gcc-4_8-branch)	_archive=$_archive-gcc-4.8.1-prerelease-$_date_str-$_gcc_rev-$5 ;;
-		gcc-4_9-branch)	_archive=$_archive-gcc-4.9.1-prerelease-$_date_str-$_gcc_rev-$5 ;;
-		gcc-trunk)			_archive=$_archive-gcc-4.8.0-snapshot-$_date_str-$_gcc_rev-$5 ;;
-		*) echo "gcc name error: $3. terminate."; exit ;;
+	case $2 in
+		gcc-?.?.?)			echo "$2-release" ;;
+		gcc-4_6-branch)	echo "gcc-4.6.4-prerelease-$_date_str-$_gcc_rev" ;;
+		gcc-4_7-branch)	echo "gcc-4.7.3-prerelease-$_date_str-$_gcc_rev" ;;
+		gcc-4_8-branch)	echo "gcc-4.8.1-prerelease-$_date_str-$_gcc_rev" ;;
+		gcc-4_9-branch)	echo "gcc-4.9.1-prerelease-$_date_str-$_gcc_rev" ;;
+		gcc-trunk)			echo "gcc-4.8.0-snapshot-$_date_str-$_gcc_rev" ;;
+		*) echo "gcc name error: $2. terminate."; exit ;;
 	esac
+}
 
-	_archive=$_archive-threads_$7
+# **************************************************************************
 
-	[[ $6 == no ]] && {
+function func_create_mingw_archive_name {
+	# $1 - build root dir
+	# $2 - sources root dir
+	# $3 - gcc name
+	# $4 - architecture
+	# $5 - use dwarf
+	# $6 - threads model
+	# $7 - revision number
+
+	local _archive=$1/$([[ $4 == x32 ]] && echo i686 || echo x86_64)-mingw-w64-$( \
+		func_map_gcc_name_to_gcc_version \
+			$2 \
+			$3 \
+	)
+
+	_archive=$_archive-threads_$6
+
+	[[ $5 == no ]] && {
 		_archive=$_archive-sjlj
 	} || {
 		_archive=$_archive-dwarf
 	}
-
-	[[ -n $8 ]] && {
-		_archive=$_archive-rev$8
+	[[ -n $7 ]] && {
+		_archive=$_archive-rev$7
 	}
 	
 	echo "$_archive.7z"
@@ -616,27 +626,11 @@ function func_create_sources_archive_name {
 	# $2 - sources root dir
 	# $3 - gcc name
 	# $4 - revision number
-	
-	case $3 in
-		gcc-*-branch|gcc-trunk)
-			local _gcc_rev="rev-$(cd $2/$3 && svn info | grep 'Revision: ' | sed 's|Revision: ||')"
-		;;
-		*)
-			local _gcc_rev=""
-		;;
-	esac
-
-	local _archive=""
-	local _date_str=$(date +%Y%m%d)
-	case $3 in
-		gcc-?.?.?)		_archive=$1/sources-$3-release ;;
-		gcc-4_6-branch)_archive=$1/sources-gcc-4.6.4-prerelease-$_date_str-$_gcc_rev ;;
-		gcc-4_7-branch)_archive=$1/sources-gcc-4.7.3-prerelease-$_date_str-$_gcc_rev ;;
-		gcc-4_8-branch)_archive=$1/sources-gcc-4.8.1-prerelease-$_date_str-$_gcc_rev ;;
-		gcc-4_9-branch)_archive=$1/sources-gcc-4.9.1-prerelease-$_date_str-$_gcc_rev ;;
-		gcc-trunk)		_archive=$1/sources-gcc-4.8.0-snapshot-$_date_str-$_gcc_rev ;;
-		*) echo "gcc name error: \"$3\". terminate."; exit 1 ;;
-	esac
+	local _archive=sources-$( \
+		func_map_gcc_name_to_gcc_version \
+			$2 \
+			$3 \
+	)
 
 	[[ -n $4 ]] && {
 		_archive=$_archive-rev$4
