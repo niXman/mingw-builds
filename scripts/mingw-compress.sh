@@ -46,12 +46,12 @@ esac
 
 ARCHIVE_NAME=$ROOT_DIR/$([[ $ARCHITECTURE == x32 ]] && echo i686 || echo x86_64)-mingw-w64
 case $GCC_NAME in
-	gcc-?.?.?)			ARCHIVE_NAME=$ARCHIVE_NAME-$GCC_NAME-release-$ENABLE_LANGUAGES ;;
-	gcc-4_6-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.6.4-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
-	gcc-4_7-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.7.3-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
-	gcc-4_8-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.8.1-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
-	gcc-4_9-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.9.1-prerelease-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
-	gcc-trunk)			ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.8.0-snapshot-$(date +%Y%m%d)$GCC_REVISION-$ENABLE_LANGUAGES ;;
+	gcc-?.?.?)			ARCHIVE_NAME=$ARCHIVE_NAME-$GCC_NAME-release ;;
+	gcc-4_6-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.6.4-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
+	gcc-4_7-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.7.3-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
+	gcc-4_8-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.8.1-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
+	gcc-4_9-branch)	ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.9.1-prerelease-$(date +%Y%m%d)$GCC_REVISION ;;
+	gcc-trunk)			ARCHIVE_NAME=$ARCHIVE_NAME-gcc-4.8.0-snapshot-$(date +%Y%m%d)$GCC_REVISION ;;
 	*) echo "gcc name error: $GCC_NAME. terminate."; exit ;;
 esac
 
