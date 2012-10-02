@@ -63,7 +63,7 @@ CONFIGURE_FLAGS=(
 	--target=$TARGET
 	#
 	--prefix=$PREFIX/$HOST
-	--with-sysroot=$PREFIX
+	--with-sysroot=$PREFIX/$HOST
 	#
 	$LIBCONF
 	--enable-wildcard
