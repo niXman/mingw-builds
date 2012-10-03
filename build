@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-ENABLE_LANGUAGES=c,c++,fortran
+ENABLE_LANGUAGES='c,c++'
 
 BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer"
 BASE_CXXFLAGS="$BASE_CFLAGS"

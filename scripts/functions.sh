@@ -626,7 +626,7 @@ function func_create_sources_archive_name {
 	# $2 - sources root dir
 	# $3 - gcc name
 	# $4 - revision number
-	local _archive=sources-$( \
+	local _archive=$1/sources-$( \
 		func_map_gcc_name_to_gcc_version \
 			$2 \
 			$3 \
