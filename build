@@ -485,15 +485,15 @@ SUBTARGETS_PART2=(
 
 for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	[[ $USE_DWARF == yes ]] && GCC_DWARF_OR_SJLJ=dwarf || GCC_DWARF_OR_SJLJ=sjlj
-	[[ -n $REV_NUM ]] && REV_STRING="-rev$REV_NUM" || REV_STRING=""
+	[[ -n $REV_NUM ]] && REV_STRING=-rev$REV_NUM || REV_STRING=""
 	BUILDS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-build-$ARCHITECTURE
 	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-libs-$ARCHITECTURE
 	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-logs-$ARCHITECTURE
 	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-$ARCHITECTURE
 	
 	MINGW_BUILD_NAME=$([[ $ARCHITECTURE == x32 ]] && echo -n i686 || echo -n x86_64)-MinGW-w64-$GCC_NAME
-	MINGW_BUILD_NAME=$MINGW_BUILD_NAME-$([[ $USE_MULTILIB == yes ]] && echo -n multilib)-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ
-	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n "-rev$REV_NUM")
+	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ
+	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
 	echo "-> start building $MINGW_BUILD_NAME"
 	
 	[[ $ARCHITECTURE == x32 ]] && {
@@ -777,5 +777,7 @@ done
 	#echo "sources upload cmd: $upload_cmd"
 	eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/sources-upload.log 2>&1"
 }
+
+exit 0
 
 # ***************************************************************************
