@@ -38,7 +38,7 @@
 ARCHIVE_NAME=\
 $( \
 	func_create_sources_archive_name \
-		$ROOT_DIR \
+		$ARCHIVES_DIR \
 		$SRCS_DIR \
 		$GCC_NAME \
 		$REV_NUM \

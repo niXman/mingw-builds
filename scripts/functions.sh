@@ -563,29 +563,54 @@ function func_install_toolchain {
 
 # **************************************************************************
 
+function func_map_gcc_name_to_gcc_type {
+	# $1 - gcc name
+	
+	case $1 in
+		gcc-?.?.?) echo release ;;
+		gcc-*-branch) echo prerelease ;;
+		gcc-trunk) echo snapshot ;;
+		*) echo "gcc name error: $1. terminate."; exit 1 ;;
+	esac
+}
+
+# **************************************************************************
+
 function func_map_gcc_name_to_gcc_version {
+	# $1 - gcc name
+	
+	case $1 in
+		gcc-?.?.?)			echo "${1/gcc-/}" ;;
+		gcc-4_6-branch)	echo "4.6.4" ;;
+		gcc-4_7-branch)	echo "4.7.3" ;;
+		gcc-4_8-branch)	echo "4.8.1" ;;
+		gcc-4_9-branch)	echo "4.9.1" ;;
+		gcc-trunk)			echo "4.8.0" ;;
+		*) echo "gcc name error: $1. terminate."; exit 1 ;;
+	esac
+}
+
+# **************************************************************************
+
+function func_map_gcc_name_to_gcc_build_name {
 	# $1 - sources root dir
 	# $2 - gcc name
 
-		case $2 in
-		gcc-*-branch|gcc-trunk)
-			local _gcc_rev="rev-$(cd $1/$2 && svn info | grep 'Revision: ' | sed 's|Revision: ||')"
-		;;
-		*)
-			local _gcc_rev=""
-		;;
-	esac
+	local _type_str=$(func_map_gcc_name_to_gcc_type $2)
+	local _gcc_version=$(func_map_gcc_name_to_gcc_version $2)
+	local _build_name=$_gcc_version-$_type_str
 
-	local _date_str=$(date +%Y%m%d)
-	case $2 in
-		gcc-?.?.?)			echo "$2-release" ;;
-		gcc-4_6-branch)	echo "gcc-4.6.4-prerelease-$_date_str-$_gcc_rev" ;;
-		gcc-4_7-branch)	echo "gcc-4.7.3-prerelease-$_date_str-$_gcc_rev" ;;
-		gcc-4_8-branch)	echo "gcc-4.8.1-prerelease-$_date_str-$_gcc_rev" ;;
-		gcc-4_9-branch)	echo "gcc-4.9.1-prerelease-$_date_str-$_gcc_rev" ;;
-		gcc-trunk)			echo "gcc-4.8.0-snapshot-$_date_str-$_gcc_rev" ;;
-		*) echo "gcc name error: $2. terminate."; exit ;;
-	esac
+	[[ $_type_str != release ]] && {
+		case $2 in
+			gcc-*-branch|gcc-trunk)
+				local _gcc_rev="rev$(cd $1/$2 && svn info | grep 'Revision: ' | sed 's|Revision: ||')"
+			;;
+			*) local _gcc_rev="" ;;
+		esac
+		echo "$_build_name-$(date +%Y%m%d)-$_gcc_rev"
+	} || {
+		echo "$_build_name"
+	}
 }
 
 # **************************************************************************
@@ -599,19 +624,12 @@ function func_create_mingw_archive_name {
 	# $6 - threads model
 	# $7 - revision number
 
-	local _archive=$1/$([[ $4 == x32 ]] && echo i686 || echo x86_64)-mingw-w64-$( \
-		func_map_gcc_name_to_gcc_version \
+	local _archive=$1/$4-$( \
+		func_map_gcc_name_to_gcc_build_name \
 			$2 \
 			$3 \
-	)
+	)-$6-$( [[ $5 == yes ]] && echo dwarf || echo sjlj )
 
-	_archive=$_archive-threads_$6
-
-	[[ $5 == no ]] && {
-		_archive=$_archive-sjlj
-	} || {
-		_archive=$_archive-dwarf
-	}
 	[[ -n $7 ]] && {
 		_archive=$_archive-rev$7
 	}
@@ -626,8 +644,9 @@ function func_create_sources_archive_name {
 	# $2 - sources root dir
 	# $3 - gcc name
 	# $4 - revision number
-	local _archive=$1/sources-$( \
-		func_map_gcc_name_to_gcc_version \
+	
+	local _archive=$1/src-$( \
+		func_map_gcc_name_to_gcc_build_name \
 			$2 \
 			$3 \
 	)
@@ -650,12 +669,12 @@ function func_create_mingw_upload_cmd {
 	# $6 - threads model
 	# $7 - use dwarf
 	
-	local _project_fs_root_dir=/home/frs/project/mingwbuilds/new-fs-tree
+	local _project_fs_root_dir=/home/frs/project/mingwbuilds/host-windows
 	local _upload_cmd="cd $1 && scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir"
 	
 	case $3 in
-		gcc-?.?.?) _upload_cmd="$_upload_cmd/mingw-releases/$(echo $3 | sed 's|gcc-||')" ;;
-		gcc-?_?-branch|gcc-trunk) _upload_cmd="$_upload_cmd/mingw-testing" ;;
+		gcc-?.?.?) _upload_cmd="$_upload_cmd/releases/$(echo $3 | sed 's|gcc-||')" ;;
+		gcc-?_?-branch|gcc-trunk) _upload_cmd="$_upload_cmd/testing" ;;
 		*) echo "gcc name error: \"$3\". terminate."; exit 1 ;;
 	esac
 	case $3 in
@@ -686,8 +705,8 @@ function func_create_sources_upload_cmd {
 	# $3 - gcc name
 	# $4 - archive name
 	
-	local _project_fs_root_dir=/home/frs/project/mingwbuilds/new-fs-tree
-	local _upload_cmd="cd $1 && scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir/gcc-sources/$3"
+	local _project_fs_root_dir=/home/frs/project/mingwbuilds
+	local _upload_cmd="cd $1 && scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir/mingw-sources/$(func_map_gcc_name_to_gcc_version $3)"
 
 	echo "$_upload_cmd"
 }

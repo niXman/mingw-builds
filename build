@@ -218,6 +218,9 @@ done
 
 SRCS_DIR=$ROOT_DIR/mingw-sources
 
+ARCHIVES_DIR=$ROOT_DIR/mingw-archives
+mkdir -p $ARCHIVES_DIR
+
 # **************************************************************************
 
 [[ -z $GCC_NAME ]] && {
@@ -300,11 +303,11 @@ SRCS_DIR=$ROOT_DIR/mingw-sources
 			$x64_HOST_MINGW_PATH \
 			$x32_HOST_MINGW_PATH_URL \
 			$x64_HOST_MINGW_PATH_URL
-		_result=$?
-		[[ $_result != 0 ]] && {
-			echo "host toolchain install error. terminate."
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER ""
-			exit $_result
+		func_res=$?
+		[[ $func_res != 0 ]] && {
+			echo "toolchain install error. terminate."
+			echo "see log-files in \"$TOOLCHAINS_DIR\" directory."
+			exit $func_res
 		}
 	}
 }
@@ -426,9 +429,7 @@ SUBTARGETS_PART2=(
 			}
 
 			NAME=""
-			EXECUTE_AFTER_DOWNLOAD=()
-			cd $TOP_DIR
-			. ./scripts/$sub.sh
+			cd $TOP_DIR && . ./scripts/$sub.sh
 
 			[[ -z $NAME ]] && continue
 
@@ -442,23 +443,10 @@ SUBTARGETS_PART2=(
 				$SRCS_DIR/$SRC_DIR_NAME/download.log \
 				$SRCS_DIR/$SRC_DIR_NAME/_download.marker \
 				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
-			_result=$?
-			[[ $_result != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/download.log
-				exit $_result
-			}
-
-			[[ ${#EXECUTE_AFTER_DOWNLOAD[@]} > 0 ]] && {
-				func_execute \
-					$SRCS_DIR \
-					$SRC_DIR_NAME \
-					"execute commands..." \
-					EXECUTE_AFTER_DOWNLOAD[@]
-				_result=$?
-				[[ $_result != 0 ]] && {
-					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
-					exit $_result
-				}
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/download.log &
+				exit $func_res
 			}
 
 			func_uncompress \
@@ -467,10 +455,10 @@ SUBTARGETS_PART2=(
 				$TYPE \
 				$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker \
 				$SRCS_DIR/$SRC_DIR_NAME/uncompress.log
-			_result=$?
-			[[ $_result != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/uncompress.log
-				exit $_result
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/uncompress.log &
+				exit $func_res
 			}
 		}
 	done
@@ -485,14 +473,15 @@ SUBTARGETS_PART2=(
 
 for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	[[ $USE_DWARF == yes ]] && GCC_DWARF_OR_SJLJ=dwarf || GCC_DWARF_OR_SJLJ=sjlj
-	[[ -n $REV_NUM ]] && REV_STRING=-rev$REV_NUM || REV_STRING=""
-	BUILDS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-build-$ARCHITECTURE
-	LIBS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-libs-$ARCHITECTURE
-	LOGS_DIR=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-logs-$ARCHITECTURE
-	PREFIX=$ROOT_DIR/mingw-$GCC_NAME-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-$ARCHITECTURE
+	[[ -n $REV_NUM ]] && REV_STRING="-rev$REV_NUM" || REV_STRING=""
+	GCC_TYPE_STRING=$(func_map_gcc_name_to_gcc_type $GCC_NAME)
+	BUILDS_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-build
+	LIBS_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-libs
+	LOGS_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-logs
+	PREFIX=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-prefix
 	
-	MINGW_BUILD_NAME=$([[ $ARCHITECTURE == x32 ]] && echo -n i686 || echo -n x86_64)-MinGW-w64-$GCC_NAME
-	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-threads_$THREADS_MODEL-$GCC_DWARF_OR_SJLJ
+	MINGW_BUILD_NAME=$ARCHITECTURE-${GCC_NAME/gcc-/}
+	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
 	echo "-> start building $MINGW_BUILD_NAME"
 	
@@ -533,7 +522,6 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	COMMON_CPPFLAGS="$BASE_CPPFLAGS"
 	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREFIX/bin"
 
-	EXECUTE_AFTER_DOWNLOAD=()
 	EXECUTE_AFTER_UNCOMPRESS=()
 	EXECUTE_AFTER_PATCH=()
 
@@ -599,23 +587,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$DOWNLOAD_LOG \
 			$DOWNLOAD_MARKER \
 			$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
-		[[ $? != 0 ]] && {
-			result=$?
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG
-			exit $result
-		}
-
-		[[ ${#EXECUTE_AFTER_DOWNLOAD[@]} >0 ]] && {
-			func_execute \
-				$SRCS_DIR \
-				$SRC_DIR_NAME \
-				"execute commands..." \
-				EXECUTE_AFTER_DOWNLOAD[@]
-			[[ $? != 0 ]] && {
-				result=$?
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
-				exit $result
-			}
+		func_res=$?
+		[[ $func_res != 0 ]] && {
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG &
+			exit $func_res
 		}
 
 		func_uncompress \
@@ -624,10 +599,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$TYPE \
 			$UNCOMPRESS_MARKER \
 			$UNCOMPRESS_LOG
-		[[ $? != 0 ]] && {
-			result=$?
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $UNCOMPRESS_LOG
-			exit $result
+		func_res=$?
+		[[ $func_res != 0 ]] && {
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $UNCOMPRESS_LOG &
+			exit $func_res
 		}
 
 		[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
@@ -636,10 +611,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$SRC_DIR_NAME \
 				"execute commands..." \
 				EXECUTE_AFTER_UNCOMPRESS[@]
-			[[ $? != 0 ]] && {
-				result=$?
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
-				exit $result
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log &
+				exit $func_res
 			}
 		}
 
@@ -647,10 +622,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$SRCS_DIR \
 			$SRC_DIR_NAME \
 			PATCHES[@]
-		[[ $? != 0 ]] && {
-			result=$?
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/patch-$_index.log
-			exit $result
+		func_res=$?
+		[[ $func_res != 0 ]] && {
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/patch-$_index.log &
+			exit $func_res
 		}
 
 		[[ ${#EXECUTE_AFTER_PATCH[@]} >0 ]] && {
@@ -659,10 +634,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$SRC_DIR_NAME \
 				"execute commands..." \
 				EXECUTE_AFTER_PATCH[@]
-			[[ $? != 0 ]] && {
-				result=$?
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log
-				exit $result
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log &
+				exit $func_res
 			}
 		}
 
@@ -672,10 +647,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$SRC_DIR_NAME \
 			"$configure_flags" \
 			$CONFIGURE_LOG
-		[[ $? != 0 ]] && {
-			result=$?
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG
-			exit $result
+		func_res=$?
+		[[ $func_res != 0 ]] && {
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG &
+			exit $func_res
 		}
 
 		make_flags="/bin/make ${MAKE_FLAGS[@]}"
@@ -686,10 +661,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$MAKE_LOG \
 			"building..." \
 			"built"
-		[[ $? != 0 ]] && {
-			result=$?
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG
-			exit $result
+		func_res=$?
+		[[ $func_res != 0 ]] && {
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG &
+			exit $func_res
 		}
 
 		install_flags="/bin/make ${INSTALL_FLAGS[@]}"
@@ -700,10 +675,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$INSTALL_LOG \
 			"installing..." \
 			"installed"
-		[[ $? != 0 ]] && {
-			result=$?
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG
-			exit $result
+		func_res=$?
+		[[ $func_res != 0 ]] && {
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG &
+			exit $func_res
 		}
    done
 done
@@ -725,23 +700,20 @@ done
 	}
 	
 	for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
-		echo -e -n "-> \E[32;40mupload $ARCHITECTURE archive...\E[37;40m"
 		mingw_archive_name=$( \
 			func_create_mingw_archive_name \
-				$ROOT_DIR \
+				$ARCHIVES_DIR \
 				$SRCS_DIR \
 				$GCC_NAME \
 				$ARCHITECTURE \
-				$ENABLE_LANGUAGES \
 				$USE_DWARF \
 				$THREADS_MODEL \
 				$REV_NUM \
 		)
-		#echo "mingw archive name: $mingw_archive_name"
-
+		
 		upload_cmd=$( \
 			func_create_mingw_upload_cmd \
-				$ROOT_DIR \
+				$ARCHIVES_DIR \
 				$SF_USER \
 				$GCC_NAME \
 				$mingw_archive_name \
@@ -749,33 +721,40 @@ done
 				$THREADS_MODEL \
 				$USE_DWARF \
 		)
-		#echo "mingw upload cmd: $upload_cmd"
+		echo -e -n "-> \E[32;40mupload $ARCHITECTURE archive...\E[37;40m"
+#		echo "mingw_upload: ${upload_cmd}"
 		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
-		_result=$?
-		[[ $_result != 0 ]] && {
-			echo "error: $_result"
-			exit $_result
+		
+		func_res=$?
+		[[ $func_res != 0 ]] && {
+			echo "upload finished with error($func_res). terminate."
+			exit $func_res
 		} || {
-			echo " done"
+			echo "done"
 		}
 	done
 
 	sources_archive_name=$( \
 		func_create_sources_archive_name \
-			$ROOT_DIR \
+			$ARCHIVES_DIR \
 			$SRCS_DIR \
 			$GCC_NAME \
 			$REV_NUM \
 	)
-	#echo "sources archive name: $sources_archive_name"
 	upload_cmd=$( \
 		func_create_sources_upload_cmd \
-			$ROOT_DIR \
+			$ARCHIVES_DIR \
 			$SF_USER \
+			$GCC_NAME \
 			$sources_archive_name \
 	)
-	#echo "sources upload cmd: $upload_cmd"
+#	echo "mingw_upload: ${upload_cmd}"
 	eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/sources-upload.log 2>&1"
+	func_res=$?
+	[[ $func_res != 0 ]] && {
+		echo "upload finished with error($func_res). terminate."
+		exit $func_res
+	}
 }
 
 exit 0
