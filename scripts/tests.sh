@@ -65,7 +65,7 @@ list1=(
 	"dlltest1.cpp -o dlltest1.exe"
 )
 
-run_test \
+func_test \
 	"dlltest1" \
 	list1[@] \
 	$TESTS_ROOT_DIR
@@ -77,7 +77,7 @@ list2=(
 	"dlltest2.cpp -L. -ldll2 -o dlltest2.exe"
 )
 
-run_test \
+func_test \
 	"dlltest2" \
 	list2[@] \
 	$TESTS_ROOT_DIR
@@ -89,7 +89,7 @@ list3=(
 	"ltotest.cpp ltoint.o -flto -I$TESTS_DIR -o ltotest.exe"
 )
 
-run_test \
+func_test \
 	"ltotest" \
 	list3[@] \
 	$TESTS_ROOT_DIR
@@ -100,7 +100,7 @@ list4=(
 	"omptest.c -fopenmp -o omptest.exe"
 )
 
-run_test \
+func_test \
 	"omptest" \
 	list4[@] \
 	$TESTS_ROOT_DIR
@@ -111,7 +111,7 @@ list5=(
 	"pthtest.c -mthreads -lpthread -o pthtest.exe"
 )
 
-run_test \
+func_test \
 	"pthtest" \
 	list5[@] \
 	$TESTS_ROOT_DIR
@@ -123,7 +123,7 @@ run_test \
 		"thtest.cpp -std=c++0x -o thtest.exe"
 	)
 
-	run_test \
+	func_test \
 		"thtest" \
 		list6[@] \
 		$TESTS_ROOT_DIR
@@ -135,7 +135,7 @@ list7=(
 	"lasterrortest1.cpp -o lasterrortest1.exe"
 )
 
-run_test \
+func_test \
 	"lasterrortest1" \
 	list7[@] \
 	$TESTS_ROOT_DIR
@@ -146,7 +146,7 @@ list8=(
 	"lasterrortest2.cpp -o lasterrortest2.exe"
 )
 
-run_test \
+func_test \
 	"lasterrortest2" \
 	list8[@] \
 	$TESTS_ROOT_DIR
@@ -157,7 +157,7 @@ list9=(
 	"timetest.c -lpthread -o timetest.exe"
 )
 
-run_test \
+func_test \
 	"timetest" \
 	list9[@] \
 	$TESTS_ROOT_DIR
@@ -169,7 +169,7 @@ run_test \
 		"sleeptest.cpp -std=c++0x -o sleeptest.exe"
 	)
 
-	run_test \
+	func_test \
 		"sleeptest" \
 		list10[@] \
 		$TESTS_ROOT_DIR

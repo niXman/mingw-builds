@@ -312,7 +312,7 @@ function func_make {
 
 # **************************************************************************
 
-function run_test {
+function func_test {
 	# $1 - executable name
 	# $2 - sources names
 	# $3 - tests dir
