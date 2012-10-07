@@ -352,7 +352,7 @@ function run_test {
 					echo "-> $_result -> done"
 				} || {
 					echo "-> $_result -> error. terminate."
-					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_cmp_log
+					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_cmp_log &
 					exit $_result
 				}
 				[[ $_last =~ .exe ]] && {
@@ -363,7 +363,7 @@ function run_test {
 						echo "-> $_result -> done"
 					} || {
 						echo "-> $_result -> error. terminate."
-						[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_run_log
+						[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_run_log &
 						exit $_result
 					}
 				}
