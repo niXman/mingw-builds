@@ -43,7 +43,10 @@ REV=09/21/2012
 
 #
 
-PATCHES=( make-remove-double-quote.patch )
+PATCHES=(
+	make-remove-double-quote.patch
+	make-linebuf-mingw.patch
+)
 
 #
 
