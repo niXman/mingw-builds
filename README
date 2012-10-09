@@ -24,7 +24,6 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
 7.
   The '--buildroot=<path>' option specifies to the script to use '<path>' as build directory.
     By default used MSYS user home directory.
-    Spaces are not allowed in buildroot path name.
   The '--preload' option specifies to the script to pre-download all the sources
     and only after that, to begin the building. This allows to build different
     versions of GCC simultaneously.
