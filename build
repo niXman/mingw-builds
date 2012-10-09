@@ -206,6 +206,11 @@ done
 
 # **************************************************************************
 
+[[ $ROOT_DIR == "${ROOT_DIR% *}" ]] || {
+	echo "spaces are not allowed in buildroot path name. terminate."
+	exit 1
+}
+
 [[ ! -d $ROOT_DIR ]] && {
 	mkdir -p $ROOT_DIR
 	[[ $? == 0 ]] && {
