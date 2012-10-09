@@ -7,7 +7,8 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
 
 1. Windows-64bit or Linux+Wine-64bit
 
-2. Install MSYS: http://tinyurl.com/c2jqh9p
+2. Install MSYS:
+  http://sourceforge.net/projects/mingwbuilds/files/external-binary-packages/
 
 3. Get the scripts into '<msys root>/home/<user>/mingw-builds':
   "cd && git clone git://github.com/niXman/mingw-builds.git"
