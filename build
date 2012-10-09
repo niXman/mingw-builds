@@ -62,7 +62,7 @@ BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
 ORIGINAL_PATH=$PATH
 
-TOP_DIR="$(func_simplify_path "$PWD")"
+TOP_DIR=$(func_simplify_path "$PWD")
 PATCHES_DIR=$TOP_DIR/patches
 TESTS_DIR=$TOP_DIR/tests
 TOOLCHAINS_DIR=$TOP_DIR/toolchains
@@ -140,7 +140,7 @@ RUN_ARGS="$@"
 
 # **************************************************************************
 
-ROOT_DIR="$(func_simplify_path "$HOME")"
+ROOT_DIR=$(func_simplify_path "$HOME")
 
 PRELOAD_MODE=no
 DOWNLOAD_MODE=no
