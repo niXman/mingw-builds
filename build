@@ -35,6 +35,8 @@
 
 # **************************************************************************
 
+. ./scripts/functions.sh
+
 ENABLE_LANGUAGES='c,c++,fortran'
 
 BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer"
@@ -60,12 +62,7 @@ BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
 ORIGINAL_PATH=$PATH
 
-[[ $PWD == "${PWD% *}" ]] || {
-	echo "install MinGW-builds in the directory which doesn't contain spaces. terminate."
-	exit 1
-}
-
-TOP_DIR=$PWD
+TOP_DIR="$(func_simplify_path "$PWD")"
 PATCHES_DIR=$TOP_DIR/patches
 TESTS_DIR=$TOP_DIR/tests
 TOOLCHAINS_DIR=$TOP_DIR/toolchains
@@ -143,7 +140,7 @@ RUN_ARGS="$@"
 
 # **************************************************************************
 
-ROOT_DIR=$HOME
+ROOT_DIR="$(func_simplify_path "$HOME")"
 
 PRELOAD_MODE=no
 DOWNLOAD_MODE=no
@@ -210,11 +207,6 @@ while [[ $# > 0 ]]; do
 done
 
 # **************************************************************************
-
-[[ $ROOT_DIR == "${ROOT_DIR% *}" ]] || {
-	echo "spaces are not allowed in buildroot path name. terminate."
-	exit 1
-}
 
 [[ ! -d $ROOT_DIR ]] && {
 	mkdir -p $ROOT_DIR
@@ -283,8 +275,6 @@ mkdir -p $ARCHIVES_DIR
 
 # **************************************************************************
 
-. ./scripts/functions.sh
-
 [[ ! -d $x32_HOST_MINGW_PATH || ! -d $x64_HOST_MINGW_PATH ]] && {
 	[[ $USE_DWARF == yes && ! -d $x32_HOST_MINGW_PATH ]] || \
 	[[ $USE_DWARF == no  && ! -d $x64_HOST_MINGW_PATH ]] && {
@@ -300,7 +290,7 @@ mkdir -p $ARCHIVES_DIR
 			}
 			[[ $REPLY == y ]] && break
 		done
-		
+
 		mkdir -p $TOOLCHAINS_DIR
 		[[ $? != 0 ]] && {
 			echo "can't create toolchains directory. terminate."
@@ -412,7 +402,6 @@ SUBTARGETS_PART2=(
 
 # **************************************************************************
 
-. ./scripts/functions.sh
 [[ $PRELOAD_MODE == yes || $DOWNLOAD_MODE == yes ]] && {
 	[[ $PRELOAD_MODE == yes ]] && {
 		echo -n "-> preload sources for building MinGW-${GCC_NAME}-"
@@ -428,7 +417,7 @@ SUBTARGETS_PART2=(
 		[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && echo -n "x32-" || echo -n "x64-"
 	}
 	[[ $USE_DWARF == no ]] && echo "sjlj" || echo "dwarf"
-	
+
 	for sub in ${SUBTARGETS[@]}; do
 		[[ $sub == put-versions || $sub == put-info ]] && continue
 		[[ -n $( grep 'URL=' $TOP_DIR/scripts/${sub}.sh ) ]] && {
@@ -489,12 +478,12 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	LIBS_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-libs
 	LOGS_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-logs
 	PREFIX=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-prefix
-	
+
 	MINGW_BUILD_NAME=$ARCHITECTURE-${GCC_NAME/gcc-/}
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
 	echo "-> start building $MINGW_BUILD_NAME"
-	
+
 	[[ $ARCHITECTURE == x32 ]] && {
 		HOST=i686-w64-mingw32
 		BUILD=i686-w64-mingw32
@@ -708,7 +697,7 @@ done
 		echo "user name is not specified. terminate."
 		exit 0
 	}
-	
+
 	for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		mingw_archive_name=$( \
 			func_create_mingw_archive_name \
@@ -720,7 +709,7 @@ done
 				$THREADS_MODEL \
 				$REV_NUM \
 		)
-		
+
 		upload_cmd=$( \
 			func_create_mingw_upload_cmd \
 				$ARCHIVES_DIR \
@@ -734,7 +723,7 @@ done
 		echo -e -n "-> \E[32;40mupload $ARCHITECTURE archive...\E[37;40m"
 #		echo "mingw_upload: ${upload_cmd}"
 		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
-		
+
 		func_res=$?
 		[[ $func_res != 0 ]] && {
 			echo "upload finished with error($func_res). terminate."

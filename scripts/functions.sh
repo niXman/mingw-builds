@@ -35,20 +35,34 @@
 
 # **************************************************************************
 
+function func_simplify_path {
+	# $1 - path
+
+	[[ $1 != "${1% *}" ]] && [[ "$(uname -o)" == "Msys" ]] && {
+		pushd "$1" >/dev/null
+		cmd /c 'for %i in (.) do @echo %~si' | sed -e "s#^\([[:alpha:]]\):#/\1#" -e 's#\\#/#g'
+		popd >/dev/null
+	} || {
+		echo "$1"
+	}
+}
+
+# **************************************************************************
+
 function func_absolute_to_relative {
 	# $1 - first path
 	# $2 - second path
-	
-   local _common=$1
-   local _target=$2
-   local _back=""
 
-   while [[ "${_target#$_common}" == "${_target}" ]]; do
-      _common=$(dirname $_common)
-      _back="../${_back}"
-   done
+	local _common=$1
+	local _target=$2
+	local _back=""
 
-   echo "${_back}${_target#$_common/}"
+	while [[ "${_target#$_common}" == "${_target}" ]]; do
+		_common=$(dirname $_common)
+		_back="../${_back}"
+	done
+
+	echo "${_back}${_target#$_common/}"
 }
 
 # **************************************************************************
@@ -387,7 +401,7 @@ function func_install_toolchain {
 
 	# local _mingw32_archive_path=$1/${4##*/}
 	# local _mingw64_archive_path=$1/${5##*/}
-	
+
 	# local _mingw32_download_log=$1/mingw32-download.log
 	# local _mingw64_download_log=$1/mingw64-download.log
 	# local _mingw32_download_marker=$1/mingw32-download.marker
@@ -408,7 +422,7 @@ function func_install_toolchain {
 	function download_mingw_x32 {
 		# $1 - toolchains path
 		# $2 - i686-mingw URL
-		
+
 		func_download \
 			$1 \
 			$(basename $2 .7z) \
@@ -423,7 +437,7 @@ function func_install_toolchain {
 	function download_mingw_x64 {
 		# $1 - toolchains path
 		# $2 - x86_64-mingw URL
-		
+
 		func_download \
 			$1 \
 			$(basename $2 .7z) \
@@ -434,7 +448,7 @@ function func_install_toolchain {
 			""
 		return $?
 	}
-	
+
 	function uncompress_mingw_x32 {
 		# $1 - toolchains path
 		# $2 - i686-mingw archive filename
@@ -459,19 +473,19 @@ function func_install_toolchain {
 			$1/mingw-x64-uncompress.log
 		return $?
 	}
-	
+
 	function move_mingw {
 		# $1 - toolchains path
 		# $2 - destination path
 		# $3 - marker file name
-	
+
 		[[ ! -f $3 ]] && {
 			# check if MinGW root directory name is valid
 			[[ ! -d $1/mingw ]] && {
 				echo "bad MinGW root path name. terminate."
 				exit 1
 			}
-			
+
 			# rename MinGW directory
 			echo -n "--> move... "
 			mv $1/mingw $2
@@ -557,7 +571,7 @@ function func_install_toolchain {
 			return $_result
 		}
 	}
-	
+
 	return 0
 }
 
@@ -565,7 +579,7 @@ function func_install_toolchain {
 
 function func_map_gcc_name_to_gcc_type {
 	# $1 - gcc name
-	
+
 	case $1 in
 		gcc-?.?.?) echo release ;;
 		gcc-*-branch) echo prerelease ;;
@@ -578,7 +592,7 @@ function func_map_gcc_name_to_gcc_type {
 
 function func_map_gcc_name_to_gcc_version {
 	# $1 - gcc name
-	
+
 	case $1 in
 		gcc-?.?.?)			echo "${1/gcc-/}" ;;
 		gcc-4_6-branch)	echo "4.6.4" ;;
@@ -633,7 +647,7 @@ function func_create_mingw_archive_name {
 	[[ -n $7 ]] && {
 		_archive=$_archive-rev$7
 	}
-	
+
 	echo "$_archive.7z"
 }
 
@@ -644,7 +658,7 @@ function func_create_sources_archive_name {
 	# $2 - sources root dir
 	# $3 - gcc name
 	# $4 - revision number
-	
+
 	local _archive=$1/src-$( \
 		func_map_gcc_name_to_gcc_build_name \
 			$2 \
@@ -654,7 +668,7 @@ function func_create_sources_archive_name {
 	[[ -n $4 ]] && {
 		_archive=$_archive-rev$4
 	}
-	
+
 	echo "$_archive.tar.7z"
 }
 
@@ -668,10 +682,10 @@ function func_create_mingw_upload_cmd {
 	# $5 - architecture
 	# $6 - threads model
 	# $7 - use dwarf
-	
+
 	local _project_fs_root_dir=/home/frs/project/mingwbuilds/host-windows
 	local _upload_cmd="cd $1 && scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir"
-	
+
 	case $3 in
 		gcc-?.?.?) _upload_cmd="$_upload_cmd/releases/$(echo $3 | sed 's|gcc-||')" ;;
 		gcc-?_?-branch|gcc-trunk) _upload_cmd="$_upload_cmd/testing" ;;
@@ -693,7 +707,7 @@ function func_create_mingw_upload_cmd {
 	} || {
 		_upload_cmd="$_upload_cmd/dwarf"
 	}
-	
+
 	echo "$_upload_cmd"
 }
 
@@ -704,7 +718,7 @@ function func_create_sources_upload_cmd {
 	# $2 - sf user name
 	# $3 - gcc name
 	# $4 - archive name
-	
+
 	local _project_fs_root_dir=/home/frs/project/mingwbuilds
 	local _upload_cmd="cd $1 && scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir/mingw-sources/$(func_map_gcc_name_to_gcc_version $3)"
 
