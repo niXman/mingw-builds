@@ -60,6 +60,11 @@ BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
 ORIGINAL_PATH=$PATH
 
+[[ $PWD == "${PWD% *}" ]] || {
+	echo "install MinGW-builds in the directory which doesn't contain spaces. terminate."
+	exit 1
+}
+
 TOP_DIR=$PWD
 PATCHES_DIR=$TOP_DIR/patches
 TESTS_DIR=$TOP_DIR/tests
