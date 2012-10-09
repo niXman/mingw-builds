@@ -33,6 +33,8 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+. ./scripts/functions.sh
+
 # **************************************************************************
 
 ENABLE_LANGUAGES='c,c++,fortran'
@@ -60,7 +62,7 @@ BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
 ORIGINAL_PATH=$PATH
 
-TOP_DIR=$PWD
+TOP_DIR="$(func_simplify_path "$PWD")"
 PATCHES_DIR=$TOP_DIR/patches
 TESTS_DIR=$TOP_DIR/tests
 TOOLCHAINS_DIR=$TOP_DIR/toolchains
@@ -138,7 +140,7 @@ RUN_ARGS="$@"
 
 # **************************************************************************
 
-ROOT_DIR=$HOME
+ROOT_DIR="$(func_simplify_path "$HOME")"
 
 PRELOAD_MODE=no
 DOWNLOAD_MODE=no
@@ -206,11 +208,6 @@ done
 
 # **************************************************************************
 
-[[ $ROOT_DIR == "${ROOT_DIR% *}" ]] || {
-	echo "spaces are not allowed in buildroot path name. terminate."
-	exit 1
-}
-
 [[ ! -d $ROOT_DIR ]] && {
 	mkdir -p $ROOT_DIR
 	[[ $? == 0 ]] && {
@@ -277,8 +274,6 @@ mkdir -p $ARCHIVES_DIR
 }
 
 # **************************************************************************
-
-. ./scripts/functions.sh
 
 [[ ! -d $x32_HOST_MINGW_PATH || ! -d $x64_HOST_MINGW_PATH ]] && {
 	[[ $USE_DWARF == yes && ! -d $x32_HOST_MINGW_PATH ]] || \
@@ -407,7 +402,6 @@ SUBTARGETS_PART2=(
 
 # **************************************************************************
 
-. ./scripts/functions.sh
 [[ $PRELOAD_MODE == yes || $DOWNLOAD_MODE == yes ]] && {
 	[[ $PRELOAD_MODE == yes ]] && {
 		echo -n "-> preload sources for building MinGW-${GCC_NAME}-"

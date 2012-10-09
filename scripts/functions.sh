@@ -35,6 +35,19 @@
 
 # **************************************************************************
 
+function func_simplify_path {
+	# $1 - path
+	[[ $1 != "${1% *}" ]] && [[ "$(uname -o)" == "Msys" ]] && {
+		pushd "$1" >/dev/null
+		cmd /c 'for %i in (.) do @echo %~si' | sed -e "s#^\([[:alpha:]]\):#/\1#" -e 's#\\#/#g'
+		popd >/dev/null
+	} || {
+		echo "$1"
+	}
+}
+
+# **************************************************************************
+
 function func_absolute_to_relative {
 	# $1 - first path
 	# $2 - second path
