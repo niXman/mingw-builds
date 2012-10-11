@@ -170,7 +170,7 @@ while [[ $# > 0 ]]; do
 			USE_DWARF=yes
 			USE_MULTILIB=no
 			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
-			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
+			BUILD_ARCHITECTURES=( x32 )
 		;;
 		--use-lto)
 			BASE_CFLAGS="$BASE_CFLAGS -flto"
