@@ -264,7 +264,12 @@ mkdir -p $ARCHIVES_DIR
 }
 
 [[ $IS_64BIT_HOST == no && ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-	echo "you can't build MinGW for x86_64 using x86 OS. terminate."
+	echo "you can't build 64-bit MinGW using 32-bit OS. terminate."
+	exit 1
+}
+
+[[ $IS_64BIT_HOST == no && $USE_MULTILIB == yes ]] && {
+	echo "you can't build multitarget MinGW using 32-bit OS. terminate."
 	exit 1
 }
 
