@@ -1,5 +1,4 @@
-﻿#include <pthread.h>
-#include <assert.h>
+#include <pthread.h>
 
 int var = 0;
 
