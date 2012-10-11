@@ -62,11 +62,11 @@ TESTS_ROOT_DIR=$BUILDS_DIR/tests
 
 list1=(
 	"dll1.cpp -shared -o dll1.dll"
-	"dlltest1.cpp -o dlltest1.exe"
+	"dll_test1.cpp -o dll_test1.exe"
 )
 
 func_test \
-	"dlltest1" \
+	"dll_test1" \
 	list1[@] \
 	$TESTS_ROOT_DIR
 
@@ -74,45 +74,45 @@ func_test \
 
 list2=(
 	"dll2.cpp -shared -o dll2.dll"
-	"dlltest2.cpp -L. -ldll2 -o dlltest2.exe"
+	"dll_test2.cpp -L. -ldll2 -o dll_test2.exe"
 )
 
 func_test \
-	"dlltest2" \
+	"dll_test2" \
 	list2[@] \
 	$TESTS_ROOT_DIR
 
 # **************************************************************************
 
 list3=(
-	"ltoint.cpp -I$TESTS_DIR -flto -c -o ltoint.o"
-	"ltotest.cpp ltoint.o -flto -I$TESTS_DIR -o ltotest.exe"
+	"lto_int.cpp -I$TESTS_DIR -flto -c -o lto_int.o"
+	"lto_test.cpp lto_int.o -flto -I$TESTS_DIR -o lto_test.exe"
 )
 
 func_test \
-	"ltotest" \
+	"lto_test" \
 	list3[@] \
 	$TESTS_ROOT_DIR
 
 # **************************************************************************
 
 list4=(
-	"omptest.c -fopenmp -o omptest.exe"
+	"omp_test.c -fopenmp -o omp_test.exe"
 )
 
 func_test \
-	"omptest" \
+	"omp_test" \
 	list4[@] \
 	$TESTS_ROOT_DIR
 
 # **************************************************************************
 
 list5=(
-	"pthtest.c -mthreads -lpthread -o pthtest.exe"
+	"pthread_test.c -mthreads -lpthread -o pthread_test.exe"
 )
 
 func_test \
-	"pthtest" \
+	"pthread_test" \
 	list5[@] \
 	$TESTS_ROOT_DIR
 
@@ -120,11 +120,11 @@ func_test \
 
 [[ $THREADS_MODEL == posix ]] && {
 	list6=(
-		"thtest.cpp -std=c++0x -o thtest.exe"
+		"stdthread_test.cpp -std=c++0x -o stdthread_test.exe"
 	)
 
 	func_test \
-		"thtest" \
+		"stdthread_test" \
 		list6[@] \
 		$TESTS_ROOT_DIR
 }
@@ -132,33 +132,33 @@ func_test \
 # **************************************************************************
 
 list7=(
-	"lasterrortest1.cpp -o lasterrortest1.exe"
+	"lasterror_test1.cpp -o lasterror_test1.exe"
 )
 
 func_test \
-	"lasterrortest1" \
+	"lasterror_test1" \
 	list7[@] \
 	$TESTS_ROOT_DIR
 
 # **************************************************************************
 
 list8=(
-	"lasterrortest2.cpp -o lasterrortest2.exe"
+	"lasterror_test2.cpp -o lasterror_test2.exe"
 )
 
 func_test \
-	"lasterrortest2" \
+	"lasterror_test2" \
 	list8[@] \
 	$TESTS_ROOT_DIR
 
 # **************************************************************************
 
 list9=(
-	"timetest.c -lpthread -o timetest.exe"
+	"time_test.c -lpthread -o time_test.exe"
 )
 
 func_test \
-	"timetest" \
+	"time_test" \
 	list9[@] \
 	$TESTS_ROOT_DIR
 
@@ -166,11 +166,11 @@ func_test \
 
 [[ $THREADS_MODEL == posix ]] && {
 	list10=(
-		"sleeptest.cpp -std=c++0x -o sleeptest.exe"
+		"sleep_test.cpp -std=c++0x -o sleep_test.exe"
 	)
 
 	func_test \
-		"sleeptest" \
+		"sleep_test" \
 		list10[@] \
 		$TESTS_ROOT_DIR
 }
