@@ -186,7 +186,7 @@ while [[ $# > 0 ]]; do
 				echo "jobs value must be greater then 0. terminate."
 				exit 1
 			}
-			JOBS=${--jobs=/}
+			JOBS=${1/--jobs=/}
 		;;
 		--threads=*) THREADS_MODEL=${1/--threads=/} ;;
 		--rev=*) REV_NUM=${1/--rev=/} ;;
