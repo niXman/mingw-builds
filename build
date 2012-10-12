@@ -209,7 +209,11 @@ while [[ $# > 0 ]]; do
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
 		--srcs-compress) COMPRESSING_SRCS=yes ;;
 		--upload=*) UPLOAD_TO_SF=yes; SF_USER=${1/--upload=/} ;;
-		*) echo "bad command line. terminate."; exit 1 ;;
+		*)
+			echo "bad command line: \"$1\""
+			echo "terminate."
+			exit 1
+		;;
 	esac
 	shift
 done
