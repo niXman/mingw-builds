@@ -90,6 +90,7 @@ RUN_ARGS="$@"
 	echo "    --no-multilib          - build GCC without multilib support"
 	echo "    --no-strip             - don't strip dll's & executables on install"
 	echo "    --dyn-deps             - build GCC with dynamically dependencies"
+	echo "    --jobs=N               - specifies number of parallel make threads"
 	echo "    --rev=N                - specifies number of the build revision"
 	echo "    --threads=<model>      - specifies the threads model for GCC/libstdc++"
 	echo "                             available: win32, posix"
@@ -180,6 +181,13 @@ while [[ $# > 0 ]]; do
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-strip) STRIP_ON_INSTALL=no ;;
 		--dyn-deps) GCC_DEPS_LINK_TYPE="--enable-shared --disable-static" ;;
+		--jobs=*)
+			[[ ${1/--jobs=/} == 0 ]] && {
+				echo "jobs value must be greater then 0. terminate."
+				exit 1
+			}
+			JOBS=${--jobs=/}
+		;;
 		--threads=*) THREADS_MODEL=${1/--threads=/} ;;
 		--rev=*) REV_NUM=${1/--rev=/} ;;
 		x32)
