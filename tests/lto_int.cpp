@@ -1,4 +1,4 @@
-﻿#include "ltoint.h"
+#include "lto_int.h"
 
 Int::Int(int i)
 {
