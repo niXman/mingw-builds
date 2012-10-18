@@ -45,7 +45,7 @@
 	echo "user: $(whoami)" >> $INFO_FILE
 	echo "date: $(date +%m.%d.%Y-%X)" >> $INFO_FILE
 	echo "args: $RUN_ARGS" >> $INFO_FILE
-	echo "PATH: $PATH" >> $INFO_FILE
+	echo "PATH: $ORIGINAL_PATH" >> $INFO_FILE
 	echo >> $INFO_FILE
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
