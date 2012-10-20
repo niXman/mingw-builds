@@ -9,3 +9,14 @@
    static char *sh_cmds_dos[] = { "assoc", "break", "call", "cd", "chcp",
  				 "chdir", "cls", "color", "copy", "ctty",
  				 "date", "del", "dir", "echo", "echo.",
+@@ -2557,6 +2557,10 @@
+ 	     quotes have the same effect.  */
+ 	  else if (instring == '"' && strchr ("\\$`", *p) != 0 && unixy_shell)
+ 	    goto slow;
++#ifdef WINDOWS32
++	  else if (instring == '"' && strncmp (p, "\\\"", 2) == 0)
++	    *ap++ = *++p;
++#endif
+ 	  else
+ 	    *ap++ = *p;
+ 	}
