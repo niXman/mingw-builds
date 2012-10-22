@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include <time.h>
 
-#include "ltoint.h"
+#include "lto_int.h"
 
 int main(int argc, char* const argv[])
 {
