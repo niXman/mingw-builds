@@ -95,7 +95,11 @@ popd
 
 MY_CPPFLAGS="$LIBSW_DIR/include $LIBSW_DIR/include/ncursesw $PREFIXW/opt/include"
 
-export PYTHON_DISABLE_MODULES="_tkinter"
+[[ $ARCHITECTURE == x32 ]] && {
+	export PYTHON_DISABLE_MODULES=""
+} || {
+	export PYTHON_DISABLE_MODULES="_tkinter"
+}
 #
 
 CONFIGURE_FLAGS=(
