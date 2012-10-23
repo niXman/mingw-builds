@@ -35,36 +35,32 @@
 
 # **************************************************************************
 
-NAME=gdb-7.5
-SRC_DIR_NAME=gdb-7.5
-URL=ftp://ftp.gnu.org/gnu/gdb/gdb-7.5.tar.bz2
-TYPE=.tar.bz2
+NAME=libffi-3.0.11
+SRC_DIR_NAME=libffi-3.0.11
+URL=ftp://sourceware.org/pub/libffi/libffi-3.0.11.tar.gz
+TYPE=.tar.gz
 
 #
 
-PATCHES=()
+PATCHES=(
+	libffi/libffi-3.0.10-win64_no_undefined.patch
+)
 
 #
 
 CONFIGURE_FLAGS=(
 	--host=$HOST
-	--build=$TARGET
-	--prefix=$PREFIX
+	--build=$BUILD
+	--target=$TARGET
 	#
-	--enable-targets=x86_64-w64-mingw32,i686-w64-mingw32
-	--enable-64-bit-bfd
+	--prefix=$LIBS_DIR
 	#
-	--disable-nls
-	--disable-werror
-	--disable-win32-registry
-	--disable-rpath
+	$GCC_DEPS_LINK_TYPE
 	#
-	--with-python
-	--with-expat
-	--with-libiconv
-	#
-	CFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib\""
+	CFLAGS="\"$COMMON_CFLAGS\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #

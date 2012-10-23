@@ -1,0 +1,14 @@
+--- win/tkWin32Dll.c	2005-12-02 01:19:04.000000000 +0100
++++ win/tkWin32Dll.c	2010-11-09 12:02:31.324634605 +0100
+@@ -152,7 +152,11 @@
+ 	     */
+ 
+ 	    "movl	$0x0,		0x0(%%esp)"		"\n\t"
++#ifdef _WIN64
++	    "call	TkFinalize"			"\n\t"
++#else
+ 	    "call	_TkFinalize"			"\n\t"
++#endif
+ 
+ 	    /*
+ 	     * Come here on a normal exit. Recover the EXCEPTION_REGISTRATION

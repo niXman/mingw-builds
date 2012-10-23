@@ -1,0 +1,37 @@
+diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
+--- a/Lib/distutils/command/install.py	2012-04-10 00:07:29.000000000 +0100
++++ b/Lib/distutils/command/install.py	2012-10-09 18:06:49.000000000 +0100
+@@ -315,6 +315,16 @@
+ 
+         self.dump_dirs("post-expand_basedirs()")
+ 
++        # MSYS (probably) will have transformed --root=/ to be something
++        # else, so we check if install_base (arbitrary choice) begins with root
++        # and if it does then we set root to None again! Another way to fix
++        # this is to prevent MSYS transformation by ensuring --root=// is
++        # passed in instead, but that's fiddly too.
++        if (self.root is not None and 
++           sys.platform == "win32" and sys.version.find("GCC") >= 0):
++            if self.install_base.find(self.root)==0:
++                self.root = None
++
+         # Now define config vars for the base directories so we can expand
+         # everything else.
+         self.config_vars['base'] = self.install_base
+diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
+--- a/Lib/distutils/util.py	2012-04-10 00:07:30.000000000 +0100
++++ b/Lib/distutils/util.py	2012-10-09 18:08:02.000000000 +0100
+@@ -210,6 +210,13 @@
+         paths.remove('.')
+     if not paths:
+         return os.curdir
++    # On Windows, if paths is ['C:','folder','subfolder'] then 
++    # os.path.join(*paths) will return 'C:folder\subfolder' which
++    # is thus relative to the CWD on that drive. So we work around
++    # this by adding a \ to path[0]
++    if (len(paths) > 0 and paths[0].endswith(':') and 
++        sys.platform == "win32" and sys.version.find("GCC") >= 0):
++        paths[0] += '\\'
+     return os.path.join(*paths)
+ 
+ # convert_path ()

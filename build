@@ -372,8 +372,16 @@ SUBTARGETS_PART2=(
 	binutils
 	$GCC_NAME
 	gcc-post
-	python
+	libgnurx
+	zlib
+	libffi
 	expat
+	tcl
+	tk
+	sqlite
+	ncurses
+	readline
+	python
 	gdb
 	make_cvs
 	cleanup

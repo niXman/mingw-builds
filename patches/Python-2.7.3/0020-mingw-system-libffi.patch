@@ -1,0 +1,100 @@
+--- a/configure	2012-10-22 11:26:28 +0400
++++ b/configure	2012-10-22 14:15:31 +0400
+@@ -9170,7 +9170,7 @@
+ if test "$with_system_ffi" = "yes" && test -n "$PKG_CONFIG"; then
+     LIBFFI_INCLUDEDIR="`"$PKG_CONFIG" libffi --cflags-only-I 2>/dev/null | sed -e 's/^-I//;s/ *$//'`"
+ else
+-    LIBFFI_INCLUDEDIR=""
++    LIBFFI_INCLUDEDIR="$LIBFFI_INCLUDEDIR"
+ fi
+ 
+ 
+--- a/configure.in	2012-10-22 11:26:22 +0400
++++ b/configure.in	2012-10-22 14:43:58 +0400
+@@ -2395,7 +2395,7 @@
+ if test "$with_system_ffi" = "yes" && test -n "$PKG_CONFIG"; then
+     LIBFFI_INCLUDEDIR="`"$PKG_CONFIG" libffi --cflags-only-I 2>/dev/null | sed -e 's/^-I//;s/ *$//'`"
+ else
+-    LIBFFI_INCLUDEDIR=""
++    LIBFFI_INCLUDEDIR="$LIBFFI_INCLUDEDIR"
+ fi
+ AC_SUBST(LIBFFI_INCLUDEDIR)
+ 
+--- a/Modules/_ctypes/callproc.c	2012-04-10 03:07:33 +0400
++++ b/Modules/_ctypes/callproc.c	2012-10-22 14:18:23 +0400
+@@ -770,7 +770,7 @@
+     int *space;
+     ffi_cif cif;
+     int cc;
+-#ifdef MS_WIN32
++#if defined (MS_WIN32) && !defined(__MINGW32__)
+     int delta;
+ #ifndef DONT_USE_SEH
+     DWORD dwExceptionCode = 0;
+@@ -822,8 +822,10 @@
+ #ifndef DONT_USE_SEH
+     __try {
+ #endif
++#if !defined(__MINGW32__)
+         delta =
+ #endif
++#endif
+                 ffi_call(&cif, (void *)pProc, resmem, avalues);
+ #ifdef MS_WIN32
+ #ifndef DONT_USE_SEH
+@@ -856,6 +858,7 @@
+         return -1;
+     }
+ #endif
++#ifndef __MINGW32__
+ #ifdef MS_WIN64
+     if (delta != 0) {
+         PyErr_Format(PyExc_RuntimeError,
+@@ -886,6 +889,7 @@
+     }
+ #endif
+ #endif
++#endif
+     if ((flags & FUNCFLAG_PYTHONAPI) && PyErr_Occurred())
+         return -1;
+     return 0;
+--- a/setup.py.orig	2012-10-22 15:23:22 +0400
++++ b/setup.py	2012-10-22 15:25:40 +0400
+@@ -1943,21 +1943,22 @@
+                          ]]
+             ext.sources.extend(sources)
+ 
+-            ffi_srcdir = os.path.abspath(os.path.join(srcdir, 'Modules',
+-                                         '_ctypes', 'libffi_msvc'))
+-            #FIXME: _ctypes/libffi_msvc/win64.asm ?
+-            sources = [os.path.join(ffi_srcdir, p)
+-                for p in ['ffi.c',
+-                          'prep_cif.c',
+-                          'win32.S',
+-                         ]]
+-            # NOTE: issue2942 don't resolve problem with assembler code.
+-            # It seems to me that python refuse to build an extension
+-            # if exist a source with unknown suffix.
+-            self.compiler.src_extensions.append('.s')
+-            self.compiler.src_extensions.append('.S')
+-            ext.include_dirs.append(ffi_srcdir)
+-            ext.sources.extend(sources)
++            if not self.use_system_libffi:
++                ffi_srcdir = os.path.abspath(os.path.join(srcdir, 'Modules',
++                                             '_ctypes', 'libffi_msvc'))
++                #FIXME: _ctypes/libffi_msvc/win64.asm ?
++                sources = [os.path.join(ffi_srcdir, p)
++                    for p in ['ffi.c',
++                              'prep_cif.c',
++                              'win32.S',
++                             ]]
++                # NOTE: issue2942 don't resolve problem with assembler code.
++                # It seems to me that python refuse to build an extension
++                # if exist a source with unknown suffix.
++                self.compiler.src_extensions.append('.s')
++                self.compiler.src_extensions.append('.S')
++                ext.include_dirs.append(ffi_srcdir)
++                ext.sources.extend(sources)
+             ext.libraries.extend(['ole32', 'oleaut32', 'uuid'])
+             #AdditionalOptions="/EXPORT:DllGetClassObject,PRIVATE /EXPORT:DllCanUnloadNow,PRIVATE"
+             ext.export_symbols.extend(['DllGetClassObject PRIVATE',

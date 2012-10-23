@@ -35,10 +35,10 @@
 
 # **************************************************************************
 
-NAME=gdb-7.5
-SRC_DIR_NAME=gdb-7.5
-URL=ftp://ftp.gnu.org/gnu/gdb/gdb-7.5.tar.bz2
-TYPE=.tar.bz2
+NAME=ncurses-5.9
+SRC_DIR_NAME=ncurses-5.9
+URL=ftp://invisible-island.net/ncurses/ncurses-5.9.tar.gz
+TYPE=.tar.gz
 
 #
 
@@ -48,23 +48,32 @@ PATCHES=()
 
 CONFIGURE_FLAGS=(
 	--host=$HOST
-	--build=$TARGET
-	--prefix=$PREFIX
+	--build=$BUILD
+	--target=$TARGET
 	#
-	--enable-targets=x86_64-w64-mingw32,i686-w64-mingw32
-	--enable-64-bit-bfd
+	--prefix=$LIBS_DIR
 	#
-	--disable-nls
-	--disable-werror
-	--disable-win32-registry
-	--disable-rpath
+	--without-ada \
+	--with-cxx \
+	--without-pthread \
+	--enable-pc-files \
+	--disable-rpath \
+	--enable-colorfgbg \
+	--disable-symlinks \
+	--enable-warnings \
+	--enable-assertions \
+	--disable-home-terminfo \
+	--enable-database \
+	--enable-sp-funcs \
+	--enable-term-driver \
+	--enable-interop \
+	--enable-widec \
+	--without-trace \
 	#
-	--with-python
-	--with-expat
-	--with-libiconv
-	#
-	CFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib\""
+	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #

@@ -35,89 +35,44 @@
 
 # **************************************************************************
 
-NAME=Python-2.7.3
-SRC_DIR_NAME=Python-2.7.3
-URL=http://www.python.org/ftp/python/2.7.3/Python-2.7.3.tar.bz2
-TYPE=.tar.bz2
+NAME=libgnurx-2.5.1
+SRC_DIR_NAME=mingw-libgnurx-2.5.1
+URL=http://kent.dl.sourceforge.net/sourceforge/mingw/mingw-libgnurx-2.5.1-src.tar.gz
+TYPE=.tar.gz
 
 #
 
 PATCHES=(
-	Python-2.7.3/0000-CROSS.patch
-	Python-2.7.3/0001-MINGW.patch
-	Python-2.7.3/0002-MINGW-use-posix-getpath.patch
-	Python-2.7.3/0003-DARWIN-CROSS.patch
-	Python-2.7.3/0004-MINGW-FIXES-sysconfig-like-posix.patch
-	Python-2.7.3/0005-MINGW-pdcurses_ISPAD.patch
-	Python-2.7.3/0006-MINGW-static-tcltk.patch
-	Python-2.7.3/0007-MINGW-x86_64-size_t-format-specifier-pid_t.patch
-	Python-2.7.3/0008-Python-disable-dbm.patch
-	Python-2.7.3/0009-Disable-Grammar-dependency-on-pgen-executable.patch
-	Python-2.7.3/0010-add-python-config-sh.patch
-	Python-2.7.3/0011-nt-threads-vs-pthreads.patch
-	Python-2.7.3/0012-dont-add-multiarch-paths-if-cross-compiling.patch
-	Python-2.7.3/0013-MINGW-reorder-bininstall-ln-symlink-creation.patch
-	Python-2.7.3/0014-MINGW-use-backslashes-in-compileall-py.patch
-	Python-2.7.3/0015-MINGW-distutils-MSYS-convert_path-fix-and-root-hack.patch
-	Python-2.7.3/0016-all_distutils_c++.patch
-	Python-2.7.3/0018-all_disable_modules.patch
-	Python-2.7.3/0019-all_loadable_sqlite_extensions.patch
-	Python-2.7.3/0020-mingw-system-libffi.patch
-	Python-2.7.3/9999-re-configure-d.patch
+	libgnurx/libgnurx-2.5-crosscompile.patch
+	libgnurx/mingw32-libgnurx-honor-destdir.patch
 )
 
 #
 
 EXECUTE_AFTER_PATCH=(
-	"rm -rf Modules/expat"
-	"rm -rf Modules/_ctypes/libffi*"
-	"rm -rf Modules/zlib"
+	"cp -rf $PATCHES_DIR/libgnurx/mingw32-libgnurx-configure.ac $SRCS_DIR/mingw-libgnurx-2.5.1/configure.ac"
+	"cp -rf $PATCHES_DIR/libgnurx/mingw32-libgnurx-Makefile.am $SRCS_DIR/mingw-libgnurx-2.5.1/Makefile.am"
+	"libtoolize --copy"
+	"aclocal"
 	"autoconf"
-	"touch Include/graminit.h"
-	"touch Python/graminit.c"
-	"touch Parser/Python.asdl"
-	"touch Parser/asdl.py"
-	"touch Parser/asdl_c.py"
-	"touch Include/Python-ast.h"
-	"touch Python/Python-ast.c"
-	"echo \"\" > Parser/pgen.stamp"
+	"automake --add-missing"
 )
 
-#
-
-pushd $LIBS_DIR
-LIBSW_DIR=`pwd -W`
-popd
-
-pushd $PREFIX
-PREFIXW=`pwd -W`
-popd
-
-MY_CPPFLAGS="$LIBSW_DIR/include $LIBSW_DIR/include/ncursesw $PREFIXW/opt/include"
-
-export PYTHON_DISABLE_MODULES="_tkinter"
 #
 
 CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
+	--target=$TARGET
 	#
-	--prefix=$PREFIX/opt
+	--prefix=$LIBS_DIR
 	#
-	--enable-shared
-	--disable-ipv6
-	--without-pydebug
-	--with-system-expat
-	--with-system-ffi
-	--enable-loadable-sqlite-extensions
+	$GCC_DEPS_LINK_TYPE
 	#
-	CXX="$HOST-g++"
-	LIBFFI_INCLUDEDIR="${LIBSW_DIR}/lib/libffi-3.0.11/include"
-	OPT=""
-	CFLAGS="\"$COMMON_CFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1 $MY_CPPFLAGS\""
+	CFLAGS="\"$COMMON_CFLAGS\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L${PREFIXW}/opt/lib -L${LIBSW_DIR}/lib\""
+	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #

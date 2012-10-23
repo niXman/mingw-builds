@@ -1,0 +1,15 @@
+diff -u -r libgnurx-2.5/Makefile libgnurx-2.5/Makefile
+--- libgnurx-2.5/Makefile	2006-12-13 22:03:14.000000000 +0100
++++ libgnurx-2.5/Makefile	2009-01-19 08:34:33.000000000 +0100
+@@ -1,9 +1,9 @@
+-all: libgnurx-0.dll libgnurx.dll.a libregex.a gnurx.lib
++all: libgnurx-0.dll libgnurx.dll.a libregex.a #gnurx.lib
+ 
+ THIS = libgnurx
+ VERSION = 2.5
+ 
+-CC = gcc -mthreads -mtune=pentium3
++CC = gcc -mthreads -mtune=core2
+ CFLAGS = -I .
+ 
+ SOURCES = $(wildcard *.c *.h)
