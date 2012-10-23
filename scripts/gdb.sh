@@ -63,7 +63,7 @@ CONFIGURE_FLAGS=(
 	--with-expat
 	--with-libiconv
 	#
-	CFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
+	CFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib\""
 )
 
