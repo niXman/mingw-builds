@@ -60,7 +60,7 @@ CONFIGURE_FLAGS=(
 	--target=$TARGET
 	#
 	--prefix=$PREFIX/opt
-	--with-tcl=$PREFIX/opt
+	--with-tcl=$PREFIX/opt/lib
 	#
 	--enable-shared
 	#

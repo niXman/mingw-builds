@@ -47,7 +47,6 @@ PATCHES=(
 	readline/readline62-002
 	readline/readline62-003
 	readline/readline62-004
-	readline/readline-6.2-libncursesw.patch
 )
 
 #

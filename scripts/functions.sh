@@ -283,7 +283,7 @@ function func_configure {
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> configure..."
-		( cd $BUILDS_DIR/$1 && eval $( func_absolute_to_relative $BUILDS_DIR/$2 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1 )
+		( cd $BUILDS_DIR/$1 && eval $( func_absolute_to_relative $BUILDS_DIR/$1 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1 )
 		_result=$?
 		[[ $_result == 0 ]] && {
 			echo " done"

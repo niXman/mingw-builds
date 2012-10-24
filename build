@@ -522,7 +522,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			echo "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
 			exit 1
 		}
-		export PATH=$LIBS_DIR/bin:$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
+		export PATH=$LIBS_DIR/bin:$PREFIX/opt/bin:$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	} || {
 		HOST=x86_64-w64-mingw32
 		BUILD=x86_64-w64-mingw32
@@ -536,7 +536,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			echo "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
 			exit 1
 		}
-		export PATH=$LIBS_DIR/bin:$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
+		export PATH=$LIBS_DIR/bin:$PREFIX/opt/bin:$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	}
 
 	mkdir -p $BUILDS_DIR $LIBS_DIR $LOGS_DIR $PREFIX
@@ -584,6 +584,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		EXECUTE_AFTER_DOWNLOAD=()
 		EXECUTE_AFTER_UNCOMPRESS=()
 		EXECUTE_AFTER_PATCH=()
+		EXECUTE_AFTER_INSTALL=()
 
 		cd $TOP_DIR && . ./scripts/$sub.sh
 
@@ -662,16 +663,18 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			}
 		}
 
-		configure_flags="${CONFIGURE_FLAGS[@]}"
-		func_configure \
-			$NAME \
-			$SRC_DIR_NAME \
-			"$configure_flags" \
-			$CONFIGURE_LOG
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG &
-			exit $func_res
+		[[ ${#CONFIGURE_FLAGS[@]} >0 ]] && {
+			configure_flags="${CONFIGURE_FLAGS[@]}"
+			func_configure \
+				$NAME \
+				$SRC_DIR_NAME \
+				"$configure_flags" \
+				$CONFIGURE_LOG
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG &
+				exit $func_res
+			}
 		}
 
 		make_flags="/bin/make ${MAKE_FLAGS[@]}"
@@ -700,6 +703,19 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		[[ $func_res != 0 ]] && {
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG &
 			exit $func_res
+		}
+		
+		[[ ${#EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
+			func_execute \
+				$SRCS_DIR \
+				$SRC_DIR_NAME \
+				"execute commands..." \
+				EXECUTE_AFTER_PATCH[@]
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log &
+				exit $func_res
+			}
 		}
    done
 done

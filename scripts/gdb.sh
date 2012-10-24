@@ -40,6 +40,7 @@ SRC_DIR_NAME=gdb-7.5
 URL=ftp://ftp.gnu.org/gnu/gdb/gdb-7.5.tar.bz2
 TYPE=.tar.bz2
 
+REL_PYTHON_PATH=$(func_absolute_to_relative $PREFIX/bin $PREFIX/opt/bin)
 #
 
 PATCHES=()
@@ -62,9 +63,13 @@ CONFIGURE_FLAGS=(
 	--with-python
 	--with-expat
 	--with-libiconv
+	--with-curses
+	--disable-tui
+	--disable-gdbtk
 	#
 	CFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib\""
+	CPPFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 \""
+	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib -L$PREFIX/opt/lib/python2.7/config -Wl,-rpath $REL_PYTHON_PATH\""
 )
 
 #

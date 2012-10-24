@@ -49,16 +49,20 @@ PATCHES=(
 
 #
 
-CONFIGURE_FLAGS=(
-	#
-	--prefix=$LIBS_DIR
-	#
+EXECUTE_AFTER_PATCH=(
+	"rm -rf $SRCS_DIR/$SRC_DIR_NAME/exec-*"
+	"cp -rf $SRCS_DIR/$SRC_DIR_NAME $BUILDS_DIR/"
+	"rm -rf $SRCS_DIR/$SRC_DIR_NAME/exec-*"
 )
 
 #
 
+CONFIGURE_FLAGS=()
+
+#
+
 MAKE_FLAGS=(
-	-f win32/Makefile.gcc
+	-f $SRCS_DIR/$SRC_DIR_NAME/win32/Makefile.gcc
 	CC=$HOST-gcc
 	AR=ar
 	RC=windres
@@ -71,7 +75,7 @@ MAKE_FLAGS=(
 #
 
 INSTALL_FLAGS=(
-	-f win32/Makefile.gcc
+	-f $SRCS_DIR/$SRC_DIR_NAME/win32/Makefile.gcc
 	INCLUDE_PATH=$LIBS_DIR/include
 	LIBRARY_PATH=$LIBS_DIR/lib
 	BINARY_PATH=$LIBS_DIR/bin

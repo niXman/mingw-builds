@@ -1,5 +1,5 @@
---- library/init.tcl
-+++ library/init.tcl
+--- a/library/init.tcl
++++ b/library/init.tcl
 @@ -53,11 +53,6 @@ namespace eval tcl {
  	    lappend ::auto_path $Dir
  	}

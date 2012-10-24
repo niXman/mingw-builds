@@ -67,7 +67,7 @@ CONFIGURE_FLAGS=(
 	--enable-sp-funcs \
 	--enable-term-driver \
 	--enable-interop \
-	--enable-widec \
+	--disable-widec \
 	--without-trace \
 	#
 	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""

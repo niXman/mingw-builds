@@ -1,5 +1,5 @@
---- generic/tclLoad.c
-+++ generic/tclLoad.c
+--- a/generic/tclLoad.c
++++ b/generic/tclLoad.c
 @@ -795,9 +795,7 @@ Tcl_UnloadObjCmd(
  
  	    if (unLoadProcPtr != NULL) {

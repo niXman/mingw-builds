@@ -93,7 +93,7 @@ pushd $PREFIX
 PREFIXW=`pwd -W`
 popd
 
-MY_CPPFLAGS="$LIBSW_DIR/include $LIBSW_DIR/include/ncursesw $PREFIXW/opt/include"
+MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREFIXW/opt/include"
 
 [[ $ARCHITECTURE == x32 ]] && {
 	export PYTHON_DISABLE_MODULES=""
@@ -116,12 +116,12 @@ CONFIGURE_FLAGS=(
 	--enable-loadable-sqlite-extensions
 	#
 	CXX="$HOST-g++"
-	LIBFFI_INCLUDEDIR="${LIBSW_DIR}/lib/libffi-3.0.11/include"
+	LIBFFI_INCLUDEDIR="$LIBSW_DIR/lib/libffi-3.0.11/include"
 	OPT=""
 	CFLAGS="\"$COMMON_CFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1 $MY_CPPFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L${PREFIXW}/opt/lib -L${LIBSW_DIR}/lib\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS $MY_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIXW/opt/lib -L$LIBSW_DIR/lib\""
 )
 
 #

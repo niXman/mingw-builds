@@ -42,15 +42,12 @@ TYPE=.tar.gz
 
 #
 
-PATCHES=(
-	tcl/tcl.patch
-	tcl/tcl-unload.patch
-	tcl/tcl-nativetclsh.patch
-)
+PATCHES=()
 
 #
 
 EXECUTE_AFTER_PATCH=(
+	"cd .. && patch -p1 < $PATCHES_DIR/tcl/tcl.patch && patch -p1 < $PATCHES_DIR/tcl/tcl/tcl-unload.patch"
 	"autoconf"
 )
 

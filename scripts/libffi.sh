@@ -42,9 +42,7 @@ TYPE=.tar.gz
 
 #
 
-PATCHES=(
-	libffi/libffi-3.0.10-win64_no_undefined.patch
-)
+PATCHES=()
 
 #
 

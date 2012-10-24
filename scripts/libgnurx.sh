@@ -43,7 +43,6 @@ TYPE=.tar.gz
 #
 
 PATCHES=(
-	libgnurx/libgnurx-2.5-crosscompile.patch
 	libgnurx/mingw32-libgnurx-honor-destdir.patch
 )
 
@@ -52,6 +51,8 @@ PATCHES=(
 EXECUTE_AFTER_PATCH=(
 	"cp -rf $PATCHES_DIR/libgnurx/mingw32-libgnurx-configure.ac $SRCS_DIR/mingw-libgnurx-2.5.1/configure.ac"
 	"cp -rf $PATCHES_DIR/libgnurx/mingw32-libgnurx-Makefile.am $SRCS_DIR/mingw-libgnurx-2.5.1/Makefile.am"
+	"touch AUTHORS"
+	"touch NEWS"
 	"libtoolize --copy"
 	"aclocal"
 	"autoconf"
@@ -86,6 +87,10 @@ MAKE_FLAGS=(
 
 INSTALL_FLAGS=(
 	install
+)
+
+EXECUTE_AFTER_INSTALL=(
+	"cp -f $LIBS_DIR/lib/libgnurx.a $LIBS_DIR/lib/libregex.a"
 )
 
 # **************************************************************************
