@@ -37,7 +37,7 @@
 
 NAME=libgnurx-2.5.1
 SRC_DIR_NAME=mingw-libgnurx-2.5.1
-URL=http://kent.dl.sourceforge.net/sourceforge/mingw/mingw-libgnurx-2.5.1-src.tar.gz
+URL=https://sourceforge.net/projects/mingw/files/Other/UserContributed/regex/mingw-regex-2.5.1/mingw-libgnurx-2.5.1-src.tar.gz/download
 TYPE=.tar.gz
 
 #
