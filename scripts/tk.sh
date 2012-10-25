@@ -42,13 +42,12 @@ TYPE=.tar.gz
 
 #
 
-PATCHES=(
-	tk/tk-8.5.9-mingww64.patch
-)
+PATCHES=()
 
 #
 
 EXECUTE_AFTER_PATCH=(
+	"cd .. && patch -p1 < $PATCHES_DIR/tk/tk-8.5.9-mingww64.patch"
 	"autoconf"
 )
 

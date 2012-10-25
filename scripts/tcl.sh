@@ -47,7 +47,7 @@ PATCHES=()
 #
 
 EXECUTE_AFTER_PATCH=(
-	"cd .. && patch -p1 < $PATCHES_DIR/tcl/tcl.patch && patch -p1 < $PATCHES_DIR/tcl/tcl/tcl-unload.patch"
+	"cd .. && patch -p1 < $PATCHES_DIR/tcl/tcl.patch && patch -p1 < $PATCHES_DIR/tcl/tcl-unload.patch"
 	"autoconf"
 )
 
