@@ -50,9 +50,9 @@ PATCHES=(
 #
 
 EXECUTE_AFTER_PATCH=(
-	"rm -rf $SRCS_DIR/$SRC_DIR_NAME/exec-*"
+	"rm -rf $SRCS_DIR/$SRC_DIR_NAME/exec-after_patch*"
 	"cp -rf $SRCS_DIR/$SRC_DIR_NAME $BUILDS_DIR/"
-	"rm -rf $SRCS_DIR/$SRC_DIR_NAME/exec-*"
+	"rm -rf $SRCS_DIR/$SRC_DIR_NAME/exec-after_patch*"
 )
 
 #
