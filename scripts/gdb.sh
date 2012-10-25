@@ -63,6 +63,7 @@ CONFIGURE_FLAGS=(
 	--with-python
 	--with-expat
 	--with-libiconv
+	--with-system-readline
 	--disable-tui
 	--disable-gdbtk
 	#
