@@ -636,7 +636,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				EXECUTE_AFTER_UNCOMPRESS[@]
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-after_unpack-$_index.log &
 				exit $func_res
 			}
 		}
@@ -660,7 +660,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				EXECUTE_AFTER_PATCH[@]
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-after_patch-$_index.log &
 				exit $func_res
 			}
 		}
@@ -716,7 +716,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				EXECUTE_AFTER_INSTALL[@]
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-after_install-$_index.log &
 				exit $func_res
 			}
 		}

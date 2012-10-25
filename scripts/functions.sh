@@ -191,7 +191,7 @@ function func_execute {
 	local _result=0
 	local -a _commands=( "${!5}" )
 	declare -i _index=${#_commands[@]}-1
-	local _cmd_marker_name=$1/$2/exec-$_index.marker
+	local _cmd_marker_name=$1/$2/exec-$4-$_index.marker
 
    [[ -f $_cmd_marker_name ]] && {
 		echo "---> executed"
