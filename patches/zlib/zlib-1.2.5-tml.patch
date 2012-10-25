@@ -1,0 +1,54 @@
+--- zlib-1.2.5/win32/Makefile.gcc	2010-04-19 03:35:55.000000000 +0200
++++ zlib-1.2.5/win32/Makefile.gcc	2010-09-01 15:23:34.000000000 +0200
+@@ -66,7 +66,7 @@
+        gzwrite.o infback.o inffast.o inflate.o inftrees.o trees.o uncompr.o zutil.o
+ OBJA =
+ 
+-all: $(STATICLIB) $(SHAREDLIB) $(IMPLIB) example.exe minigzip.exe example_d.exe minigzip_d.exe
++all: $(STATICLIB) $(SHAREDLIB) $(IMPLIB) example_d.exe minigzip_d.exe
+ 
+ test: example.exe minigzip.exe
+ 	./example
+--- zlib-1.2.5/zconf.h.in	2010-04-18 19:58:06.000000000 +0200
++++ zlib-1.2.5/zconf.h.in	2010-09-01 15:22:54.000000000 +0200
+@@ -270,7 +270,31 @@
+ #  endif
+ #endif
+ 
++/* When a specific build of zlib is done on Windows, it is either a
++ * DLL or not. That build should have a specific corresponding zconf.h
++ * distributed. The zconf.h thus knows a priori whether the
++ * corresponding library was built as a DLL or not. Requiring the
++ * library user to define ZLIB_DLL when compiling, and intending to
++ * link against the import library for such a DLL build, is
++ * silly. Instead just unconditionally define ZLIB_DLL here as this
++ * build is a DLL, period.
++ *
++ * Similarly, when a specific build of zlib is done on (32-bit)
++ * Windows, it either uses the WINAPI calling convention or not. A
++ * user of a prebuilt library can not choose later. So it is pointless
++ * to require the user to define ZLIB_WINAPI when compiling. Instead,
++ * just have a specific copy of this zconf.h that corresponds to that
++ * build of zlib. In the case here, we don't build zlib with WINAPI,
++ * so ignore any attempt by a misguided user to use it.
++ */
++
++#undef ZLIB_DLL
++#define ZLIB_DLL 1
++
++#undef ZLIB_WINAPI
++
+ #if defined(WINDOWS) || defined(WIN32)
++   /* NOTE: Bogus. See above comment about ZLIB_DLL */
+    /* If building or using zlib as a DLL, define ZLIB_DLL.
+     * This is not mandatory, but it offers a little performance increase.
+     */
+@@ -283,6 +307,8 @@
+ #      endif
+ #    endif
+ #  endif  /* ZLIB_DLL */
++
++   /* NOTE: Bogus. See above comment about ZLIB_WINAPI */
+    /* If building or using zlib with the WINAPI/WINAPIV calling convention,
+     * define ZLIB_WINAPI.
+     * Caution: the standard ZLIB1.DLL is NOT compiled using ZLIB_WINAPI.

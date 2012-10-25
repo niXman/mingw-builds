@@ -35,41 +35,35 @@
 
 # **************************************************************************
 
-NAME=gdb-7.5
-SRC_DIR_NAME=gdb-7.5
-URL=ftp://ftp.gnu.org/gnu/gdb/gdb-7.5.tar.bz2
-TYPE=.tar.bz2
+NAME=sqlite-3.7.14.1
+SRC_DIR_NAME=sqlite-autoconf-3071401
+URL=http://www.sqlite.org/sqlite-autoconf-3071401.tar.gz
+TYPE=.tar.gz
 
-REL_PYTHON_PATH=$(func_absolute_to_relative $PREFIX/bin $PREFIX/opt/bin)
 #
 
 PATCHES=()
 
 #
 
+EXECUTE_AFTER_PATCH=(
+	"perl -pi -e 's#archive_cmds_need_lc=yes#archive_cmds_need_lc=no#g' configure"
+)
+#
+
 CONFIGURE_FLAGS=(
 	--host=$HOST
-	--build=$TARGET
-	--prefix=$PREFIX
+	--build=$BUILD
+	--target=$TARGET
 	#
-	--enable-targets=x86_64-w64-mingw32,i686-w64-mingw32
-	--enable-64-bit-bfd
+	--prefix=$LIBS_DIR
 	#
-	--disable-nls
-	--disable-werror
-	--disable-win32-registry
-	--disable-rpath
+	$GCC_DEPS_LINK_TYPE
 	#
-	--with-python
-	--with-expat
-	--with-libiconv
-	--with-system-readline
-	--disable-tui
-	--disable-gdbtk
-	#
-	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
-	CPPFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 \""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib -L$PREFIX/opt/lib/python2.7/config -Wl,-rpath $REL_PYTHON_PATH\""
+	CFLAGS="\"$COMMON_CFLAGS\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS -DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_RTREE\""
+	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #

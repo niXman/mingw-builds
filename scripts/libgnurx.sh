@@ -35,41 +35,45 @@
 
 # **************************************************************************
 
-NAME=gdb-7.5
-SRC_DIR_NAME=gdb-7.5
-URL=ftp://ftp.gnu.org/gnu/gdb/gdb-7.5.tar.bz2
-TYPE=.tar.bz2
+NAME=libgnurx-2.5.1
+SRC_DIR_NAME=mingw-libgnurx-2.5.1
+URL=https://sourceforge.net/projects/mingw/files/Other/UserContributed/regex/mingw-regex-2.5.1/mingw-libgnurx-2.5.1-src.tar.gz/download
+TYPE=.tar.gz
 
-REL_PYTHON_PATH=$(func_absolute_to_relative $PREFIX/bin $PREFIX/opt/bin)
 #
 
-PATCHES=()
+PATCHES=(
+	libgnurx/mingw32-libgnurx-honor-destdir.patch
+)
+
+#
+
+EXECUTE_AFTER_PATCH=(
+	"cp -rf $PATCHES_DIR/libgnurx/mingw32-libgnurx-configure.ac $SRCS_DIR/mingw-libgnurx-2.5.1/configure.ac"
+	"cp -rf $PATCHES_DIR/libgnurx/mingw32-libgnurx-Makefile.am $SRCS_DIR/mingw-libgnurx-2.5.1/Makefile.am"
+	"touch AUTHORS"
+	"touch NEWS"
+	"libtoolize --copy"
+	"aclocal"
+	"autoconf"
+	"automake --add-missing"
+)
 
 #
 
 CONFIGURE_FLAGS=(
 	--host=$HOST
-	--build=$TARGET
-	--prefix=$PREFIX
+	--build=$BUILD
+	--target=$TARGET
 	#
-	--enable-targets=x86_64-w64-mingw32,i686-w64-mingw32
-	--enable-64-bit-bfd
+	--prefix=$LIBS_DIR
 	#
-	--disable-nls
-	--disable-werror
-	--disable-win32-registry
-	--disable-rpath
+	$GCC_DEPS_LINK_TYPE
 	#
-	--with-python
-	--with-expat
-	--with-libiconv
-	--with-system-readline
-	--disable-tui
-	--disable-gdbtk
-	#
-	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
-	CPPFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 \""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib -L$PREFIX/opt/lib/python2.7/config -Wl,-rpath $REL_PYTHON_PATH\""
+	CFLAGS="\"$COMMON_CFLAGS\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #
@@ -82,8 +86,11 @@ MAKE_FLAGS=(
 #
 
 INSTALL_FLAGS=(
-	-j$JOBS
 	install
+)
+
+EXECUTE_AFTER_INSTALL=(
+	"cp -f $LIBS_DIR/lib/libgnurx.a $LIBS_DIR/lib/libregex.a"
 )
 
 # **************************************************************************

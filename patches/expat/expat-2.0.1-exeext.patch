@@ -1,0 +1,11 @@
+--- expat-2.0.1/Makefile.in	2007-05-09 20:38:50.000000000 +0200
++++ expat-2.0.1/Makefile.in	2009-03-03 09:20:48.000000000 +0100
+@@ -77,7 +77,7 @@
+ 
+ install: xmlwf/xmlwf installlib
+ 	$(mkinstalldirs) $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir)
+-	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) xmlwf/xmlwf $(DESTDIR)$(bindir)/xmlwf
++	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) xmlwf/xmlwf $(DESTDIR)$(bindir)/xmlwf@EXEEXT@
+ 	$(INSTALL_DATA) $(MANFILE) $(DESTDIR)$(man1dir)
+ 
+ installlib: $(LIBRARY) $(APIHEADER)

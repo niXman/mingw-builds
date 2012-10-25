@@ -1,0 +1,131 @@
+--- a/configure.in	2012-10-23 09:27:32 +0400
++++ b/configure.in	2012-10-23 10:28:17 +0400
+@@ -2392,11 +2392,29 @@
+             [],
+             [with_system_ffi="no"])
+ 
+-if test "$with_system_ffi" = "yes" && test -n "$PKG_CONFIG"; then
+-    LIBFFI_INCLUDEDIR="`"$PKG_CONFIG" libffi --cflags-only-I 2>/dev/null | sed -e 's/^-I//;s/ *$//'`"
++if test "$with_system_ffi" = "yes"; then
++    LIBFFI_INCLUDEDIR="$LIBFFI_INCLUDEDIR"
++fi
++
++ac_previous_cppflags=$CPPFLAGS
++CPPFLAGS="-I$LIBFFI_INCLUDEDIR"
++ac_previous_ldflags=$LDFLAGS
++# check for ffi.h
++AC_CHECK_HEADER(ffi.h, [
++  AC_DEFINE(WITH_SYSTEM_LIBFFI, 1, 
++  [Define if we have external libffi.]) 
++  ffi_h="yes"
++],
++ffi_h="no"
++)
++if test "$ffi_h" = "yes"; then
++    LIBFFI_INCLUDEDIR="$LIBFFI_INCLUDEDIR"
+ else
+     LIBFFI_INCLUDEDIR=""
+ fi
++CPPFLAGS=$ac_previous_cppflags
++LDFLAGS=$ac_previous_ldflags
++
+ AC_SUBST(LIBFFI_INCLUDEDIR)
+ 
+ AC_MSG_RESULT($with_system_ffi)
+--- a/pyconfig.h.in	2012-10-23 09:30:00 +0400
++++ b/pyconfig.h.in	2012-10-23 10:28:51 +0400
+@@ -1107,6 +1107,9 @@
+ /* Define if you want to compile in Python-specific mallocs */
+ #undef WITH_PYMALLOC
+ 
++/* Define if we have external libffi. */
++#undef WITH_SYSTEM_LIBFFI
++
+ /* Define if you want to compile in rudimentary thread support */
+ #undef WITH_THREAD
+ 
+--- a/Modules/_ctypes/callproc.c.orig	2012-04-10 03:07:33 +0400
++++ b/Modules/_ctypes/callproc.c	2012-10-23 10:36:13 +0400
+@@ -770,7 +770,7 @@
+     int *space;
+     ffi_cif cif;
+     int cc;
+-#ifdef MS_WIN32
++#if defined (MS_WIN32) && !defined(WITH_SYSTEM_LIBFFI)
+     int delta;
+ #ifndef DONT_USE_SEH
+     DWORD dwExceptionCode = 0;
+@@ -822,8 +822,10 @@
+ #ifndef DONT_USE_SEH
+     __try {
+ #endif
++#if !defined(WITH_SYSTEM_LIBFFI)
+         delta =
+ #endif
++#endif
+                 ffi_call(&cif, (void *)pProc, resmem, avalues);
+ #ifdef MS_WIN32
+ #ifndef DONT_USE_SEH
+@@ -856,6 +858,7 @@
+         return -1;
+     }
+ #endif
++#ifndef WITH_SYSTEM_LIBFFI
+ #ifdef MS_WIN64
+     if (delta != 0) {
+         PyErr_Format(PyExc_RuntimeError,
+@@ -886,6 +889,7 @@
+     }
+ #endif
+ #endif
++#endif
+     if ((flags & FUNCFLAG_PYTHONAPI) && PyErr_Occurred())
+         return -1;
+     return 0;
+--- a/setup.py.orig	2012-10-22 15:23:22 +0400
++++ b/setup.py	2012-10-22 15:25:40 +0400
+@@ -1943,25 +1943,26 @@
+                          ]]
+             ext.sources.extend(sources)
+ 
+-            ffi_srcdir = os.path.abspath(os.path.join(srcdir, 'Modules',
+-                                         '_ctypes', 'libffi_msvc'))
+-            #FIXME: _ctypes/libffi_msvc/win64.asm ?
+-            sources = [os.path.join(ffi_srcdir, p)
+-                for p in ['ffi.c',
+-                          'prep_cif.c',
+-                          'win32.S',
+-                         ]]
+-            # NOTE: issue2942 don't resolve problem with assembler code.
+-            # It seems to me that python refuse to build an extension
+-            # if exist a source with unknown suffix.
+-            self.compiler.src_extensions.append('.s')
+-            self.compiler.src_extensions.append('.S')
+-            ext.include_dirs.append(ffi_srcdir)
+-            ext.sources.extend(sources)
++            if not self.use_system_libffi:
++                ffi_srcdir = os.path.abspath(os.path.join(srcdir, 'Modules',
++                                             '_ctypes', 'libffi_msvc'))
++                #FIXME: _ctypes/libffi_msvc/win64.asm ?
++                sources = [os.path.join(ffi_srcdir, p)
++                    for p in ['ffi.c',
++                              'prep_cif.c',
++                              'win32.S',
++                             ]]
++                # NOTE: issue2942 don't resolve problem with assembler code.
++                # It seems to me that python refuse to build an extension
++                # if exist a source with unknown suffix.
++                self.compiler.src_extensions.append('.s')
++                self.compiler.src_extensions.append('.S')
++                ext.include_dirs.append(ffi_srcdir)
++                ext.sources.extend(sources)
++                #AdditionalOptions="/EXPORT:DllGetClassObject,PRIVATE /EXPORT:DllCanUnloadNow,PRIVATE"
++                ext.export_symbols.extend(['DllGetClassObject PRIVATE',
++                                           'DllCanUnloadNow PRIVATE'])
+             ext.libraries.extend(['ole32', 'oleaut32', 'uuid'])
+-            #AdditionalOptions="/EXPORT:DllGetClassObject,PRIVATE /EXPORT:DllCanUnloadNow,PRIVATE"
+-            ext.export_symbols.extend(['DllGetClassObject PRIVATE',
+-                                       'DllCanUnloadNow PRIVATE'])
+             return True
+         if not self.use_system_libffi:
+             if host_platform == 'darwin':

@@ -35,41 +35,35 @@
 
 # **************************************************************************
 
-NAME=gdb-7.5
-SRC_DIR_NAME=gdb-7.5
-URL=ftp://ftp.gnu.org/gnu/gdb/gdb-7.5.tar.bz2
-TYPE=.tar.bz2
+NAME=readline-6.2
+SRC_DIR_NAME=readline-6.2
+URL=ftp://ftp.gnu.org/gnu/readline/readline-6.2.tar.gz
+TYPE=.tar.gz
 
-REL_PYTHON_PATH=$(func_absolute_to_relative $PREFIX/bin $PREFIX/opt/bin)
 #
 
-PATCHES=()
+PATCHES=(
+	readline/readline62-001
+	readline/readline62-002
+	readline/readline62-003
+	readline/readline62-004
+)
 
 #
 
 CONFIGURE_FLAGS=(
 	--host=$HOST
-	--build=$TARGET
-	--prefix=$PREFIX
+	--build=$BUILD
+	--target=$TARGET
 	#
-	--enable-targets=x86_64-w64-mingw32,i686-w64-mingw32
-	--enable-64-bit-bfd
+	--prefix=$LIBS_DIR
 	#
-	--disable-nls
-	--disable-werror
-	--disable-win32-registry
-	--disable-rpath
+	$GCC_DEPS_LINK_TYPE
 	#
-	--with-python
-	--with-expat
-	--with-libiconv
-	--with-system-readline
-	--disable-tui
-	--disable-gdbtk
-	#
-	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
-	CPPFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 \""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib -L$PREFIX/opt/lib/python2.7/config -Wl,-rpath $REL_PYTHON_PATH\""
+	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #

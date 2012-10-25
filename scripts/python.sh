@@ -35,52 +35,106 @@
 
 # **************************************************************************
 
+NAME=Python-2.7.3
+SRC_DIR_NAME=Python-2.7.3
+URL=http://www.python.org/ftp/python/2.7.3/Python-2.7.3.tar.bz2
+TYPE=.tar.bz2
+
+#
+
+PATCHES=(
+	Python-2.7.3/0000-CROSS.patch
+	Python-2.7.3/0001-MINGW.patch
+	Python-2.7.3/0002-MINGW-use-posix-getpath.patch
+	Python-2.7.3/0003-DARWIN-CROSS.patch
+	Python-2.7.3/0004-MINGW-FIXES-sysconfig-like-posix.patch
+	Python-2.7.3/0005-MINGW-pdcurses_ISPAD.patch
+	Python-2.7.3/0006-MINGW-static-tcltk.patch
+	Python-2.7.3/0007-MINGW-x86_64-size_t-format-specifier-pid_t.patch
+	Python-2.7.3/0008-Python-disable-dbm.patch
+	Python-2.7.3/0009-Disable-Grammar-dependency-on-pgen-executable.patch
+	Python-2.7.3/0010-add-python-config-sh.patch
+	Python-2.7.3/0011-nt-threads-vs-pthreads.patch
+	Python-2.7.3/0012-dont-add-multiarch-paths-if-cross-compiling.patch
+	Python-2.7.3/0013-MINGW-reorder-bininstall-ln-symlink-creation.patch
+	Python-2.7.3/0014-MINGW-use-backslashes-in-compileall-py.patch
+	Python-2.7.3/0015-MINGW-distutils-MSYS-convert_path-fix-and-root-hack.patch
+	Python-2.7.3/0016-all_distutils_c++.patch
+	Python-2.7.3/0018-all_disable_modules.patch
+	Python-2.7.3/0019-all_loadable_sqlite_extensions.patch
+	Python-2.7.3/0020-mingw-system-libffi.patch
+	Python-2.7.3/9999-re-configure-d.patch
+)
+
+#
+
+EXECUTE_AFTER_PATCH=(
+	"rm -rf Modules/expat"
+	"rm -rf Modules/_ctypes/libffi*"
+	"rm -rf Modules/zlib"
+	"autoconf"
+	"touch Include/graminit.h"
+	"touch Python/graminit.c"
+	"touch Parser/Python.asdl"
+	"touch Parser/asdl.py"
+	"touch Parser/asdl_c.py"
+	"touch Include/Python-ast.h"
+	"touch Python/Python-ast.c"
+	"echo \"\" > Parser/pgen.stamp"
+)
+
+#
+
+pushd $LIBS_DIR
+LIBSW_DIR=`pwd -W`
+popd
+
+pushd $PREFIX
+PREFIXW=`pwd -W`
+popd
+
+MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREFIXW/opt/include"
+
 [[ $ARCHITECTURE == x32 ]] && {
-	PYTHON_NAME=python-2.7-x32
+	export PYTHON_DISABLE_MODULES=""
 } || {
-	PYTHON_NAME=python-2.7-x64
+	export PYTHON_DISABLE_MODULES="_tkinter"
 }
+#
 
-mkdir -p $LOGS_DIR/$PYTHON_NAME $BUILDS_DIR/$PYTHON_NAME
+CONFIGURE_FLAGS=(
+	--host=$HOST
+	--build=$BUILD
+	#
+	--prefix=$PREFIX/opt
+	#
+	--enable-shared
+	--disable-ipv6
+	--without-pydebug
+	--with-system-expat
+	--with-system-ffi
+	--enable-loadable-sqlite-extensions
+	#
+	CXX="$HOST-g++"
+	LIBFFI_INCLUDEDIR="$LIBSW_DIR/lib/libffi-3.0.11/include"
+	OPT=""
+	CFLAGS="\"$COMMON_CFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1 $MY_CPPFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS $MY_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIXW/opt/lib -L$LIBSW_DIR/lib\""
+)
 
-[[ ! -d $SRCS_DIR/$PYTHON_NAME ]] && mkdir -p $SRCS_DIR/$PYTHON_NAME
+#
 
-[[ -f $SRCS_DIR/$PYTHON_NAME/_download.marker ]] && {
-   echo "---> downloaded"
-} || {
-   echo -n "--> download..."
-   wget http://mingw-builds.googlecode.com/files/$PYTHON_NAME.tar.bz2 \
-      -O $SRCS_DIR/$PYTHON_NAME.tar.bz2 > $LOGS_DIR/$PYTHON_NAME/download.log 2>&1 || exit 1
-   echo "done"
-   touch $SRCS_DIR/$PYTHON_NAME/_download.marker
-}
+MAKE_FLAGS=(
+	-j$JOBS
+	all
+)
 
-[[ -f $SRCS_DIR/$PYTHON_NAME/_unpack.marker ]] && {
-   echo "---> unpacked"
-} || {
-   echo -n "--> unpack..."
-   tar -xvjf $SRCS_DIR/$PYTHON_NAME.tar.bz2 -C $SRCS_DIR/$PYTHON_NAME \
-      > $LOGS_DIR/$PYTHON_NAME/unpack.log 2>&1 || exit 1
-   echo "done"
-   touch $SRCS_DIR/$PYTHON_NAME/_unpack.marker
-}
+#
 
-[[ -f $BUILDS_DIR/$PYTHON_NAME/_install.marker ]] && {
-   echo "---> installed"
-} || {
-   echo -n "--> installing..."
-	(
-		cd $SRCS_DIR/$PYTHON_NAME
-		
-		cp libpython2.7.a $LIBS_DIR/lib/ || exit 1
-		cp bin/python27.dll $PREFIX/bin/ || exit 1
-		mkdir -p $PREFIX/bin/lib || exit 1
-		cp -rf lib/python27/* $PREFIX/bin/lib/ || exit 1
-		mkdir -p $LIBS_DIR/include/python || exit 1
-		cp -rf include/* $LIBS_DIR/include/python/ || exit 1
-	)
-   echo "done"
-   touch $BUILDS_DIR/$PYTHON_NAME/_install.marker
-}
+INSTALL_FLAGS=(
+	install
+)
 
 # **************************************************************************

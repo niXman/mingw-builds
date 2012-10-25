@@ -130,6 +130,7 @@ function func_download {
 					--tries=$_WGET_TRIES \
 					--timeout=$_WGET_TIMEOUT \
 					--wait=$_WGET_WAIT \
+					--no-check-certificate \
 					$4 -O $_lib_name > $5 2>&1
 				_result=$?
 			;;
@@ -184,10 +185,11 @@ function func_execute {
 	# $1 - execute dir
 	# $2 - src dir name
 	# $3 - message
-	# $4 - commands list
+	# $4 - log suffix
+	# $5 - commands list
 
 	local _result=0
-	local -a _commands=( "${!4}" )
+	local -a _commands=( "${!5}" )
 	declare -i _index=${#_commands[@]}-1
 	local _cmd_marker_name=$1/$2/exec-$_index.marker
 
@@ -203,7 +205,7 @@ function func_execute {
 
    for it in "${_commands[@]}"; do
 		_cmd_marker_name=$1/$2/exec-$_index.marker
-		local _cmd_log_name=$LOGS_DIR/$2/exec-$_index.log
+		local _cmd_log_name=$LOGS_DIR/$2/exec-$4-$_index.log
 
       [[ ! -f $_cmd_marker_name ]] && {
          ( cd $1/$2 && eval ${it} > $_cmd_log_name 2>&1 )
@@ -282,7 +284,7 @@ function func_configure {
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> configure..."
-		( cd $BUILDS_DIR/$1 && eval $( func_absolute_to_relative $BUILDS_DIR/$2 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1 )
+		( cd $BUILDS_DIR/$1 && eval $( func_absolute_to_relative $BUILDS_DIR/$1 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1 )
 		_result=$?
 		[[ $_result == 0 ]] && {
 			echo " done"

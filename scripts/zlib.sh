@@ -35,46 +35,39 @@
 
 # **************************************************************************
 
-NAME=gdb-7.5
-SRC_DIR_NAME=gdb-7.5
-URL=ftp://ftp.gnu.org/gnu/gdb/gdb-7.5.tar.bz2
+NAME=zlib-1.2.7
+SRC_DIR_NAME=zlib-1.2.7
+URL=http://zlib.net/zlib-1.2.7.tar.bz2
 TYPE=.tar.bz2
 
-REL_PYTHON_PATH=$(func_absolute_to_relative $PREFIX/bin $PREFIX/opt/bin)
 #
 
-PATCHES=()
-
-#
-
-CONFIGURE_FLAGS=(
-	--host=$HOST
-	--build=$TARGET
-	--prefix=$PREFIX
-	#
-	--enable-targets=x86_64-w64-mingw32,i686-w64-mingw32
-	--enable-64-bit-bfd
-	#
-	--disable-nls
-	--disable-werror
-	--disable-win32-registry
-	--disable-rpath
-	#
-	--with-python
-	--with-expat
-	--with-libiconv
-	--with-system-readline
-	--disable-tui
-	--disable-gdbtk
-	#
-	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
-	CPPFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 \""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib -L$PREFIX/opt/lib/python2.7/config -Wl,-rpath $REL_PYTHON_PATH\""
+PATCHES=(
+	zlib/zlib-1.2.5-nostrip.patch
+	zlib/zlib-1.2.5-tml.patch
 )
 
 #
 
+EXECUTE_AFTER_PATCH=(
+	"rm -rf $SRCS_DIR/$SRC_DIR_NAME/exec-*"
+	"cp -rf $SRCS_DIR/$SRC_DIR_NAME $BUILDS_DIR/"
+	"rm -rf $SRCS_DIR/$SRC_DIR_NAME/exec-*"
+)
+
+#
+
+CONFIGURE_FLAGS=()
+
+#
+
 MAKE_FLAGS=(
+	-f $SRCS_DIR/$SRC_DIR_NAME/win32/Makefile.gcc
+	CC=$HOST-gcc
+	AR=ar
+	RC=windres
+	DLLWRAP=dllwrap
+	STRIP=strip
 	-j$JOBS
 	all
 )
@@ -82,7 +75,11 @@ MAKE_FLAGS=(
 #
 
 INSTALL_FLAGS=(
-	-j$JOBS
+	-f $SRCS_DIR/$SRC_DIR_NAME/win32/Makefile.gcc
+	INCLUDE_PATH=$LIBS_DIR/include
+	LIBRARY_PATH=$LIBS_DIR/lib
+	BINARY_PATH=$LIBS_DIR/bin
+	SHARED_MODE=0
 	install
 )
 

@@ -1,0 +1,10 @@
+--- zlib-1.2.5/win32/Makefile.gcc	2010-04-19 03:35:55.000000000 +0200
++++ zlib-1.2.5/win32/Makefile.gcc	2010-09-01 14:51:00.000000000 +0200
+@@ -90,7 +90,6 @@
+ $(SHAREDLIB): win32/zlib.def $(OBJS) $(OBJA) zlibrc.o
+ 	$(CC) -shared -Wl,--out-implib,$(IMPLIB) $(LDFLAGS) \
+ 	-o $@ win32/zlib.def $(OBJS) $(OBJA) zlibrc.o
+-	$(STRIP) $@
+ 
+ example.exe: example.o $(STATICLIB)
+ 	$(LD) $(LDFLAGS) -o $@ example.o $(STATICLIB)
