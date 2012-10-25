@@ -632,6 +632,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$SRCS_DIR \
 				$SRC_DIR_NAME \
 				"execute commands..." \
+				"after_unpack" \
 				EXECUTE_AFTER_UNCOMPRESS[@]
 			func_res=$?
 			[[ $func_res != 0 ]] && {
@@ -655,6 +656,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$SRCS_DIR \
 				$SRC_DIR_NAME \
 				"execute commands..." \
+				"after_patch" \
 				EXECUTE_AFTER_PATCH[@]
 			func_res=$?
 			[[ $func_res != 0 ]] && {
@@ -710,6 +712,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$SRCS_DIR \
 				$SRC_DIR_NAME \
 				"execute commands..." \
+				"after_install" \
 				EXECUTE_AFTER_INSTALL[@]
 			func_res=$?
 			[[ $func_res != 0 ]] && {
