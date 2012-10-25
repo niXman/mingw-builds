@@ -720,6 +720,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				exit $func_res
 			}
 		}
+		
+		[[ $sub == $GCC_NAME ]] && {
+			export PATH=$PREFIX/bin:$LIBS_DIR/bin:$PREFIX/opt/bin:$ORIGINAL_PATH
+		}
    done
 done
 
