@@ -63,11 +63,10 @@ CONFIGURE_FLAGS=(
 	--with-python
 	--with-expat
 	--with-libiconv
-	--with-curses
 	--disable-tui
 	--disable-gdbtk
 	#
-	CFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
+	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
 	CPPFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 \""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib -L$PREFIX/opt/lib/python2.7/config -Wl,-rpath $REL_PYTHON_PATH\""
 )
