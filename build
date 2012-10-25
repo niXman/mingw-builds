@@ -710,7 +710,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$SRCS_DIR \
 				$SRC_DIR_NAME \
 				"execute commands..." \
-				EXECUTE_AFTER_PATCH[@]
+				EXECUTE_AFTER_INSTALL[@]
 			func_res=$?
 			[[ $func_res != 0 ]] && {
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-$_index.log &
