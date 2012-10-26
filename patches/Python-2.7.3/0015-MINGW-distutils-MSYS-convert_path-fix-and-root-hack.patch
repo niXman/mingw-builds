@@ -1,18 +1,54 @@
 diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
---- a/Lib/distutils/command/install.py	2012-04-10 00:07:29.000000000 +0100
-+++ b/Lib/distutils/command/install.py	2012-10-09 18:06:49.000000000 +0100
-@@ -315,6 +315,16 @@
+--- a/Lib/distutils/command/install.py	2012-04-10 03:07:29 +0400
++++ b/Lib/distutils/command/install.py	2012-10-26 19:57:29 +0400
+@@ -8,7 +8,7 @@
+ 
+ __revision__ = "$Id$"
+ 
+-import sys, os, string
++import sys, os, string, re
+ from types import *
+ from distutils.core import Command
+ from distutils.debug import DEBUG
+@@ -20,7 +20,28 @@
+ from distutils.errors import DistutilsOptionError
+ from site import USER_BASE
+ from site import USER_SITE
++from string import maketrans
+ 
++def is_msys_mingw():
++    if os.environ.has_key("OSTYPE") and os.environ.has_key("MSYSTEM") and sys.version.find("GCC") >= 0:
++        if os.environ["MSYSTEM"] == "MINGW32" and os.environ["OSTYPE"] == "msys":
++            return 1
++    return 0
++
++def msys_root():
++    if os.environ.has_key("WD"):
++        arg = os.environ["WD"]
++        arg = arg.rstrip("\\")
++        if arg.endswith("\\bin"):
++            # drop the \\bin
++            arg = arg[:-4]
++        table = maketrans('\\', '/')
++        arg = arg.translate(table)
++        if arg.endswith("/"):
++            arg = arg[:-1]
++        return arg
++    else:
++        return None
+ 
+ if sys.version < "2.2":
+     WINDOWS_SCHEME = {
+@@ -315,6 +336,14 @@
  
          self.dump_dirs("post-expand_basedirs()")
  
-+        # MSYS (probably) will have transformed --root=/ to be something
-+        # else, so we check if install_base (arbitrary choice) begins with root
-+        # and if it does then we set root to None again! Another way to fix
-+        # this is to prevent MSYS transformation by ensuring --root=// is
-+        # passed in instead, but that's fiddly too.
-+        if (self.root is not None and 
-+           sys.platform == "win32" and sys.version.find("GCC") >= 0):
-+            if self.install_base.find(self.root)==0:
++        # MSYS (probably) will have transformed --root=/ to the
++        # windows path where the msys is installed, so we check if root begins
++        # with msysroot and if it does then we set root to None again!
++        if (self.root is not None and is_msys_mingw):
++            msysroot = msys_root()
++            if self.root.find(msysroot)==0:
 +                self.root = None
 +
          # Now define config vars for the base directories so we can expand
