@@ -35,10 +35,17 @@
 
 # **************************************************************************
 
-NAME=binutils-2.23
-SRC_DIR_NAME=binutils-2.23
-URL=ftp://mirrors.kernel.org/sources.redhat.com/binutils/releases/binutils-2.23.tar.bz2
+
+NAME=binutils-${BINUTILS_VERSION}
+[[ $USE_MULTILIB == yes ]] && {
+	NAME=$ARCHITECTURE-$NAME-multi
+} || {
+	NAME=$ARCHITECTURE-$NAME-nomulti
+}
+SRC_DIR_NAME=binutils-${BINUTILS_VERSION}
+URL=ftp://mirrors.kernel.org/sources.redhat.com/binutils/releases/binutils-${BINUTILS_VERSION}.tar.bz2
 TYPE=.tar.bz2
+PRIORITY=prereq
 
 #
 
@@ -46,13 +53,21 @@ PATCHES=()
 
 #
 
+[[ $USE_MULTILIB == yes ]] && {
+	BINUTILSPREFIX=$PREREQ_DIR/$ARCHITECTURE-binutils-multi
+	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi
+} || {
+	BINUTILSPREFIX=$PREREQ_DIR/$ARCHITECTURE-binutils-nomulti
+	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
+}
+
 CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREFIX
-	--with-sysroot=$PREFIX
+	--prefix=$BINUTILSPREFIX
+	--with-sysroot=$RUNTIMEPREFIX
 	#
 	$( [[ $USE_MULTILIB == yes ]] \
 		&& echo "--enable-targets=$ENABLE_TARGETS --enable-multilib --enable-64-bit-bfd" \
@@ -65,7 +80,7 @@ CONFIGURE_FLAGS=(
 	#
 	--enable-lto
 	#
-	--with-libiconv-prefix=$LIBS_DIR
+	--with-libiconv-prefix=$PREREQ_DIR/libiconv-$ARCHITECTURE
 	#
 	--disable-nls
 	#

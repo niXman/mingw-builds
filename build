@@ -36,6 +36,7 @@
 # **************************************************************************
 
 . ./scripts/functions.sh
+. ./scripts/versions.sh
 
 ENABLE_LANGUAGES='c,c++,fortran'
 
@@ -231,9 +232,10 @@ done
 }
 
 SRCS_DIR=$ROOT_DIR/mingw-sources
-
+PREREQ_DIR=$ROOT_DIR/mingw-prereq
+RUNTIME_DIR=$ROOT_DIR/mingw-runtime
 ARCHIVES_DIR=$ROOT_DIR/mingw-archives
-mkdir -p $ARCHIVES_DIR
+mkdir -p $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 
 # **************************************************************************
 
@@ -362,17 +364,18 @@ SUBTARGETS_PART1=(
 	ppl
 	cloog
 	mingw-w64-api
-	mingw-w64-api-post
 	mingw-w64-crt
-	mingw-w64-crt-post
+	mingw-w64-runtime-post
 )
 
 SUBTARGETS_PART2=(
 	mingw-deps-post
 	binutils
+	binutils-post
 	$GCC_NAME
 	gcc-post
 	libgnurx
+	zlib-pre
 	zlib
 	libffi
 	expat
@@ -499,10 +502,13 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	[[ $USE_DWARF == yes ]] && GCC_DWARF_OR_SJLJ=dwarf || GCC_DWARF_OR_SJLJ=sjlj
 	[[ -n $REV_NUM ]] && REV_STRING="-rev$REV_NUM" || REV_STRING=""
 	GCC_TYPE_STRING=$(func_map_gcc_name_to_gcc_type $GCC_NAME)
-	BUILDS_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-build
-	LIBS_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-libs
-	LOGS_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-logs
-	PREFIX=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING-prefix
+	PREREQ_BUILD_DIR=$ROOT_DIR/prereq-build
+	PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
+	BASE_BUILD_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING
+	BUILDS_DIR=$BASE_BUILD_DIR/build
+	LIBS_DIR=$BASE_BUILD_DIR/libs
+	LOGS_DIR=$BASE_BUILD_DIR/logs
+	PREFIX=$BASE_BUILD_DIR/prefix
 
 	MINGW_BUILD_NAME=$ARCHITECTURE-${GCC_NAME/gcc-/}
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ
@@ -522,7 +528,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			echo "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
 			exit 1
 		}
-		export PATH=$LIBS_DIR/bin:$PREFIX/opt/bin:$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
+		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/bin:$PREFIX/opt/bin:$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	} || {
 		HOST=x86_64-w64-mingw32
 		BUILD=x86_64-w64-mingw32
@@ -536,15 +542,15 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			echo "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
 			exit 1
 		}
-		export PATH=$LIBS_DIR/bin:$PREFIX/opt/bin:$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
+		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/bin:$PREFIX/opt/bin:$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	}
 
-	mkdir -p $BUILDS_DIR $LIBS_DIR $LOGS_DIR $PREFIX
+	mkdir -p $BASE_BUILD_DIR $BUILDS_DIR $LIBS_DIR $LOGS_DIR $PREFIX $PREREQ_BUILD_DIR $PREREQ_LOGS_DIR
 
-	COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include"
+	COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/$HOST/include"
 	COMMON_CXXFLAGS="$BASE_CFLAGS"
 	COMMON_CPPFLAGS="$BASE_CPPFLAGS"
-	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREFIX/bin"
+	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/$HOST/lib -L$PREFIX/bin"
 
 	[[ $USE_MULTILIB == yes ]] && {
 		SUBTARGETS=(
@@ -581,6 +587,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		}
 
 		NAME=""
+		PRIORITY=""
 		EXECUTE_AFTER_DOWNLOAD=()
 		EXECUTE_AFTER_UNCOMPRESS=()
 		EXECUTE_AFTER_PATCH=()
@@ -590,16 +597,31 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 
 		[[ -z $NAME ]] && continue
 
-		DOWNLOAD_LOG=$LOGS_DIR/$SRC_DIR_NAME/download.log
+		case $PRIORITY in
+			prereq | runtime)
+				CURR_LOGS_DIR=$PREREQ_LOGS_DIR
+				CURR_BUILD_DIR=$PREREQ_BUILD_DIR
+			;;
+			main | extra)
+				CURR_LOGS_DIR=$LOGS_DIR
+				CURR_BUILD_DIR=$BUILDS_DIR
+			;;
+			*)
+				CURR_LOGS_DIR=$LOGS_DIR
+				CURR_BUILD_DIR=$BUILDS_DIR			
+			;;
+		esac
+		
+		DOWNLOAD_LOG=$SRCS_DIR/$SRC_DIR_NAME/download.log
 		DOWNLOAD_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_download.marker
-		UNCOMPRESS_LOG=$LOGS_DIR/$SRC_DIR_NAME/uncompress.log
+		UNCOMPRESS_LOG=$SRCS_DIR/$SRC_DIR_NAME/uncompress.log
 		UNCOMPRESS_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker
-		CONFIGURE_LOG=$LOGS_DIR/$NAME/configure.log
-		MAKE_LOG=$LOGS_DIR/$NAME/make.log
-		INSTALL_LOG=$LOGS_DIR/$NAME/install.log
+		CONFIGURE_LOG=$CURR_LOGS_DIR/$NAME/configure.log
+		MAKE_LOG=$CURR_LOGS_DIR/$NAME/make.log
+		INSTALL_LOG=$CURR_LOGS_DIR/$NAME/install.log
 
-		mkdir -p {$SRCS_DIR/,$BUILDS_DIR/,$LOGS_DIR/}$SRC_DIR_NAME
-		[[ $NAME != $SRC_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$NAME
+		mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$NAME
+		#[[ $NAME != $SRC_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$NAME
 
 		func_download \
 			$SRCS_DIR \
@@ -633,10 +655,11 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$SRC_DIR_NAME \
 				"execute commands..." \
 				"after_unpack" \
+				$CURR_LOGS_DIR \
 				EXECUTE_AFTER_UNCOMPRESS[@]
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-after_unpack-$_index.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CURR_LOGS_DIR/$NAME/exec-after_unpack-$_index.log &
 				exit $func_res
 			}
 		}
@@ -644,10 +667,12 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		func_apply_patches \
 			$SRCS_DIR \
 			$SRC_DIR_NAME \
+			$CURR_LOGS_DIR \
+			$PATCHES_DIR \
 			PATCHES[@]
 		func_res=$?
 		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/patch-$_index.log &
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/patch-$_index.log &
 			exit $func_res
 		}
 
@@ -657,10 +682,11 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$SRC_DIR_NAME \
 				"execute commands..." \
 				"after_patch" \
+				$CURR_LOGS_DIR \
 				EXECUTE_AFTER_PATCH[@]
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-after_patch-$_index.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_patch-$_index.log &
 				exit $func_res
 			}
 		}
@@ -671,7 +697,8 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$NAME \
 				$SRC_DIR_NAME \
 				"$configure_flags" \
-				$CONFIGURE_LOG
+				$CONFIGURE_LOG \
+				$CURR_BUILD_DIR
 			func_res=$?
 			[[ $func_res != 0 ]] && {
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG &
@@ -682,11 +709,12 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		make_flags="/bin/make ${MAKE_FLAGS[@]}"
 		func_make \
 			$NAME \
-			$NAME \
+			$SRC_DIR_NAME \
 			"$make_flags" \
 			$MAKE_LOG \
 			"building..." \
-			"built"
+			"built" \
+			$CURR_BUILD_DIR
 		func_res=$?
 		[[ $func_res != 0 ]] && {
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG &
@@ -696,11 +724,12 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		install_flags="/bin/make ${INSTALL_FLAGS[@]}"
 		func_make \
 			$NAME \
-			$NAME \
+			$SRC_DIR_NAME \
 			"$install_flags" \
 			$INSTALL_LOG \
 			"installing..." \
-			"installed"
+			"installed" \
+			$CURR_BUILD_DIR
 		func_res=$?
 		[[ $func_res != 0 ]] && {
 			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG &
@@ -713,16 +742,17 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				$SRC_DIR_NAME \
 				"execute commands..." \
 				"after_install" \
+				$CURR_LOGS_DIR \
 				EXECUTE_AFTER_INSTALL[@]
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $LOGS_DIR/$SRC_DIR_NAME/exec-after_install-$_index.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CURR_LOGS_DIR/$NAME/exec-after_install-$_index.log &
 				exit $func_res
 			}
 		}
 		
 		[[ $sub == $GCC_NAME ]] && {
-			export PATH=$PREFIX/bin:$LIBS_DIR/bin:$PREFIX/opt/bin:$ORIGINAL_PATH
+			export PATH=$PREFIX/bin:$LIBS_DIR/bin:$PREREQ_DIR/bin:$PREFIX/opt/bin:$ORIGINAL_PATH
 		}
    done
 done

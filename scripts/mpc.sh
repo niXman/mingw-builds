@@ -35,10 +35,11 @@
 
 # **************************************************************************
 
-NAME=mpc-1.0.1
-SRC_DIR_NAME=mpc-1.0.1
-URL=http://www.multiprecision.org/mpc/download/mpc-1.0.1.tar.gz
+NAME=$ARCHITECTURE-mpc-${MPC_VERSION}
+SRC_DIR_NAME=mpc-${MPC_VERSION}
+URL=http://www.multiprecision.org/mpc/download/mpc-${MPC_VERSION}.tar.gz
 TYPE=.tar.gz
+PRIORITY=prereq
 
 #
 
@@ -51,12 +52,12 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$LIBS_DIR
+	--prefix=$PREREQ_DIR/$HOST
 	#
 	$GCC_DEPS_LINK_TYPE
 	#
-	--with-gmp=$LIBS_DIR
-	--with-mpfr=$LIBS_DIR
+	--with-gmp=$PREREQ_DIR/$HOST
+	--with-mpfr=$PREREQ_DIR/$HOST
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""

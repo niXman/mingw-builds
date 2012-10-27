@@ -35,53 +35,15 @@
 
 # **************************************************************************
 
-NAME=$ARCHITECTURE-mingw-w64-headers
-SRC_DIR_NAME=mingw-w64-headers
-URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-headers
-TYPE=svn
-REV=
-PRIORITY=runtime
-
-#
-
-PATCHES=()
-
-#
-
 [[ $USE_MULTILIB == yes ]] && {
-	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi
+	BINUTILSPREFIX=$PREREQ_DIR/$ARCHITECTURE-binutils-multi
 } || {
-	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
+	BINUTILSPREFIX=$PREREQ_DIR/$ARCHITECTURE-binutils-nomulti
 }
 
-CONFIGURE_FLAGS=(
-	--host=$HOST
-	--build=$BUILD
-	--target=$TARGET
-	#
-	--prefix=$RUNTIMEPREFIX
-	#
-	--enable-sdk=all
-	--enable-secure-api
-	#
-	CFLAGS="\"$COMMON_CFLAGS\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
-)
-
-#
-
-MAKE_FLAGS=(
-	-j$JOBS
-	all
-)
-
-#
-
-INSTALL_FLAGS=(
-	-j$JOBS
-	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
-)
+[[ ! -f $BUILDS_DIR/binutils-post.marker ]] && {
+	cp -rf $BINUTILSPREFIX/* $PREFIX || exit 1
+	touch $BUILDS_DIR/binutils-post.marker
+}
 
 # **************************************************************************

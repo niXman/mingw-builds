@@ -39,6 +39,7 @@ NAME=gcc-4.7.0
 SRC_DIR_NAME=gcc-4.7.0
 URL=ftp://ftp.gnu.org/gnu/gcc/gcc-4.7.0/gcc-4.7.0.tar.bz2
 TYPE=.tar.bz2
+PRIORITY=main
 
 #
 
@@ -93,7 +94,7 @@ CONFIGURE_FLAGS=(
 		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
 	)
 	--with-libiconv
-	--with-{gmp,mpfr,mpc,ppl,cloog}=$LIBS_DIR
+	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST
 	--with-pkgversion="\"$PKG_VERSION\""
 	--with-bugurl=$BUG_URL
 	#

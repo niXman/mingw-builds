@@ -36,10 +36,16 @@
 # **************************************************************************
 
 NAME=mingw-w64-crt
+[[ $USE_MULTILIB == yes ]] && {
+	NAME=$ARCHITECTURE-$NAME-multi
+} || {
+	NAME=$ARCHITECTURE-$NAME-nomulti
+}
 SRC_DIR_NAME=mingw-w64-crt
 URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-crt
 TYPE=svn
 REV=
+PRIORITY=runtime
 
 #
 
@@ -49,7 +55,9 @@ PATCHES=()
 
 [[ $USE_MULTILIB == yes ]] && {
 	LIBCONF="--enable-lib32 --enable-lib64"
+	CRTPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi
 } || {
+	CRTPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
 	[[ $ARCHITECTURE == x32 ]] && {
 		LIBCONF="--enable-lib32 --disable-lib64"
 	} || {
@@ -62,8 +70,8 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREFIX/$HOST
-	--with-sysroot=$PREFIX/$HOST
+	--prefix=$CRTPREFIX
+	--with-sysroot=$CRTPREFIX
 	#
 	$LIBCONF
 	--enable-wildcard

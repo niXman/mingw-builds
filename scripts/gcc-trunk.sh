@@ -39,6 +39,7 @@ NAME=gcc-trunk
 SRC_DIR_NAME=gcc-trunk
 URL=svn://gcc.gnu.org/svn/gcc/trunk
 TYPE=svn
+PRIORITY=main
 
 #
 
@@ -93,7 +94,7 @@ CONFIGURE_FLAGS=(
 		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
 	)
 	--with-libiconv
-	--with-{gmp,mpfr,mpc,ppl,cloog}=$LIBS_DIR
+	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST
 	--with-pkgversion="\"$PKG_VERSION\""
 	--with-bugurl=$BUG_URL
 	#

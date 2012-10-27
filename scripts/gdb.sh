@@ -35,12 +35,13 @@
 
 # **************************************************************************
 
-NAME=gdb-7.5
-SRC_DIR_NAME=gdb-7.5
-URL=ftp://ftp.gnu.org/gnu/gdb/gdb-7.5.tar.bz2
+NAME=gdb-${GDB_VERSION}
+SRC_DIR_NAME=gdb-${GDB_VERSION}
+URL=ftp://ftp.gnu.org/gnu/gdb/gdb-${GDB_VERSION}.tar.bz2
 TYPE=.tar.bz2
+PRIORITY=main
 
-REL_PYTHON_PATH=$(func_absolute_to_relative $PREFIX/bin $PREFIX/opt/bin)
+#REL_PYTHON_PATH=$(func_absolute_to_relative $PREFIX/bin $PREFIX/opt/bin)
 #
 
 PATCHES=()
@@ -69,7 +70,7 @@ CONFIGURE_FLAGS=(
 	#
 	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
 	CPPFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 \""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib -L$PREFIX/opt/lib/python2.7/config -Wl,-rpath $REL_PYTHON_PATH\""
+	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib -L$PREFIX/opt/lib/python2.7/config\""
 )
 
 #

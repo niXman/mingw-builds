@@ -47,13 +47,15 @@
 		_pack_type=$( grep 'TYPE=' $TOP_DIR/scripts/${sub}.sh )
 		[[ -n $_pack_type ]] && {
 			_pack_type=$( echo "$_pack_type" | sed 's|TYPE=||g' )
-			_pack_name=$( grep 'SRC_DIR_NAME=' $TOP_DIR/scripts/${sub}.sh | sed 's|SRC_DIR_NAME=||' )
-			
+			#_pack_name=$( grep 'SRC_DIR_NAME=' $TOP_DIR/scripts/${sub}.sh | sed 's|SRC_DIR_NAME=||' )
+			. $TOP_DIR/scripts/$sub.sh
+			_pack_name=$SRC_DIR_NAME
+			_url=$URL
 			[[ -n $( echo "${_PROCESSED_SUBS[@]}" | grep $_pack_name ) ]] && continue
 			_PROCESSED_SUBS=( ${_PROCESSED_SUBS[@]} $_pack_name )
 			
 			echo "name: $_pack_name" >> $VERSION_FILE
-			echo "url: $( grep 'URL=' $TOP_DIR/scripts/${sub}.sh | sed 's|URL=||' )" >> $VERSION_FILE
+			echo "url: $_url" >> $VERSION_FILE
 			
 			cd $SRCS_DIR/$_pack_name
 			[[ $? != 0 ]] && { echo "error in $SRCS_DIR/$_pack_name"; exit 1; }

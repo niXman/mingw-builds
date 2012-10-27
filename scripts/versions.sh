@@ -35,53 +35,22 @@
 
 # **************************************************************************
 
-NAME=$ARCHITECTURE-mingw-w64-headers
-SRC_DIR_NAME=mingw-w64-headers
-URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-headers
-TYPE=svn
-REV=
-PRIORITY=runtime
-
-#
-
-PATCHES=()
-
-#
-
-[[ $USE_MULTILIB == yes ]] && {
-	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi
-} || {
-	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
-}
-
-CONFIGURE_FLAGS=(
-	--host=$HOST
-	--build=$BUILD
-	--target=$TARGET
-	#
-	--prefix=$RUNTIMEPREFIX
-	#
-	--enable-sdk=all
-	--enable-secure-api
-	#
-	CFLAGS="\"$COMMON_CFLAGS\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
-)
-
-#
-
-MAKE_FLAGS=(
-	-j$JOBS
-	all
-)
-
-#
-
-INSTALL_FLAGS=(
-	-j$JOBS
-	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
-)
+BINUTILS_VERSION="2.23"
+CLOOG_VERSION="0.17.0"
+EXPAT_VERSION="2.1.0"
+GDB_VERSION="7.5"
+GMP_VERSION="5.0.5"
+LIBICONV_VERSION="1.14"
+LIBFFI_VERSION="3.0.11"
+LIBGNURX_VERSION="2.5.1"
+MPC_VERSION="1.0.1"
+MPFR_VERSION="3.1.1"
+NCURSES_VERSION="5.9"
+PPL_VERSION="1.0"
+PYTHON_VERSION="2.7.3"
+READLINE_VERSION="6.2"
+SQLITE_VERSION="3071401"
+TCLTK_VERSION="8.5.12"
+ZLIB_VERSION="1.2.7"
 
 # **************************************************************************
