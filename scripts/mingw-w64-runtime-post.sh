@@ -39,9 +39,9 @@
 [[ ! -d $PREFIX/$HOST ]] && mkdir -p $PREFIX/$HOST
 
 [[ $USE_MULTILIB == yes ]] && {
-	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi/$HOST
+	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi
 } || {
-	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti/$HOST
+	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
 }
 
 [[ ! -f $BUILDS_DIR/mingw-w64-runtime-post.marker ]] && {
