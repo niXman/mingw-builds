@@ -35,10 +35,11 @@
 
 # **************************************************************************
 
-NAME=libgnurx-2.5.1
-SRC_DIR_NAME=mingw-libgnurx-2.5.1
-URL=https://sourceforge.net/projects/mingw/files/Other/UserContributed/regex/mingw-regex-2.5.1/mingw-libgnurx-2.5.1-src.tar.gz/download
+NAME=libgnurx-${LIBGNURX_VERSION}
+SRC_DIR_NAME=mingw-libgnurx-${LIBGNURX_VERSION}
+URL=https://sourceforge.net/projects/mingw/files/Other/UserContributed/regex/mingw-regex-${LIBGNURX_VERSION}/mingw-libgnurx-${LIBGNURX_VERSION}-src.tar.gz/download
 TYPE=.tar.gz
+PRIORITY=extra
 
 #
 

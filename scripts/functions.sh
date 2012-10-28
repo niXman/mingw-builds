@@ -186,10 +186,11 @@ function func_execute {
 	# $2 - src dir name
 	# $3 - message
 	# $4 - log suffix
-	# $5 - commands list
+	# $5 - log dir
+	# $6 - commands list
 
 	local _result=0
-	local -a _commands=( "${!5}" )
+	local -a _commands=( "${!6}" )
 	declare -i _index=${#_commands[@]}-1
 	local _cmd_marker_name=$1/$2/exec-$4-$_index.marker
 
@@ -204,8 +205,8 @@ function func_execute {
    }
 
    for it in "${_commands[@]}"; do
-		_cmd_marker_name=$1/$2/exec-$_index.marker
-		local _cmd_log_name=$LOGS_DIR/$2/exec-$4-$_index.log
+		_cmd_marker_name=$1/$2/exec-$4-$_index.marker
+		local _cmd_log_name=$1/$2/exec-$4-$_index.log
 
       [[ ! -f $_cmd_marker_name ]] && {
          ( cd $1/$2 && eval ${it} > $_cmd_log_name 2>&1 )
@@ -232,11 +233,13 @@ function func_execute {
 function func_apply_patches {
 	# $1 - srcs dir name
 	# $2 - src dir name
-	# $3 - list
-
+	# $3 - logs dir
+	# $4 - patches dir
+	# $5 - list
+	
 	local _result=0
 	_index=0
-	local -a _list=( "${!3}" )
+	local -a _list=( "${!5}" )
 	[[ ${#_list[@]} == 0 ]] && return 0
 
 	((_index=${#_list[@]}-1))
@@ -252,8 +255,9 @@ function func_apply_patches {
 
 	for it in ${_list[@]} ; do
 		local _patch_marker_name=$1/$2/_patch-$_index.marker
+
 		[[ ! -f $_patch_marker_name ]] && {
-			( cd $1/$2 && patch -p1 < $PATCHES_DIR/${it} > $LOGS_DIR/$2/patch-$_index.log 2>&1 )
+			( cd $1/$2 && patch -p1 < $4/${it} > $1/$2/patch-$_index.log 2>&1 )
 			_result=$?
 			[[ $_result == 0 ]] && {
 				touch $_patch_marker_name
@@ -278,13 +282,14 @@ function func_configure {
 	# $2 - src dir name
 	# $3 - flags
 	# $4 - log file name
+	# $5 - build dir
 
-	local _marker=$BUILDS_DIR/$1/_configure.marker
+	local _marker=$5/$1/_configure.marker
 	local _result=0
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> configure..."
-		( cd $BUILDS_DIR/$1 && eval $( func_absolute_to_relative $BUILDS_DIR/$1 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1 )
+		( cd $5/$1 && eval $( func_absolute_to_relative $5/$1 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1 )
 		_result=$?
 		[[ $_result == 0 ]] && {
 			echo " done"
@@ -311,13 +316,14 @@ function func_make {
 	# $4 - log file name
 	# $5 - text
 	# $6 - text if completed
+	# $7 - build dir
 
-	local _marker=$BUILDS_DIR/$1/_$6.marker
+	local _marker=$7/$1/_$6.marker
 	local _result=0
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> $5"
-		( cd $BUILDS_DIR/$2 && eval ${3} > $4 2>&1 )
+		( cd $7/$1 && eval ${3} > $4 2>&1 )
 		_result=$?
 		[[ $_result == 0 ]] && { echo " done"; touch $_marker; } || { echo " error!"; }
 	} || {

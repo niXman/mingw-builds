@@ -40,6 +40,7 @@ SRC_DIR_NAME=winpthreads
 URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/experimental/winpthreads
 TYPE=svn
 REV=
+PRIORITY=runtime
 
 #
 
@@ -52,7 +53,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$BUILDS_DIR/winpthreads-32
+	--prefix=$RUNTIME_DIR/winpthreads-32
 	#
 	$LINK_TYPE_BOTH
 	#

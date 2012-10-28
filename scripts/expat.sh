@@ -35,10 +35,11 @@
 
 # **************************************************************************
 
-NAME=expat-2.1.0
-SRC_DIR_NAME=expat-2.1.0
-URL=http://sourceforge.net/projects/expat/files/expat/2.1.0/expat-2.1.0.tar.gz
+NAME=expat-${EXPAT_VERSION}
+SRC_DIR_NAME=expat-${EXPAT_VERSION}
+URL=http://sourceforge.net/projects/expat/files/expat/${EXPAT_VERSION}/expat-${EXPAT_VERSION}.tar.gz
 TYPE=.tar.gz
+PRIORITY=extra
 
 #
 

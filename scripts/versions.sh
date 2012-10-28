@@ -35,87 +35,22 @@
 
 # **************************************************************************
 
-NAME=gcc-4.6.3
-SRC_DIR_NAME=gcc-4.6.3
-URL=ftp://ftp.gnu.org/gnu/gcc/gcc-4.6.3/gcc-4.6.3.tar.bz2
-TYPE=.tar.bz2
-PRIORITY=main
-
-#
-
-PATCHES=( gcc-4.6-cloog_lang_c.patch gcc-4.6-stdthreads.patch gcc-4.6-iconv.patch )
-
-#
-
-CONFIGURE_FLAGS=(
-	--host=$HOST
-	--build=$BUILD
-	--target=$TARGET
-	#
-	--prefix=$PREFIX
-	--with-sysroot=$PREFIX
-	#
-	$LINK_TYPE_BOTH
-	#
-	$( [[ $USE_MULTILIB == yes ]] \
-		&& echo "--enable-targets=all --enable-multilib" \
-		|| echo "--disable-multilib" \
-	)
-	--enable-languages=$ENABLE_LANGUAGES,lto
-	--enable-libstdcxx-time=yes
-	--enable-threads=$THREADS_MODEL
-	--enable-libgomp
-	--enable-lto
-	--enable-graphite
-	--enable-cloog-backend=isl
-	--enable-checking=release
-	--enable-fully-dynamic-string
-	--enable-version-specific-runtime-libs
-	$( [[ $USE_DWARF == yes ]] \
-		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
-		|| echo "--enable-sjlj-exceptions" \
-	)
-	#
-	--disable-ppl-version-check
-	--disable-cloog-version-check
-	--disable-libstdcxx-pch
-	--disable-libstdcxx-debug
-	--disable-bootstrap
-	--disable-rpath
-	--disable-win32-registry
-	--disable-nls
-	--disable-werror
-	--disable-symvers
-	#
-	--with-gnu-as
-	--with-gnu-ld
-	--with-tune=generic
-	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
-		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
-	)
-	--with-libiconv
-	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST
-	--with-pkgversion="\"$PKG_VERSION\""
-	--with-bugurl=$BUG_URL
-	#
-	CFLAGS="\"$COMMON_CFLAGS\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
-)
-
-#
-
-MAKE_FLAGS=(
-	-j$JOBS
-	all
-)
-
-#
-
-INSTALL_FLAGS=(
-	-j$JOBS
-	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
-)
+BINUTILS_VERSION="2.23"
+CLOOG_VERSION="0.17.0"
+EXPAT_VERSION="2.1.0"
+GDB_VERSION="7.5"
+GMP_VERSION="5.0.5"
+LIBICONV_VERSION="1.14"
+LIBFFI_VERSION="3.0.11"
+LIBGNURX_VERSION="2.5.1"
+MPC_VERSION="1.0.1"
+MPFR_VERSION="3.1.1"
+NCURSES_VERSION="5.9"
+PPL_VERSION="1.0"
+PYTHON_VERSION="2.7.3"
+READLINE_VERSION="6.2"
+SQLITE_VERSION="3071401"
+TCLTK_VERSION="8.5.12"
+ZLIB_VERSION="1.2.7"
 
 # **************************************************************************

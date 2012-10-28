@@ -35,10 +35,11 @@
 
 # **************************************************************************
 
-NAME=readline-6.2
-SRC_DIR_NAME=readline-6.2
-URL=ftp://ftp.gnu.org/gnu/readline/readline-6.2.tar.gz
+NAME=readline-${READLINE_VERSION}
+SRC_DIR_NAME=readline-${READLINE_VERSION}
+URL=ftp://ftp.gnu.org/gnu/readline/readline-${READLINE_VERSION}.tar.gz
 TYPE=.tar.gz
+PRIORITY=extra
 
 #
 

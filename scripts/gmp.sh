@@ -35,10 +35,11 @@
 
 # **************************************************************************
 
-NAME=gmp-5.0.5
+NAME=$ARCHITECTURE-gmp-${GMP_VERSION}
 SRC_DIR_NAME=gmp-5.0.5
-URL=ftp://ftp.gmplib.org/pub/gmp-5.0.5/gmp-5.0.5.tar.bz2
+URL=ftp://ftp.gmplib.org/pub/gmp-${GMP_VERSION}/gmp-${GMP_VERSION}.tar.bz2
 TYPE=.tar.bz2
+PRIORITY=prereq
 
 #
 
@@ -51,7 +52,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$LIBS_DIR
+	--prefix=$PREREQ_DIR/$HOST
 	#
 	$GCC_DEPS_LINK_TYPE
 	#

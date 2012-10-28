@@ -35,10 +35,11 @@
 
 # **************************************************************************
 
-NAME=Python-2.7.3
-SRC_DIR_NAME=Python-2.7.3
-URL=http://www.python.org/ftp/python/2.7.3/Python-2.7.3.tar.bz2
+NAME=Python-${PYTHON_VERSION}
+SRC_DIR_NAME=Python-${PYTHON_VERSION}
+URL=http://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.bz2
 TYPE=.tar.bz2
+PRIORITY=extra
 
 #
 

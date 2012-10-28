@@ -35,24 +35,17 @@
 
 # **************************************************************************
 
-NAME=zlib-1.2.7
-SRC_DIR_NAME=zlib-1.2.7
-URL=http://zlib.net/zlib-1.2.7.tar.bz2
+NAME=zlib-${ZLIB_VERSION}
+SRC_DIR_NAME=zlib-${ZLIB_VERSION}
+URL=http://zlib.net/zlib-${ZLIB_VERSION}.tar.bz2
 TYPE=.tar.bz2
+PRIORITY=extra
 
 #
 
 PATCHES=(
 	zlib/zlib-1.2.5-nostrip.patch
 	zlib/zlib-1.2.5-tml.patch
-)
-
-#
-
-EXECUTE_AFTER_PATCH=(
-	"rm -rf $SRCS_DIR/$SRC_DIR_NAME/exec-after_patch*"
-	"cp -rf $SRCS_DIR/$SRC_DIR_NAME $BUILDS_DIR/"
-	"rm -rf $SRCS_DIR/$SRC_DIR_NAME/exec-after_patch*"
 )
 
 #

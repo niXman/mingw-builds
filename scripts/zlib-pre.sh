@@ -35,11 +35,9 @@
 
 # **************************************************************************
 
-[[ ! -d $PREFIX/mingw ]] && mkdir -p $PREFIX/mingw
-
-[[ ! -f $BUILDS_DIR/mingw-w64-crt-post.marker ]] && {
-	cp -rf $PREFIX/$TARGET/* $PREFIX/mingw || exit 1
-	touch $BUILDS_DIR/mingw-w64-crt-post.marker
+[[ ! -f $BUILDS_DIR/zlib-pre.marker ]] && {
+	cp -rf $SRCS_DIR/zlib-${ZLIB_VERSION} $BUILDS_DIR || exit 1
+	touch $BUILDS_DIR/zlib-pre.marker
 }
 
 # **************************************************************************

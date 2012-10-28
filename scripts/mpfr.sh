@@ -35,10 +35,11 @@
 
 # **************************************************************************
 
-NAME=mpfr-3.1.1
-SRC_DIR_NAME=mpfr-3.1.1
-URL=ftp://ftp.gnu.org/gnu/mpfr/mpfr-3.1.1.tar.bz2
+NAME=$ARCHITECTURE-mpfr-${MPFR_VERSION}
+SRC_DIR_NAME=mpfr-${MPFR_VERSION}
+URL=ftp://ftp.gnu.org/gnu/mpfr/mpfr-${MPFR_VERSION}.tar.bz2
 TYPE=.tar.bz2
+PRIORITY=prereq
 
 #
 
@@ -51,11 +52,11 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$LIBS_DIR
+	--prefix=$PREREQ_DIR/$HOST
 	#
 	$GCC_DEPS_LINK_TYPE
 	#
-	--with-gmp=$LIBS_DIR
+	--with-gmp=$PREREQ_DIR/$HOST
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
