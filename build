@@ -528,7 +528,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			echo "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
 			exit 1
 		}
-		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/bin:$PREFIX/opt/bin:$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
+		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/$HOST/bin:$PREFIX/opt/bin:$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	} || {
 		HOST=x86_64-w64-mingw32
 		BUILD=x86_64-w64-mingw32
@@ -542,7 +542,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			echo "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
 			exit 1
 		}
-		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/bin:$PREFIX/opt/bin:$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
+		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/$HOST/bin:$PREFIX/opt/bin:$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	}
 
 	mkdir -p $BASE_BUILD_DIR $BUILDS_DIR $LIBS_DIR $LOGS_DIR $PREFIX $PREREQ_BUILD_DIR $PREREQ_LOGS_DIR
@@ -752,7 +752,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		}
 		
 		[[ $sub == $GCC_NAME ]] && {
-			export PATH=$PREFIX/bin:$LIBS_DIR/bin:$PREREQ_DIR/bin:$PREFIX/opt/bin:$ORIGINAL_PATH
+			export PATH=$PREFIX/bin:$LIBS_DIR/bin:$PREREQ_DIR/$HOST/bin:$PREFIX/opt/bin:$ORIGINAL_PATH
 		}
    done
 done
