@@ -36,6 +36,7 @@
 # **************************************************************************
 
 [[ ! -f $BUILDS_DIR/zlib-pre.marker ]] && {
+	ZLIB_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/zlib.sh | sed 's|VERSION=||' )
 	cp -rf $SRCS_DIR/zlib-${ZLIB_VERSION} $BUILDS_DIR || exit 1
 	touch $BUILDS_DIR/zlib-pre.marker
 }

@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=$ARCHITECTURE-mpc-${MPC_VERSION}
-SRC_DIR_NAME=mpc-${MPC_VERSION}
-URL=http://www.multiprecision.org/mpc/download/mpc-${MPC_VERSION}.tar.gz
+VERSION="1.0.1"
+NAME=$ARCHITECTURE-mpc-${VERSION}
+SRC_DIR_NAME=mpc-${VERSION}
+URL=http://www.multiprecision.org/mpc/download/mpc-${VERSION}.tar.gz
 TYPE=.tar.gz
 PRIORITY=prereq
 

@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
+VERSION="1.14"
 NAME=libiconv-x64
-SRC_DIR_NAME=libiconv-${LIBICONV_VERSION}
-URL=http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${LIBICONV_VERSION}.tar.gz
+SRC_DIR_NAME=libiconv-${VERSION}
+URL=http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${VERSION}.tar.gz
 TYPE=.tar.gz
 PRIORITY=prereq
 

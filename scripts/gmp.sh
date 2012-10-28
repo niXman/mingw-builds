@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=$ARCHITECTURE-gmp-${GMP_VERSION}
-SRC_DIR_NAME=gmp-5.0.5
-URL=ftp://ftp.gmplib.org/pub/gmp-${GMP_VERSION}/gmp-${GMP_VERSION}.tar.bz2
+VERSION="5.0.5"
+NAME=$ARCHITECTURE-gmp-${VERSION}
+SRC_DIR_NAME=gmp-${VERSION}
+URL=ftp://ftp.gmplib.org/pub/gmp-${VERSION}/gmp-${VERSION}.tar.bz2
 TYPE=.tar.bz2
 PRIORITY=prereq
 

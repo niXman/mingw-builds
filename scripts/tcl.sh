@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=tcl${TCLTK_VERSION}
-SRC_DIR_NAME=tcl${TCLTK_VERSION}/win
-URL=http://prdownloads.sourceforge.net/tcl/tcl${TCLTK_VERSION}-src.tar.gz
+VERSION="8.5.12"
+NAME=tcl${VERSION}
+SRC_DIR_NAME=tcl${VERSION}/win
+URL=http://prdownloads.sourceforge.net/tcl/tcl${VERSION}-src.tar.gz
 TYPE=.tar.gz
 PRIORITY=extra
 

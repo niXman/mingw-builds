@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=sqlite-${SQLITE_VERSION}
-SRC_DIR_NAME=sqlite-autoconf-${SQLITE_VERSION}
-URL=http://www.sqlite.org/sqlite-autoconf-${SQLITE_VERSION}.tar.gz
+VERSION="3071401"
+NAME=sqlite-${VERSION}
+SRC_DIR_NAME=sqlite-autoconf-${VERSION}
+URL=http://www.sqlite.org/sqlite-autoconf-${VERSION}.tar.gz
 TYPE=.tar.gz
 PRIORITY=extra
 

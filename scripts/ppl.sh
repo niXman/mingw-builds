@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=$ARCHITECTURE-ppl-${PPL_VERSION}
-SRC_DIR_NAME=ppl-${PPL_VERSION}
-URL=http://bugseng.com/products/ppl/download/ftp/releases/${PPL_VERSION}/ppl-${PPL_VERSION}.tar.bz2
+VERSION="1.0"
+NAME=$ARCHITECTURE-ppl-${VERSION}
+SRC_DIR_NAME=ppl-${VERSION}
+URL=http://bugseng.com/products/ppl/download/ftp/releases/${VERSION}/ppl-${VERSION}.tar.bz2
 TYPE=.tar.bz2
 PRIORITY=prereq
 

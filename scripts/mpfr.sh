@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=$ARCHITECTURE-mpfr-${MPFR_VERSION}
-SRC_DIR_NAME=mpfr-${MPFR_VERSION}
-URL=ftp://ftp.gnu.org/gnu/mpfr/mpfr-${MPFR_VERSION}.tar.bz2
+VERSION="3.1.1"
+NAME=$ARCHITECTURE-mpfr-${VERSION}
+SRC_DIR_NAME=mpfr-${VERSION}
+URL=ftp://ftp.gnu.org/gnu/mpfr/mpfr-${VERSION}.tar.bz2
 TYPE=.tar.bz2
 PRIORITY=prereq
 

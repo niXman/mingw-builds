@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=$ARCHITECTURE-cloog-${CLOOG_VERSION}
-SRC_DIR_NAME=cloog-${CLOOG_VERSION}
-URL=http://www.bastoul.net/cloog/pages/download/count.php3?url=./cloog-${CLOOG_VERSION}.tar.gz
+VERSION="0.17.0"
+NAME=$ARCHITECTURE-cloog-${VERSION}
+SRC_DIR_NAME=cloog-${VERSION}
+URL=http://www.bastoul.net/cloog/pages/download/count.php3?url=./cloog-${VERSION}.tar.gz
 TYPE=.tar.gz
 PRIORITY=prereq
 
