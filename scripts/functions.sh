@@ -205,7 +205,7 @@ function func_execute {
    }
 
    for it in "${_commands[@]}"; do
-		_cmd_marker_name=$1/$2/exec-$_index.marker
+		_cmd_marker_name=$1/$2/exec-$4-$_index.marker
 		local _cmd_log_name=$1/$2/exec-$4-$_index.log
 
       [[ ! -f $_cmd_marker_name ]] && {
