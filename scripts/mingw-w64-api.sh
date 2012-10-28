@@ -36,10 +36,16 @@
 # **************************************************************************
 
 NAME=mingw-w64-headers
+[[ $USE_MULTILIB == yes ]] && {
+	NAME=$ARCHITECTURE-$NAME-multi
+} || {
+	NAME=$ARCHITECTURE-$NAME-nomulti
+}
 SRC_DIR_NAME=mingw-w64-headers
 URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-headers
 TYPE=svn
 REV=
+PRIORITY=runtime
 
 #
 
@@ -47,12 +53,18 @@ PATCHES=()
 
 #
 
+[[ $USE_MULTILIB == yes ]] && {
+	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi
+} || {
+	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
+}
+
 CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREFIX/$HOST
+	--prefix=$RUNTIMEPREFIX
 	#
 	--enable-sdk=all
 	--enable-secure-api

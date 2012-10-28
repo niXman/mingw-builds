@@ -35,10 +35,11 @@
 
 # **************************************************************************
 
-NAME=ncurses-5.9
-SRC_DIR_NAME=ncurses-5.9
-URL=ftp://invisible-island.net/ncurses/ncurses-5.9.tar.gz
+NAME=ncurses-${NCURSES_VERSION}
+SRC_DIR_NAME=ncurses-${NCURSES_VERSION}
+URL=ftp://invisible-island.net/ncurses/ncurses-${NCURSES_VERSION}.tar.gz
 TYPE=.tar.gz
+PRIORITY=extra
 
 #
 

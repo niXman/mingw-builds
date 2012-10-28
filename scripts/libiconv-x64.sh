@@ -36,9 +36,10 @@
 # **************************************************************************
 
 NAME=libiconv-x64
-SRC_DIR_NAME=libiconv-1.14
-URL=http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz
+SRC_DIR_NAME=libiconv-${LIBICONV_VERSION}
+URL=http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${LIBICONV_VERSION}.tar.gz
 TYPE=.tar.gz
+PRIORITY=prereq
 
 #
 
@@ -51,7 +52,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$BUILDS_DIR/libiconv-64
+	--prefix=$PREREQ_DIR/libiconv-64
 	#
 	$GCC_DEPS_LINK_TYPE
 	#

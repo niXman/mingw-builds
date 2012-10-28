@@ -36,10 +36,18 @@
 # **************************************************************************
 
 [[ ! -d $PREFIX/mingw ]] && mkdir -p $PREFIX/mingw
+[[ ! -d $PREFIX/$HOST ]] && mkdir -p $PREFIX/$HOST
 
-[[ ! -f $BUILDS_DIR/mingw-w64-api-post.marker ]] && {
-	cp -rf $PREFIX/$HOST/* $PREFIX/mingw || exit 1
-	touch $BUILDS_DIR/mingw-w64-api-post.marker
+[[ $USE_MULTILIB == yes ]] && {
+	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi
+} || {
+	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
+}
+
+[[ ! -f $BUILDS_DIR/mingw-w64-runtime-post.marker ]] && {
+	cp -rf $RUNTIMEPREFIX/* $PREFIX/$HOST || exit 1
+	cp -rf $RUNTIMEPREFIX/* $PREFIX/mingw || exit 1
+	touch $BUILDS_DIR/mingw-w64-runtime-post.marker
 }
 
 # **************************************************************************

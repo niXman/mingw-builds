@@ -40,6 +40,7 @@ SRC_DIR_NAME=make
 URL=":pserver:anonymous:@cvs.sv.gnu.org:/sources/make"
 TYPE=cvs
 REV=09/21/2012
+PRIORITY=extra
 
 #
 

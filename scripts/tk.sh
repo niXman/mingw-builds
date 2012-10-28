@@ -35,10 +35,11 @@
 
 # **************************************************************************
 
-NAME=tk8.5.12
-SRC_DIR_NAME=tk8.5.12/win
-URL=http://prdownloads.sourceforge.net/tcl/tk8.5.12-src.tar.gz
+NAME=tk${TCLTK_VERSION}
+SRC_DIR_NAME=tk${TCLTK_VERSION}/win
+URL=http://prdownloads.sourceforge.net/tcl/tk${TCLTK_VERSION}-src.tar.gz
 TYPE=.tar.gz
+PRIORITY=extra
 
 #
 

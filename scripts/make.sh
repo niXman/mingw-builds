@@ -39,6 +39,7 @@ NAME=make-3.82
 SRC_DIR_NAME=make-3.82
 URL=ftp://ftp.gnu.org/gnu/make/make-3.82.tar.bz2
 TYPE=.tar.bz2
+PRIORITY=extra
 
 #
 
