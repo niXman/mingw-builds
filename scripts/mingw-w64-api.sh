@@ -35,7 +35,12 @@
 
 # **************************************************************************
 
-NAME=$ARCHITECTURE-mingw-w64-headers
+NAME=mingw-w64-headers
+[[ $USE_MULTILIB == yes ]] && {
+	NAME=$ARCHITECTURE-$NAME-multi
+} || {
+	NAME=$ARCHITECTURE-$NAME-nomulti
+}
 SRC_DIR_NAME=mingw-w64-headers
 URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-headers
 TYPE=svn
