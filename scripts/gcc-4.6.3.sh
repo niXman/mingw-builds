@@ -94,7 +94,7 @@ CONFIGURE_FLAGS=(
 		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
 	)
 	--with-libiconv
-	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST
+	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	--with-pkgversion="\"$PKG_VERSION\""
 	--with-bugurl=$BUG_URL
 	#

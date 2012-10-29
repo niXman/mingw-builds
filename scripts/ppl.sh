@@ -36,7 +36,7 @@
 # **************************************************************************
 
 VERSION="1.0"
-NAME=$ARCHITECTURE-ppl-${VERSION}
+NAME=$ARCHITECTURE-ppl-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=ppl-${VERSION}
 URL=http://bugseng.com/products/ppl/download/ftp/releases/${VERSION}/ppl-${VERSION}.tar.bz2
 TYPE=.tar.bz2
@@ -53,11 +53,11 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREREQ_DIR/$HOST
+	--prefix=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	#
 	$GCC_DEPS_LINK_TYPE
 	#
-	--with-gmp=$PREREQ_DIR/$HOST
+	--with-gmp=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	#
 	--disable-documentation
 	--disable-ppl_lcdd 

@@ -46,6 +46,7 @@ BASE_LDFLAGS="-pipe"
 
 LINK_TYPE_BOTH="--enable-shared --enable-static"
 GCC_DEPS_LINK_TYPE="--enable-static --disable-shared"
+LINK_TYPE_SUFFIX="static"
 
 #LOGVIEWER="c:/progra~1/notepad++/notepad++.exe"
 LOGVIEWER="c:/progra~2/notepad++/notepad++.exe"
@@ -180,7 +181,10 @@ while [[ $# > 0 ]]; do
 		;;
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-strip) STRIP_ON_INSTALL=no ;;
-		--dyn-deps) GCC_DEPS_LINK_TYPE="--enable-shared --disable-static" ;;
+		--dyn-deps)
+			GCC_DEPS_LINK_TYPE="--enable-shared --disable-static"
+			LINK_TYPE_SUFFIX="shared"
+		;;
 		--jobs=*)
 			[[ ${1/--jobs=/} == 0 ]] && {
 				echo "jobs value must be greater then 0. terminate."
@@ -527,7 +531,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			echo "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
 			exit 1
 		}
-		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/$HOST/bin:$PREFIX/opt/bin:$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
+		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREFIX/opt/bin:$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	} || {
 		HOST=x86_64-w64-mingw32
 		BUILD=x86_64-w64-mingw32
@@ -541,15 +545,15 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			echo "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
 			exit 1
 		}
-		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/$HOST/bin:$PREFIX/opt/bin:$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
+		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREFIX/opt/bin:$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	}
 
 	mkdir -p $BASE_BUILD_DIR $BUILDS_DIR $LIBS_DIR $LOGS_DIR $PREFIX $PREREQ_BUILD_DIR $PREREQ_LOGS_DIR
 
-	COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/$HOST/include"
+	COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
 	COMMON_CXXFLAGS="$BASE_CFLAGS"
 	COMMON_CPPFLAGS="$BASE_CPPFLAGS"
-	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/$HOST/lib -L$PREFIX/bin"
+	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/bin"
 
 	[[ $USE_MULTILIB == yes ]] && {
 		SUBTARGETS=(
@@ -751,7 +755,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		}
 		
 		[[ $sub == $GCC_NAME ]] && {
-			export PATH=$PREFIX/bin:$LIBS_DIR/bin:$PREREQ_DIR/$HOST/bin:$PREFIX/opt/bin:$ORIGINAL_PATH
+			export PATH=$PREFIX/bin:$LIBS_DIR/bin:$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREFIX/opt/bin:$ORIGINAL_PATH
 		}
    done
 done
