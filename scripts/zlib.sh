@@ -73,7 +73,10 @@ INSTALL_FLAGS=(
 	INCLUDE_PATH=$LIBS_DIR/include
 	LIBRARY_PATH=$LIBS_DIR/lib
 	BINARY_PATH=$LIBS_DIR/bin
-	SHARED_MODE=0
+	$( [[ $LINK_TYPE_SUFFIX == static ]] \
+		&& echo "SHARED_MODE=0" \
+		|| echo "SHARED_MODE=1" \
+	)
 	install
 )
 
