@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="2.23"
+VERSION=2.23
 NAME=binutils-${VERSION}
 [[ $USE_MULTILIB == yes ]] && {
 	NAME=$ARCHITECTURE-$NAME-multi

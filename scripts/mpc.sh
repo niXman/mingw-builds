@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="1.0.1"
+VERSION=1.0.1
 NAME=$ARCHITECTURE-mpc-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=mpc-${VERSION}
 URL=http://www.multiprecision.org/mpc/download/mpc-${VERSION}.tar.gz

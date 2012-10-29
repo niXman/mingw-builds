@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="1.2.7"
+VERSION=1.2.7
 NAME=zlib-${VERSION}
 SRC_DIR_NAME=zlib-${VERSION}
 URL=http://zlib.net/zlib-${VERSION}.tar.bz2

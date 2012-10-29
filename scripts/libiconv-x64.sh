@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="1.14"
+VERSION=1.14
 NAME=libiconv-x64-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=libiconv-${VERSION}
 URL=http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${VERSION}.tar.gz

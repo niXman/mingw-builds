@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="2.5.1"
+VERSION=2.5.1
 NAME=libgnurx-${VERSION}
 SRC_DIR_NAME=mingw-libgnurx-${VERSION}
 URL=https://sourceforge.net/projects/mingw/files/Other/UserContributed/regex/mingw-regex-${VERSION}/mingw-libgnurx-${VERSION}-src.tar.gz/download

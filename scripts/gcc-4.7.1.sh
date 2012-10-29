@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="4.7.1"
+VERSION=4.7.1
 NAME=gcc-${VERSION}
 SRC_DIR_NAME=gcc-${VERSION}
 URL=ftp://ftp.gnu.org/gnu/gcc/gcc-${VERSION}/gcc-${VERSION}.tar.bz2

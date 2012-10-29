@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="7.5"
+VERSION=7.5
 NAME=gdb-${VERSION}
 SRC_DIR_NAME=gdb-${VERSION}
 URL=ftp://ftp.gnu.org/gnu/gdb/gdb-${VERSION}.tar.bz2
