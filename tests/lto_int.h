@@ -1,4 +1,4 @@
-﻿class Int
+class Int
 {
 public:
   Int(int i = 0);

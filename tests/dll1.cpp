@@ -1,4 +1,4 @@
-﻿
+
 #include <cstdio>
 
 extern "C" void func() {
