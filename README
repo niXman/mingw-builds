@@ -5,7 +5,7 @@ The scripts are distributed under the 'BSD 3' license[3].
 
 In order to use the scripts provided by the MinGW-builds project it is needed:
 
-1. Windows-64bit or Linux+Wine-64bit
+1. Windows-64bit or Linux + Wine-64bit
 
 2. Install MSYS:
   http://sourceforge.net/projects/mingwbuilds/files/external-binary-packages/
@@ -15,10 +15,10 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
 
 4. In the MSYS file structure delete the '/MinGW' directory.
 
-5. Delete the paths pointining to any preinstalled MinGW from the 'PATH'
+5. Delete the paths pointing to any preinstalled MinGW from the 'PATH'
   environment variable.
 
-6. Go in to the MinGW-builds root directory.
+6. Go into the MinGW-builds root directory.
   "cd && cd mingw-builds"
 
 7.
