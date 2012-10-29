@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=gcc-4.6.3
-SRC_DIR_NAME=gcc-4.6.3
-URL=ftp://ftp.gnu.org/gnu/gcc/gcc-4.6.3/gcc-4.6.3.tar.bz2
+VERSION="4.6.3"
+NAME=gcc-${VERSION}
+SRC_DIR_NAME=gcc-${VERSION}
+URL=ftp://ftp.gnu.org/gnu/gcc/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
 TYPE=.tar.bz2
 PRIORITY=main
 
