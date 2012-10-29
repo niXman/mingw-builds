@@ -44,18 +44,18 @@
 		[[ $ARCHITECTURE == x32 ]] && {
 			mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,lib64,include}
 			
-			cp -f $PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $PREREQ_DIR/libiconv-64-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib64/ || exit 1
-			cp -f $PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x32-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x64-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib64/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x32-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
-			cp -f $RUNTIME_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
-			cp -f $RUNTIME_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $RUNTIME_DIR/winpthreads-64/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib64/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib64/ || exit 1
 
-			cp -f $RUNTIME_DIR/winpthreads-32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $RUNTIME_DIR/winpthreads-64/lib/*.a $PREFIX/$TARGET/lib64/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/lib/*.a $PREFIX/$TARGET/lib64/ || exit 1
 
-			cp -f $RUNTIME_DIR/winpthreads-32/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
 			mkdir -p $BUILDS_DIR/$GCC_NAME/$TARGET/64/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3}
 			echo $BUILDS_DIR/$GCC_NAME/$TARGET/64/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \
@@ -63,18 +63,18 @@
 		} || {
 			mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,lib32,include}
 			
-			cp -f $PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib32/ || exit 1
-			cp -f $PREREQ_DIR/libiconv-64-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x32-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib32/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x64-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x32-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
-			cp -f $RUNTIME_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib32/ || exit 1
-			cp -f $RUNTIME_DIR/winpthreads-64/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
-			cp -f $RUNTIME_DIR/winpthreads-64/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib32/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
 
-			cp -f $RUNTIME_DIR/winpthreads-32/lib/*.a $PREFIX/$TARGET/lib32/ || exit 1
-			cp -f $RUNTIME_DIR/winpthreads-64/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/lib/*.a $PREFIX/$TARGET/lib32/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
 
-			cp -f $RUNTIME_DIR/winpthreads-64/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
 			mkdir -p $BUILDS_DIR/$GCC_NAME/$TARGET/32/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3}
 			echo $BUILDS_DIR/$GCC_NAME/$TARGET/32/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \
@@ -86,21 +86,21 @@
 		mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
 		
 		[[ $ARCHITECTURE == x32 ]] && {
-			cp -f $PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x32-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x32-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
-			cp -f $RUNTIME_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
-			cp -f $RUNTIME_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $RUNTIME_DIR/winpthreads-32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $RUNTIME_DIR/winpthreads-32/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/include/*.h $PREFIX/$TARGET/include/ || exit 1
 		} || {
-			cp -f $PREREQ_DIR/libiconv-64-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $PREREQ_DIR/libiconv-64-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x64-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x64-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
-			cp -f $RUNTIME_DIR/winpthreads-64/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
-			cp -f $RUNTIME_DIR/winpthreads-64/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $RUNTIME_DIR/winpthreads-64/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $RUNTIME_DIR/winpthreads-64/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/include/*.h $PREFIX/$TARGET/include/ || exit 1
 		}
 
 		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1

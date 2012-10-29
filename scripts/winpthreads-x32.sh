@@ -53,7 +53,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$RUNTIME_DIR/winpthreads-32
+	--prefix=$RUNTIME_DIR/winpthreads-x32
 	#
 	$LINK_TYPE_BOTH
 	#
