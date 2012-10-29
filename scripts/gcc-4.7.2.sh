@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=gcc-4.7.2
-SRC_DIR_NAME=gcc-4.7.2
-URL=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-4.7.2/gcc-4.7.2.tar.bz2
+VERSION="4.7.2"
+NAME=gcc-${VERSION}
+SRC_DIR_NAME=gcc-${VERSION}
+URL=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
 TYPE=.tar.bz2
 PRIORITY=main
 
@@ -94,7 +95,7 @@ CONFIGURE_FLAGS=(
 		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
 	)
 	--with-libiconv
-	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST
+	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	--with-pkgversion="\"$PKG_VERSION\""
 	--with-bugurl=$BUG_URL
 	#

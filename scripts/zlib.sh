@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=zlib-${ZLIB_VERSION}
-SRC_DIR_NAME=zlib-${ZLIB_VERSION}
-URL=http://zlib.net/zlib-${ZLIB_VERSION}.tar.bz2
+VERSION="1.2.7"
+NAME=zlib-${VERSION}
+SRC_DIR_NAME=zlib-${VERSION}
+URL=http://zlib.net/zlib-${VERSION}.tar.bz2
 TYPE=.tar.bz2
 PRIORITY=extra
 

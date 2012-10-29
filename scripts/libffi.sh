@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=libffi-${LIBFFI_VERSION}
-SRC_DIR_NAME=libffi-${LIBFFI_VERSION}
-URL=ftp://sourceware.org/pub/libffi/libffi-${LIBFFI_VERSION}.tar.gz
+VERSION="3.0.11"
+NAME=libffi-${VERSION}
+SRC_DIR_NAME=libffi-${VERSION}
+URL=ftp://sourceware.org/pub/libffi/libffi-${VERSION}.tar.gz
 TYPE=.tar.gz
 PRIORITY=extra
 

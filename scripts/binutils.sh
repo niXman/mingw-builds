@@ -35,15 +35,15 @@
 
 # **************************************************************************
 
-
-NAME=binutils-${BINUTILS_VERSION}
+VERSION="2.23"
+NAME=binutils-${VERSION}
 [[ $USE_MULTILIB == yes ]] && {
 	NAME=$ARCHITECTURE-$NAME-multi
 } || {
 	NAME=$ARCHITECTURE-$NAME-nomulti
 }
-SRC_DIR_NAME=binutils-${BINUTILS_VERSION}
-URL=ftp://mirrors.kernel.org/sources.redhat.com/binutils/releases/binutils-${BINUTILS_VERSION}.tar.bz2
+SRC_DIR_NAME=binutils-${VERSION}
+URL=ftp://mirrors.kernel.org/sources.redhat.com/binutils/releases/binutils-${VERSION}.tar.bz2
 TYPE=.tar.bz2
 PRIORITY=prereq
 
