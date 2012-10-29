@@ -756,7 +756,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		}
 		
 		[[ $sub == $GCC_NAME ]] && {
-			export PATH=$PREFIX/bin:$LIBS_DIR/bin:$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREFIX/opt/bin:$ORIGINAL_PATH
+			export PATH=$PREFIX/bin:$PREFIX/opt/bin:$ORIGINAL_PATH
 		}
    done
 done
