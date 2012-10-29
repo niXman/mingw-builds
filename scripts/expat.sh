@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="2.1.0"
+VERSION=2.1.0
 NAME=expat-${VERSION}
 SRC_DIR_NAME=expat-${VERSION}
 URL=http://sourceforge.net/projects/expat/files/expat/${VERSION}/expat-${VERSION}.tar.gz

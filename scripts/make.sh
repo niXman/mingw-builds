@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="3.82"
+VERSION=3.82
 NAME=make-${VERSION}
 SRC_DIR_NAME=make-${VERSION}
 URL=ftp://ftp.gnu.org/gnu/make/make-${VERSION}.tar.bz2

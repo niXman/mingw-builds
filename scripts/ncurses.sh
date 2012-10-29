@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="5.9"
+VERSION=5.9
 NAME=ncurses-${VERSION}
 SRC_DIR_NAME=ncurses-${VERSION}
 URL=ftp://invisible-island.net/ncurses/ncurses-${VERSION}.tar.gz

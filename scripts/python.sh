@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="2.7.3"
+VERSION=2.7.3
 NAME=Python-${VERSION}
 SRC_DIR_NAME=Python-${VERSION}
 URL=http://www.python.org/ftp/python/${VERSION}/Python-${VERSION}.tar.bz2

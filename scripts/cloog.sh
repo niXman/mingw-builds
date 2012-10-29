@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="0.17.0"
+VERSION=0.17.0
 NAME=$ARCHITECTURE-cloog-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=cloog-${VERSION}
 URL=http://www.bastoul.net/cloog/pages/download/count.php3?url=./cloog-${VERSION}.tar.gz
