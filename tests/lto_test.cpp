@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <time.h>
 
 #include "lto_int.h"
