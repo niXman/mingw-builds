@@ -388,6 +388,7 @@ SUBTARGETS_PART2=(
 	ncurses
 	readline
 	python
+	3rdparty-post
 	gdb
 	make_cvs
 	cleanup
