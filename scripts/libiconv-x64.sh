@@ -53,7 +53,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREREQ_DIR/libiconv-64-$LINK_TYPE_SUFFIX
+	--prefix=$PREREQ_DIR/libiconv-x64-$LINK_TYPE_SUFFIX
 	#
 	$GCC_DEPS_LINK_TYPE
 	#
