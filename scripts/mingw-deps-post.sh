@@ -44,9 +44,9 @@
 		[[ $ARCHITECTURE == x32 ]] && {
 			mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,lib64,include}
 			
-			cp -f $PREREQ_DIR/libiconv-32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $PREREQ_DIR/libiconv-64/lib/*.a $PREFIX/$TARGET/lib64/ || exit 1
-			cp -f $PREREQ_DIR/libiconv-32/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-64-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib64/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
 			cp -f $RUNTIME_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
 			cp -f $RUNTIME_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
@@ -63,9 +63,9 @@
 		} || {
 			mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,lib32,include}
 			
-			cp -f $PREREQ_DIR/libiconv-32/lib/*.a $PREFIX/$TARGET/lib32/ || exit 1
-			cp -f $PREREQ_DIR/libiconv-64/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $PREREQ_DIR/libiconv-32/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib32/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-64-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
 			cp -f $RUNTIME_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib32/ || exit 1
 			cp -f $RUNTIME_DIR/winpthreads-64/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
@@ -86,16 +86,16 @@
 		mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
 		
 		[[ $ARCHITECTURE == x32 ]] && {
-			cp -f $PREREQ_DIR/libiconv-32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $PREREQ_DIR/libiconv-32/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
 			cp -f $RUNTIME_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
 			cp -f $RUNTIME_DIR/winpthreads-32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
 			cp -f $RUNTIME_DIR/winpthreads-32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
 			cp -f $RUNTIME_DIR/winpthreads-32/include/*.h $PREFIX/$TARGET/include/ || exit 1
 		} || {
-			cp -f $PREREQ_DIR/libiconv-64/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-			cp -f $PREREQ_DIR/libiconv-64/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-64-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-64-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
 			cp -f $RUNTIME_DIR/winpthreads-64/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
 			cp -f $RUNTIME_DIR/winpthreads-64/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
@@ -107,8 +107,8 @@
 	}
 	
 	[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
-		cp -f $PREREQ_DIR/$HOST/bin/*.dll $PREFIX/bin/
-		cp -f $PREREQ_DIR/libiconv-$ARCHITECTURE/bin/*.dll $PREFIX/bin/
+		cp -f $PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
+		cp -f $PREREQ_DIR/libiconv-$ARCHITECTURE-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
 	}
 
 	touch $BUILDS_DIR/mingw-deps-post.marker || exit 1

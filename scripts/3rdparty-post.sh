@@ -35,22 +35,9 @@
 
 # **************************************************************************
 
-BINUTILS_VERSION="2.23"
-CLOOG_VERSION="0.17.0"
-EXPAT_VERSION="2.1.0"
-GDB_VERSION="7.5"
-GMP_VERSION="5.0.5"
-LIBICONV_VERSION="1.14"
-LIBFFI_VERSION="3.0.11"
-LIBGNURX_VERSION="2.5.1"
-MPC_VERSION="1.0.1"
-MPFR_VERSION="3.1.1"
-NCURSES_VERSION="5.9"
-PPL_VERSION="1.0"
-PYTHON_VERSION="2.7.3"
-READLINE_VERSION="6.2"
-SQLITE_VERSION="3071401"
-TCLTK_VERSION="8.5.12"
-ZLIB_VERSION="1.2.7"
+[[ ! -f $BUILDS_DIR/3rdparty-post.marker ]] && {
+	cp -f $LIBS_DIR/bin/*.dll $PREFIX/opt/bin/
+	touch $BUILDS_DIR/3rdparty-post.marker
+}
 
 # **************************************************************************

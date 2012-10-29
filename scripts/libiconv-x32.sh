@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=libiconv-x32
-SRC_DIR_NAME=libiconv-${LIBICONV_VERSION}
-URL=http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${LIBICONV_VERSION}.tar.gz
+VERSION="1.14"
+NAME=libiconv-x32-$LINK_TYPE_SUFFIX
+SRC_DIR_NAME=libiconv-${VERSION}
+URL=http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${VERSION}.tar.gz
 TYPE=.tar.gz
 PRIORITY=prereq
 
@@ -52,7 +53,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREREQ_DIR/libiconv-32
+	--prefix=$PREREQ_DIR/libiconv-32-$LINK_TYPE_SUFFIX
 	#
 	$GCC_DEPS_LINK_TYPE
 	#

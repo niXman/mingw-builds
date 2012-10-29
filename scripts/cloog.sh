@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-NAME=$ARCHITECTURE-cloog-${CLOOG_VERSION}
-SRC_DIR_NAME=cloog-${CLOOG_VERSION}
-URL=http://www.bastoul.net/cloog/pages/download/count.php3?url=./cloog-${CLOOG_VERSION}.tar.gz
+VERSION="0.17.0"
+NAME=$ARCHITECTURE-cloog-${VERSION}-$LINK_TYPE_SUFFIX
+SRC_DIR_NAME=cloog-${VERSION}
+URL=http://www.bastoul.net/cloog/pages/download/count.php3?url=./cloog-${VERSION}.tar.gz
 TYPE=.tar.gz
 PRIORITY=prereq
 
@@ -52,12 +53,12 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREREQ_DIR/$HOST
+	--prefix=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	#
 	$GCC_DEPS_LINK_TYPE
 	#
-	--with-gmp-prefix=$PREREQ_DIR/$HOST
-	--with-ppl=$PREREQ_DIR/$HOST
+	--with-gmp-prefix=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--with-ppl=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
