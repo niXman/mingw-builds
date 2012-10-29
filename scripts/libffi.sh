@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="3.0.11"
+VERSION=3.0.11
 NAME=libffi-${VERSION}
 SRC_DIR_NAME=libffi-${VERSION}
 URL=ftp://sourceware.org/pub/libffi/libffi-${VERSION}.tar.gz

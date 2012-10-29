@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION="4.7.2"
+VERSION=4.7.2
 NAME=gcc-${VERSION}
 SRC_DIR_NAME=gcc-${VERSION}
 URL=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
