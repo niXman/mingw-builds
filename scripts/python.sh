@@ -91,9 +91,9 @@ pushd $LIBS_DIR
 LIBSW_DIR=`pwd -W`
 popd
 
-pushd $PREFIX
+pushd $PREFIX >/dev/null
 PREFIXW=`pwd -W`
-popd
+popd >/dev/null
 
 LIBFFI_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/libffi.sh | sed 's|VERSION=||' )
 MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREFIXW/opt/include"
