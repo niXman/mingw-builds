@@ -95,6 +95,7 @@ pushd $PREFIX
 PREFIXW=`pwd -W`
 popd
 
+LIBFFI_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/libffi.sh | sed 's|VERSION=||' )
 MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREFIXW/opt/include"
 
 # Workaround for conftest error on 64-bit builds
@@ -121,7 +122,7 @@ CONFIGURE_FLAGS=(
 	--enable-loadable-sqlite-extensions
 	#
 	CXX="$HOST-g++"
-	LIBFFI_INCLUDEDIR="$LIBSW_DIR/lib/libffi-3.0.11/include"
+	LIBFFI_INCLUDEDIR="$LIBSW_DIR/lib/libffi-$LIBFFI_VERSION/include"
 	OPT=""
 	CFLAGS="\"$COMMON_CFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1 $MY_CPPFLAGS\""
