@@ -45,7 +45,9 @@ BASE_CPPFLAGS=""
 BASE_LDFLAGS="-pipe"
 
 LINK_TYPE_BOTH="--enable-shared --enable-static"
-GCC_DEPS_LINK_TYPE="--enable-static --disable-shared"
+LINK_TYPE_SHARED="--enable-shared --disable-static"
+LINK_TYPE_STATIC="--enable-static --disable-shared"
+GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
 LINK_TYPE_SUFFIX="static"
 
 #LOGVIEWER="c:/progra~1/notepad++/notepad++.exe"
@@ -182,7 +184,7 @@ while [[ $# > 0 ]]; do
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-strip) STRIP_ON_INSTALL=no ;;
 		--dyn-deps)
-			GCC_DEPS_LINK_TYPE="--enable-shared --disable-static"
+			GCC_DEPS_LINK_TYPE=$LINK_TYPE_SHARED
 			LINK_TYPE_SUFFIX="shared"
 		;;
 		--jobs=*)
