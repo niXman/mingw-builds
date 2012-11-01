@@ -384,8 +384,8 @@ SUBTARGETS_PART2=(
 	zlib
 	libffi
 	expat
-	tcl
-	tk
+	#tcl
+	#tk
 	sqlite
 	ncurses
 	readline
