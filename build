@@ -382,6 +382,7 @@ SUBTARGETS_PART2=(
 	libgnurx
 	zlib-pre
 	zlib
+	bzip2
 	libffi
 	expat
 	#tcl
