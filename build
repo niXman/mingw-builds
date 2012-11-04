@@ -761,7 +761,9 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		}
 		
 		[[ $sub == $GCC_NAME ]] && {
+			echo -n "--> Switching to new compiler..."
 			export PATH=$PREFIX/bin:$PREFIX/opt/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+			echo "done"
 		}
    done
 done
