@@ -67,6 +67,7 @@ ORIGINAL_PATH=$PATH
 
 TOP_DIR=$(func_simplify_path "$PWD")
 PATCHES_DIR=$TOP_DIR/patches
+SOURCES_DIR=$TOP_DIR/sources
 TESTS_DIR=$TOP_DIR/tests
 TOOLCHAINS_DIR=$TOP_DIR/toolchains
 
@@ -393,6 +394,7 @@ SUBTARGETS_PART2=(
 	python
 	3rdparty-post
 	gdb
+	gdb-wrapper
 	make_cvs
 	cleanup
 	licenses
