@@ -38,9 +38,9 @@
 [[ ! -f $BUILDS_DIR/gdb-wrapper.marker ]] && {
 	mkdir -p $BUILDS_DIR/gdb-wrapper
 	cd $BUILDS_DIR/gdb-wrapper
-	$HOST-gcc ${COMMON_CFLAGS} -o gdb.exe ${SOURCES_DIR}/gdb-wrapper.c
+	$HOST-gcc ${COMMON_CFLAGS} -o gdb.exe ${SOURCES_DIR}/gdb-wrapper/gdb-wrapper.c
 	mv $PREFIX/bin/gdb.exe $PREFIX/bin/gdborig.exe
-	cp -rf gdb.exe $PREFIX/bin || exit 1
+	cp -f gdb.exe $PREFIX/bin || exit 1
 	touch $BUILDS_DIR/gdb-wrapper.marker
 }
 
