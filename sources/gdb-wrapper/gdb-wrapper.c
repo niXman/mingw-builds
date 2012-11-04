@@ -141,11 +141,15 @@ int main(int argc, char** argv) {
 			,&pi		// receives PROCESS_INFORMATION
 		)
 	);
-
+	
+	WaitForSingleObject(pi.hProcess, INFINITE);
+	
+	CloseHandle( pi.hProcess );
+    CloseHandle( pi.hThread );
+    
 	free(envbuf);
 	free(resbuf);
 	free(cmdbuf);
 	
-	WaitForSingleObject(pi.hProcess, INFINITE);
     return TRUE;
 }
