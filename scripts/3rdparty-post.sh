@@ -36,7 +36,10 @@
 # **************************************************************************
 
 [[ ! -f $BUILDS_DIR/3rdparty-post.marker ]] && {
-	cp -f $LIBS_DIR/bin/*.dll $PREFIX/opt/bin/
+	DLLS=( $(find $LIBS_DIR/bin -type f -name *.dll) )
+	[[ ${#DLLS[@]} >0 ]] && {
+		cp -f ${DLLS[@]} $PREFIX/opt/bin/ >/dev/null 2>&1
+	}
 	touch $BUILDS_DIR/3rdparty-post.marker
 }
 
