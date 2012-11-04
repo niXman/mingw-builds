@@ -87,13 +87,13 @@ EXECUTE_AFTER_PATCH=(
 
 #
 
-pushd $LIBS_DIR
+pushd $LIBS_DIR > /dev/null
 LIBSW_DIR=`pwd -W`
-popd
+popd > /dev/null
 
-pushd $PREFIX >/dev/null
+pushd $PREFIX > /dev/null
 PREFIXW=`pwd -W`
-popd >/dev/null
+popd > /dev/null
 
 LIBFFI_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/libffi.sh | sed 's|VERSION=||' )
 MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREFIXW/opt/include"
