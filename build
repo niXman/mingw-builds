@@ -268,35 +268,33 @@ mkdir -p $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 	exit 1
 }
 
-[[ $DOWNLOAD_MODE == no && $PRELOAD_MODE == no ]] && {
-	[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
-		${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
+[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
+	${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
+	echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
+	exit 1
+}
+[[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
+	echo "$EXCEPTIONS_MODEL exceptions not allowed on multilib architecture. terminate."
+	exit 1
+}
+[[ $EXCEPTIONS_MODEL == dwarf ]] && {
+	[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
+		echo "DWARF exceptions not allowed on x86_64 architecture. terminate."
+		exit 1
+	}
+	[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
 		echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
 		exit 1
 	}
-	[[ ( $EXCEPTIONS_MODEL == dwarf || $EXCEPTIONS_MODEL == seh ) && $USE_MULTILIB == yes ]] && {
-		echo "$EXCEPTIONS_MODEL exceptions not allowed on multilib architecture. terminate."
+}
+[[ $EXCEPTIONS_MODEL == seh ]] && {
+	[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
+		echo "SEH exceptions not allowed on x86 architecture. terminate."
 		exit 1
 	}
-	[[ $EXCEPTIONS_MODEL == dwarf ]] && {
-		[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-			echo "DWARF exceptions not allowed on x86_64 architecture. terminate."
-			exit 1
-		}
-		[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
-			echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
-			exit 1
-		}
-	}
-	[[ $EXCEPTIONS_MODEL == seh ]] && {
-		[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
-			echo "SEH exceptions not allowed on x86 architecture. terminate."
-			exit 1
-		}
-		[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
-			echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
-			exit 1
-		}
+	[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
+		echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
+		exit 1
 	}
 }
 
@@ -471,7 +469,7 @@ SUBTARGETS_PART2=(
 			echo -n "-> download sources for MinGW-${GCC_NAME}-"
 		}
 	}
-	[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ) ]] && echo -n "multilib-"
+	[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ]] && echo -n "multilib-"
 	[[ $build_for_both == 1 ]] && {
 		echo -n "x32/x64-"
 	} || {
