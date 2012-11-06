@@ -43,8 +43,8 @@
 		# libgcc_s.a
 		cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ || exit 1
 
-		[[ $USE_DWARF == no ]] && {
-			# 32bit dlls
+		[[ $EXCEPTIONS_MODEL == sjlj ]] && {
+			# 64 bit dlls
 			DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune -o -type f -name *.dll) )
 			cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
 			cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/ >/dev/null 2>&1
@@ -70,24 +70,26 @@
 		# libgcc_s.a
 		cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ || exit 1
 		
-		# 64bit dlls
-		DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune -o -type f -name *.dll) )
-		cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
-		cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/ >/dev/null 2>&1
+		[[ $EXCEPTIONS_MODEL == sjlj ]] && {
+			# 32 bit dlls
+			DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune -o -type f -name *.dll) )
+			cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
+			cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/ >/dev/null 2>&1
 		
-		[[ $STRIP_ON_INSTALL == yes ]] && {
-			strip $PREFIX/bin/*.dll || exit 1
-			strip $PREFIX/$TARGET/lib/*.dll || exit 1
-		}
-			
-		# 32 bit files
-		[[ $USE_MULTILIB == yes ]] && {
-			# libgcc_s.a
-			cp -f $PREFIX/lib/gcc/$TARGET/lib32/libgcc_s.a $PREFIX/$TARGET/lib32/ || exit 1
-			cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/32 -type f \( -iname *.dll ! -iname *winpthread* \)) $PREFIX/$TARGET/lib32/
-			
 			[[ $STRIP_ON_INSTALL == yes ]] && {
-				strip $PREFIX/$TARGET/lib32/*.dll || exit 1
+				strip $PREFIX/bin/*.dll || exit 1
+				strip $PREFIX/$TARGET/lib/*.dll || exit 1
+			}
+			
+			# 32 bit files
+			[[ $USE_MULTILIB == yes ]] && {
+				# libgcc_s.a
+				cp -f $PREFIX/lib/gcc/$TARGET/lib32/libgcc_s.a $PREFIX/$TARGET/lib32/ || exit 1
+				cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/32 -type f \( -iname *.dll ! -iname *winpthread* \)) $PREFIX/$TARGET/lib32/
+			
+				[[ $STRIP_ON_INSTALL == yes ]] && {
+					strip $PREFIX/$TARGET/lib32/*.dll || exit 1
+				}
 			}
 		}
 	fi
