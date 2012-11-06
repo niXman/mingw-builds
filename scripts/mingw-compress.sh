@@ -42,7 +42,7 @@ $( \
 		$SRCS_DIR \
 		$GCC_NAME \
 		$ARCHITECTURE \
-		$USE_DWARF \
+		$EXCEPTIONS_MODEL \
 		$THREADS_MODEL \
 		$REV_NUM \
 )

@@ -89,7 +89,8 @@ RUN_ARGS="$@"
 	echo "    --buildroot=<path>     - specifies the build root directory"
 	echo "    --preload              - firstly downloads then builds"
 	echo "    --download             - download only the sources"
-	echo "    --dwarf                - build GCC with DWARF exceptions"
+	echo "    --exceptions=<type>    - specifies exceptions model for GCC"
+	echo "                             available: dwarf, seh, sjlj"
 	echo "    --use-lto              - build with LTO using"
 	echo "    --no-multilib          - build GCC without multilib support"
 	echo "    --no-strip             - don't strip dll's & executables on install"
@@ -101,7 +102,8 @@ RUN_ARGS="$@"
 	echo "    --version              - pring the version of the MinGW-builds scripts"
 	echo "    --mingw-compress       - compressing MinGW"
 	echo "    --srcs-compress        - compressing sources"
-	echo "    --upload=<user>        - upload archives to sf-project"
+	echo "    --mingw-upload=<user>  - upload toolchain archives to sf-project"
+	echo "    --src-upload=<user>    - upload sources archive to sf-project"
 	echo "    --cflags='<flags>'     - additional CFLAGS"
 	echo "    --cxxflags='<flags>'   - additional CXXFLAGS"
 	echo "    --cppflags='<flags>'   - additional CPPFLAGS"
@@ -150,7 +152,7 @@ ROOT_DIR=$(func_simplify_path "$HOME")
 PRELOAD_MODE=no
 DOWNLOAD_MODE=no
 BUILD_ARCHITECTURES=()
-USE_DWARF=no
+EXCEPTIONS_MODEL=sjlj
 USE_MULTILIB=yes
 STRIP_ON_INSTALL=yes
 THREADS_MODEL=posix
@@ -158,7 +160,8 @@ REV_NUM=""
 GCC_NAME=""
 COMPRESSING_MINGW=no
 COMPRESSING_SRCS=no
-UPLOAD_TO_SF=no
+UPLOAD_BIN_TO_SF=no
+UPLOAD_SRC_TO_SF=no
 SF_USER=""
 
 
@@ -171,11 +174,23 @@ while [[ $# > 0 ]]; do
 		--buildroot=*) ROOT_DIR=${1/--buildroot=/} ;;
 		--preload) PRELOAD_MODE=yes ;;
 		--download) DOWNLOAD_MODE=yes ;;
-		--dwarf)
-			USE_DWARF=yes
-			USE_MULTILIB=no
-			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
-			BUILD_ARCHITECTURES=( x32 )
+		--exceptions=*)
+			EXCEPTIONS_MODEL=${1/--exceptions=/}
+			case $EXCEPTIONS_MODEL in
+			dwarf)
+				USE_MULTILIB=no
+				[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
+				BUILD_ARCHITECTURES=( x32 )
+			;;
+			seh)
+				USE_MULTILIB=no
+				[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && { shift; continue; }
+				BUILD_ARCHITECTURES=( x64 )
+			;;
+			sjlj)
+				USE_MULTILIB=yes			
+			;;
+			esac	
 		;;
 		--use-lto)
 			BASE_CFLAGS="$BASE_CFLAGS -flto"
@@ -215,7 +230,8 @@ while [[ $# > 0 ]]; do
 		--version)echo $MINGW_BUILDS_VERSION; exit 0 ;;
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
 		--srcs-compress) COMPRESSING_SRCS=yes ;;
-		--upload=*) UPLOAD_TO_SF=yes; SF_USER=${1/--upload=/} ;;
+		--mingw-upload=*) UPLOAD_BIN_TO_SF=yes; SF_USER=${1/--upload=/} ;;
+		--src-upload=*) UPLOAD_SRC_TO_SF=yes; SF_USER=${1/--upload=/} ;;
 		*)
 			echo "bad command line: \"$1\""
 			echo "terminate."
@@ -255,25 +271,33 @@ mkdir -p $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 	exit 1
 }
 
-[[ $DOWNLOAD_MODE == no && $PRELOAD_MODE == no ]] && {
-	[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
-		${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
+[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
+	${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
+	echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
+	exit 1
+}
+[[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
+	echo "$EXCEPTIONS_MODEL exceptions not allowed on multilib architecture. terminate."
+	exit 1
+}
+[[ $EXCEPTIONS_MODEL == dwarf ]] && {
+	[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
+		echo "DWARF exceptions not allowed on x86_64 architecture. terminate."
+		exit 1
+	}
+	[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
 		echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
 		exit 1
 	}
-	[[ $USE_DWARF == yes && $USE_MULTILIB == yes ]] && {
-		echo "DWARF exceptions not allowed on multilib architecture. terminate."
+}
+[[ $EXCEPTIONS_MODEL == seh ]] && {
+	[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
+		echo "SEH exceptions not allowed on x86 architecture. terminate."
 		exit 1
 	}
-	[[ $USE_DWARF == yes ]] && {
-		[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-			echo "DWARF exceptions not allowed on x86_64 architecture. terminate."
-			exit 1
-		}
-		[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
-			echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
-			exit 1
-		}
+	[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
+		echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
+		exit 1
 	}
 }
 
@@ -301,8 +325,9 @@ mkdir -p $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 # **************************************************************************
 
 [[ ! -d $x32_HOST_MINGW_PATH || ! -d $x64_HOST_MINGW_PATH ]] && {
-	[[ $USE_DWARF == yes && ! -d $x32_HOST_MINGW_PATH ]] || \
-	[[ $USE_DWARF == no  && ! -d $x64_HOST_MINGW_PATH ]] && {
+	[[ $EXCEPTIONS_MODEL == dwarf && ! -d $x32_HOST_MINGW_PATH ]] || \
+	[[ $EXCEPTIONS_MODEL == seh && ! -d $x64_HOST_MINGW_PATH ]] || \
+	[[ $EXCEPTIONS_MODEL == sjlj && ! -d $x64_HOST_MINGW_PATH ]] && {
 		echo -n "host toolchains is not installed. you wish to install (y/n)?"
 		while :
 		do
@@ -447,13 +472,13 @@ SUBTARGETS_PART2=(
 			echo -n "-> download sources for MinGW-${GCC_NAME}-"
 		}
 	}
-	[[ $USE_MULTILIB == yes && $USE_DWARF == no ]] && echo -n "multilib-"
+	[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ]] && echo -n "multilib-"
 	[[ $build_for_both == 1 ]] && {
 		echo -n "x32/x64-"
 	} || {
 		[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && echo -n "x32-" || echo -n "x64-"
 	}
-	[[ $USE_DWARF == no ]] && echo "sjlj" || echo "dwarf"
+	echo "$EXCEPTIONS_MODEL"
 
 	for sub in ${SUBTARGETS[@]}; do
 		[[ $sub == put-versions || $sub == put-info ]] && continue
@@ -508,19 +533,18 @@ SUBTARGETS_PART2=(
 # **************************************************************************
 
 for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
-	[[ $USE_DWARF == yes ]] && GCC_DWARF_OR_SJLJ=dwarf || GCC_DWARF_OR_SJLJ=sjlj
 	[[ -n $REV_NUM ]] && REV_STRING="-rev$REV_NUM" || REV_STRING=""
 	GCC_TYPE_STRING=$(func_map_gcc_name_to_gcc_type $GCC_NAME)
 	PREREQ_BUILD_DIR=$ROOT_DIR/prereq-build
 	PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
-	BASE_BUILD_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ$REV_STRING
+	BASE_BUILD_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$EXCEPTIONS_MODEL$REV_STRING
 	BUILDS_DIR=$BASE_BUILD_DIR/build
 	LIBS_DIR=$BASE_BUILD_DIR/libs
 	LOGS_DIR=$BASE_BUILD_DIR/logs
 	PREFIX=$BASE_BUILD_DIR/prefix
 
 	MINGW_BUILD_NAME=$ARCHITECTURE-${GCC_NAME/gcc-/}
-	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$GCC_DWARF_OR_SJLJ
+	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
 	echo "-> start building $MINGW_BUILD_NAME"
 
@@ -777,7 +801,7 @@ done
 
 # ***************************************************************************
 
-[[ $UPLOAD_TO_SF == yes ]] && {
+[[ $UPLOAD_BIN_TO_SF == yes ]] && {
 	cd $TOP_DIR; . ./scripts/upload.sh
 	[[ -z $SF_USER ]] && {
 		echo "user name is not specified. terminate."
@@ -791,7 +815,7 @@ done
 				$SRCS_DIR \
 				$GCC_NAME \
 				$ARCHITECTURE \
-				$USE_DWARF \
+				$EXCEPTIONS_MODEL \
 				$THREADS_MODEL \
 				$REV_NUM \
 		)
@@ -804,7 +828,7 @@ done
 				$mingw_archive_name \
 				$ARCHITECTURE \
 				$THREADS_MODEL \
-				$USE_DWARF \
+				$EXCEPTIONS_MODEL \
 		)
 		echo -e -n "-> \E[32;40mupload $ARCHITECTURE archive...\E[37;40m"
 #		echo "mingw_upload: ${upload_cmd}"
@@ -818,7 +842,15 @@ done
 			echo "done"
 		}
 	done
+}
 
+[[ $UPLOAD_SRC_TO_SF == yes ]] && {
+	cd $TOP_DIR; . ./scripts/upload.sh
+	[[ -z $SF_USER ]] && {
+		echo "user name is not specified. terminate."
+		exit 0
+	}
+	
 	sources_archive_name=$( \
 		func_create_sources_archive_name \
 			$ARCHIVES_DIR \
