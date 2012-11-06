@@ -543,7 +543,7 @@ function func_install_toolchain {
 		}
 	}
 
-	[[ $USE_DWARF == no ]] && {
+	[[ $EXCEPTIONS_MODEL == seh || $EXCEPTIONS_MODEL == sjlj ]] && {
 		[[ ! -d $3 || ! $3/bin/gcc.exe ]] && {
 			# x64 download
 			echo -e "-> \E[32;40mx64 toolchain\E[37;40m"
@@ -642,7 +642,7 @@ function func_create_mingw_archive_name {
 	# $2 - sources root dir
 	# $3 - gcc name
 	# $4 - architecture
-	# $5 - use dwarf
+	# $5 - exceptions model
 	# $6 - threads model
 	# $7 - revision number
 
@@ -650,7 +650,7 @@ function func_create_mingw_archive_name {
 		func_map_gcc_name_to_gcc_build_name \
 			$2 \
 			$3 \
-	)-$6-$( [[ $5 == yes ]] && echo dwarf || echo sjlj )
+	)-$6-$5
 
 	[[ -n $7 ]] && {
 		_archive=$_archive-rev$7
@@ -689,7 +689,7 @@ function func_create_mingw_upload_cmd {
 	# $4 - archive name
 	# $5 - architecture
 	# $6 - threads model
-	# $7 - use dwarf
+	# $7 - exceptions model
 
 	local _project_fs_root_dir=/home/frs/project/mingwbuilds/host-windows
 	local _upload_cmd="cd $1 && scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir"
@@ -709,12 +709,7 @@ function func_create_mingw_upload_cmd {
 		x32) _upload_cmd="$_upload_cmd/32-bit" ;;
 		x64) _upload_cmd="$_upload_cmd/64-bit" ;;
 	esac
-	_upload_cmd="$_upload_cmd/threads-$6"
-	[[ $7 == no ]] && {
-		_upload_cmd="$_upload_cmd/sjlj"
-	} || {
-		_upload_cmd="$_upload_cmd/dwarf"
-	}
+	_upload_cmd="$_upload_cmd/threads-$6/$7"
 
 	echo "$_upload_cmd"
 }

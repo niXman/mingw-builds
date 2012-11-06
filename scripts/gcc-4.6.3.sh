@@ -72,9 +72,10 @@ CONFIGURE_FLAGS=(
 	--enable-checking=release
 	--enable-fully-dynamic-string
 	--enable-version-specific-runtime-libs
-	$( [[ $USE_DWARF == yes ]] \
+	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
 		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
-		|| echo "--enable-sjlj-exceptions" \
+		|| [[ $EXCEPTIONS_MODEL == sjlj ]] \
+			&& echo "--enable-sjlj-exceptions" \
 	)
 	#
 	--disable-ppl-version-check
