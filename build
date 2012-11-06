@@ -190,6 +190,10 @@ while [[ $# > 0 ]]; do
 			sjlj)
 				USE_MULTILIB=yes			
 			;;
+			*)
+				echo "$EXCEPTIONS_MODEL is not valid exception model. Available models: dwarf, seh, sjlj"
+				exit 1
+			;;
 			esac	
 		;;
 		--use-lto)
@@ -210,7 +214,17 @@ while [[ $# > 0 ]]; do
 			}
 			JOBS=${1/--jobs=/}
 		;;
-		--threads=*) THREADS_MODEL=${1/--threads=/} ;;
+		--threads=*) 
+			THREADS_MODEL=${1/--threads=/}
+			case $THREADS_MODEL in
+			win32 | posix)
+			;;
+			*)
+				echo "$THREADS_MODEL is not valid threads model. Available models: posix, win32"
+				exit 1
+			;;
+			esac
+		;;
 		--rev=*) REV_NUM=${1/--rev=/} ;;
 		x32)
 			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
