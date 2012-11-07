@@ -43,7 +43,10 @@ PRIORITY=main
 
 #
 
-PATCHES=( gcc-4.7-stdthreads.patch gcc-4.7-iconv.patch )
+PATCHES=(
+	gcc/gcc-4.7-stdthreads.patch
+	gcc/gcc-4.7-iconv.patch
+)
 
 #
 

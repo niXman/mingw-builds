@@ -44,7 +44,11 @@ PRIORITY=main
 
 #
 
-PATCHES=( gcc-4.6-cloog_lang_c.patch gcc-4.6-stdthreads.patch gcc-4.6-iconv.patch )
+PATCHES=(
+	gcc/gcc-4.6-cloog_lang_c.patch
+	gcc/gcc-4.6-stdthreads.patch
+	gcc/gcc-4.6-iconv.patch
+)
 
 #
 
