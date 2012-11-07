@@ -28,8 +28,8 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
     and only after that, to begin the building. This allows to build different
     versions of GCC simultaneously.
   The '--download' option specifies to the script to download only the sources.
-  The '--dwarf' option specifies to the script to use DWARF exeptions handling
-    instead of SJLJ. This allows building for i686 host only, and i686 target only.
+  The '--exceptions=model' option specifies to the script using exceptions handling
+    model. Available models are: dwarf, seh(for gcc>=4.8.0 only), sjlj.
   The '--use-lto' option specifies to the script to build with using LTO.
   The '--no-strip' option specifies to the script to install without striping.
   The '--no-multilib' option specifies to the script to build without multilib support.
@@ -43,27 +43,27 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
   "./build gcc-4.6.3 x64" for building x86_64-MinGW
   "./build gcc-4.6.3 x32 x64" for building i686-MinGW and x86_64-MinGW
   "./build gcc-4.6.3 --preload x32 x64" for building i686-MinGW and x86_64-MinGW
-  "./build gcc-4.6.3 --dwarf" for building i686-MinGW with DWARF exception handling
+  "./build gcc-4.6.3 --exceptions=dwarf" for building i686-MinGW with DWARF exception handling
 
-For example, during the process of building of the i686-gcc-4.6.3 will
+For example, during the process of building of the i686-gcc-4.7.2 will
   be created the following directories:
-  /mingw-gcc-4.6.3-build-x32
-  /mingw-gcc-4.6.3-libs-x32
-  /mingw-gcc-4.6.3-logs-x32
-  /mingw-gcc-4.6.3-x32
+  <buildroot>/x32-4.7.2-release-posix-sjlj-rev1/build
+  <buildroot>/x32-4.7.2-release-posix-sjlj-rev1/libs
+  <buildroot>/x32-4.7.2-release-posix-sjlj-rev1/logs
+  <buildroot>/x32-4.7.2-release-posix-sjlj-rev1/prefix
 
 For x86_64:
-  /mingw-gcc-4.6.3-build-x64
-  /mingw-gcc-4.6.3-libs-x64
-  /mingw-gcc-4.6.3-logs-x64
-  /mingw-gcc-4.6.3-x64
+  <buildroot>/x64-4.7.2-release-posix-sjlj-rev1/build
+  <buildroot>/x64-4.7.2-release-posix-sjlj-rev1/libs
+  <buildroot>/x64-4.7.2-release-posix-sjlj-rev1/logs
+  <buildroot>/x64-4.7.2-release-posix-sjlj-rev1/prefix
 
 And the sources directory:
-  /mingw-src
+  <buildroot>/mingw-sources
 
 
 
-The archives with the built MinGW will be created in '<msys root>/home/<user>/'
+The archives with the built MinGW will be created in '<buildroot>/mingw-archives/'
 
 At the moment, successfully building the following versions:
   gcc-4.6.2
