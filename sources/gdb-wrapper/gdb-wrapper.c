@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
 	};
 	
 	char *envbuf, *sep, *resbuf, *cmdbuf;
-	DWORD len;
+	DWORD len, exitCode;
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 
@@ -144,12 +144,16 @@ int main(int argc, char** argv) {
 	
 	WaitForSingleObject(pi.hProcess, INFINITE);
 	
+	DIE_IF_FALSE(
+		GetExitCodeProcess(pi.hProcess, &exitCode)
+	);
+	
 	CloseHandle( pi.hProcess );
-    CloseHandle( pi.hThread );
+	CloseHandle( pi.hThread );
     
 	free(envbuf);
 	free(resbuf);
 	free(cmdbuf);
 	
-    return TRUE;
+	return exitCode;
 }
