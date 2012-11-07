@@ -45,9 +45,9 @@ PRIORITY=extra
 #
 
 PATCHES=(
-	make-remove-double-quote.patch
-	make-linebuf-mingw.patch
-	make-getopt.patch
+	make/make-remove-double-quote.patch
+	make/make-linebuf-mingw.patch
+	make/make-getopt.patch
 )
 
 #
