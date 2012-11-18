@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION=8.5.12
+VERSION=8.5.13
 NAME=tk${VERSION}
 SRC_DIR_NAME=tk${VERSION}/win
 URL=http://prdownloads.sourceforge.net/tcl/tk${VERSION}-src.tar.gz
@@ -48,13 +48,6 @@ PATCHES=()
 
 #
 
-EXECUTE_AFTER_PATCH=(
-	"cd .. && patch -p1 < $PATCHES_DIR/tk/tk-8.5.9-mingww64.patch"
-	"autoconf"
-)
-
-#
-
 CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
@@ -64,6 +57,10 @@ CONFIGURE_FLAGS=(
 	--with-tcl=$PREFIX/opt/lib
 	#
 	--enable-shared
+	#
+	$( [[ $ARCHITECTURE == x64 ]] \
+		&& echo "--enable-64bit"
+	)
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
