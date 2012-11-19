@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION=8.5.12
+VERSION=8.5.13
 NAME=tcl${VERSION}
 SRC_DIR_NAME=tcl${VERSION}/win
 URL=http://prdownloads.sourceforge.net/tcl/tcl${VERSION}-src.tar.gz
@@ -48,13 +48,6 @@ PATCHES=()
 
 #
 
-EXECUTE_AFTER_PATCH=(
-	"cd .. && patch -p1 < $PATCHES_DIR/tcl/tcl.patch && patch -p1 < $PATCHES_DIR/tcl/tcl-unload.patch"
-	"autoconf"
-)
-
-#
-
 CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
@@ -64,6 +57,10 @@ CONFIGURE_FLAGS=(
 	--disable-threads
 	#
 	--enable-shared
+	#
+	$( [[ $ARCHITECTURE == x64 ]] \
+		&& echo "--enable-64bit"
+	)
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
