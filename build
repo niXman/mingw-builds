@@ -430,7 +430,7 @@ SUBTARGETS_PART2=(
 	sqlite
 	ncurses
 	readline
-	python
+	python2
 	3rdparty-post
 	gdb
 	gdb-wrapper
