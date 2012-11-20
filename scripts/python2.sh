@@ -45,27 +45,26 @@ PRIORITY=extra
 #
 
 PATCHES=(
-	Python-2.7.3/0000-CROSS.patch
-	Python-2.7.3/0001-MINGW.patch
-	Python-2.7.3/0002-MINGW-use-posix-getpath.patch
-	Python-2.7.3/0003-DARWIN-CROSS.patch
-	Python-2.7.3/0004-MINGW-FIXES-sysconfig-like-posix.patch
-	Python-2.7.3/0005-MINGW-pdcurses_ISPAD.patch
-	Python-2.7.3/0006-MINGW-static-tcltk.patch
-	Python-2.7.3/0007-MINGW-x86_64-size_t-format-specifier-pid_t.patch
-	Python-2.7.3/0008-Python-disable-dbm.patch
-	Python-2.7.3/0009-Disable-Grammar-dependency-on-pgen-executable.patch
-	Python-2.7.3/0010-add-python-config-sh.patch
-	Python-2.7.3/0011-nt-threads-vs-pthreads.patch
-	Python-2.7.3/0012-dont-add-multiarch-paths-if-cross-compiling.patch
-	Python-2.7.3/0013-MINGW-reorder-bininstall-ln-symlink-creation.patch
-	Python-2.7.3/0014-MINGW-use-backslashes-in-compileall-py.patch
-	Python-2.7.3/0015-MINGW-distutils-MSYS-convert_path-fix-and-root-hack.patch
-	Python-2.7.3/0016-all_distutils_c++.patch
-	Python-2.7.3/0018-all_disable_modules.patch
-	Python-2.7.3/0019-all_loadable_sqlite_extensions.patch
-	Python-2.7.3/0020-mingw-system-libffi.patch
-	Python-2.7.3/9999-re-configure-d.patch
+	Python-${VERSION}/0000-CROSS.patch
+	Python-${VERSION}/0001-MINGW.patch
+	Python-${VERSION}/0002-MINGW-use-posix-getpath.patch
+	Python-${VERSION}/0003-DARWIN-CROSS.patch
+	Python-${VERSION}/0004-MINGW-FIXES-sysconfig-like-posix.patch
+	Python-${VERSION}/0005-MINGW-pdcurses_ISPAD.patch
+	Python-${VERSION}/0006-MINGW-static-tcltk.patch
+	Python-${VERSION}/0007-MINGW-x86_64-size_t-format-specifier-pid_t.patch
+	Python-${VERSION}/0008-Python-disable-dbm.patch
+	Python-${VERSION}/0009-Disable-Grammar-dependency-on-pgen-executable.patch
+	Python-${VERSION}/0010-add-python-config-sh.patch
+	Python-${VERSION}/0011-nt-threads-vs-pthreads.patch
+	Python-${VERSION}/0012-dont-add-multiarch-paths-if-cross-compiling.patch
+	Python-${VERSION}/0013-MINGW-reorder-bininstall-ln-symlink-creation.patch
+	Python-${VERSION}/0014-MINGW-use-backslashes-in-compileall-py.patch
+	Python-${VERSION}/0015-MINGW-distutils-MSYS-convert_path-fix-and-root-hack.patch
+	Python-${VERSION}/0016-all_distutils_c++.patch
+	Python-${VERSION}/0018-all_disable_modules.patch
+	Python-${VERSION}/0019-all_loadable_sqlite_extensions.patch
+	Python-${VERSION}/0020-mingw-system-libffi.patch
 )
 
 #
@@ -75,6 +74,9 @@ EXECUTE_AFTER_PATCH=(
 	"rm -rf Modules/_ctypes/libffi*"
 	"rm -rf Modules/zlib"
 	"autoconf"
+	"autoheader"
+	"rm pyconfig.h.in~"
+	"rm -rf autom4te.cache"
 	"touch Include/graminit.h"
 	"touch Python/graminit.c"
 	"touch Parser/Python.asdl"
