@@ -432,6 +432,7 @@ SUBTARGETS_PART2=(
 	ncurses
 	readline
 	python2
+	#python3
 	3rdparty-post
 	gdb
 	gdb-wrapper
