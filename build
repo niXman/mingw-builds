@@ -427,6 +427,7 @@ SUBTARGETS_PART2=(
 	expat
 	#tcl
 	#tk
+	#xz
 	sqlite
 	ncurses
 	readline
