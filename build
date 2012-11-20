@@ -427,10 +427,12 @@ SUBTARGETS_PART2=(
 	expat
 	#tcl
 	#tk
+	#xz
 	sqlite
 	ncurses
 	readline
-	python
+	python2
+	#python3
 	3rdparty-post
 	gdb
 	gdb-wrapper
