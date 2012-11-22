@@ -113,11 +113,6 @@ MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREFIXW/opt/in
 # Workaround for conftest error on 64-bit builds
 export ac_cv_working_tzset=no
 
-[[ $ARCHITECTURE == x32 ]] && {
-	export PYTHON_DISABLE_MODULES=""
-} || {
-	export PYTHON_DISABLE_MODULES="_tkinter"
-}
 #
 
 CONFIGURE_FLAGS=(

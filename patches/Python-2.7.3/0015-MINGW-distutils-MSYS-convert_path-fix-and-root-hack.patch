@@ -1,4 +1,3 @@
-diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
 --- a/Lib/distutils/command/install.py	2012-04-10 03:07:29 +0400
 +++ b/Lib/distutils/command/install.py	2012-10-26 19:57:29 +0400
 @@ -8,7 +8,7 @@
@@ -10,21 +9,29 @@ diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
  from types import *
  from distutils.core import Command
  from distutils.debug import DEBUG
-@@ -20,7 +20,28 @@
+@@ -20,7 +20,36 @@
  from distutils.errors import DistutilsOptionError
  from site import USER_BASE
  from site import USER_SITE
 +from string import maketrans
  
 +def is_msys_mingw():
-+    if os.environ.has_key("OSTYPE") and os.environ.has_key("MSYSTEM") and sys.version.find("GCC") >= 0:
-+        if os.environ["MSYSTEM"] == "MINGW32" and os.environ["OSTYPE"] == "msys":
++    if sys.platform == "win32" and "MSYSTEM" in os.environ and sys.version.find("GCC") >= 0:
++        if os.environ["MSYSTEM"] == "MINGW32":
 +            return 1
 +    return 0
 +
++def has_msys():
++    _msysdll = "msys-1.0.dll"
++    for _path in os.environ["PATH"].split(os.pathsep):
++        currpath = os.path.join(_path, _msysdll)
++        if os.path.isfile(currpath) and os.access(currpath, os.F_OK):
++            return _path
++    return None
++
 +def msys_root():
-+    if os.environ.has_key("WD"):
-+        arg = os.environ["WD"]
++    if is_msys_mingw() and has_msys() is not None:
++        arg = has_msys()
 +        arg = arg.rstrip("\\")
 +        if arg.endswith("\\bin"):
 +            # drop the \\bin
@@ -45,15 +52,16 @@ diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
  
 +        # MSYS (probably) will have transformed --root=/ to the
 +        # windows path where the msys is installed, so we check if root begins
-+        # with msysroot and if it does then we set root to None again!
-+        if (self.root is not None and is_msys_mingw):
++        # with msysroot and if it does then remove this part.
++        if self.root is not None and is_msys_mingw():
 +            msysroot = msys_root()
-+            if self.root.find(msysroot)==0:
-+                self.root = None
++            if msysroot != None and self.root.find(msysroot)==0:
++                self.root = self.root.replace(msysroot, "/")
 +
          # Now define config vars for the base directories so we can expand
          # everything else.
          self.config_vars['base'] = self.install_base
+
 diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
 --- a/Lib/distutils/util.py	2012-04-10 00:07:30.000000000 +0100
 +++ b/Lib/distutils/util.py	2012-10-09 18:08:02.000000000 +0100
@@ -61,11 +69,11 @@ diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
          paths.remove('.')
      if not paths:
          return os.curdir
-+    # On Windows, if paths is ['C:','folder','subfolder'] then 
++    # On Windows, if paths is ['C:','folder','subfolder'] then
 +    # os.path.join(*paths) will return 'C:folder\subfolder' which
 +    # is thus relative to the CWD on that drive. So we work around
 +    # this by adding a \ to path[0]
-+    if (len(paths) > 0 and paths[0].endswith(':') and 
++    if (len(paths) > 0 and paths[0].endswith(':') and
 +        sys.platform == "win32" and sys.version.find("GCC") >= 0):
 +        paths[0] += '\\'
      return os.path.join(*paths)
