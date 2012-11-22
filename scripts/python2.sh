@@ -61,10 +61,9 @@ PATCHES=(
 	Python-${VERSION}/0013-MINGW-reorder-bininstall-ln-symlink-creation.patch
 	Python-${VERSION}/0014-MINGW-use-backslashes-in-compileall-py.patch
 	Python-${VERSION}/0015-MINGW-distutils-MSYS-convert_path-fix-and-root-hack.patch
-	Python-${VERSION}/0016-all_distutils_c++.patch
-	Python-${VERSION}/0018-all_disable_modules.patch
-	Python-${VERSION}/0019-all_loadable_sqlite_extensions.patch
-	Python-${VERSION}/0020-mingw-system-libffi.patch
+	Python-${VERSION}/0020-MINGW-removal-of-libffi-patch.patch
+	Python-${VERSION}/0021-MINGW-system-libffi.patch
+	Python-${VERSION}/0100-upgrade-internal-libffi-to-3.0.11.patch
 )
 
 #
@@ -106,12 +105,6 @@ MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREFIXW/opt/in
 
 # Workaround for conftest error on 64-bit builds
 export ac_cv_working_tzset=no
-
-[[ $ARCHITECTURE == x32 ]] && {
-	export PYTHON_DISABLE_MODULES=""
-} || {
-	export PYTHON_DISABLE_MODULES="_tkinter"
-}
 #
 
 CONFIGURE_FLAGS=(
@@ -125,7 +118,6 @@ CONFIGURE_FLAGS=(
 	--without-pydebug
 	--with-system-expat
 	--with-system-ffi
-	--enable-loadable-sqlite-extensions
 	#
 	CXX="$HOST-g++"
 	LIBFFI_INCLUDEDIR="$LIBSW_DIR/lib/libffi-$LIBFFI_VERSION/include"
