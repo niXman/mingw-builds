@@ -46,23 +46,23 @@ PRIORITY=extra
 
 PATCHES=(
 	Python-${VERSION}/0000-CROSS.patch
-	Python-${VERSION}/0001-MINGW.patch
-	Python-${VERSION}/0002-MINGW-use-posix-getpath.patch
-	Python-${VERSION}/0003-DARWIN-CROSS.patch
-	Python-${VERSION}/0004-MINGW-FIXES-sysconfig-like-posix.patch
-	Python-${VERSION}/0005-MINGW-pdcurses_ISPAD.patch
-	Python-${VERSION}/0006-MINGW-static-tcltk.patch
-	Python-${VERSION}/0007-MINGW-x86_64-size_t-format-specifier-pid_t.patch
-	Python-${VERSION}/0008-Python-disable-dbm.patch
-	Python-${VERSION}/0009-Disable-Grammar-dependency-on-pgen-executable.patch
-	Python-${VERSION}/0010-add-python-config-sh.patch
-	Python-${VERSION}/0011-nt-threads-vs-pthreads.patch
-	Python-${VERSION}/0012-dont-add-multiarch-paths-if-cross-compiling.patch
-	Python-${VERSION}/0013-MINGW-reorder-bininstall-ln-symlink-creation.patch
-	Python-${VERSION}/0014-MINGW-use-backslashes-in-compileall-py.patch
-	Python-${VERSION}/0015-MINGW-distutils-MSYS-convert_path-fix-and-root-hack.patch
-	Python-${VERSION}/0020-MINGW-removal-of-libffi-patch.patch
-	Python-${VERSION}/0021-MINGW-system-libffi.patch
+	Python-${VERSION}/0005-MINGW.patch
+	Python-${VERSION}/0006-mingw-removal-of-libffi-patch.patch
+	Python-${VERSION}/0007-mingw-system-libffi.patch	
+	Python-${VERSION}/0010-mingw-use-posix-getpath.patch
+	Python-${VERSION}/0015-cross-darwin.patch
+	Python-${VERSION}/0020-mingw-sysconfig-like-posix.patch
+	Python-${VERSION}/0025-mingw-pdcurses_ISPAD.patch
+	Python-${VERSION}/0030-mingw-static-tcltk.patch
+	Python-${VERSION}/0035-mingw-x86_64-size_t-format-specifier-pid_t.patch
+	Python-${VERSION}/0040-python-disable-dbm.patch
+	Python-${VERSION}/0045-disable-grammar-dependency-on-pgen-executable.patch
+	Python-${VERSION}/0050-add-python-config-sh.patch
+	Python-${VERSION}/0055-mingw-nt-threads-vs-pthreads.patch
+	Python-${VERSION}/0060-cross-dont-add-multiarch-paths-if.patch
+	Python-${VERSION}/0065-mingw-reorder-bininstall-ln-symlink-creation.patch
+	Python-${VERSION}/0070-mingw-use-backslashes-in-compileall-py.patch
+	Python-${VERSION}/0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch
 	Python-${VERSION}/0100-upgrade-internal-libffi-to-3.0.11.patch
 )
 
