@@ -79,8 +79,9 @@ CONFIGURE_FLAGS=(
 	--enable-version-specific-runtime-libs
 	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
 		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
-		|| [[ $EXCEPTIONS_MODEL == sjlj ]] \
-			&& echo "--enable-sjlj-exceptions" \
+	)
+	$( [[ $EXCEPTIONS_MODEL == sjlj ]] \
+		&& echo "--enable-sjlj-exceptions" \
 	)
 	#
 	--disable-ppl-version-check
