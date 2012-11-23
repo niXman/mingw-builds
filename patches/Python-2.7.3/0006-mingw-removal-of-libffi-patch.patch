@@ -1,6 +1,6 @@
 diff -urN a-2.7.3/Lib/ctypes/test/test_as_parameter.py b-2.7.3/Lib/ctypes/test/test_as_parameter.py
---- a-2.7.3/Lib/ctypes/test/test_as_parameter.py	Fri Nov 16 22:55:53 2012
-+++ b-2.7.3/Lib/ctypes/test/test_as_parameter.py	Fri Nov 16 23:20:49 2012
+--- a-2.7.3/Lib/ctypes/test/test_as_parameter.py	2012-11-22 20:41:55.136090861 +0000
++++ b-2.7.3/Lib/ctypes/test/test_as_parameter.py	2012-11-22 20:42:15.653568792 +0000
 @@ -1,7 +1,6 @@
  import unittest
  from ctypes import *
@@ -21,8 +21,8 @@ diff -urN a-2.7.3/Lib/ctypes/test/test_as_parameter.py b-2.7.3/Lib/ctypes/test/t
          class S8I(Structure):
              _fields_ = [("a", c_int),
 diff -urN a-2.7.3/Lib/ctypes/test/test_functions.py b-2.7.3/Lib/ctypes/test/test_functions.py
---- a-2.7.3/Lib/ctypes/test/test_functions.py	Fri Nov 16 22:55:53 2012
-+++ b-2.7.3/Lib/ctypes/test/test_functions.py	Fri Nov 16 23:21:17 2012
+--- a-2.7.3/Lib/ctypes/test/test_functions.py	2012-11-22 20:41:55.136090861 +0000
++++ b-2.7.3/Lib/ctypes/test/test_functions.py	2012-11-22 20:42:15.653568792 +0000
 @@ -359,10 +359,6 @@
              s2h = windll.s_ret_2h_func(S2H(99, 88))
              self.assertEqual((s2h.x, s2h.y), (99*2, 88*3))
@@ -35,8 +35,8 @@ diff -urN a-2.7.3/Lib/ctypes/test/test_functions.py b-2.7.3/Lib/ctypes/test/test
          class S8I(Structure):
              _fields_ = [("a", c_int),
 diff -urN a-2.7.3/Modules/_ctypes/libffi_msvc/win32.S b-2.7.3/Modules/_ctypes/libffi_msvc/win32.S
---- a-2.7.3/Modules/_ctypes/libffi_msvc/win32.S	2012-11-22 08:05:51 +0400
-+++ /dev/null	2012-11-22 08:10:12 +0400
+--- a-2.7.3/Modules/_ctypes/libffi_msvc/win32.S	2012-11-22 20:41:55.148084709 +0000
++++ b-2.7.3/Modules/_ctypes/libffi_msvc/win32.S	1970-01-01 01:00:00.000000000 +0100
 @@ -1,154 +0,0 @@
 -/* -----------------------------------------------------------------------
 -   win32.S - Copyright (c) 1996, 1998, 2001, 2002  Red Hat, Inc.
@@ -193,9 +193,9 @@ diff -urN a-2.7.3/Modules/_ctypes/libffi_msvc/win32.S b-2.7.3/Modules/_ctypes/li
 -
 -.ffi_call_x86_end:
 diff -urN a-2.7.3/setup.py b-2.7.3/setup.py
---- a-2.7.3/setup.py	Fri Nov 16 23:10:10 2012
-+++ b-2.7.3/setup.py	Fri Nov 16 23:26:44 2012
-@@ -1918,38 +1918,6 @@
+--- a-2.7.3/setup.py	2012-11-22 20:41:55.156080608 +0000
++++ b-2.7.3/setup.py	2012-11-22 20:42:15.657566741 +0000
+@@ -1984,38 +1984,6 @@
          return True
  
      def configure_ctypes(self, ext):
@@ -234,7 +234,7 @@ diff -urN a-2.7.3/setup.py b-2.7.3/setup.py
          if not self.use_system_libffi:
              if host_platform == 'darwin':
                  return self.configure_ctypes_darwin(ext)
-@@ -2002,11 +1970,6 @@
+@@ -2068,11 +2036,6 @@
                                 fficonfig['ffi_sources'])
              ext.include_dirs.extend(include_dirs)
              ext.extra_compile_args.extend(extra_compile_args)

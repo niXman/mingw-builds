@@ -1,7 +1,7 @@
-diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	Mon Oct  8 17:54:48 2012
-+++ b/Makefile.pre.in	Mon Oct  8 19:25:27 2012
-@@ -812,9 +812,9 @@
+diff -urN a-2.7.3/Makefile.pre.in b-2.7.3/Makefile.pre.in
+--- a-2.7.3/Makefile.pre.in	2012-11-22 20:50:00.147360393 +0000
++++ b-2.7.3/Makefile.pre.in	2012-11-22 20:50:04.225269101 +0000
+@@ -811,9 +811,9 @@
  	then rm -f $(DESTDIR)$(BINDIR)/$(PYTHON); \
  	else true; \
  	fi
