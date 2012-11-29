@@ -47,7 +47,7 @@
 	echo " done"
 	touch $BUILDS_DIR/gdb-wrapper.marker
 } || {
-	echo -n "---> installed"
+	echo "---> installed"
 }
 
 # **************************************************************************
