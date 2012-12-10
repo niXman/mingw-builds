@@ -419,6 +419,10 @@ SUBTARGETS_PART2=(
 	binutils-post
 	$GCC_NAME
 	gcc-post
+	mingw-w64-tools-gendef
+	mingw-w64-tools-genidl
+	mingw-w64-tools-genpeimg
+	mingw-w64-tools-widl
 	libgnurx
 	zlib-pre
 	zlib
