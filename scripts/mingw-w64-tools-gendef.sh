@@ -60,6 +60,7 @@ CONFIGURE_FLAGS=(
 	--target=$TARGET
 	#
 	--prefix=$PREFIX
+	--with-mangle=$PREFIX
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
