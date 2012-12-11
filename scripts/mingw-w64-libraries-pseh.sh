@@ -35,19 +35,16 @@
 
 # **************************************************************************
 
-NAME=gcc-trunk
-SRC_DIR_NAME=gcc-trunk
-URL=svn://gcc.gnu.org/svn/gcc/trunk
+NAME=pseh
+SRC_DIR_NAME=pseh
+URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-libraries/pseh
 TYPE=svn
-PRIORITY=main
+REV=
+PRIORITY=extra
 
 #
 
-PATCHES=(
-	gcc/gcc-4.7-stdthreads.patch
-	gcc/gcc-4.8-iconv.patch
-	gcc/gcc-4.8-libstdc++export.patch
-)
+PATCHES=()
 
 #
 
@@ -57,52 +54,6 @@ CONFIGURE_FLAGS=(
 	--target=$TARGET
 	#
 	--prefix=$PREFIX
-	--with-sysroot=$PREFIX
-	#
-	$LINK_TYPE_BOTH
-	#
-	$( [[ $USE_MULTILIB == yes ]] \
-		&& echo "--enable-targets=all --enable-multilib" \
-		|| echo "--disable-multilib" \
-	)
-	--enable-languages=$ENABLE_LANGUAGES,lto
-	--enable-libstdcxx-time=yes
-	--enable-threads=$THREADS_MODEL
-	--enable-libgomp
-	--enable-lto
-	--enable-graphite
-	--enable-cloog-backend=isl
-	--enable-checking=release
-	--enable-fully-dynamic-string
-	--enable-version-specific-runtime-libs
-	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
-		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
-	)
-	$( [[ $EXCEPTIONS_MODEL == sjlj ]] \
-		&& echo "--enable-sjlj-exceptions" \
-	)
-	#
-	--disable-ppl-version-check
-	--disable-cloog-version-check
-	--disable-libstdcxx-pch
-	--disable-libstdcxx-debug
-	--disable-bootstrap
-	--disable-rpath
-	--disable-win32-registry
-	--disable-nls
-	--disable-werror
-	--disable-symvers
-	#
-	--with-gnu-as
-	--with-gnu-ld
-	--with-tune=generic
-	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
-		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
-	)
-	--with-libiconv
-	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
-	--with-pkgversion="\"$PKG_VERSION\""
-	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
