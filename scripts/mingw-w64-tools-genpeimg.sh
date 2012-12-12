@@ -48,6 +48,12 @@ PATCHES=()
 
 #
 
+EXECUTE_AFTER_PATCH=(
+	"autoreconf -i"
+)
+
+#
+
 CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
