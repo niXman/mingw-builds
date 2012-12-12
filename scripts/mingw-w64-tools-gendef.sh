@@ -48,12 +48,19 @@ PATCHES=()
 
 #
 
+EXECUTE_AFTER_PATCH=(
+	"autoreconf -i"
+)
+
+#
+
 CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
 	#
 	--prefix=$PREFIX
+	--with-mangle=$PREFIX
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
