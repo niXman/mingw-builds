@@ -60,6 +60,9 @@ CONFIGURE_FLAGS=(
 	--prefix=$PREFIX
 	--with-sysroot=$PREFIX
 	#
+	--with-arch=$PROCESSOR_OPTIMIZATION_ARCH
+	--with-tune=$PROCESSOR_OPTIMIZATION_ARCH
+	#
 	$LINK_TYPE_BOTH
 	#
 	$( [[ $USE_MULTILIB == yes ]] \
