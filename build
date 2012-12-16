@@ -39,7 +39,8 @@
 
 ENABLE_LANGUAGES='c,c++,fortran'
 
-BASE_CFLAGS="-march=nocona -mtune=nocona -O2 -pipe -fomit-frame-pointer"
+PROCESSOR_OPTIMIZATION_ARCH='nocona'
+BASE_CFLAGS="-march=$PROCESSOR_OPTIMIZATION_ARCH -mtune=$PROCESSOR_OPTIMIZATION_ARCH -O2 -pipe -fomit-frame-pointer"
 BASE_CXXFLAGS="$BASE_CFLAGS"
 BASE_CPPFLAGS=""
 BASE_LDFLAGS="-pipe"
