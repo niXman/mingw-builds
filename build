@@ -441,6 +441,7 @@ SUBTARGETS_PART2=(
 	python2
 	#python3
 	3rdparty-post
+	gdbinit
 	gdb
 	gdb-wrapper
 	make_cvs
