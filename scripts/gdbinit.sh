@@ -35,58 +35,11 @@
 
 # **************************************************************************
 
-VERSION=7.5.1
-NAME=gdb-${VERSION}
-SRC_DIR_NAME=gdb-${VERSION}
-URL=ftp://ftp.gnu.org/gnu/gdb/gdb-${VERSION}.tar.bz2
-TYPE=.tar.bz2
-PRIORITY=main
+[[ ! -d $PREFIX/etc ]] && mkdir -p $PREFIX/etc
 
-#REL_PYTHON_PATH=$(func_absolute_to_relative $PREFIX/bin $PREFIX/opt/bin)
-#
-
-PATCHES=()
-
-#
-
-CONFIGURE_FLAGS=(
-	--host=$HOST
-	--build=$TARGET
-	--prefix=$PREFIX
-	#
-	--enable-targets=x86_64-w64-mingw32,i686-w64-mingw32
-	--enable-64-bit-bfd
-	#
-	--disable-nls
-	--disable-werror
-	--disable-win32-registry
-	--disable-rpath
-	#
-	--with-system-gdbinit=$PREFIX/etc/gdbinit
-	--with-python
-	--with-expat
-	--with-libiconv
-	--with-system-readline
-	--disable-tui
-	--disable-gdbtk
-	#
-	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
-	CPPFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 \""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib -L$PREFIX/opt/lib/python2.7/config\""
-)
-
-#
-
-MAKE_FLAGS=(
-	-j$JOBS
-	all
-)
-
-#
-
-INSTALL_FLAGS=(
-	-j$JOBS
-	install
-)
+[[ ! -f $BUILDS_DIR/gbinit.marker ]] && {
+	cat $TOP_DIR/sources/gdbinit | sed 's|%GCC_NAME%|'$GCC_NAME'|g' > $PREFIX/etc/gdbinit
+	touch $BUILDS_DIR/gdbinit.marker
+}
 
 # **************************************************************************
