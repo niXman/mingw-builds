@@ -44,7 +44,10 @@ PRIORITY=prereq
 
 #
 
-PATCHES=()
+PATCHES=(
+	mpfr/patch01.patch
+	mpfr/patch02.patch
+)
 
 #
 
