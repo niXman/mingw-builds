@@ -1,0 +1,187 @@
+--- a/src/mp_std_bits.defs.hh.orig	2012-12-22 10:26:27 +0400
++++ b/src/mp_std_bits.defs.hh	2012-12-22 10:27:33 +0400
+@@ -38,132 +38,6 @@
+ #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+ void swap(mpq_class& x, mpq_class& y);
+ 
+-namespace std {
+-
+-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+-//! Specialization of std::numeric_limits.
+-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+-template <>
+-class numeric_limits<mpz_class> {
+-private:
+-  typedef mpz_class Type;
+-
+-public:
+-  static const bool is_specialized = true;
+-  static const int digits = 0;
+-  static const int digits10 = 0;
+-  static const bool is_signed = true;
+-  static const bool is_integer = true;
+-  static const bool is_exact = true;
+-  static const int radix = 2;
+-  static const int min_exponent = 0;
+-  static const int min_exponent10 = 0;
+-  static const int max_exponent = 0;
+-  static const int max_exponent10 = 0;
+-  static const bool has_infinity = false;
+-  static const bool has_quiet_NaN =  false;
+-  static const bool has_signaling_NaN = false;
+-  static const float_denorm_style has_denorm = denorm_absent;
+-  static const bool has_denorm_loss = false;
+-  static const bool is_iec559 = false;
+-  static const bool is_bounded = false;
+-  static const bool is_modulo = false;
+-  static const bool traps = false;
+-  static const bool tininess_before = false;
+-  static const float_round_style round_style = round_toward_zero;
+-
+-  static Type min() {
+-    return static_cast<Type>(0);
+-  }
+-
+-  static Type max() {
+-    return static_cast<Type>(0);
+-  }
+-
+-  static Type epsilon() {
+-    return static_cast<Type>(0);
+-  }
+-
+-  static Type round_error() {
+-    return static_cast<Type>(0);
+-  }
+-
+-  static Type infinity() {
+-    return static_cast<Type>(0);
+-  }
+-
+-  static Type quiet_NaN() {
+-    return static_cast<Type>(0);
+-  }
+-
+-  static Type denorm_min() {
+-    return static_cast<Type>(1);
+-  }
+-};
+-
+-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+-//! Specialization of std::numeric_limits.
+-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+-template <>
+-class numeric_limits<mpq_class> {
+-private:
+-  typedef mpq_class Type;
+-
+-public:
+-  static const bool is_specialized = true;
+-  static const int digits = 0;
+-  static const int digits10 = 0;
+-  static const bool is_signed = true;
+-  static const bool is_integer = false;
+-  static const bool is_exact = true;
+-  static const int radix = 2;
+-  static const int min_exponent = 0;
+-  static const int min_exponent10 = 0;
+-  static const int max_exponent = 0;
+-  static const int max_exponent10 = 0;
+-  static const bool has_infinity = false;
+-  static const bool has_quiet_NaN =  false;
+-  static const bool has_signaling_NaN = false;
+-  static const float_denorm_style has_denorm = denorm_absent;
+-  static const bool has_denorm_loss = false;
+-  static const bool is_iec559 = false;
+-  static const bool is_bounded = false;
+-  static const bool is_modulo = false;
+-  static const bool traps = false;
+-  static const bool tininess_before = false;
+-  static const float_round_style round_style = round_toward_zero;
+-
+-  static Type min() {
+-    return static_cast<Type>(0);
+-  }
+-
+-  static Type max() {
+-    return static_cast<Type>(0);
+-  }
+-
+-  static Type epsilon() {
+-    return static_cast<Type>(0);
+-  }
+-
+-  static Type round_error() {
+-    return static_cast<Type>(0);
+-  }
+-
+-  static Type infinity() {
+-    return static_cast<Type>(0);
+-  }
+-
+-  static Type quiet_NaN() {
+-    return static_cast<Type>(0);
+-  }
+-
+-  static Type denorm_min() {
+-    return static_cast<Type>(0);
+-  }
+-};
+-
+-} // namespace std
+-
+ #include "mp_std_bits.inlines.hh"
+ 
+ #endif // !defined(PPL_mp_std_bits_defs_hh)
+--- a/src/mp_std_bits.cc.orig	2012-12-22 10:26:42 +0400
++++ b/src/mp_std_bits.cc	2012-12-22 10:30:04 +0400
+@@ -24,49 +24,3 @@
+ 
+ #include "ppl-config.h"
+ #include "mp_std_bits.defs.hh"
+-
+-const bool std::numeric_limits<mpz_class>::is_specialized;
+-const int std::numeric_limits<mpz_class>::digits;
+-const int std::numeric_limits<mpz_class>::digits10;
+-const bool std::numeric_limits<mpz_class>::is_signed;
+-const bool std::numeric_limits<mpz_class>::is_integer;
+-const bool std::numeric_limits<mpz_class>::is_exact;
+-const int std::numeric_limits<mpz_class>::radix;
+-const int std::numeric_limits<mpz_class>::min_exponent;
+-const int std::numeric_limits<mpz_class>::min_exponent10;
+-const int std::numeric_limits<mpz_class>::max_exponent;
+-const int std::numeric_limits<mpz_class>::max_exponent10;
+-const bool std::numeric_limits<mpz_class>::has_infinity;
+-const bool std::numeric_limits<mpz_class>::has_quiet_NaN;
+-const bool std::numeric_limits<mpz_class>::has_signaling_NaN;
+-const std::float_denorm_style std::numeric_limits<mpz_class>::has_denorm;
+-const bool std::numeric_limits<mpz_class>::has_denorm_loss;
+-const bool std::numeric_limits<mpz_class>::is_iec559;
+-const bool std::numeric_limits<mpz_class>::is_bounded;
+-const bool std::numeric_limits<mpz_class>::is_modulo;
+-const bool std::numeric_limits<mpz_class>::traps;
+-const bool std::numeric_limits<mpz_class>::tininess_before;
+-const std::float_round_style std::numeric_limits<mpz_class>::round_style;
+-
+-const bool std::numeric_limits<mpq_class>::is_specialized;
+-const int std::numeric_limits<mpq_class>::digits;
+-const int std::numeric_limits<mpq_class>::digits10;
+-const bool std::numeric_limits<mpq_class>::is_signed;
+-const bool std::numeric_limits<mpq_class>::is_integer;
+-const bool std::numeric_limits<mpq_class>::is_exact;
+-const int std::numeric_limits<mpq_class>::radix;
+-const int std::numeric_limits<mpq_class>::min_exponent;
+-const int std::numeric_limits<mpq_class>::min_exponent10;
+-const int std::numeric_limits<mpq_class>::max_exponent;
+-const int std::numeric_limits<mpq_class>::max_exponent10;
+-const bool std::numeric_limits<mpq_class>::has_infinity;
+-const bool std::numeric_limits<mpq_class>::has_quiet_NaN;
+-const bool std::numeric_limits<mpq_class>::has_signaling_NaN;
+-const std::float_denorm_style std::numeric_limits<mpq_class>::has_denorm;
+-const bool std::numeric_limits<mpq_class>::has_denorm_loss;
+-const bool std::numeric_limits<mpq_class>::is_iec559;
+-const bool std::numeric_limits<mpq_class>::is_bounded;
+-const bool std::numeric_limits<mpq_class>::is_modulo;
+-const bool std::numeric_limits<mpq_class>::traps;
+-const bool std::numeric_limits<mpq_class>::tininess_before;
+-const std::float_round_style std::numeric_limits<mpq_class>::round_style;
