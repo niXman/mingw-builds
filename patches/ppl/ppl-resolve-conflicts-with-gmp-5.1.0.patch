@@ -1,4 +1,4 @@
-Module: ppl/ppl
+﻿Module: ppl/ppl
 Branch: master
 Commit: 9f843aecc23981aec6ed1eaa8be06e6786a47f0d
 URL:    http://www.cs.unipr.it/git/gitweb.cgi?p=ppl/ppl.git;a=commit;h=9f843aecc23981aec6ed1eaa8be06e6786a47f0d
@@ -11,7 +11,7 @@ GMP version 5.1.0 (and, presumably, later versions) defines std::numeric_limits.
 ---
 
  src/mp_std_bits.cc      |    6 ++++++
- src/mp_std_bits_defs.hh |    6 ++++++
+ src/mp_std_bits.defs.hh |    6 ++++++
  2 files changed, 12 insertions(+), 0 deletions(-)
 
 diff --git a/src/mp_std_bits.cc b/src/mp_std_bits.cc
@@ -35,11 +35,11 @@ index c8da535..918b9af 100644
 +
 +#endif // __GNU_MP_VERSION < 5
 +       // || (__GNU_MP_VERSION == 5 && __GNU_MP_VERSION_MINOR < 1)
-diff --git a/src/mp_std_bits_defs.hh b/src/mp_std_bits_defs.hh
-index f71595a..0d078ec 100644
---- a/src/mp_std_bits_defs.hh
-+++ b/src/mp_std_bits_defs.hh
-@@ -38,6 +38,9 @@ void swap(mpz_class& x, mpz_class& y);
+diff --git a/src/mp_std_bits.defs.hh b/src/mp_std_bits.defs.hh
+index f71595a..0d078ec 100644 (file)
+--- a/src/mp_std_bits.defs.hh
++++ b/src/mp_std_bits.defs.hh
+@@ -38,6 +38,9 @@
  #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
  void swap(mpq_class& x, mpq_class& y);
  
@@ -49,13 +49,13 @@ index f71595a..0d078ec 100644
  namespace std {
  
  #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-@@ -164,6 +167,9 @@ public:
+@@ -164,6 +167,9 @@
  
  } // namespace std
  
 +#endif // __GNU_MP_VERSION < 5
 +       // || (__GNU_MP_VERSION == 5 && __GNU_MP_VERSION_MINOR < 1)
 +
- #include "mp_std_bits_inlines.hh"
+ #include "mp_std_bits.inlines.hh"
  
  #endif // !defined(PPL_mp_std_bits_defs_hh)
