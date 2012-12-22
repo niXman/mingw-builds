@@ -44,7 +44,9 @@ PRIORITY=prereq
 
 #
 
-PATCHES=()
+PATCHES=(
+	ppl/ppl-resolve-conflicts-with-gmp-5.1.0.patch
+)
 
 #
 
