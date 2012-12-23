@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
 ** The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 **
 ** This file is part of 'mingw-builds' project.
@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
 	}
 	else{
 		JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli = { 0 };
-		// Configure all child processes associated with the job to terminate when the
+		// Configure all child processes associated with the job to terminate when the last handle to the job is closed
 		jeli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
 		if ( SetInformationJobObject(ghJob, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli)) == 0 ) {
 			printf("Could not SetInformationJobObject\n");
@@ -150,7 +150,7 @@ int main(int argc, char** argv) {
 			,cmdbuf		// command line
 			,0			// process security attributes
 			,0			// primary thread security attributes
-			,TRUE		// handles are NOT inherited
+			,TRUE		// handles are inherited
 			,0			// creation flags
 			,0			// use parent's environment
 			,0			// use parent's current directory
@@ -172,7 +172,7 @@ int main(int argc, char** argv) {
 
 	if ( ghJob != NULL )
 		CloseHandle(ghJob);
-	//CloseHandle( pi.hProcess );
+	CloseHandle( pi.hProcess );
 	CloseHandle( pi.hThread );
 
 	free(envbuf);
