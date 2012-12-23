@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
 ** The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 **
 ** This file is part of 'mingw-builds' project.
@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 		,exebufsize = 1024
 		,cmdbufsize = envbufsize
 	};
-	
+
 	char *envbuf, *sep, *resbuf, *cmdbuf;
 	DWORD len, exitCode;
 	STARTUPINFO si;
@@ -69,17 +69,17 @@ int main(int argc, char** argv) {
 		(cmdbuf = malloc(cmdbufsize))
 	);
 	*cmdbuf = 0;
-	
+
 	DIE_IF_FALSE(
 		GetEnvironmentVariable("PATH", envbuf, envbufsize)
 	);
 	//printf("env: %s\n", envbuf);
-	
+
 	DIE_IF_FALSE(
 		GetModuleFileName(0, cmdbuf, exebufsize)
 	);
 	//printf("curdir: %s\n", cmdbuf);
-	
+
 	DIE_IF_FALSE(
 		(sep = strrchr(cmdbuf, '\\'))
 	);
@@ -94,12 +94,12 @@ int main(int argc, char** argv) {
 	DIE_IF_FALSE(
 		(resbuf = malloc(len))
 	);
-	
+
 	DIE_IF_FALSE(
 		(snprintf(resbuf, len, "%s;%s", cmdbuf, envbuf) > 0)
 	);
 	//printf("res: %s\n", resbuf);
-	
+
 	DIE_IF_FALSE(
 		SetEnvironmentVariable("PATH", resbuf)
 	);
@@ -122,18 +122,35 @@ int main(int argc, char** argv) {
 	}
 	//printf("cmd: %s\n", cmdbuf);
 
+	HANDLE ghJob = CreateJobObject(NULL, "Gdb-Wrapper\0"/*NULL*/);
+	if ( ghJob == NULL ) {
+		printf("Could not create job object\n");
+	}
+	else{
+		JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli = { 0 };
+		// Configure all child processes associated with the job to terminate when the
+		jeli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+		if ( SetInformationJobObject(ghJob, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli)) == 0 ) {
+			printf("Could not SetInformationJobObject\n");
+		}
+	}
+
 	memset(&si, 0, sizeof(si));
 	si.cb = sizeof(si);
-	
+	si.dwFlags |= STARTF_USESTDHANDLES;
+	si.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
+	si.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+	si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+
 	memset(&pi, 0, sizeof(pi));
 
 	DIE_IF_FALSE(
 		CreateProcess(
-			 0	// exe name
-			,cmdbuf	// command line
+			0			// exe name
+			,cmdbuf		// command line
 			,0			// process security attributes
 			,0			// primary thread security attributes
-			,FALSE		// handles are NOT inherited
+			,TRUE		// handles are NOT inherited
 			,0			// creation flags
 			,0			// use parent's environment
 			,0			// use parent's current directory
@@ -141,19 +158,26 @@ int main(int argc, char** argv) {
 			,&pi		// receives PROCESS_INFORMATION
 		)
 	);
-	
+
+	if ( ghJob != NULL )
+		if ( AssignProcessToJobObject(ghJob, pi.hProcess) == 0 ) {
+			printf("Could not AssignProcessToObject\n");
+		}
+
 	WaitForSingleObject(pi.hProcess, INFINITE);
 	
 	DIE_IF_FALSE(
 		GetExitCodeProcess(pi.hProcess, &exitCode)
 	);
-	
-	CloseHandle( pi.hProcess );
+
+	if ( ghJob != NULL )
+		CloseHandle(ghJob);
+	//CloseHandle( pi.hProcess );
 	CloseHandle( pi.hThread );
-    
+
 	free(envbuf);
 	free(resbuf);
 	free(cmdbuf);
-	
+
 	return exitCode;
 }
