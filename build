@@ -411,11 +411,10 @@ SUBTARGETS_PART1=(
 	cloog
 	mingw-w64-api
 	mingw-w64-crt
-	mingw-w64-runtime-post
 )
 
 SUBTARGETS_PART2=(
-	mingw-deps-post
+	mingw-w64-runtime-post
 	binutils
 	binutils-post
 	$GCC_NAME
