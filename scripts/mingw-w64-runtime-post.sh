@@ -38,16 +38,91 @@
 [[ ! -d $PREFIX/mingw ]] && mkdir -p $PREFIX/mingw
 [[ ! -d $PREFIX/$HOST ]] && mkdir -p $PREFIX/$HOST
 
-[[ $USE_MULTILIB == yes ]] && {
-	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi
-} || {
-	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
+[[ -f $BUILDS_DIR/mingw-w64-runtime-post.marker && ! -d $BUILDS_DIR/$GCC_NAME ]] && {
+	rm -f $BUILDS_DIR/mingw-w64-runtime-post.marker
 }
 
 [[ ! -f $BUILDS_DIR/mingw-w64-runtime-post.marker ]] && {
+	[[ $USE_MULTILIB == yes ]] && {
+		RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi
+	} || {
+		RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
+	}
+	
 	cp -rf $RUNTIMEPREFIX/* $PREFIX/$HOST || exit 1
 	cp -rf $RUNTIMEPREFIX/* $PREFIX/mingw || exit 1
-	touch $BUILDS_DIR/mingw-w64-runtime-post.marker
-}
+	
+	[[ $USE_MULTILIB == yes ]] && {
+		[[ $ARCHITECTURE == x32 ]] && {
+			mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,lib64,include}
+			
+			cp -f $PREREQ_DIR/libiconv-x32-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x64-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib64/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x32-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
+			cp -f $RUNTIME_DIR/winpthreads-x32/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib64/ || exit 1
+
+			cp -f $RUNTIME_DIR/winpthreads-x32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/lib/*.a $PREFIX/$TARGET/lib64/ || exit 1
+
+			cp -f $RUNTIME_DIR/winpthreads-x32/include/*.h $PREFIX/$TARGET/include/ || exit 1
+
+			mkdir -p $BUILDS_DIR/$GCC_NAME/$TARGET/64/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3}
+			echo $BUILDS_DIR/$GCC_NAME/$TARGET/64/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \
+				| xargs -n 1 cp $PREFIX/$TARGET/lib64/libwinpthread-1.dll || exit 1
+		} || {
+			mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,lib32,include}
+			
+			cp -f $PREREQ_DIR/libiconv-x32-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib32/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x64-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x32-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
+
+			cp -f $RUNTIME_DIR/winpthreads-x32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib32/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+
+			cp -f $RUNTIME_DIR/winpthreads-x32/lib/*.a $PREFIX/$TARGET/lib32/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+
+			cp -f $RUNTIME_DIR/winpthreads-x64/include/*.h $PREFIX/$TARGET/include/ || exit 1
+
+			mkdir -p $BUILDS_DIR/$GCC_NAME/$TARGET/32/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3}
+			echo $BUILDS_DIR/$GCC_NAME/$TARGET/32/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \
+				| xargs -n 1 cp $PREFIX/$TARGET/lib32/libwinpthread-1.dll || exit 1
+		}
+
+		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
+	} || {
+		mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
+		
+		[[ $ARCHITECTURE == x32 ]] && {
+			cp -f $PREREQ_DIR/libiconv-x32-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x32-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
+
+			cp -f $RUNTIME_DIR/winpthreads-x32/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x32/include/*.h $PREFIX/$TARGET/include/ || exit 1
+		} || {
+			cp -f $PREREQ_DIR/libiconv-x64-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/libiconv-x64-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
+
+			cp -f $RUNTIME_DIR/winpthreads-x64/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/winpthreads-x64/include/*.h $PREFIX/$TARGET/include/ || exit 1
+		}
+
+		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
+	}
+	
+	[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
+		cp -f $PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
+		cp -f $PREREQ_DIR/libiconv-$ARCHITECTURE-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
+	}
+
+	touch $BUILDS_DIR/mingw-w64-runtime-post.marker || exit 1
+}
 # **************************************************************************
