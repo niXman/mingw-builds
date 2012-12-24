@@ -42,7 +42,9 @@
 	$HOST-gcc ${COMMON_CFLAGS} -o gdb.exe ${SOURCES_DIR}/gdb-wrapper/gdb-wrapper.c
 	echo " done"
 	echo -n "--> installing..."
-	mv $PREFIX/bin/gdb.exe $PREFIX/bin/gdborig.exe
+	[[ ! -f $PREFIX/bin/gdborig.exe ]] && {
+		mv $PREFIX/bin/gdb.exe $PREFIX/bin/gdborig.exe
+	}
 	cp -f gdb.exe $PREFIX/bin || exit 1
 	echo " done"
 	touch $BUILDS_DIR/gdb-wrapper.marker
