@@ -39,7 +39,7 @@
 
 ENABLE_LANGUAGES='c,c++,fortran'
 
-PROCESSOR_OPTIMIZATION_ARCH='nocona'
+PROCESSOR_OPTIMIZATION_ARCH='i686'
 BASE_CFLAGS="-march=$PROCESSOR_OPTIMIZATION_ARCH -mtune=$PROCESSOR_OPTIMIZATION_ARCH -O2 -pipe -fomit-frame-pointer"
 BASE_CXXFLAGS="$BASE_CFLAGS"
 BASE_CPPFLAGS=""
@@ -411,11 +411,10 @@ SUBTARGETS_PART1=(
 	cloog
 	mingw-w64-api
 	mingw-w64-crt
-	mingw-w64-runtime-post
 )
 
 SUBTARGETS_PART2=(
-	mingw-deps-post
+	mingw-w64-runtime-post
 	binutils
 	binutils-post
 	$GCC_NAME
