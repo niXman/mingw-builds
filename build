@@ -679,7 +679,8 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		MAKE_LOG=$CURR_LOGS_DIR/$NAME/make.log
 		INSTALL_LOG=$CURR_LOGS_DIR/$NAME/install.log
 
-		mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$NAME
+		mkdir -p $SRCS_DIR/$SRC_DIR_NAME
+		mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$NAME 
 		#[[ $NAME != $SRC_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$NAME
 
 		func_download \
