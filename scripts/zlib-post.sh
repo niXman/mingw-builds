@@ -61,8 +61,8 @@ ZLIB_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/zlib.sh | sed 's|VERSION=||' )
 		BINARY_PATH=$PREREQ_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/bin \
 		SHARED_MODE=1 \
 		install > $CURR_LOGS_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/install.log || exit 1
-	
-	rm -rf $ARCHITECTURE-zlib-${ZLIB_VERSION}/lib/libz.a
+
+	#rm -rf $ARCHITECTURE-zlib-${ZLIB_VERSION}/lib/libz.a
 	
 	touch $PREREQ_BUILD_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}-post.marker
 }
