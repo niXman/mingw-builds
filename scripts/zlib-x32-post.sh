@@ -71,11 +71,11 @@ export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 }
 
 [[ ! -f $BUILDS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker ]] && {
-
+	mkdir -p $PREFIX/bin $PREFIX/mingw
 	[[ $USE_MULTILIB == yes ]] && {
 		[[ $ARCHITECTURE == x32 ]] && {
 		
-			mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
+			mkdir -p $PREFIX/$TARGET/{lib,include}
 			
 			cp -rf $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/* $PREFIX/ > /dev/null || exit 1
 			
@@ -96,7 +96,7 @@ export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 
 		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
 	} || {
-		mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
+		mkdir -p $PREFIX/$TARGET/{lib,include}
 		
 		cp -rf $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/* $PREFIX/ > /dev/null || exit 1
 			
