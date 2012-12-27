@@ -37,6 +37,12 @@
 
 [[ $ARCHITECTURE == x32 ]] && {
 	export PATH=$BEFORE_LIBICONV64_PRE_PATH
+	
+	[[ $USE_MULTILIB == yes ]] && {
+		HOST=$OLD_HOST
+		BUILD=$OLD_BUILD
+		TARGET=$OLD_TARGET
+	}
 }
 
 # **************************************************************************

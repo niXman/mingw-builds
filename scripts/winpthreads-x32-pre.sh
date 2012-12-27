@@ -38,6 +38,15 @@
 [[ $ARCHITECTURE == x64 ]] && {
 	BEFORE_WINPTHREADS32_PRE_PATH=$PATH
 	export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+
+	[[ $USE_MULTILIB == yes ]] && {
+		OLD_HOST=$HOST
+		OLD_BUILD=$BUILD
+		OLD_TARGET=$TARGET
+		HOST=$TVIN_HOST
+		BUILD=$TVIN_BUILD
+		TARGET=$TVIN_TARGET
+	}
 }
 
 # **************************************************************************
