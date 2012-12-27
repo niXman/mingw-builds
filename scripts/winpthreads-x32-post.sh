@@ -37,6 +37,12 @@
 
 [[ $ARCHITECTURE == x64 ]] && {
 	export PATH=$BEFORE_WINPTHREADS32_PRE_PATH
+
+	[[ $USE_MULTILIB == yes ]] && {
+		HOST=$OLD_HOST
+		BUILD=$OLD_BUILD
+		TARGET=$OLD_TARGET
+	}
 }
 
 # **************************************************************************

@@ -586,6 +586,13 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		HOST=i686-w64-mingw32
 		BUILD=i686-w64-mingw32
 		TARGET=i686-w64-mingw32
+		
+		[[ $USE_MULTILIB == yes ]] && {
+			TVIN_HOST=x86_64-w64-mingw32
+			TVIN_BUILD=x86_64-w64-mingw32
+			TVIN_TARGET=x86_64-w64-mingw32
+		}
+		
 		PROCESSOR_OPTIMIZATION_ARCH='i686'
 		[[ $USE_MULTILIB == yes ]] && {
 			ENABLE_TARGETS=i686-w64-mingw32,x86_64-w64-mingw32
@@ -601,6 +608,13 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		HOST=x86_64-w64-mingw32
 		BUILD=x86_64-w64-mingw32
 		TARGET=x86_64-w64-mingw32
+		
+		[[ $USE_MULTILIB == yes ]] && {
+			TVIN_HOST=i686-w64-mingw32
+			TVIN_BUILD=i686-w64-mingw32
+			TVIN_TARGET=i686-w64-mingw32
+		}
+		
 		PROCESSOR_OPTIMIZATION_ARCH='nocona'
 		[[ $USE_MULTILIB == yes ]] && {
 			ENABLE_TARGETS=x86_64-w64-mingw32,i686-w64-mingw32
