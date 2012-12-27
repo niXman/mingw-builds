@@ -54,11 +54,13 @@
 		all > $CURR_LOGS_DIR/zlib-${ZLIB_VERSION}/make.log || exit 1
 	
 	make -f win32/Makefile.gcc \
-		INCLUDE_PATH=$LIBS_DIR/include \
-		LIBRARY_PATH=$LIBS_DIR/lib \
-		BINARY_PATH=$LIBS_DIR/bin \
-		SHARED_MODE=0 \
+		INCLUDE_PATH=$PREFIX/include \
+		LIBRARY_PATH=$PREFIX/lib \
+		BINARY_PATH=$PREFIX/bin \
+		SHARED_MODE=1 \
 		install > $CURR_LOGS_DIR/zlib-${ZLIB_VERSION}/install.log || exit 1
+	
+	rm -rf $PREFIX/lib/libz.a
 	
 	touch $BUILDS_DIR/zlib-post.marker
 }
