@@ -38,6 +38,15 @@
 [[ $ARCHITECTURE == x32 ]] && {
 	BEFORE_LIBICONV64_PRE_PATH=$PATH
 	export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+	
+	[[ $USE_MULTILIB == yes ]] && {
+		OLD_HOST=$HOST
+		OLD_BUILD=$BUILD
+		OLD_TARGET=$TARGET
+		HOST=$TVIN_HOST
+		BUILD=$TVIN_BUILD
+		TARGET=$TVIN_TARGET
+	}
 }
 
 # **************************************************************************
