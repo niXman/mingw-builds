@@ -40,7 +40,7 @@ NAME=zlib-${VERSION}
 SRC_DIR_NAME=zlib-${VERSION}
 URL=http://zlib.net/zlib-${VERSION}.tar.bz2
 TYPE=.tar.bz2
-PRIORITY=extra
+PRIORITY=prereq
 
 #
 
@@ -55,26 +55,10 @@ CONFIGURE_FLAGS=()
 
 #
 
-MAKE_FLAGS=(
-	-f $SRCS_DIR/$SRC_DIR_NAME/win32/Makefile.gcc
-	CC=$HOST-gcc
-	AR=ar
-	RC=windres
-	DLLWRAP=dllwrap
-	STRIP=strip
-	-j$JOBS
-	all
-)
+MAKE_FLAGS=()
 
 #
 
-INSTALL_FLAGS=(
-	-f $SRCS_DIR/$SRC_DIR_NAME/win32/Makefile.gcc
-	INCLUDE_PATH=$LIBS_DIR/include
-	LIBRARY_PATH=$LIBS_DIR/lib
-	BINARY_PATH=$LIBS_DIR/bin
-	SHARED_MODE=0
-	install
-)
+INSTALL_FLAGS=()
 
 # **************************************************************************
