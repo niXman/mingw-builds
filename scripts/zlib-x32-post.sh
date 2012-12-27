@@ -36,6 +36,8 @@
 # **************************************************************************
 ZLIB_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/zlib.sh | sed 's|VERSION=||' )
 ZLIB_ARCH=x32
+OLD_PATH=$PATH
+export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 
 [[ ! -f $PREREQ_BUILD_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}-post.marker ]] && {
 		
@@ -69,11 +71,11 @@ ZLIB_ARCH=x32
 }
 
 [[ ! -f $BUILDS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker ]] && {
-
+	mkdir -p $PREFIX/bin $PREFIX/mingw
 	[[ $USE_MULTILIB == yes ]] && {
 		[[ $ARCHITECTURE == x32 ]] && {
 		
-			mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
+			mkdir -p $PREFIX/$TARGET/{lib,include}
 			
 			cp -rf $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/* $PREFIX/ > /dev/null || exit 1
 			
@@ -94,7 +96,7 @@ ZLIB_ARCH=x32
 
 		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
 	} || {
-		mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
+		mkdir -p $PREFIX/$TARGET/{lib,include}
 		
 		cp -rf $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/* $PREFIX/ > /dev/null || exit 1
 			
@@ -107,5 +109,7 @@ ZLIB_ARCH=x32
 	
 	touch $BUILDS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker
 }
+
+export PATH=$OLD_PATH
 
 # **************************************************************************
