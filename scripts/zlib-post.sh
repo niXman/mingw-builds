@@ -35,10 +35,32 @@
 
 # **************************************************************************
 
-[[ ! -f $BUILDS_DIR/zlib-pre.marker ]] && {
+[[ ! -f $BUILDS_DIR/zlib-post.marker ]] && {
+	
 	ZLIB_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/zlib.sh | sed 's|VERSION=||' )
+	mkdir -p $BUILDS_DIR/zlib-${ZLIB_VERSION}
+
 	cp -rf $SRCS_DIR/zlib-${ZLIB_VERSION} $BUILDS_DIR || exit 1
-	touch $BUILDS_DIR/zlib-pre.marker
+	
+	cd $BUILDS_DIR/zlib-${ZLIB_VERSION}
+	
+	make -f win32/Makefile.gcc \
+		CC=$HOST-gcc \
+		AR=ar \
+		RC=windres \
+		DLLWRAP=dllwrap \
+		STRIP=strip \
+		-j$JOBS \
+		all > $CURR_LOGS_DIR/zlib-${ZLIB_VERSION}/make.log || exit 1
+	
+	make -f win32/Makefile.gcc \
+		INCLUDE_PATH=$LIBS_DIR/include \
+		LIBRARY_PATH=$LIBS_DIR/lib \
+		BINARY_PATH=$LIBS_DIR/bin \
+		SHARED_MODE=0 \
+		install > $CURR_LOGS_DIR/zlib-${ZLIB_VERSION}/install.log || exit 1
+	
+	touch $BUILDS_DIR/zlib-post.marker
 }
 
 # **************************************************************************

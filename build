@@ -425,8 +425,8 @@ SUBTARGETS_PART2=(
 	mingw-w64-tools-genpeimg
 	mingw-w64-tools-widl
 	libgnurx
-	zlib-pre
 	zlib
+	zlib-post
 	bzip2
 	libffi
 	expat
@@ -766,34 +766,38 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			}
 		}
 
-		make_flags="/bin/make ${MAKE_FLAGS[@]}"
-		func_make \
-			$NAME \
-			$SRC_DIR_NAME \
-			"$make_flags" \
-			$MAKE_LOG \
-			"building..." \
-			"built" \
-			$CURR_BUILD_DIR
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG &
-			exit $func_res
+		[[ ${#MAKE_FLAGS[@]} >0 ]] && {
+			make_flags="/bin/make ${MAKE_FLAGS[@]}"
+			func_make \
+				$NAME \
+				$SRC_DIR_NAME \
+				"$make_flags" \
+				$MAKE_LOG \
+				"building..." \
+				"built" \
+				$CURR_BUILD_DIR
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG &
+				exit $func_res
+			}
 		}
 
-		install_flags="/bin/make ${INSTALL_FLAGS[@]}"
-		func_make \
-			$NAME \
-			$SRC_DIR_NAME \
-			"$install_flags" \
-			$INSTALL_LOG \
-			"installing..." \
-			"installed" \
-			$CURR_BUILD_DIR
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG &
-			exit $func_res
+		[[ ${#INSTALL_FLAGS[@]} >0 ]] && {
+			install_flags="/bin/make ${INSTALL_FLAGS[@]}"
+			func_make \
+				$NAME \
+				$SRC_DIR_NAME \
+				"$install_flags" \
+				$INSTALL_LOG \
+				"installing..." \
+				"installed" \
+				$CURR_BUILD_DIR
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG &
+				exit $func_res
+			}
 		}
 		
 		[[ ${#EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
