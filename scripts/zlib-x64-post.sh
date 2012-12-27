@@ -50,7 +50,7 @@ export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 	cd $PREREQ_BUILD_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}
 	
 	make -f win32/Makefile.gcc \
-		CC=$HOST-gcc \
+		CC=x86_64-w64-mingw32-gcc \
 		AR=ar \
 		RC=windres \
 		DLLWRAP=dllwrap \
