@@ -35,6 +35,7 @@
 
 # **************************************************************************
 ZLIB_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/zlib.sh | sed 's|VERSION=||' )
+ZLIB_ARCH=x32
 
 [[ ! -f $PREREQ_BUILD_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}-post.marker ]] && {
 		
@@ -67,11 +68,44 @@ ZLIB_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/zlib.sh | sed 's|VERSION=||' )
 	touch $PREREQ_BUILD_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}-post.marker
 }
 
-[[ ! -f $BUILDS_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}-post.marker ]] && {
+[[ ! -f $BUILDS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker ]] && {
 
-	cp -rf $PREREQ_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/* $PREFIX/ > /dev/null || exit 1
+	[[ $USE_MULTILIB == yes ]] && {
+		[[ $ARCHITECTURE == x32 ]] && {
+		
+			mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
+			
+			cp -rf $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/* $PREFIX/ > /dev/null || exit 1
+			
+			cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/include/*.h $PREFIX/$TARGET/include/ || exit 1
+			cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/bin/zlib1.dll $PREFIX/$TARGET/lib/ || exit 1
+
+		} || {
+			mkdir -p $PREFIX/$TARGET/{lib,lib32,include}
+			
+			cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib/*.a $PREFIX/$TARGET/lib32/ || exit 1
+			cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/bin/zlib1.dll $PREFIX/$TARGET/lib32/ || exit 1
+
+			mkdir -p $BUILDS_DIR/$GCC_NAME/$TARGET/32/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3}
+			echo $BUILDS_DIR/$GCC_NAME/$TARGET/32/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \
+				| xargs -n 1 cp $PREFIX/$TARGET/lib64/zlib1.dll || exit 1
+		}
+
+		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
+	} || {
+		mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
+		
+		cp -rf $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/* $PREFIX/ > /dev/null || exit 1
+			
+		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/include/*.h $PREFIX/$TARGET/include/ || exit 1
+		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/bin/zlib1.dll $PREFIX/$TARGET/lib/ || exit 1
+
+		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
+	}
 	
-	touch $BUILDS_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}-post.marker
+	touch $BUILDS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker
 }
 
 # **************************************************************************
