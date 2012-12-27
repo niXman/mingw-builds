@@ -36,6 +36,8 @@
 # **************************************************************************
 ZLIB_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/zlib.sh | sed 's|VERSION=||' )
 ZLIB_ARCH=x64
+OLD_PATH=$PATH
+export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 
 [[ ! -f $PREREQ_BUILD_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker ]] && {
 		
@@ -107,5 +109,7 @@ ZLIB_ARCH=x64
 	
 	touch $BUILDS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker
 }
+
+export PATH=$OLD_PATH
 
 # **************************************************************************
