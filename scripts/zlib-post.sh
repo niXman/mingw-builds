@@ -34,15 +34,17 @@
 #
 
 # **************************************************************************
+ZLIB_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/zlib.sh | sed 's|VERSION=||' )
 
-[[ ! -f $BUILDS_DIR/zlib-post.marker ]] && {
+[[ ! -f $PREREQ_BUILD_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}-post.marker ]] && {
+		
+	mkdir -p $PREREQ_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}
+	mkdir -p $CURR_LOGS_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}
 	
-	ZLIB_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/zlib.sh | sed 's|VERSION=||' )
-	mkdir -p $BUILDS_DIR/zlib-${ZLIB_VERSION}
-
-	cp -rf $SRCS_DIR/zlib-${ZLIB_VERSION} $BUILDS_DIR || exit 1
+	cp -rf $SRCS_DIR/zlib-${ZLIB_VERSION} $PREREQ_BUILD_DIR || exit 1
+	mv $PREREQ_BUILD_DIR/zlib-${ZLIB_VERSION} $PREREQ_BUILD_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}
 	
-	cd $BUILDS_DIR/zlib-${ZLIB_VERSION}
+	cd $PREREQ_BUILD_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}
 	
 	make -f win32/Makefile.gcc \
 		CC=$HOST-gcc \
@@ -51,18 +53,25 @@
 		DLLWRAP=dllwrap \
 		STRIP=strip \
 		-j$JOBS \
-		all > $CURR_LOGS_DIR/zlib-${ZLIB_VERSION}/make.log || exit 1
+		all > $CURR_LOGS_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/make.log || exit 1
 	
 	make -f win32/Makefile.gcc \
-		INCLUDE_PATH=$PREFIX/include \
-		LIBRARY_PATH=$PREFIX/lib \
-		BINARY_PATH=$PREFIX/bin \
+		INCLUDE_PATH=$PREREQ_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/include \
+		LIBRARY_PATH=$PREREQ_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/lib \
+		BINARY_PATH=$PREREQ_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/bin \
 		SHARED_MODE=1 \
-		install > $CURR_LOGS_DIR/zlib-${ZLIB_VERSION}/install.log || exit 1
+		install > $CURR_LOGS_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/install.log || exit 1
 	
-	rm -rf $PREFIX/lib/libz.a
+	rm -rf $ARCHITECTURE-zlib-${ZLIB_VERSION}/lib/libz.a
 	
-	touch $BUILDS_DIR/zlib-post.marker
+	touch $PREREQ_BUILD_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}-post.marker
+}
+
+[[ ! -f $BUILDS_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}-post.marker ]] && {
+
+	cp -rf $PREREQ_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/* $PREFIX/ > /dev/null || exit 1
+	
+	touch $BUILDS_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}-post.marker
 }
 
 # **************************************************************************

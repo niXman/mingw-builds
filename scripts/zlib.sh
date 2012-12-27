@@ -40,7 +40,7 @@ NAME=zlib-${VERSION}
 SRC_DIR_NAME=zlib-${VERSION}
 URL=http://zlib.net/zlib-${VERSION}.tar.bz2
 TYPE=.tar.bz2
-PRIORITY=extra
+PRIORITY=prereq
 
 #
 

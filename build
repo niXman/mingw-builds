@@ -408,6 +408,8 @@ SUBTARGETS_PART1=(
 	mpc
 	ppl
 	cloog
+	zlib
+	zlib-post
 	mingw-w64-api
 	mingw-w64-crt
 )
@@ -425,8 +427,6 @@ SUBTARGETS_PART2=(
 	mingw-w64-tools-genpeimg
 	mingw-w64-tools-widl
 	libgnurx
-	zlib
-	zlib-post
 	bzip2
 	libffi
 	expat
