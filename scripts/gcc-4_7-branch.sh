@@ -58,6 +58,13 @@ CONFIGURE_FLAGS=(
 	--prefix=$PREFIX
 	--with-sysroot=$PREFIX
 	#
+	$( [[ $USE_MULTILIB == yes ]] \
+		&& echo "--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64" \
+		|| [[ $ARCHITECTURE == x32 ]] \
+				&& echo "--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32" \
+				|| echo "--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64" \
+	)
+	#
 	$LINK_TYPE_BOTH
 	#
 	$( [[ $USE_MULTILIB == yes ]] \
