@@ -44,10 +44,10 @@ BASE_CXXFLAGS="$BASE_CFLAGS"
 BASE_CPPFLAGS=""
 BASE_LDFLAGS="-pipe"
 
-PROCESSOR_OPTIMIZATION_TUNE='core2'
+PROCESSOR_OPTIMIZATION_TUNE_32='generic'
+PROCESSOR_OPTIMIZATION_TUNE_64='core2'
 PROCESSOR_OPTIMIZATION_ARCH_32='i686'
 PROCESSOR_OPTIMIZATION_ARCH_64='nocona'
-OPTIMIZE_CFLAGS="-mtune=$PROCESSOR_OPTIMIZATION_TUNE"
 
 LINK_TYPE_BOTH="--enable-shared --enable-static"
 LINK_TYPE_SHARED="--enable-shared --disable-static"
@@ -407,6 +407,16 @@ WINPTHREADS_X64_SUBTARGETS=(
 	winpthreads-x64-post
 )
 
+ZLIB_X32_SUBTARGETS=(
+	zlib
+	zlib-x32-post
+)
+
+ZLIB_X64_SUBTARGETS=(
+	zlib
+	zlib-x64-post
+)
+
 SUBTARGETS_PART1=(
 	gmp
 	mpfr
@@ -430,8 +440,6 @@ SUBTARGETS_PART2=(
 	mingw-w64-tools-genpeimg
 	mingw-w64-tools-widl
 	libgnurx
-	zlib-pre
-	zlib
 	bzip2
 	libffi
 	expat
@@ -466,6 +474,8 @@ SUBTARGETS_PART2=(
 	SUBTARGETS=(
 		${LIBICONV_X32_SUBTARGETS[@]}
 		${LIBICONV_X64_SUBTARGETS[@]}
+		${ZLIB_X32_SUBTARGETS[@]}
+		${ZLIB_X64_SUBTARGETS[@]}		
 		${SUBTARGETS_PART1[@]}
 		${WINPTHREADS_X32_SUBTARGETS[@]}
 		${WINPTHREADS_X64_SUBTARGETS[@]}
@@ -475,6 +485,7 @@ SUBTARGETS_PART2=(
 	[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
 		SUBTARGETS=(
 			${LIBICONV_X32_SUBTARGETS[@]}
+			${ZLIB_X32_SUBTARGETS[@]}
 			${SUBTARGETS_PART1[@]}
 			${WINPTHREADS_X32_SUBTARGETS[@]}
 			${SUBTARGETS_PART2[@]}
@@ -482,6 +493,7 @@ SUBTARGETS_PART2=(
 	} || {
 		SUBTARGETS=(
 			${LIBICONV_X64_SUBTARGETS[@]}
+			${ZLIB_X64_SUBTARGETS[@]}
 			${SUBTARGETS_PART1[@]}
 			${WINPTHREADS_X64_SUBTARGETS[@]}
 			${SUBTARGETS_PART2[@]}
@@ -579,6 +591,13 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		HOST=i686-w64-mingw32
 		BUILD=i686-w64-mingw32
 		TARGET=i686-w64-mingw32
+		
+		[[ $USE_MULTILIB == yes ]] && {
+			TVIN_HOST=x86_64-w64-mingw32
+			TVIN_BUILD=x86_64-w64-mingw32
+			TVIN_TARGET=x86_64-w64-mingw32
+		}
+		
 		[[ $USE_MULTILIB == yes ]] && {
 			ENABLE_TARGETS=i686-w64-mingw32,x86_64-w64-mingw32
 		} || {
@@ -593,6 +612,13 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		HOST=x86_64-w64-mingw32
 		BUILD=x86_64-w64-mingw32
 		TARGET=x86_64-w64-mingw32
+		
+		[[ $USE_MULTILIB == yes ]] && {
+			TVIN_HOST=i686-w64-mingw32
+			TVIN_BUILD=i686-w64-mingw32
+			TVIN_TARGET=i686-w64-mingw32
+		}
+		
 		[[ $USE_MULTILIB == yes ]] && {
 			ENABLE_TARGETS=x86_64-w64-mingw32,i686-w64-mingw32
 		} || {
@@ -607,38 +633,45 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 
 	mkdir -p $BASE_BUILD_DIR $BUILDS_DIR $LIBS_DIR $LOGS_DIR $PREFIX $PREREQ_BUILD_DIR $PREREQ_LOGS_DIR
 
-	COMMON_CFLAGS="$OPTIMIZE_CFLAGS $BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
-	COMMON_CXXFLAGS="$OPTIMIZE_CFLAGS $BASE_CFLAGS"
+	COMMON_CFLAGS="$BASE_CFLAGS -I$PREFIX/include -I$LIBS_DIR/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
+	COMMON_CXXFLAGS="$BASE_CFLAGS"
 	COMMON_CPPFLAGS="$BASE_CPPFLAGS"
-	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/opt/lib"
+	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/lib -L$PREFIX/opt/lib"
 
 	[[ $USE_MULTILIB == yes ]] && {
 		SUBTARGETS=(
 			${LIBICONV_X32_SUBTARGETS[@]}
 			${LIBICONV_X64_SUBTARGETS[@]}
+			${ZLIB_X32_SUBTARGETS[@]}
+			${ZLIB_X64_SUBTARGETS[@]}	
 			${SUBTARGETS_PART1[@]}
 			${WINPTHREADS_X32_SUBTARGETS[@]}
 			${WINPTHREADS_X64_SUBTARGETS[@]}
 			${SUBTARGETS_PART2[@]}
 		)
 		PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
+		PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
 	} || {
 		[[ $ARCHITECTURE == x32 ]] && {
 			SUBTARGETS=(
 				${LIBICONV_X32_SUBTARGETS[@]}
+				${ZLIB_X32_SUBTARGETS[@]}
 				${SUBTARGETS_PART1[@]}
 				${WINPTHREADS_X32_SUBTARGETS[@]}
 				${SUBTARGETS_PART2[@]}
 			)
 			PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
+			PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
 		} || {
 			SUBTARGETS=(
 				${LIBICONV_X64_SUBTARGETS[@]}
+				${ZLIB_X64_SUBTARGETS[@]}
 				${SUBTARGETS_PART1[@]}
 				${WINPTHREADS_X64_SUBTARGETS[@]}
 				${SUBTARGETS_PART2[@]}
 			)
 			PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
+			PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
 		}
 	}
 
@@ -770,34 +803,38 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			}
 		}
 
-		make_flags="/bin/make ${MAKE_FLAGS[@]}"
-		func_make \
-			$NAME \
-			$SRC_DIR_NAME \
-			"$make_flags" \
-			$MAKE_LOG \
-			"building..." \
-			"built" \
-			$CURR_BUILD_DIR
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG &
-			exit $func_res
+		[[ ${#MAKE_FLAGS[@]} >0 ]] && {
+			make_flags="/bin/make ${MAKE_FLAGS[@]}"
+			func_make \
+				$NAME \
+				$SRC_DIR_NAME \
+				"$make_flags" \
+				$MAKE_LOG \
+				"building..." \
+				"built" \
+				$CURR_BUILD_DIR
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG &
+				exit $func_res
+			}
 		}
 
-		install_flags="/bin/make ${INSTALL_FLAGS[@]}"
-		func_make \
-			$NAME \
-			$SRC_DIR_NAME \
-			"$install_flags" \
-			$INSTALL_LOG \
-			"installing..." \
-			"installed" \
-			$CURR_BUILD_DIR
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG &
-			exit $func_res
+		[[ ${#INSTALL_FLAGS[@]} >0 ]] && {
+			install_flags="/bin/make ${INSTALL_FLAGS[@]}"
+			func_make \
+				$NAME \
+				$SRC_DIR_NAME \
+				"$install_flags" \
+				$INSTALL_LOG \
+				"installing..." \
+				"installed" \
+				$CURR_BUILD_DIR
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG &
+				exit $func_res
+			}
 		}
 		
 		[[ ${#EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
