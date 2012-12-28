@@ -58,8 +58,6 @@ CONFIGURE_FLAGS=(
 	--prefix=$PREFIX
 	--with-sysroot=$PREFIX
 	#
-	$PROCESSOR_OPTIMIZATION
-	#
 	$LINK_TYPE_BOTH
 	#
 	$( [[ $USE_MULTILIB == yes ]] \
@@ -96,7 +94,10 @@ CONFIGURE_FLAGS=(
 	#
 	--with-gnu-as
 	--with-gnu-ld
-	--with-tune=$PROCESSOR_OPTIMIZATION_TUNE
+	#
+	$PROCESSOR_OPTIMIZATION
+	$PROCESSOR_TUNE
+	#
 	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
 		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
 	)
