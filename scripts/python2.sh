@@ -101,7 +101,7 @@ EXECUTE_AFTER_PATCH=(
 }
 
 LIBFFI_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/libffi.sh | sed 's|VERSION=||' )
-MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREFIXW/opt/include"
+MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREFIXW/include -I$PREFIXW/opt/include"
 
 # Workaround for conftest error on 64-bit builds
 export ac_cv_working_tzset=no
@@ -125,7 +125,7 @@ CONFIGURE_FLAGS=(
 	CFLAGS="\"$COMMON_CFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1 $MY_CPPFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS $MY_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIXW/opt/lib -L$LIBSW_DIR/lib\""
+	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIXW/lib -L$PREFIXW/opt/lib -L$LIBSW_DIR/lib\""
 )
 
 #
