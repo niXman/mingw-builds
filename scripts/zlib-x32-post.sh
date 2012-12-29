@@ -91,7 +91,7 @@ export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 
 			mkdir -p $BUILDS_DIR/$GCC_NAME/$TARGET/32/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3}
 			echo $BUILDS_DIR/$GCC_NAME/$TARGET/32/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \
-				| xargs -n 1 cp $PREFIX/$TARGET/lib64/zlib1.dll || exit 1
+				| xargs -n 1 cp $PREFIX/$TARGET/lib32/zlib1.dll || exit 1
 		}
 
 		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
