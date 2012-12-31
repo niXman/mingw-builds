@@ -75,7 +75,7 @@ export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 	[[ ($USE_MULTILIB == yes) && ($ARCHITECTURE == x64) ]] && {
 	{
 		mkdir -p $PREFIX/$TARGET/{lib,lib32,include}
-			
+
 		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib/*.a $PREFIX/$TARGET/lib32/ || exit 1
 		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/bin/zlib1.dll $PREFIX/$TARGET/lib32/ || exit 1
 
@@ -84,12 +84,15 @@ export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 			| xargs -n 1 cp $PREFIX/$TARGET/lib32/zlib1.dll || exit 1
 	} || {
 		mkdir -p $PREFIX/$TARGET/{lib,include}
-		
+
 		cp -rf $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/* $PREFIX/ > /dev/null || exit 1
-			
+
 		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
 		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/include/*.h $PREFIX/$TARGET/include/ || exit 1
 		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/bin/zlib1.dll $PREFIX/$TARGET/lib/ || exit 1
+
+		COMMON_CFLAGS="$COMMON_CFLAGS -I$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/include"
+		COMMON_LDFLAGS="$COMMON_LDFLAGS -L$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib"
 	}
 	cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
 	touch $BUILDS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker
