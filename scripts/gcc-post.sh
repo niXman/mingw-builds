@@ -58,7 +58,7 @@
 			[[ $USE_MULTILIB == yes ]] && {
 				# libgcc_s.a
 				cp -f $PREFIX/lib/gcc/$TARGET/lib64/libgcc_s.a $PREFIX/$TARGET/lib64/ || exit 1
-				cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/64 -type f \( -iname *.dll ! -iname *winpthread* \)) \
+				cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/64 -type f \( -iname *.dll ! -iname *winpthread* ! -iname *zlib* \)) \
 					$PREFIX/$TARGET/lib64/ >/dev/null 2>&1 || exit 1
 				
 				[[ $STRIP_ON_INSTALL == yes ]] && {
@@ -85,7 +85,7 @@
 			[[ $USE_MULTILIB == yes ]] && {
 				# libgcc_s.a
 				cp -f $PREFIX/lib/gcc/$TARGET/lib32/libgcc_s.a $PREFIX/$TARGET/lib32/ || exit 1
-				cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/32 -type f \( -iname *.dll ! -iname *winpthread* \)) $PREFIX/$TARGET/lib32/
+				cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/32 -type f \( -iname *.dll ! -iname *winpthread* ! -iname *zlib* \)) $PREFIX/$TARGET/lib32/
 			
 				[[ $STRIP_ON_INSTALL == yes ]] && {
 					strip $PREFIX/$TARGET/lib32/*.dll || exit 1
