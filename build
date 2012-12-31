@@ -690,6 +690,12 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		EXECUTE_AFTER_INSTALL=()
 
 		cd $TOP_DIR && . ./scripts/$sub.sh
+	
+		[[ $sub == "gcc-post" ]] && {
+			echo -n "--> Switching to new compiler..."
+			export PATH=$PREFIX/bin:$PREFIX/opt/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+			echo "done"
+		}
 
 		[[ -z $NAME ]] && continue
 
@@ -850,12 +856,6 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_install-$_index.log &
 				exit $func_res
 			}
-		}
-		
-		[[ $sub == $GCC_NAME ]] && {
-			echo -n "--> Switching to new compiler..."
-			export PATH=$PREFIX/bin:$PREFIX/opt/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
-			echo "done"
 		}
    done
 done
