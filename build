@@ -633,10 +633,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 
 	mkdir -p $BASE_BUILD_DIR $BUILDS_DIR $LIBS_DIR $LOGS_DIR $PREFIX $PREREQ_BUILD_DIR $PREREQ_LOGS_DIR
 
-	COMMON_CFLAGS="$BASE_CFLAGS -I$PREFIX/include -I$LIBS_DIR/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
+	COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
 	COMMON_CXXFLAGS="$BASE_CFLAGS"
 	COMMON_CPPFLAGS="$BASE_CPPFLAGS"
-	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/lib -L$PREFIX/opt/lib"
+	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/opt/lib"
 
 	[[ $USE_MULTILIB == yes ]] && {
 		SUBTARGETS=(
@@ -690,6 +690,12 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		EXECUTE_AFTER_INSTALL=()
 
 		cd $TOP_DIR && . ./scripts/$sub.sh
+	
+		[[ $sub == "gcc-post" ]] && {
+			echo -n "--> Switching to new compiler..."
+			export PATH=$PREFIX/bin:$PREFIX/opt/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+			echo "done"
+		}
 
 		[[ -z $NAME ]] && continue
 
@@ -850,12 +856,6 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_install-$_index.log &
 				exit $func_res
 			}
-		}
-		
-		[[ $sub == $GCC_NAME ]] && {
-			echo -n "--> Switching to new compiler..."
-			export PATH=$PREFIX/bin:$PREFIX/opt/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
-			echo "done"
 		}
    done
 done
