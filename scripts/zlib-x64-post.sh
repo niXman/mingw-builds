@@ -54,7 +54,6 @@ export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 		AR=ar \
 		RC=windres \
 		DLLWRAP=dllwrap \
-		STRIP=strip \
 		-j$JOBS \
 		all > $CURR_LOGS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/make.log || exit 1
 	
@@ -62,10 +61,7 @@ export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 		INCLUDE_PATH=$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/include \
 		LIBRARY_PATH=$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib \
 		BINARY_PATH=$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/bin \
-		SHARED_MODE=1 \
 		install > $CURR_LOGS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/install.log || exit 1
-
-	#rm -rf $ARCHITECTURE-zlib-${ZLIB_VERSION}/lib/libz.a
 	
 	touch $PREREQ_BUILD_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker
 }
@@ -73,22 +69,14 @@ export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 [[ ! -f $BUILDS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker ]] && {
 	mkdir -p $PREFIX/bin $PREFIX/mingw
 	[[ ($USE_MULTILIB == yes) && ($ARCHITECTURE == x32) ]] && {
-		mkdir -p $PREFIX/$TARGET/{lib,lib64,include}
+		mkdir -p $PREFIX/$TARGET/lib64
 
 		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib/*.a $PREFIX/$TARGET/lib64/ || exit 1
-		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/bin/zlib1.dll $PREFIX/$TARGET/lib64/ || exit 1
-
-		mkdir -p $BUILDS_DIR/$GCC_NAME/$TARGET/64/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3}
-		echo $BUILDS_DIR/$GCC_NAME/$TARGET/64/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \
-			| xargs -n 1 cp $PREFIX/$TARGET/lib64/zlib1.dll || exit 1
 	} || {
 		mkdir -p $PREFIX/$TARGET/{lib,include}
 
-		cp -rf $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/* $PREFIX/ > /dev/null || exit 1
-
 		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
 		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/include/*.h $PREFIX/$TARGET/include/ || exit 1
-		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/bin/zlib1.dll $PREFIX/$TARGET/lib/ || exit 1
 	}
 	cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
 	touch $BUILDS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker
