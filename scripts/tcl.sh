@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION=8.5.13
+VERSION=8.6.0
 NAME=tcl${VERSION}
 SRC_DIR_NAME=tcl${VERSION}/win
 URL=http://prdownloads.sourceforge.net/tcl/tcl${VERSION}-src.tar.gz

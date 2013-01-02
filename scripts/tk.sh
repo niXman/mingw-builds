@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION=8.5.13
+VERSION=8.6.0
 NAME=tk${VERSION}
 SRC_DIR_NAME=tk${VERSION}/win
 URL=http://prdownloads.sourceforge.net/tcl/tk${VERSION}-src.tar.gz
