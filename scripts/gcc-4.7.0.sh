@@ -4,7 +4,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'mingw-builds' project.
-# Copyright (c) 2011,2012, by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
@@ -59,8 +59,6 @@ CONFIGURE_FLAGS=(
 	--prefix=$PREFIX
 	--with-sysroot=$PREFIX
 	#
-	$PROCESSOR_OPTIMIZATION
-	#
 	$LINK_TYPE_BOTH
 	#
 	$( [[ $USE_MULTILIB == yes ]] \
@@ -97,7 +95,10 @@ CONFIGURE_FLAGS=(
 	#
 	--with-gnu-as
 	--with-gnu-ld
-	--with-tune=$PROCESSOR_OPTIMIZATION_TUNE
+	#
+	$PROCESSOR_OPTIMIZATION
+	$PROCESSOR_TUNE
+	#
 	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
 		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
 	)

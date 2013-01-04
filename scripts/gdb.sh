@@ -4,7 +4,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'mingw-builds' project.
-# Copyright (c) 2011,2012, by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
@@ -54,7 +54,7 @@ CONFIGURE_FLAGS=(
 	--build=$TARGET
 	--prefix=$PREFIX
 	#
-	--enable-targets=x86_64-w64-mingw32,i686-w64-mingw32
+	--enable-targets=all
 	--enable-64-bit-bfd
 	#
 	--disable-nls
@@ -66,13 +66,14 @@ CONFIGURE_FLAGS=(
 	--with-python
 	--with-expat
 	--with-libiconv
-	--with-system-readline
+	--with-zlib
 	--disable-tui
 	--disable-gdbtk
 	#
 	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
-	CPPFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 \""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib -L$PREFIX/opt/lib/python2.7/config\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib/python2.7/config\""
 )
 
 #
