@@ -4,7 +4,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'mingw-builds' project.
-# Copyright (c) 2011,2012, by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION=8.5.13
+VERSION=8.6.0
 NAME=tcl${VERSION}
 SRC_DIR_NAME=tcl${VERSION}/win
 URL=http://prdownloads.sourceforge.net/tcl/tcl${VERSION}-src.tar.gz
