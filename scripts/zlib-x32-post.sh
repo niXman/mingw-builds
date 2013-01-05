@@ -39,15 +39,15 @@ ZLIB_ARCH=x32
 OLD_PATH=$PATH
 export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 
-[[ ! -f $PREREQ_BUILD_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}-post.marker ]] && {
+[[ ! -f $PREREQ_BUILD_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker ]] && {
 		
-	mkdir -p $PREREQ_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}
-	mkdir -p $CURR_LOGS_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}
+	mkdir -p $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}
+	mkdir -p $CURR_LOGS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}
 	
 	cp -rf $SRCS_DIR/zlib-${ZLIB_VERSION} $PREREQ_BUILD_DIR || exit 1
-	mv $PREREQ_BUILD_DIR/zlib-${ZLIB_VERSION} $PREREQ_BUILD_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}
+	mv $PREREQ_BUILD_DIR/zlib-${ZLIB_VERSION} $PREREQ_BUILD_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}
 	
-	cd $PREREQ_BUILD_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}
+	cd $PREREQ_BUILD_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}
 	
 	make -f win32/Makefile.gcc \
 		CC=i686-w64-mingw32-gcc \
@@ -55,15 +55,15 @@ export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 		RC=windres \
 		DLLWRAP=dllwrap \
 		-j$JOBS \
-		all > $CURR_LOGS_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/make.log || exit 1
+		all > $CURR_LOGS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/make.log || exit 1
 	
 	make -f win32/Makefile.gcc \
-		INCLUDE_PATH=$PREREQ_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/include \
-		LIBRARY_PATH=$PREREQ_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/lib \
-		BINARY_PATH=$PREREQ_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/bin \
-		install > $CURR_LOGS_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}/install.log || exit 1
+		INCLUDE_PATH=$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/include \
+		LIBRARY_PATH=$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib \
+		BINARY_PATH=$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/bin \
+		install > $CURR_LOGS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/install.log || exit 1
 	
-	touch $PREREQ_BUILD_DIR/$ARCHITECTURE-zlib-${ZLIB_VERSION}-post.marker
+	touch $PREREQ_BUILD_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker
 }
 
 [[ ! -f $BUILDS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker ]] && {
