@@ -48,6 +48,7 @@ PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-4.7-iconv.patch
 	gcc/gcc-4.7.2-dont-return-early-if-attributes-is-NULL.patch
+	gcc/gcc-4.7-vswprintf.patch
 )
 
 #
