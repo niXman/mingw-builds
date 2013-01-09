@@ -41,7 +41,7 @@ export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 
 [[ ! -f $PREREQ_BUILD_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker ]] && {
 		
-	mkdir -p $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}
+	mkdir -p $PREREQ_DIR/$ZLIB_ARCH-zlib
 	mkdir -p $CURR_LOGS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}
 	
 	cp -rf $SRCS_DIR/zlib-${ZLIB_VERSION} $PREREQ_BUILD_DIR || exit 1
