@@ -47,6 +47,7 @@ PRIORITY=main
 PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-4.7-iconv.patch
+	gcc/gcc-4.7-vswprintf.patch
 )
 
 #

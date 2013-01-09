@@ -48,6 +48,7 @@ PATCHES=(
 	gcc/gcc-4.6-cloog_lang_c.patch
 	gcc/gcc-4.6-stdthreads.patch
 	gcc/gcc-4.6-iconv.patch
+	gcc/gcc-4.6-vswprintf.patch
 )
 
 #
