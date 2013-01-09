@@ -36,7 +36,7 @@
 # **************************************************************************
 
 [[ ! -d $PREFIX/mingw ]] && mkdir -p $PREFIX/mingw
-[[ ! -d $PREFIX/$HOST ]] && mkdir -p $PREFIX/$HOST
+[[ ! -d $PREFIX/$TARGET ]] && mkdir -p $PREFIX/$TARGET
 
 [[ -f $BUILDS_DIR/mingw-w64-runtime-post.marker && ! -d $BUILDS_DIR/$GCC_NAME ]] && {
 	rm -f $BUILDS_DIR/mingw-w64-runtime-post.marker
