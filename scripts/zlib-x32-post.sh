@@ -58,35 +58,35 @@ export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 		all > $CURR_LOGS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/make.log || exit 1
 	
 	make -f win32/Makefile.gcc \
-		INCLUDE_PATH=$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/include \
-		LIBRARY_PATH=$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib \
-		BINARY_PATH=$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/bin \
+		INCLUDE_PATH=$PREREQ_DIR/$ZLIB_ARCH-zlib/include \
+		LIBRARY_PATH=$PREREQ_DIR/$ZLIB_ARCH-zlib/lib \
+		BINARY_PATH=$PREREQ_DIR/$ZLIB_ARCH-zlib/bin \
 		install > $CURR_LOGS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/install.log || exit 1
 	
 	touch $PREREQ_BUILD_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker
 }
 
-[[ ! -f $BUILDS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker ]] && {
+[[ ! -f $BUILDS_DIR/$ZLIB_ARCH-zlib-post.marker ]] && {
 	mkdir -p $PREFIX/bin $PREFIX/mingw
 	[[ ($USE_MULTILIB == yes) && ($ARCHITECTURE == x64) ]] && {
 		mkdir -p $PREFIX/$TARGET/lib32
 
-		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib/*.a $PREFIX/$TARGET/lib32/ || exit 1
+		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib/lib/*.a $PREFIX/$TARGET/lib32/ || exit 1
 	} || {
 		mkdir -p $PREFIX/$TARGET/{lib,include}
 
-		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/include/*.h $PREFIX/$TARGET/include/ || exit 1
+		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib/include/*.h $PREFIX/$TARGET/include/ || exit 1
 	}
 	cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
-	touch $BUILDS_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}-post.marker
+	touch $BUILDS_DIR/$ZLIB_ARCH-zlib-post.marker
 }
 
 [[ $ARCHITECTURE == $ZLIB_ARCH ]] && {
-	COMMON_CFLAGS="$COMMON_CFLAGS -I$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/include"
-	COMMON_LDFLAGS="$COMMON_LDFLAGS -L$PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}/lib"
+	COMMON_CFLAGS="$COMMON_CFLAGS -I$PREREQ_DIR/$ZLIB_ARCH-zlib/include"
+	COMMON_LDFLAGS="$COMMON_LDFLAGS -L$PREREQ_DIR/$ZLIB_ARCH-zlib/lib"
 
-	pushd $PREREQ_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION} > /dev/null
+	pushd $PREREQ_DIR/$ZLIB_ARCH-zlib > /dev/null
 		ZLIB_WINST=`pwd -W`
 	popd > /dev/null
 }
