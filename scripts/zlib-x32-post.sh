@@ -82,15 +82,6 @@ export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 	touch $BUILDS_DIR/$ZLIB_ARCH-zlib-post.marker
 }
 
-[[ $ARCHITECTURE == $ZLIB_ARCH ]] && {
-	COMMON_CFLAGS="$COMMON_CFLAGS -I$PREREQ_DIR/$ZLIB_ARCH-zlib/include"
-	COMMON_LDFLAGS="$COMMON_LDFLAGS -L$PREREQ_DIR/$ZLIB_ARCH-zlib/lib"
-
-	pushd $PREREQ_DIR/$ZLIB_ARCH-zlib > /dev/null
-		ZLIB_WINST=`pwd -W`
-	popd > /dev/null
-}
-
 export PATH=$OLD_PATH
 
 # **************************************************************************
