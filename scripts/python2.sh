@@ -100,8 +100,14 @@ EXECUTE_AFTER_PATCH=(
 	popd > /dev/null
 }
 
+[[ -d $PREREQ_DIR ]] && {
+	pushd $PREREQ_DIR > /dev/null
+	PREREQW_DIR=`pwd -W`
+	popd > /dev/null
+}
+
 LIBFFI_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/libffi.sh | sed 's|VERSION=||' )
-MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$ZLIB_WINST/include -I$PREFIXW/opt/include"
+MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREREQW_DIR/$ARCHITECTURE-zlib/include -I$PREFIXW/opt/include"
 
 # Workaround for conftest error on 64-bit builds
 export ac_cv_working_tzset=no
@@ -125,7 +131,7 @@ CONFIGURE_FLAGS=(
 	CFLAGS="\"$COMMON_CFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1 $MY_CPPFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS $MY_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$ZLIB_WINST/lib -L$PREFIXW/opt/lib -L$LIBSW_DIR/lib\""
+	LDFLAGS="\"$COMMON_LDFLAGS -L$PREREQW_DIR/$ARCHITECTURE-zlib/lib -L$PREFIXW/opt/lib -L$LIBSW_DIR/lib\""
 )
 
 #
