@@ -589,9 +589,9 @@ function func_map_gcc_name_to_gcc_type {
 	# $1 - gcc name
 
 	case $1 in
-		gcc-?.?.?) echo rel ;;		#release
-		gcc-*-branch) echo pre ;;	#prerelease
-		gcc-trunk) echo snap ;;		#snapshot
+		gcc-?.?.?) echo release ;;
+		gcc-*-branch) echo prerelease ;;
+		gcc-trunk) echo snapshot ;;
 		*) echo "gcc name error: $1. terminate."; exit 1 ;;
 	esac
 }
