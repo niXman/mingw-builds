@@ -272,7 +272,7 @@ done
 	}
 }
 
-SRCS_DIR=$ROOT_DIR/mingw-sources
+SRCS_DIR=$ROOT_DIR/src
 PREREQ_DIR=$ROOT_DIR/mingw-prereq
 RUNTIME_DIR=$ROOT_DIR/mingw-runtime
 ARCHIVES_DIR=$ROOT_DIR/mingw-archives
@@ -572,11 +572,11 @@ SUBTARGETS_PART2=(
 # **************************************************************************
 
 for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
-	[[ -n $REV_NUM ]] && REV_STRING="-rev$REV_NUM" || REV_STRING=""
+	[[ -n $REV_NUM ]] && REV_STRING="-r$REV_NUM" || REV_STRING=""
 	GCC_TYPE_STRING=$(func_map_gcc_name_to_gcc_type $GCC_NAME)
 	PREREQ_BUILD_DIR=$ROOT_DIR/prereq-build
 	PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
-	BASE_BUILD_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$GCC_TYPE_STRING-$THREADS_MODEL-$EXCEPTIONS_MODEL$REV_STRING
+	BASE_BUILD_DIR=$ROOT_DIR/$ARCHITECTURE-${GCC_NAME/gcc-/}-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}
 	BUILDS_DIR=$BASE_BUILD_DIR/build
 	LIBS_DIR=$BASE_BUILD_DIR/libs
 	LOGS_DIR=$BASE_BUILD_DIR/logs
