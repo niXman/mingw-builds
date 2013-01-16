@@ -47,7 +47,6 @@ PRIORITY=main
 PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-4.7-iconv.patch
-	gcc/gcc-4.7.2-dont-return-early-if-attributes-is-NULL.patch
 	gcc/gcc-4.7-vswprintf.patch
 )
 
@@ -64,7 +63,7 @@ CONFIGURE_FLAGS=(
 	$LINK_TYPE_BOTH
 	#
 	$( [[ $USE_MULTILIB == yes ]] \
-		&& echo "--enable-targets=all --enable-multilib" \
+		&& echo "--enable-targets=$ENABLE_TARGETS --enable-multilib" \
 		|| echo "--disable-multilib" \
 	)
 	--enable-languages=$ENABLE_LANGUAGES,lto

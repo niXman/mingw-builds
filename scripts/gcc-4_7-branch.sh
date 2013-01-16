@@ -62,7 +62,7 @@ CONFIGURE_FLAGS=(
 	$LINK_TYPE_BOTH
 	#
 	$( [[ $USE_MULTILIB == yes ]] \
-		&& echo "--enable-targets=all --enable-multilib" \
+		&& echo "--enable-targets=$ENABLE_TARGETS --enable-multilib" \
 		|| echo "--disable-multilib" \
 	)
 	--enable-languages=$ENABLE_LANGUAGES,lto
