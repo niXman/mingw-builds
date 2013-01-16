@@ -54,7 +54,7 @@ CONFIGURE_FLAGS=(
 	--build=$TARGET
 	--prefix=$PREFIX
 	#
-	--enable-targets=all
+	--enable-targets=$ENABLE_TARGETS
 	--enable-64-bit-bfd
 	#
 	--disable-nls
