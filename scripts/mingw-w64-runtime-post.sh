@@ -36,7 +36,7 @@
 # **************************************************************************
 
 [[ ! -d $PREFIX/mingw ]] && mkdir -p $PREFIX/mingw
-[[ ! -d $PREFIX/$HOST ]] && mkdir -p $PREFIX/$HOST
+[[ ! -d $PREFIX/$TARGET ]] && mkdir -p $PREFIX/$TARGET
 
 [[ -f $BUILDS_DIR/mingw-w64-runtime-post.marker && ! -d $BUILDS_DIR/$GCC_NAME ]] && {
 	rm -f $BUILDS_DIR/mingw-w64-runtime-post.marker
@@ -49,7 +49,7 @@
 		RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
 	}
 	
-	cp -rf $RUNTIMEPREFIX/* $PREFIX/$HOST || exit 1
+	cp -rf $RUNTIMEPREFIX/* $PREFIX/$TARGET || exit 1
 	cp -rf $RUNTIMEPREFIX/* $PREFIX/mingw || exit 1
 	
 	[[ $USE_MULTILIB == yes ]] && {
