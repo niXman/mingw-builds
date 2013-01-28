@@ -176,7 +176,15 @@ while [[ $# > 0 ]]; do
 		--cxxflags=*) BASE_CXXFLAGS="$BASE_CXXFLAGS ${1/--cxxflags=/}" ;;
 		--cppflags=*) BASE_CPPFLAGS="$BASE_CPPFLAGS ${1/--cppflags=/}" ;;
 		--ldflags=*) BASE_LDFLAGS="$BASE_LDFLAGS ${1/--ldflags=/}" ;;
-		--buildroot=*) ROOT_DIR=${1/--buildroot=/} ;;
+		--buildroot=*)
+			ROOT_DIR=${1/--buildroot=/}
+			ROOT_DIR=${ROOT_DIR//:/:\/}
+			ROOT_DIR=${ROOT_DIR//\/\//\/}
+			mkdir -p ${ROOT_DIR} || die "Incorrect directory ${ROOT_DIR}"
+			pushd ${ROOT_DIR} > /dev/null
+			ROOT_DIR=`pwd`
+			popd > /dev/null
+		;;
 		--preload) PRELOAD_MODE=yes ;;
 		--download) DOWNLOAD_MODE=yes ;;
 		--exceptions=*)
