@@ -80,9 +80,9 @@ x32_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
 x64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
 
 x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.2/32-bit/threads-posix/sjlj/x32-4.7.2-release-posix-sjlj-rev0.7z
+/host-windows/releases/4.7.2/32-bit/threads-posix/sjlj/x32-4.7.2-release-posix-sjlj-rev8.7z
 x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.2/64-bit/threads-posix/sjlj/x64-4.7.2-release-posix-sjlj-rev0.7z
+/host-windows/releases/4.7.2/64-bit/threads-posix/sjlj/x64-4.7.2-release-posix-sjlj-rev8.7z
 
 # **************************************************************************
 
@@ -238,7 +238,10 @@ while [[ $# > 0 ]]; do
 			;;
 			esac
 		;;
-		--rev=*) REV_NUM=${1/--rev=/} ;;
+		--rev=*)
+			REV_NUM=${1/--rev=/}
+			PKG_VERSION="$PKG_VERSION, rev$REV_NUM"
+		;;
 		x32)
 			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
 			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
