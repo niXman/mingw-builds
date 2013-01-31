@@ -64,7 +64,7 @@ JOBS=1
 
 # **************************************************************************
 
-MINGW_BUILDS_VERSION="MinGW-builds-0.3.0"
+MINGW_BUILDS_VERSION="MinGW-builds-1.0.0"
 PKG_VERSION="Built by MinGW-builds project"
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
@@ -240,7 +240,7 @@ while [[ $# > 0 ]]; do
 		;;
 		--rev=*)
 			REV_NUM=${1/--rev=/}
-			PKG_VERSION="$PKG_VERSION, rev$REV_NUM"
+			PKG_VERSION="rev$REV_NUM, $PKG_VERSION"
 		;;
 		x32)
 			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
