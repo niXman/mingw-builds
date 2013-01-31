@@ -64,7 +64,7 @@ JOBS=1
 
 # **************************************************************************
 
-MINGW_BUILDS_VERSION="MinGW-builds-0.3.0"
+MINGW_BUILDS_VERSION="MinGW-builds-1.0.0"
 PKG_VERSION="Built by MinGW-builds project"
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
@@ -80,9 +80,9 @@ x32_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
 x64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
 
 x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.2/32-bit/threads-posix/sjlj/x32-4.7.2-release-posix-sjlj-rev0.7z
+/host-windows/releases/4.7.2/32-bit/threads-posix/sjlj/x32-4.7.2-release-posix-sjlj-rev8.7z
 x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.2/64-bit/threads-posix/sjlj/x64-4.7.2-release-posix-sjlj-rev0.7z
+/host-windows/releases/4.7.2/64-bit/threads-posix/sjlj/x64-4.7.2-release-posix-sjlj-rev8.7z
 
 # **************************************************************************
 
@@ -176,7 +176,15 @@ while [[ $# > 0 ]]; do
 		--cxxflags=*) BASE_CXXFLAGS="$BASE_CXXFLAGS ${1/--cxxflags=/}" ;;
 		--cppflags=*) BASE_CPPFLAGS="$BASE_CPPFLAGS ${1/--cppflags=/}" ;;
 		--ldflags=*) BASE_LDFLAGS="$BASE_LDFLAGS ${1/--ldflags=/}" ;;
-		--buildroot=*) ROOT_DIR=${1/--buildroot=/} ;;
+		--buildroot=*)
+			ROOT_DIR=${1/--buildroot=/}
+			ROOT_DIR=${ROOT_DIR//:/:\/}
+			ROOT_DIR=${ROOT_DIR//\/\//\/}
+			mkdir -p ${ROOT_DIR} || die "Incorrect directory ${ROOT_DIR}"
+			pushd ${ROOT_DIR} > /dev/null
+			ROOT_DIR=`pwd`
+			popd > /dev/null
+		;;
 		--preload) PRELOAD_MODE=yes ;;
 		--download) DOWNLOAD_MODE=yes ;;
 		--exceptions=*)
@@ -230,7 +238,10 @@ while [[ $# > 0 ]]; do
 			;;
 			esac
 		;;
-		--rev=*) REV_NUM=${1/--rev=/} ;;
+		--rev=*)
+			REV_NUM=${1/--rev=/}
+			PKG_VERSION="rev$REV_NUM, $PKG_VERSION"
+		;;
 		x32)
 			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
 			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
