@@ -93,6 +93,7 @@ function func_download {
 	local _WGET_TRIES=10
 	local _WGET_WAIT=2
 	local _result=0
+	local _filename=$(basename $4)
 
 	[[ $3 == cvs || $3 == svn || $3 == hg || $3 == git ]] && {
 		local _lib_name=$1/$2
@@ -101,6 +102,11 @@ function func_download {
 	}
 
 	[[ ! -f $6 ]] && {
+		[[ -f $1/$_filename ]] && {
+			echo -n "--> Delete corrupted download..."
+			rm -f $1/$_filename
+			echo " done"
+		}
 		echo -n "--> download..."
 		case $3 in
 			cvs)
