@@ -530,7 +530,7 @@ SUBTARGETS_PART2=(
 				$TYPE \
 				$URL \
 				$SRCS_DIR/$SRC_DIR_NAME/download.log \
-				$SRCS_DIR/$SRC_DIR_NAME/_download.marker \
+				$SRCS_DIR/${NAME}_download.marker \
 				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 			func_res=$?
 			[[ $func_res != 0 ]] && {
