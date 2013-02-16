@@ -164,6 +164,9 @@ int main(int argc, char** argv) {
 			printf("Could not AssignProcessToObject\n");
 		}
 
+	// Do not handle Ctrl-C in the wrapper
+	SetConsoleCtrlHandler(NULL, TRUE);
+
 	WaitForSingleObject(pi.hProcess, INFINITE);
 	
 	DIE_IF_FALSE(
