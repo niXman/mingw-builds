@@ -564,6 +564,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	[[ -n $REV_NUM ]] && REV_STRING="-r$REV_NUM" || REV_STRING=""
 	GCC_PART_NAME=${GCC_NAME/gcc-/}
 	GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
+	GCC_PART_NAME=${GCC_PART_NAME//./}
 	GCC_TYPE_STRING=$(func_map_gcc_name_to_gcc_type $GCC_NAME)
 	PREREQ_BUILD_DIR=$ROOT_DIR/prereq-build
 	PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
