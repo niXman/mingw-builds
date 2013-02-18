@@ -49,7 +49,10 @@ $( \
 
 [[ ! -f $ARCHIVE_NAME ]] && {
 	echo "-> compressing $PREFIX"
-	rm -rf $PREFIX/mingw
+	[[ -d $PREFIX/mingw ]] && {
+		cd $BUILDS_DIR
+		rm -rf $PREFIX/mingw
+	}
 
 	[[ ! -f $ARCHIVE_NAME ]] && {
 		echo -n "---> \"$(basename $ARCHIVE_NAME)\" ... "
