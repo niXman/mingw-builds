@@ -58,7 +58,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREFIX
+	--prefix=$MINGWPREFIX
 	--with-sysroot=$PREFIX
 	#
 	$LINK_TYPE_BOTH
@@ -127,6 +127,7 @@ MAKE_FLAGS=(
 
 INSTALL_FLAGS=(
 	-j$JOBS
+	DESTDIR=$BASE_BUILD_DIR
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
