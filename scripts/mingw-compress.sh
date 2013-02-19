@@ -48,56 +48,23 @@ $( \
 )
 
 [[ ! -f $ARCHIVE_NAME ]] && {
-	MINGW_COPY_MARKER=$BUILDS_DIR/mingw-copy.marker
-	MINGW_ROOT=$BUILDS_DIR/mingw
-
 	echo "-> compressing $PREFIX"
-	[[ ! -f $MINGW_COPY_MARKER ]] && {
-		echo -n "--> copy PREFIX to new location..."
-		rm -rf $PREFIX/mingw $MINGW_ROOT
-		cp -rf $PREFIX $MINGW_ROOT
-		[[ $? == 0 ]] && {
-			echo "done"
-			touch $MINGW_COPY_MARKER
-		} || {
-			echo "error on copying $PREFIX directory"
-			exit 1
-		}
-	} || {
-		[[ ! -d $MINGW_ROOT ]] && {
-			echo -n "--> copy PREFIX to new location..."
-			rm -rf $PREFIX/mingw $MINGW_ROOT
-			cp -rf $PREFIX $MINGW_ROOT
-			[[ $? == 0 ]] && {
-				echo "done"
-				touch $MINGW_COPY_MARKER
-			} || {
-				echo "error on copying $PREFIX directory"
-				exit 1
-			}
-		}
+	[[ -d $PREFIX/mingw ]] && {
+		cd $BUILDS_DIR
+		rm -rf $PREFIX/mingw
 	}
-	
-	rm -rf $PREFIX/mingw
 
 	[[ ! -f $ARCHIVE_NAME ]] && {
 		echo -n "---> \"$(basename $ARCHIVE_NAME)\" ... "
 		( cd $BUILDS_DIR && 7za a -t7z -mx=9 -mfb=64 -md=64m -ms=on \
-			"$ARCHIVE_NAME" "$MINGW_ROOT" >/dev/null 2>&1 \
+			"$ARCHIVE_NAME" "$PREFIX" >/dev/null 2>&1 \
 		)
 		[[ $? == 0 ]] && {
 			echo "done"
 		} || {
-			echo; echo "error on compressing $MINGW_ROOT directory"
+			echo; echo "error on compressing $PREFIX directory"
 			exit 1
 		}
-	}
-
-	[[ -f $MINGW_COPY_MARKER ]] && {
-		echo -n "--> remove new PREFIX..."
-		rm -rf $MINGW_ROOT
-		rm $MINGW_COPY_MARKER
-		echo "done"
 	}
 } || {
 	echo "---> compressed"
