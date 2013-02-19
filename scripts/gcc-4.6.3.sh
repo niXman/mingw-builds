@@ -59,7 +59,6 @@ CONFIGURE_FLAGS=(
 	--target=$TARGET
 	#
 	--prefix=$MINGWPREFIX
-	--libexecdir=$MINGWPREFIX/lib
 	--with-sysroot=$PREFIX
 	#
 	$LINK_TYPE_BOTH
