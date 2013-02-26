@@ -412,6 +412,7 @@ SUBTARGETS_PART1=(
 	mpfr
 	mpc
 	ppl
+	isl
 	cloog
 	mingw-w64-api
 	mingw-w64-crt
