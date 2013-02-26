@@ -35,16 +35,17 @@
 
 # **************************************************************************
 
-VERSION=0.18.0
-NAME=$ARCHITECTURE-cloog-${VERSION}-$LINK_TYPE_SUFFIX
-SRC_DIR_NAME=cloog-${VERSION}
-URL=http://www.bastoul.net/cloog/pages/download/count.php3?url=./cloog-${VERSION}.tar.gz
-TYPE=.tar.gz
+VERSION=0.11.1
+NAME=$ARCHITECTURE-isl-${VERSION}-$LINK_TYPE_SUFFIX
+SRC_DIR_NAME=isl-${VERSION}
+URL=ftp://ftp.linux.student.kuleuven.be/pub/people/skimo/isl//isl-${VERSION}.tar.bz2
+TYPE=.tar.bz2
 PRIORITY=prereq
 
 #
 
-PATCHES=()
+PATCHES=(
+)
 
 #
 
@@ -58,7 +59,6 @@ CONFIGURE_FLAGS=(
 	$GCC_DEPS_LINK_TYPE
 	#
 	--with-gmp-prefix=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
-	--with-isl-prefix=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
