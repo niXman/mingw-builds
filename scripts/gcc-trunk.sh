@@ -95,9 +95,6 @@ CONFIGURE_FLAGS=(
 	--with-gnu-as
 	--with-gnu-ld
 	#
-	$PROCESSOR_OPTIMIZATION
-	$PROCESSOR_TUNE
-	#
 	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
 		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
 	)
