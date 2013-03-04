@@ -39,7 +39,7 @@
 
 ENABLE_LANGUAGES='c,c++,fortran'
 
-BASE_CFLAGS="-O2 -pipe -fomit-frame-pointer"
+BASE_CFLAGS="-O2 -pipe"
 BASE_CXXFLAGS="$BASE_CFLAGS"
 BASE_CPPFLAGS=""
 BASE_LDFLAGS="-pipe"
@@ -135,8 +135,7 @@ RUN_ARGS="$@"
 }
 
 [[ -d /mingw ]] && {
-	echo "please remove \"/mingw\" directory. terminate."
-	exit 1
+	die "please remove \"/mingw\" directory. terminate."
 }
 
 [[ -n $(which "gcc.exe" 2>/dev/null) || \
@@ -144,8 +143,7 @@ RUN_ARGS="$@"
 	-n $(which "i686-w64-mingw32-gcc.exe" 2>/dev/null) || \
 	-n $(which "x86_64-w64-mingw32-gcc.exe" 2>/dev/null) \
 ]] && {
-	echo "remove from PATH any existing MinGW directory. terminate."
-	exit 1
+	die "remove from PATH any existing MinGW directory. terminate."
 }
 
 # **************************************************************************
@@ -210,8 +208,7 @@ while [[ $# > 0 ]]; do
 				USE_MULTILIB=yes			
 			;;
 			*)
-				echo "$EXCEPTIONS_MODEL is not valid exception model. Available models: dwarf, seh, sjlj"
-				exit 1
+				die "$EXCEPTIONS_MODEL is not valid exception model. Available models: dwarf, seh, sjlj"
 			;;
 			esac	
 		;;
@@ -228,8 +225,7 @@ while [[ $# > 0 ]]; do
 		;;
 		--jobs=*)
 			[[ ${1/--jobs=/} == 0 ]] && {
-				echo "jobs value must be greater then 0. terminate."
-				exit 1
+				die "jobs value must be greater then 0. terminate."
 			}
 			JOBS=${1/--jobs=/}
 		;;
@@ -239,8 +235,7 @@ while [[ $# > 0 ]]; do
 			win32 | posix)
 			;;
 			*)
-				echo "$THREADS_MODEL is not valid threads model. Available models: posix, win32"
-				exit 1
+				die "$THREADS_MODEL is not valid threads model. Available models: posix, win32"
 			;;
 			esac
 		;;
@@ -258,7 +253,7 @@ while [[ $# > 0 ]]; do
 		;;
 		gcc-*)
 			[[ ! -f scripts/$1.sh ]] && {
-				echo "bad gcc version. terminate."; exit 1;
+				die "bad gcc version. terminate."
 			} || {
 				GCC_NAME=$1
 			}
@@ -270,8 +265,7 @@ while [[ $# > 0 ]]; do
 		--src-upload=*) UPLOAD_SRC_TO_SF=yes; SF_USER=${1/--upload=/} ;;
 		*)
 			echo "bad command line: \"$1\""
-			echo "terminate."
-			exit 1
+			die "terminate."
 		;;
 	esac
 	shift
@@ -284,8 +278,7 @@ done
 	[[ $? == 0 ]] && {
 		rm -Rf $ROOT_DIR
 	} || {
-		echo "bad build root directory. terminate."
-		exit 1
+		die "bad build root directory. terminate."
 	}
 }
 
@@ -298,42 +291,34 @@ mkdir -p $SRCS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 # **************************************************************************
 
 [[ -z $GCC_NAME ]] && {
-	echo "please specify GCC version. terminate."
-	exit 1
+	die "please specify GCC version. terminate."
 }
 
 [[ $THREADS_MODEL != win32 && $THREADS_MODEL != posix ]] && {
-	echo "bad threads model. terminate."
-	exit 1
+	die "bad threads model. terminate."
 }
 
 [[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
 	${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
-	echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
-	exit 1
+	die "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
 }
 [[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
-	echo "$EXCEPTIONS_MODEL exceptions not allowed on multilib architecture. terminate."
-	exit 1
+	die "$EXCEPTIONS_MODEL exceptions not allowed on multilib architecture. terminate."
 }
 [[ $EXCEPTIONS_MODEL == dwarf ]] && {
 	[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-		echo "DWARF exceptions not allowed on x86_64 architecture. terminate."
-		exit 1
+		die "DWARF exceptions not allowed on x86_64 architecture. terminate."
 	}
 	[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
-		echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
-		exit 1
+		die "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
 	}
 }
 [[ $EXCEPTIONS_MODEL == seh ]] && {
 	[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
-		echo "SEH exceptions not allowed on x86 architecture. terminate."
-		exit 1
+		die "SEH exceptions not allowed on x86 architecture. terminate."
 	}
 	[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
-		echo "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
-		exit 1
+		die "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
 	}
 }
 
@@ -344,18 +329,15 @@ mkdir -p $SRCS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 }
 
 [[ $IS_64BIT_HOST == no && ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-	echo "you can't build 64-bit MinGW using 32-bit OS. terminate."
-	exit 1
+	die "you can't build 64-bit MinGW using 32-bit OS. terminate."
 }
 
 [[ $IS_64BIT_HOST == no && $USE_MULTILIB == yes ]] && {
-	echo "you can't build multitarget MinGW using 32-bit OS. terminate."
-	exit 1
+	die "you can't build multitarget MinGW using 32-bit OS. terminate."
 }
 
 [[ $[ $COMPRESSING_MINGW == yes || $COMPRESSING_SRCS == yes ] == 1 && ! -f /bin/7za.exe ]] && {
-	echo "7za.exe is not found in your /bin directory. terminate."
-	exit 1
+	die "7za.exe is not found in your /bin directory. terminate."
 }
 
 # **************************************************************************
@@ -371,16 +353,14 @@ mkdir -p $SRCS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 			echo ": $REPLY"
 			[[ $REPLY != y && $REPLY != n ]] && continue
 			[[ $REPLY == n ]] && {
-				echo "you can't build MinGW without installed host toolchains. terminate."
-				exit 1
+				die "you can't build MinGW without installed host toolchains. terminate."
 			}
 			[[ $REPLY == y ]] && break
 		done
 
 		mkdir -p $TOOLCHAINS_DIR
 		[[ $? != 0 ]] && {
-			echo "can't create toolchains directory. terminate."
-			exit 1
+			die "can't create toolchains directory. terminate."
 		}
 
 		func_install_toolchain \
@@ -391,9 +371,8 @@ mkdir -p $SRCS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 			$x64_HOST_MINGW_PATH_URL
 		func_res=$?
 		[[ $func_res != 0 ]] && {
-			echo "toolchain install error. terminate."
-			echo "see log-files in \"$TOOLCHAINS_DIR\" directory."
-			exit $func_res
+			echo "toolchain install error $func_res. terminate."
+			die "see log-files in \"$TOOLCHAINS_DIR\" directory."
 		}
 	}
 }
@@ -439,6 +418,7 @@ SUBTARGETS_PART1=(
 	mpfr
 	mpc
 	ppl
+	isl
 	cloog
 	mingw-w64-api
 	mingw-w64-crt
@@ -541,8 +521,7 @@ SUBTARGETS_PART2=(
 		[[ -n $( grep 'URL=' $TOP_DIR/scripts/${sub}.sh ) ]] && {
 			echo -e "-> \E[32;40m$sub\E[37;40m"
 			[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
-				echo "script for subtarget \"$sub\" is not exists. terminate."
-				exit 1
+				die "script for subtarget \"$sub\" is not exists. terminate."
 			}
 
 			NAME=""
@@ -558,12 +537,12 @@ SUBTARGETS_PART2=(
 				$TYPE \
 				$URL \
 				$SRCS_DIR/$SRC_DIR_NAME/download.log \
-				$SRCS_DIR/$SRC_DIR_NAME/_download.marker \
+				$SRCS_DIR/${SRC_DIR_NAME}_download.marker \
 				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 			func_res=$?
 			[[ $func_res != 0 ]] && {
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/download.log &
-				exit $func_res
+				die "Error $func_res"
 			}
 
 			func_uncompress \
@@ -575,7 +554,7 @@ SUBTARGETS_PART2=(
 			func_res=$?
 			[[ $func_res != 0 ]] && {
 				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/uncompress.log &
-				exit $func_res
+				die "Error $func_res"
 			}
 		}
 	done
@@ -592,6 +571,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	[[ -n $REV_NUM ]] && REV_STRING="-r$REV_NUM" || REV_STRING=""
 	GCC_PART_NAME=${GCC_NAME/gcc-/}
 	GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
+	GCC_PART_NAME=${GCC_PART_NAME//./}
 	GCC_TYPE_STRING=$(func_map_gcc_name_to_gcc_type $GCC_NAME)
 	PREREQ_BUILD_DIR=$ROOT_DIR/prereq-build
 	PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
@@ -599,7 +579,8 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	BUILDS_DIR=$BASE_BUILD_DIR/build
 	LIBS_DIR=$BASE_BUILD_DIR/libs
 	LOGS_DIR=$BASE_BUILD_DIR/logs
-	PREFIX=$BASE_BUILD_DIR/prefix
+	PREFIX=$BASE_BUILD_DIR/mingw${ARCHITECTURE/x/}
+	MINGWPREFIX=/mingw${ARCHITECTURE/x/}
 
 	MINGW_BUILD_NAME=$ARCHITECTURE-${GCC_NAME/gcc-/}
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
@@ -623,8 +604,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			ENABLE_TARGETS=i686-w64-mingw32
 		}
 		[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc.exe ]] && {
-			echo "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
-			exit 1
+			die "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
 		}
 		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREFIX/opt/bin:$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	} || {
@@ -644,8 +624,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			ENABLE_TARGETS=x86_64-w64-mingw32
 		}
 		[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc.exe ]] && {
-			echo "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
-			exit 1
+			die "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
 		}
 		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREFIX/opt/bin:$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
 	}
@@ -697,8 +676,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	for sub in ${SUBTARGETS[@]}; do
 		echo -e "-> \E[32;40m$sub\E[37;40m"
 		[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
-			echo "script for subtarget \"$sub\" is not exists. terminate."
-			exit 1
+			die "script for subtarget \"$sub\" is not exists. terminate."
 		}
 
 		NAME=""
@@ -734,7 +712,7 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		esac
 		
 		DOWNLOAD_LOG=$SRCS_DIR/$SRC_DIR_NAME/download.log
-		DOWNLOAD_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_download.marker
+		DOWNLOAD_MARKER=$SRCS_DIR/${SRC_DIR_NAME}_download.marker
 		UNCOMPRESS_LOG=$SRCS_DIR/$SRC_DIR_NAME/uncompress.log
 		UNCOMPRESS_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker
 		CONFIGURE_LOG=$CURR_LOGS_DIR/$NAME/configure.log
@@ -923,8 +901,7 @@ done
 
 		func_res=$?
 		[[ $func_res != 0 ]] && {
-			echo "upload finished with error($func_res). terminate."
-			exit $func_res
+			die "upload finished with error($func_res). terminate."
 		} || {
 			echo "done"
 		}
@@ -956,8 +933,7 @@ done
 	eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/sources-upload.log 2>&1"
 	func_res=$?
 	[[ $func_res != 0 ]] && {
-		echo "upload finished with error($func_res). terminate."
-		exit $func_res
+		die "upload finished with error($func_res). terminate."
 	}
 }
 
