@@ -44,11 +44,6 @@ BASE_CXXFLAGS="$BASE_CFLAGS"
 BASE_CPPFLAGS=""
 BASE_LDFLAGS="-pipe"
 
-PROCESSOR_OPTIMIZATION_TUNE_32='core2'
-PROCESSOR_OPTIMIZATION_TUNE_64='core2'
-PROCESSOR_OPTIMIZATION_ARCH_32='i686'
-PROCESSOR_OPTIMIZATION_ARCH_64='nocona'
-
 LINK_TYPE_BOTH="--enable-shared --enable-static"
 LINK_TYPE_SHARED="--enable-shared --disable-static"
 LINK_TYPE_STATIC="--enable-static --disable-shared"
@@ -68,8 +63,12 @@ MINGW_BUILDS_VERSION="MinGW-builds-1.0.0"
 PKG_VERSION="Built by MinGW-builds project"
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
-ORIGINAL_PATH=$PATH
+x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
+/host-windows/releases/4.7.2/32-bit/threads-posix/sjlj/x32-4.7.2-release-posix-sjlj-rev8.7z
+x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
+/host-windows/releases/4.7.2/64-bit/threads-posix/sjlj/x64-4.7.2-release-posix-sjlj-rev8.7z
 
+ORIGINAL_PATH=$PATH
 TOP_DIR=$(func_simplify_path "$PWD")
 PATCHES_DIR=$TOP_DIR/patches
 SOURCES_DIR=$TOP_DIR/sources
@@ -78,11 +77,6 @@ TOOLCHAINS_DIR=$TOP_DIR/toolchains
 
 x32_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
 x64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
-
-x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.2/32-bit/threads-posix/sjlj/x32-4.7.2-release-posix-sjlj-rev9.7z
-x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.2/64-bit/threads-posix/sjlj/x64-4.7.2-release-posix-sjlj-rev9.7z
 
 # **************************************************************************
 
@@ -113,6 +107,10 @@ RUN_ARGS="$@"
 	echo "    --cxxflags='<flags>'   - additional CXXFLAGS"
 	echo "    --cppflags='<flags>'   - additional CPPFLAGS"
 	echo "    --ldflags='<flags>'    - additional LDFLAGS"
+	echo "    --march-x32='<arch>'   - arch for x32 target"
+	echo "    --mtume-x32='<arch>'   - tune for x32 target"
+	echo "    --march-x64='<arch>'   - arch for x64 target"
+	echo "    --mtume-x64='<arch>'   - tune for x64 target"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -167,9 +165,17 @@ UPLOAD_BIN_TO_SF=no
 UPLOAD_SRC_TO_SF=no
 SF_USER=""
 
+PROCESSOR_OPTIMIZATION_TUNE_32='generic'
+PROCESSOR_OPTIMIZATION_ARCH_32='i686'
+PROCESSOR_OPTIMIZATION_TUNE_64='core2'
+PROCESSOR_OPTIMIZATION_ARCH_64='nocona'
 
 while [[ $# > 0 ]]; do
 	case $1 in
+		--march-x32=*) PROCESSOR_OPTIMIZATION_ARCH_32=${1/--march-x32=/} ;;
+		--mtume-x32=*) PROCESSOR_OPTIMIZATION_TUNE_32=${1/--mtume-x32=/} ;;
+		--march-x64=*) PROCESSOR_OPTIMIZATION_ARCH_64=${1/--march-x64=/} ;;
+		--mtume-x64=*) PROCESSOR_OPTIMIZATION_TUNE_64=${1/--mtume-x64=/} ;;
 		--cflags=*) BASE_CFLAGS="$BASE_CFLAGS ${1/--cflags=/}" ;;
 		--cxxflags=*) BASE_CXXFLAGS="$BASE_CXXFLAGS ${1/--cxxflags=/}" ;;
 		--cppflags=*) BASE_CPPFLAGS="$BASE_CPPFLAGS ${1/--cppflags=/}" ;;
