@@ -56,7 +56,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREFIX
+	--prefix=$MINGWPREFIX
 	--with-sysroot=$PREFIX
 	#
 	$LINK_TYPE_BOTH
@@ -71,7 +71,6 @@ CONFIGURE_FLAGS=(
 	--enable-libgomp
 	--enable-lto
 	--enable-graphite
-	--enable-cloog-backend=isl
 	--enable-checking=release
 	--enable-fully-dynamic-string
 	--enable-version-specific-runtime-libs
@@ -82,7 +81,7 @@ CONFIGURE_FLAGS=(
 		&& echo "--enable-sjlj-exceptions" \
 	)
 	#
-	--disable-ppl-version-check
+	--disable-isl-version-check
 	--disable-cloog-version-check
 	--disable-libstdcxx-pch
 	--disable-libstdcxx-debug
@@ -104,7 +103,8 @@ CONFIGURE_FLAGS=(
 	)
 	--with-libiconv
 	--with-system-zlib
-	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--enable-cloog-backend=isl
 	--with-pkgversion="\"$PKG_VERSION\""
 	--with-bugurl=$BUG_URL
 	#
@@ -125,6 +125,7 @@ MAKE_FLAGS=(
 
 INSTALL_FLAGS=(
 	-j$JOBS
+	DESTDIR=$BASE_BUILD_DIR
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
