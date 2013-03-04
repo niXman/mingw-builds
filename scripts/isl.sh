@@ -35,19 +35,16 @@
 
 # **************************************************************************
 
-VERSION=4.7.1
-NAME=gcc-${VERSION}
-SRC_DIR_NAME=gcc-${VERSION}
-URL=ftp://ftp.gnu.org/gnu/gcc/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
+VERSION=0.11.1
+NAME=$ARCHITECTURE-isl-${VERSION}-$LINK_TYPE_SUFFIX
+SRC_DIR_NAME=isl-${VERSION}
+URL=ftp://ftp.linux.student.kuleuven.be/pub/people/skimo/isl//isl-${VERSION}.tar.bz2
 TYPE=.tar.bz2
-PRIORITY=main
+PRIORITY=prereq
 
 #
 
 PATCHES=(
-	gcc/gcc-4.7-stdthreads.patch
-	gcc/gcc-4.7-iconv.patch
-	gcc/gcc-4.7-vswprintf.patch
 )
 
 #
@@ -57,57 +54,11 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$MINGWPREFIX
-	--with-sysroot=$PREFIX
+	--prefix=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	#
-	$LINK_TYPE_BOTH
+	$GCC_DEPS_LINK_TYPE
 	#
-	$( [[ $USE_MULTILIB == yes ]] \
-		&& echo "--enable-targets=all --enable-multilib" \
-		|| echo "--disable-multilib" \
-	)
-	--enable-languages=$ENABLE_LANGUAGES,lto
-	--enable-libstdcxx-time=yes
-	--enable-threads=$THREADS_MODEL
-	--enable-libgomp
-	--enable-lto
-	--enable-graphite
-	--enable-cloog-backend=isl
-	--enable-checking=release
-	--enable-fully-dynamic-string
-	--enable-version-specific-runtime-libs
-	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
-		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
-	)
-	$( [[ $EXCEPTIONS_MODEL == sjlj ]] \
-		&& echo "--enable-sjlj-exceptions" \
-	)
-	#
-	--disable-ppl-version-check
-	--disable-cloog-version-check
-	--disable-libstdcxx-pch
-	--disable-libstdcxx-debug
-	--disable-bootstrap
-	--disable-rpath
-	--disable-win32-registry
-	--disable-nls
-	--disable-werror
-	--disable-symvers
-	#
-	--with-gnu-as
-	--with-gnu-ld
-	#
-	$PROCESSOR_OPTIMIZATION
-	$PROCESSOR_TUNE
-	#
-	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
-		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
-	)
-	--with-libiconv
-	--with-system-zlib
-	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
-	--with-pkgversion="\"$PKG_VERSION\""
-	--with-bugurl=$BUG_URL
+	--with-gmp-prefix=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
@@ -126,7 +77,6 @@ MAKE_FLAGS=(
 
 INSTALL_FLAGS=(
 	-j$JOBS
-	DESTDIR=$BASE_BUILD_DIR
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 

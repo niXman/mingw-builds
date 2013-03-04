@@ -86,14 +86,14 @@ function func_download {
 	# $7 - revision
 
 	[[ -z $4 ]] && {
-		echo "URL is empty. terminate."
-		exit 1
+		die "URL is empty. terminate."
 	}
 
 	local _WGET_TIMEOUT=5
 	local _WGET_TRIES=10
 	local _WGET_WAIT=2
 	local _result=0
+	local _filename=$(basename $4)
 
 	[[ $3 == cvs || $3 == svn || $3 == hg || $3 == git ]] && {
 		local _lib_name=$1/$2
@@ -102,6 +102,11 @@ function func_download {
 	}
 
 	[[ ! -f $6 ]] && {
+		[[ -f $1/$_filename ]] && {
+			echo -n "--> Delete corrupted download..."
+			rm -f $1/$_filename
+			echo " done"
+		}
 		echo -n "--> download..."
 		case $3 in
 			cvs)
@@ -128,7 +133,11 @@ function func_download {
 				_result=$?
 			;;
 			git)
-				git clone $4 $_lib_name > $5 2>&1
+				[[ -n $7 ]] && {
+					git clone --branch $7 $4 $_lib_name > $5 2>&1
+				} || {
+					git clone $4 $_lib_name > $5 2>&1
+				}
 				_result=$?
 			;;
 			*)
@@ -497,8 +506,7 @@ function func_install_toolchain {
 		[[ ! -f $3 ]] && {
 			# check if MinGW root directory name is valid
 			[[ ! -d $1/mingw ]] && {
-				echo "bad MinGW root path name. terminate."
-				exit 1
+				die "bad MinGW root path name. terminate."
 			}
 
 			# rename MinGW directory
@@ -506,8 +514,7 @@ function func_install_toolchain {
 			mv $1/mingw $2
 			local _result=$?
 			[[ $_result != 0 ]] && {
-				echo "error when move root MinGW path. terminate."
-				exit 1
+				die "error when move root MinGW path. terminate."
 			} || {
 				touch $3 && echo "done" || return 1
 			}
@@ -615,7 +622,7 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-4_8-branch)	echo "4.8.1" ;;
 		gcc-4_9-branch)	echo "4.9.1" ;;
 		gcc-trunk)			echo "4.8.0" ;;
-		*) echo "gcc name error: $1. terminate."; exit 1 ;;
+		*) die "gcc name error: $1. terminate." ;;
 	esac
 }
 
@@ -704,7 +711,7 @@ function func_create_mingw_upload_cmd {
 	case $3 in
 		gcc-?.?.?) _upload_cmd="$_upload_cmd/releases/$(echo $3 | sed 's|gcc-||')" ;;
 		gcc-?_?-branch|gcc-trunk) _upload_cmd="$_upload_cmd/testing" ;;
-		*) echo "gcc name error: \"$3\". terminate."; exit 1 ;;
+		*) die "gcc name error: \"$3\". terminate." ;;
 	esac
 	case $3 in
 		gcc-4_6-branch) _upload_cmd="$_upload_cmd/4.6.4" ;;

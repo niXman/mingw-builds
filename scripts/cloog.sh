@@ -58,7 +58,9 @@ CONFIGURE_FLAGS=(
 	$GCC_DEPS_LINK_TYPE
 	#
 	--with-gmp-prefix=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
-	--with-ppl=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--with-bits=gmp
+	--with-isl=system
+	--with-isl-prefix=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
