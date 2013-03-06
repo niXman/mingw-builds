@@ -261,8 +261,8 @@ while [[ $# > 0 ]]; do
 		--version)echo $MINGW_BUILDS_VERSION; exit 0 ;;
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
 		--srcs-compress) COMPRESSING_SRCS=yes ;;
-		--mingw-upload=*) UPLOAD_BIN_TO_SF=yes; SF_USER=${1/--upload=/} ;;
-		--src-upload=*) UPLOAD_SRC_TO_SF=yes; SF_USER=${1/--upload=/} ;;
+		--mingw-upload=*) UPLOAD_BIN_TO_SF=yes; SF_USER=${1/--mingw-upload=/} ;;
+		--src-upload=*) UPLOAD_SRC_TO_SF=yes; SF_USER=${1/--src-upload=/} ;;
 		*)
 			echo "bad command line: \"$1\""
 			die "terminate."
