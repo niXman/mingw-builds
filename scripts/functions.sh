@@ -350,6 +350,11 @@ function func_make {
 
 # **************************************************************************
 
+# функция, выполняет сборку и/или выполнение тестов.
+# первым аргументом требует имя результирующего исполняемого файла.
+# вторым аргументом - список файлов(.c/.cpp/.o) с опциями для их сборки.
+#   первым, должно быть имя файла с расширением.
+
 function func_test {
 	# $1 - executable name
 	# $2 - sources names
@@ -374,27 +379,39 @@ function func_test {
 				local _first=$(echo $src_it | sed 's/\([^ ]*\).*/\1/' )
 				local _prev=$( echo $src_it | sed '$s/ *\([^ ]* *\)$//' )
 				local _last=$( echo $src_it | sed 's/^.* //' )
-				local _cmp_log=$3/$arch_it/$_first-compilation.log
+				local _ext=${_first##*.}
 				local _run_log=$3/$arch_it/$_first-execution.log
 
-				printf "%-50s" "--> $([[ ${_prev%% *} =~ .cpp ]] && echo -n G++ || echo -n GCC) compile $arch_it: \"$_first\" ... "
-				[[ ${_prev%% *} =~ .cpp ]] && {
-					echo "g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_cmp_log
-					( cd $3/$arch_it && g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_cmp_log 2>&1 )
-				} || {
-					echo "gcc -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_cmp_log
-					( cd $3/$arch_it && gcc -m${arch_it} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_cmp_log 2>&1 )
-				}
+				case $_ext in
+					c)
+						printf "%-50s" "--> GCC     $arch_it: \"$_first\" ... "
+						local _log_file=$3/$arch_it/$_first-c-compilation.log
+						echo "gcc -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
+						( cd $3/$arch_it && gcc -m${arch_it} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
+					;;
+					cpp)
+						printf "%-50s" "--> G++     $arch_it: \"$_first\" ... "
+						local _log_file=$3/$arch_it/$_first-cpp-compilation.log
+						echo "g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
+						( cd $3/$arch_it && g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
+					;;
+					o)
+						printf "%-50s" "--> LD      $arch_it: \"$_last\" ... "
+						local _log_file=$3/$arch_it/$_first-link.log
+						echo "g++ -m${arch_it} $src_it" > $_log_file
+						( cd $3/$arch_it && g++ -m${arch_it} $src_it >> $_log_file 2>&1 )
+					;;
+				esac
 				_result=$?
 				[[ $_result == 0 ]] && {
 					echo "-> $_result -> done"
 				} || {
 					echo "-> $_result -> error. terminate."
-					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_cmp_log &
+					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_log_file &
 					exit $_result
 				}
 				[[ $_last =~ .exe ]] && {
-					printf "%-50s" "--> execute     $arch_it: \"$_last\" ... "
+					printf "%-50s" "--> execute $arch_it: \"$_last\" ... "
 					( cd $3/$arch_it && $_last > $_run_log 2>&1 )
 					_result=$?
 					[[ $_result == 0 ]] && {
