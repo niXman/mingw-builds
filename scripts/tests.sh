@@ -84,16 +84,16 @@ func_test \
 
 # **************************************************************************
 
-# list3=(
-	# "lto_int.cpp -I$TESTS_DIR -flto -c -o lto_int.o"
-	# "lto_test.cpp -I$TESTS_DIR -flto -c -o lto_test.o"
-	# "lto_int.o lto_test.o -flto -o lto_test.exe"
-# )
+list3=(
+	"lto_int.cpp -I$TESTS_DIR -flto -c -o lto_int.o"
+	"lto_test.cpp -I$TESTS_DIR -flto -c -o lto_test.o"
+	"lto_int.o lto_test.o -flto -o lto_test.exe"
+)
 
-# func_test \
-	# "lto_test" \
-	# list3[@] \
-	# $TESTS_ROOT_DIR
+func_test \
+	"lto_test" \
+	list3[@] \
+	$TESTS_ROOT_DIR
 
 # **************************************************************************
 
