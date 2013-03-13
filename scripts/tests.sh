@@ -86,7 +86,8 @@ func_test \
 
 list3=(
 	"lto_int.cpp -I$TESTS_DIR -flto -c -o lto_int.o"
-	"lto_test.cpp lto_int.o -flto -I$TESTS_DIR -o lto_test.exe"
+	"lto_test.cpp -I$TESTS_DIR -flto -c -o lto_test.o"
+	"lto_int.o lto_test.o -flto -o lto_test.exe"
 )
 
 func_test \
