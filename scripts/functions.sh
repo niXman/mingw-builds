@@ -515,31 +515,32 @@ function func_install_toolchain {
 		return $?
 	}
 
-	function move_mingw {
-		# $1 - toolchains path
-		# $2 - destination path
-		# $3 - marker file name
-
-		[[ ! -f $3 ]] && {
-			# check if MinGW root directory name is valid
-			[[ ! -d $1/mingw ]] && {
-				die "bad MinGW root path name. terminate."
-			}
-
-			# rename MinGW directory
-			echo -n "--> move... "
-			mv $1/mingw $2
-			local _result=$?
-			[[ $_result != 0 ]] && {
-				die "error when move root MinGW path. terminate."
-			} || {
-				touch $3 && echo "done" || return 1
-			}
-		} || {
-			echo "---> moved"
-		}
-		return $_result
-	}
+	#function move_mingw {
+	#	# $1 - toolchains path
+	#	# $2 - destination path
+	#	# $3 - marker file name
+	#
+	#	[[ ! -f $3 ]] && {
+	#		# check if MinGW root directory name is valid
+	#		[[ ! -d $1/mingw ]] && {
+	#			die "bad MinGW root path name. terminate."
+	#		}
+	#
+	#		# rename MinGW directory
+	#		echo -n "--> move... "
+	#		mv $1/mingw $2
+	#		local _result=$?
+	#		[[ $_result != 0 ]] && {
+	#			die "error when move root MinGW path. terminate."
+	#		} || {
+	#			touch $3 && echo "done" || return 1
+	#		}
+	#	} || {
+	#		echo "---> moved"
+	#	}
+	#	return $_result
+	#	return 0
+	#}
 
 	[[ ! -d $2 || ! $2/bin/gcc.exe ]] && {
 		# x32 download
@@ -563,15 +564,15 @@ function func_install_toolchain {
 			return $_result
 		}
 
-		move_mingw \
-			$1 \
-			$2 \
-			$1/mingw-x32-move.marker
-		local _result=$?
-		[[ $_result != 0 ]] && {
-			echo "move error. terminate."
-			return $_result
-		}
+		#move_mingw \
+		#	$1 \
+		#	$2 \
+		#	$1/mingw-x32-move.marker
+		#local _result=$?
+		#[[ $_result != 0 ]] && {
+		#	echo "move error. terminate."
+		#	return $_result
+		#}
 	}
 
 	[[ $EXCEPTIONS_MODEL == seh || $EXCEPTIONS_MODEL == sjlj ]] && {
@@ -597,17 +598,17 @@ function func_install_toolchain {
 				return $_result
 			}
 
-			move_mingw \
-				$1 \
-				$3 \
-				$1/mingw-x64-move.marker
-			local _result=$?
-			[[ $_result != 0 ]] && {
-				echo "move error. terminate."
-				return $_result
-			}
+			#move_mingw \
+			#	$1 \
+			#	$3 \
+			#	$1/mingw-x64-move.marker
+			#local _result=$?
+			#[[ $_result != 0 ]] && {
+			#	echo "move error. terminate."
+			#	return $_result
+			#}
 
-			return $_result
+			return 0
 		}
 	}
 
