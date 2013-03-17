@@ -87,9 +87,9 @@ CONFIGURE_FLAGS=(
 	--disable-cloog-version-check
 	--disable-libstdcxx-pch
 	--disable-libstdcxx-debug
-	$( [[ $BOOTSTRAPING == yes ]]
-		&& echo "--enable-bootstrap"
-		|| echo "--disable-bootstrap"
+	$( [[ $BOOTSTRAPING == yes ]] \
+		&& echo "--enable-bootstrap" \
+		|| echo "--disable-bootstrap" \
 	)
 	--disable-rpath
 	--disable-win32-registry
