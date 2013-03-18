@@ -91,6 +91,7 @@ RUN_ARGS="$@"
 	echo "    --exceptions=<type>    - specifies exceptions model for GCC"
 	echo "                             available: dwarf, seh, sjlj"
 	echo "    --use-lto              - build with LTO using"
+	echo "    --bootstrap            - bootstraping GCC"
 	echo "    --no-multilib          - build GCC without multilib support"
 	echo "    --no-strip             - don't strip dll's & executables on install"
 	echo "    --dyn-deps             - build GCC with dynamically dependencies"
@@ -156,6 +157,7 @@ BUILD_ARCHITECTURES=()
 EXCEPTIONS_MODEL=sjlj
 USE_MULTILIB=yes
 STRIP_ON_INSTALL=yes
+BOOTSTRAPING=no
 THREADS_MODEL=posix
 REV_NUM=""
 GCC_NAME=""
@@ -189,6 +191,7 @@ while [[ $# > 0 ]]; do
 			ROOT_DIR=`pwd`
 			popd > /dev/null
 		;;
+		--bootstrap) BOOTSTRAPING=yes ;;
 		--preload) PRELOAD_MODE=yes ;;
 		--download) DOWNLOAD_MODE=yes ;;
 		--exceptions=*)

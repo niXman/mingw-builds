@@ -35,8 +35,8 @@
 
 # **************************************************************************
 
-NAME=gcc-trunk
-SRC_DIR_NAME=gcc-trunk
+NAME=gcc-4_8-branch
+SRC_DIR_NAME=gcc-4_8-branch
 URL=svn://gcc.gnu.org/svn/gcc/branches/gcc-4_8-branch
 TYPE=svn
 PRIORITY=main
@@ -85,7 +85,10 @@ CONFIGURE_FLAGS=(
 	--disable-cloog-version-check
 	--disable-libstdcxx-pch
 	--disable-libstdcxx-debug
-	--disable-bootstrap
+	$( [[ $BOOTSTRAPING == yes ]] \
+		&& echo "--enable-bootstrap" \
+		|| echo "--disable-bootstrap" \
+	)
 	--disable-rpath
 	--disable-win32-registry
 	--disable-nls
