@@ -166,6 +166,7 @@ COMPRESSING_SRCS=no
 UPLOAD_BIN_TO_SF=no
 UPLOAD_SRC_TO_SF=no
 SF_USER=""
+DEBUG_UPLOAD=no
 
 PROCESSOR_OPTIMIZATION_TUNE_32='generic'
 PROCESSOR_OPTIMIZATION_ARCH_32='i686'
@@ -266,6 +267,7 @@ while [[ $# > 0 ]]; do
 		--srcs-compress) COMPRESSING_SRCS=yes ;;
 		--mingw-upload=*) UPLOAD_BIN_TO_SF=yes; SF_USER=${1/--mingw-upload=/} ;;
 		--src-upload=*) UPLOAD_SRC_TO_SF=yes; SF_USER=${1/--src-upload=/} ;;
+		--debug-upload) DEBUG_UPLOAD=yes ;;
 		*)
 			echo "bad command line: \"$1\""
 			die "terminate."
@@ -899,8 +901,11 @@ done
 				$EXCEPTIONS_MODEL \
 		)
 		echo -e -n "-> \E[32;40mupload $ARCHITECTURE archive...\E[37;40m"
-#		echo "mingw_upload: ${upload_cmd}"
-		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
+		[[ $DEBUG_UPLOAD == yes ]] && {
+			echo "bin_cmd:${upload_cmd}"
+		} || {
+			eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
+		}
 
 		func_res=$?
 		[[ $func_res != 0 ]] && {
@@ -932,8 +937,12 @@ done
 			$GCC_NAME \
 			$sources_archive_name \
 	)
-#	echo "mingw_upload: ${upload_cmd}"
-	eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/sources-upload.log 2>&1"
+	[[ $DEBUG_UPLOAD == yes ]] && {
+		echo "src_cmd:${upload_cmd}"
+	} || {
+		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/sources-upload.log 2>&1"
+	}
+	
 	func_res=$?
 	[[ $func_res != 0 ]] && {
 		die "upload finished with error($func_res). terminate."
