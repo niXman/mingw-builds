@@ -735,7 +735,7 @@ function func_create_mingw_upload_cmd {
 		gcc-4_6-branch) _upload_cmd="$_upload_cmd/4.6.4" ;;
 		gcc-4_7-branch) _upload_cmd="$_upload_cmd/4.7.3" ;;
 		gcc-4_8-branch) _upload_cmd="$_upload_cmd/4.8.1" ;;
-		gcc-trunk) _upload_cmd="$_upload_cmd/4.8.0" ;;
+		gcc-trunk) _upload_cmd="$_upload_cmd/4.9.0" ;;
 	esac
 	case $5 in
 		x32) _upload_cmd="$_upload_cmd/32-bit" ;;
