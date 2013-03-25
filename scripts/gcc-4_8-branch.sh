@@ -46,6 +46,7 @@ PRIORITY=main
 PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-4.8-iconv.patch
+	gcc/gcc-4.8-intrin.patch
 	gcc/gcc-4.8-libstdc++export.patch
 )
 
