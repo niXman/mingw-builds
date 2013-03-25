@@ -1,0 +1,12 @@
+--- a/libstdc++-v3/config/cpu/i486/opt/bits/opt_random.h
++++ b/libstdc++-v3/config/cpu/i486/opt/bits/opt_random.h
+@@ -30,7 +30,9 @@
+ #ifndef _BITS_OPT_RANDOM_H
+ #define _BITS_OPT_RANDOM_H 1
+ 
++extern "C" {
+ #include <x86intrin.h>
++}
+ 
+ 
+ #pragma GCC system_header
