@@ -1,6 +1,8 @@
+Index: i386.c
+===================================================================
 --- a/gcc/config/i386/i386.c      (Revision 197118)
 +++ b/gcc/config/i386/i386.c      (Arbeitskopie)
-@@ -3941,6 +3941,19 @@
+@@ -3941,6 +3941,20 @@
    register_pass (&insert_vzeroupper_info);
  }
 
@@ -9,7 +11,8 @@
 +ix86_cannot_modify_jumps_p (void)
 +{
 +  if (TARGET_SEH && reload_completed
-+      && cfun)
++      && cfun && cfun->eh
++      && cfun->eh->region_tree)
 +    return true;
 +  return false;
 +}
