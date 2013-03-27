@@ -122,7 +122,7 @@ CONFIGURE_FLAGS=(
 #
 
 MAKE_FLAGS=(
-	-j$JOBS
+	-j1
 	all
 )
 
