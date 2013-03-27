@@ -1,5 +1,5 @@
 --- a/gcc/config/i386.c      (Revision 197118)
-+++ a/gcc/config/i386.c      (Arbeitskopie)
++++ b/gcc/config/i386.c      (Arbeitskopie)
 @@ -3941,6 +3941,19 @@
    register_pass (&insert_vzeroupper_info);
  }
