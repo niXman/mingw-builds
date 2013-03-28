@@ -217,9 +217,9 @@ while [[ $# > 0 ]]; do
 			esac	
 		;;
 		--use-lto)
-			BASE_CFLAGS="$BASE_CFLAGS -flto"
-			BASE_CXXFLAGS="$BASE_CXXFLAGS -flto"
-			BASE_LDFLAGS="$BASE_LDFLAGS -flto"
+			BASE_CFLAGS="$BASE_CFLAGS -flto -fno-use-linker-plugin"
+			BASE_CXXFLAGS="$BASE_CXXFLAGS -flto -fno-use-linker-plugin"
+			BASE_LDFLAGS="$BASE_LDFLAGS -flto -fno-use-linker-plugin"
 		;;
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-strip) STRIP_ON_INSTALL=no ;;
@@ -303,10 +303,18 @@ mkdir -p $SRCS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 	die "bad threads model. terminate."
 }
 
-[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
-	${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
-	die "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
+[[ ${#BUILD_ARCHITECTURES[@]} == 0 ]] && {
+	die "build architecture is not specified. terminate."
 }
+
+[[ ${#BUILD_ARCHITECTURES[@]} > 2 ]] && {
+	die "too many build architectures specified. terminate."
+}
+
+[[ ${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
+	die "may not specify twice \"${BUILD_ARCHITECTURES[0]}\" as build architecture. terminate."
+}
+
 [[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
 	die "$EXCEPTIONS_MODEL exceptions not allowed on multilib architecture. terminate."
 }
