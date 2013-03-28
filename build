@@ -300,7 +300,7 @@ mkdir -p $SRCS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 }
 
 [[ $THREADS_MODEL != win32 && $THREADS_MODEL != posix ]] && {
-	die "bad threads model. terminate."
+	die "bad threads model($THREADS_MODEL). terminate."
 }
 
 [[ ${#BUILD_ARCHITECTURES[@]} == 0 ]] && {
@@ -308,7 +308,7 @@ mkdir -p $SRCS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 }
 
 [[ ${#BUILD_ARCHITECTURES[@]} > 2 ]] && {
-	die "too many build architectures specified. terminate."
+	die "too many build architectures specified(${BUILD_ARCHITECTURES[@]}). terminate."
 }
 
 [[ ${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
