@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION=3071502
+VERSION=3071601
 NAME=sqlite-${VERSION}
 SRC_DIR_NAME=sqlite-autoconf-${VERSION}
 URL=http://www.sqlite.org/sqlite-autoconf-${VERSION}.tar.gz
