@@ -35,8 +35,8 @@
 
 # **************************************************************************
 
-NAME=make-git
-SRC_DIR_NAME=make-git
+NAME=make_git
+SRC_DIR_NAME=make_git
 URL="http://git.savannah.gnu.org/cgit/make.git"
 TYPE=git
 REV=
