@@ -54,7 +54,7 @@ PATCHES=(
 #
 
 EXECUTE_AFTER_PATCH=(
-	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make/doc/"
+	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make_git/doc/"
 	"autoreconf -i"
 )
 
