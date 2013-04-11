@@ -48,6 +48,7 @@ PATCHES=(
 	make/make-remove-double-quote.patch
 	make/make-linebuf-mingw.patch
 	make/make-getopt.patch
+	make/make-Windows-Add-move-to-sh_cmds_dos.patch
 )
 
 #
