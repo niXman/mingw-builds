@@ -636,7 +636,7 @@ function func_map_gcc_name_to_gcc_version {
 	case $1 in
 		gcc-?.?.?)			echo "${1/gcc-/}" ;;
 		gcc-4_6-branch)	echo "4.6.4" ;;
-		gcc-4_7-branch)	echo "4.7.3" ;;
+		gcc-4_7-branch)	echo "4.7.4" ;;
 		gcc-4_8-branch)	echo "4.8.1" ;;
 		gcc-4_9-branch)	echo "4.9.1" ;;
 		gcc-trunk)			echo "4.9.0" ;;
@@ -733,7 +733,7 @@ function func_create_mingw_upload_cmd {
 	esac
 	case $3 in
 		gcc-4_6-branch) _upload_cmd="$_upload_cmd/4.6.4" ;;
-		gcc-4_7-branch) _upload_cmd="$_upload_cmd/4.7.3" ;;
+		gcc-4_7-branch) _upload_cmd="$_upload_cmd/4.7.4" ;;
 		gcc-4_8-branch) _upload_cmd="$_upload_cmd/4.8.1" ;;
 		gcc-trunk) _upload_cmd="$_upload_cmd/4.9.0" ;;
 	esac
