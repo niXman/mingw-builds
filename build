@@ -289,10 +289,11 @@ done
 }
 
 SRCS_DIR=$ROOT_DIR/src
+MARKERS_DIR=$SRCS_DIR/MARKERS
 PREREQ_DIR=$ROOT_DIR/mingw-prereq
 RUNTIME_DIR=$ROOT_DIR/mingw-runtime
 ARCHIVES_DIR=$ROOT_DIR/mingw-archives
-mkdir -p $SRCS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
+mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 
 # **************************************************************************
 
@@ -550,12 +551,12 @@ SUBTARGETS_PART2=(
 				$SRC_DIR_NAME \
 				$TYPE \
 				$URL \
-				$SRCS_DIR/$SRC_DIR_NAME/download.log \
-				$SRCS_DIR/${SRC_DIR_NAME}_download.marker \
+				$MARKERS_DIR/${SRC_DIR_NAME}_download.log \
+				$MARKERS_DIR/${SRC_DIR_NAME}_download.marker \
 				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/download.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MARKERS_DIR/${SRC_DIR_NAME}_download.log &
 				die "Error $func_res"
 			}
 
@@ -563,11 +564,11 @@ SUBTARGETS_PART2=(
 				$SRCS_DIR \
 				$SRC_DIR_NAME \
 				$TYPE \
-				$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker \
-				$SRCS_DIR/$SRC_DIR_NAME/uncompress.log
+				$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.marker \
+				$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.log
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/uncompress.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/${SRC_DIR_NAME}_uncompress.log &
 				die "Error $func_res"
 			}
 		}
@@ -725,10 +726,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			;;
 		esac
 		
-		DOWNLOAD_LOG=$SRCS_DIR/$SRC_DIR_NAME/download.log
-		DOWNLOAD_MARKER=$SRCS_DIR/${SRC_DIR_NAME}_download.marker
-		UNCOMPRESS_LOG=$SRCS_DIR/$SRC_DIR_NAME/uncompress.log
-		UNCOMPRESS_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker
+		DOWNLOAD_LOG=$MARKERS_DIR/${SRC_DIR_NAME}_download.log
+		DOWNLOAD_MARKER=$MARKERS_DIR/${SRC_DIR_NAME}_download.marker
+		UNCOMPRESS_LOG=$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.log
+		UNCOMPRESS_MARKER=$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.marker
 		CONFIGURE_LOG=$CURR_LOGS_DIR/$NAME/configure.log
 		MAKE_LOG=$CURR_LOGS_DIR/$NAME/make.log
 		INSTALL_LOG=$CURR_LOGS_DIR/$NAME/install.log
