@@ -35,17 +35,27 @@
 
 # **************************************************************************
 
-VERSION=3.82
-NAME=make-${VERSION}
-SRC_DIR_NAME=make-${VERSION}
-URL=ftp://ftp.gnu.org/gnu/make/make-${VERSION}.tar.bz2
-TYPE=.tar.bz2
+NAME=make_git
+SRC_DIR_NAME=make_git
+URL="http://git.savannah.gnu.org/cgit/make.git"
+TYPE=git
+REV=
 PRIORITY=extra
 
 #
 
 PATCHES=(
+	make/make-remove-double-quote.patch
+	make/make-linebuf-mingw.patch
+	make/make-getopt.patch
 	make/make-Windows-Add-move-to-sh_cmds_dos.patch
+)
+
+#
+
+EXECUTE_AFTER_PATCH=(
+	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make_git/doc/"
+	"autoreconf -i"
 )
 
 #
@@ -54,8 +64,10 @@ CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$TARGET
 	--prefix=$PREFIX
-   --enable-case-insensitive-file-system
-   --program-prefix=mingw32-
+	--enable-case-insensitive-file-system
+	--program-prefix=mingw32-
+	--enable-job-server
+	--without-guile
 	CFLAGS="\"$COMMON_CFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
 )
