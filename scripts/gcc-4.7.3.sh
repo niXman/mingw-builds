@@ -35,35 +35,93 @@
 
 # **************************************************************************
 
-VERSION=3.82.90
-NAME=make-${VERSION}
-SRC_DIR_NAME=make-${VERSION}
-URL=ftp://ftp.gnu.org/gnu/make/make-${VERSION}.tar.bz2
+VERSION=4.7.3
+NAME=gcc-${VERSION}
+SRC_DIR_NAME=gcc-${VERSION}
+URL=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
 TYPE=.tar.bz2
-PRIORITY=extra
+PRIORITY=main
 
 #
 
 PATCHES=(
-	make/make-Windows-Add-move-to-sh_cmds_dos.patch
+	gcc/gcc-4.7-stdthreads.patch
+	gcc/gcc-4.7-iconv.patch
+	gcc/gcc-4.7-vswprintf.patch
 )
 
 #
 
 CONFIGURE_FLAGS=(
 	--host=$HOST
-	--build=$TARGET
-	--prefix=$PREFIX
-   --enable-case-insensitive-file-system
-   --program-prefix=mingw32-
+	--build=$BUILD
+	--target=$TARGET
+	#
+	--prefix=$MINGWPREFIX
+	--with-sysroot=$PREFIX
+	#
+	$LINK_TYPE_BOTH
+	#
+	$( [[ $USE_MULTILIB == yes ]] \
+		&& echo "--enable-targets=all --enable-multilib" \
+		|| echo "--disable-multilib" \
+	)
+	--enable-languages=$ENABLE_LANGUAGES,lto
+	--enable-libstdcxx-time=yes
+	--enable-threads=$THREADS_MODEL
+	--enable-libgomp
+	--enable-lto
+	--enable-graphite
+	--enable-cloog-backend=isl
+	--enable-checking=release
+	--enable-fully-dynamic-string
+	--enable-version-specific-runtime-libs
+	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
+		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
+	)
+	$( [[ $EXCEPTIONS_MODEL == sjlj ]] \
+		&& echo "--enable-sjlj-exceptions" \
+	)
+	#
+	--disable-ppl-version-check
+	--disable-cloog-version-check
+	--disable-libstdcxx-pch
+	--disable-libstdcxx-debug
+	$( [[ $BOOTSTRAPING == yes ]] \
+		&& echo "--enable-bootstrap" \
+		|| echo "--disable-bootstrap" \
+	)
+	--disable-rpath
+	--disable-win32-registry
+	--disable-nls
+	--disable-werror
+	--disable-symvers
+	#
+	--with-gnu-as
+	--with-gnu-ld
+	#
+	$PROCESSOR_OPTIMIZATION
+	$PROCESSOR_TUNE
+	#
+	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
+		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
+	)
+	--with-libiconv
+	--with-system-zlib
+	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--with-pkgversion="\"$PKG_VERSION\""
+	--with-bugurl=$BUG_URL
+	#
 	CFLAGS="\"$COMMON_CFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #
 
 MAKE_FLAGS=(
-	-j$JOBS
+	-j1
 	all
 )
 
@@ -71,6 +129,7 @@ MAKE_FLAGS=(
 
 INSTALL_FLAGS=(
 	-j$JOBS
+	DESTDIR=$BASE_BUILD_DIR
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
