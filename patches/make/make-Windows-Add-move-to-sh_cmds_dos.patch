@@ -1,0 +1,11 @@
+--- a/job.c	2013-04-11 09:04:18 +0100
++++ b/job.c	2013-04-11 09:04:00 +0100
+@@ -2509,7 +2509,7 @@
+ 				 "chdir", "cls", "color", "copy", "ctty",
+ 				 "date", "del", "dir", "echo", "echo.",
+ 				 "endlocal", "erase", "exit", "for", "ftype",
+-				 "goto", "if", "if", "md", "mkdir", "path",
++				 "goto", "if", "if", "md", "mkdir", "move", "path",
+ 				 "pause", "prompt", "rd", "rem", "ren",
+ 				 "rename", "rmdir", "set", "setlocal",
+ 				 "shift", "time", "title", "type", "ver",
