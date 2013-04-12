@@ -64,9 +64,9 @@ PKG_VERSION="Built by MinGW-builds project"
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
 x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.2/32-bit/threads-posix/sjlj/x32-4.7.2-release-posix-sjlj-rev10.7z
+/host-windows/releases/4.7.2/32-bit/threads-posix/sjlj/x32-4.7.2-release-posix-sjlj-rev11.7z
 x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.2/64-bit/threads-posix/sjlj/x64-4.7.2-release-posix-sjlj-rev10.7z
+/host-windows/releases/4.7.2/64-bit/threads-posix/sjlj/x64-4.7.2-release-posix-sjlj-rev11.7z
 
 ORIGINAL_PATH=$PATH
 TOP_DIR=$(func_simplify_path "$PWD")
@@ -91,6 +91,7 @@ RUN_ARGS="$@"
 	echo "    --exceptions=<type>    - specifies exceptions model for GCC"
 	echo "                             available: dwarf, seh, sjlj"
 	echo "    --use-lto              - build with LTO using"
+	echo "    --bootstrap            - bootstraping GCC"
 	echo "    --no-multilib          - build GCC without multilib support"
 	echo "    --no-strip             - don't strip dll's & executables on install"
 	echo "    --dyn-deps             - build GCC with dynamically dependencies"
@@ -120,12 +121,13 @@ RUN_ARGS="$@"
 	echo "    gcc-4.7.0 (4.7.0 release)"
 	echo "    gcc-4.7.1 (4.7.1 release)"
 	echo "    gcc-4.7.2 (4.7.2 release)"
-	#echo "    gcc-4.8.0 (4.8.0 release)"
+	echo "    gcc-4.7.3 (4.7.3 release)"
+	echo "    gcc-4.8.0 (4.8.0 release)"
 	#echo "    gcc-4.8.1 (4.8.1 release)"
 	echo "    gcc-4_6-branch (currently 4.6.4-prerelease)"
-	echo "    gcc-4_7-branch (currently 4.7.3-prerelease)"
-	#echo "    gcc-4_8-branch (currently 4.8.1-prerelease)"
-	echo "    gcc-trunk (currently 4.8.0-snapshot)"
+	echo "    gcc-4_7-branch (currently 4.7.4-prerelease)"
+	echo "    gcc-4_8-branch (currently 4.8.1-prerelease)"
+	echo "    gcc-trunk (currently 4.9.0-snapshot)"
 
 	exit 0
 }
@@ -156,6 +158,7 @@ BUILD_ARCHITECTURES=()
 EXCEPTIONS_MODEL=sjlj
 USE_MULTILIB=yes
 STRIP_ON_INSTALL=yes
+BOOTSTRAPING=no
 THREADS_MODEL=posix
 REV_NUM=""
 GCC_NAME=""
@@ -164,6 +167,7 @@ COMPRESSING_SRCS=no
 UPLOAD_BIN_TO_SF=no
 UPLOAD_SRC_TO_SF=no
 SF_USER=""
+DEBUG_UPLOAD=no
 
 PROCESSOR_OPTIMIZATION_TUNE_32='generic'
 PROCESSOR_OPTIMIZATION_ARCH_32='i686'
@@ -189,6 +193,7 @@ while [[ $# > 0 ]]; do
 			ROOT_DIR=`pwd`
 			popd > /dev/null
 		;;
+		--bootstrap) BOOTSTRAPING=yes ;;
 		--preload) PRELOAD_MODE=yes ;;
 		--download) DOWNLOAD_MODE=yes ;;
 		--exceptions=*)
@@ -213,9 +218,9 @@ while [[ $# > 0 ]]; do
 			esac	
 		;;
 		--use-lto)
-			BASE_CFLAGS="$BASE_CFLAGS -flto"
-			BASE_CXXFLAGS="$BASE_CXXFLAGS -flto"
-			BASE_LDFLAGS="$BASE_LDFLAGS -flto"
+			BASE_CFLAGS="$BASE_CFLAGS -flto -fno-use-linker-plugin"
+			BASE_CXXFLAGS="$BASE_CXXFLAGS -flto -fno-use-linker-plugin"
+			BASE_LDFLAGS="$BASE_LDFLAGS -flto -fno-use-linker-plugin"
 		;;
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-strip) STRIP_ON_INSTALL=no ;;
@@ -263,6 +268,7 @@ while [[ $# > 0 ]]; do
 		--srcs-compress) COMPRESSING_SRCS=yes ;;
 		--mingw-upload=*) UPLOAD_BIN_TO_SF=yes; SF_USER=${1/--mingw-upload=/} ;;
 		--src-upload=*) UPLOAD_SRC_TO_SF=yes; SF_USER=${1/--src-upload=/} ;;
+		--debug-upload) DEBUG_UPLOAD=yes ;;
 		*)
 			echo "bad command line: \"$1\""
 			die "terminate."
@@ -283,10 +289,11 @@ done
 }
 
 SRCS_DIR=$ROOT_DIR/src
+MARKERS_DIR=$SRCS_DIR/MARKERS
 PREREQ_DIR=$ROOT_DIR/mingw-prereq
 RUNTIME_DIR=$ROOT_DIR/mingw-runtime
 ARCHIVES_DIR=$ROOT_DIR/mingw-archives
-mkdir -p $SRCS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
+mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 
 # **************************************************************************
 
@@ -295,13 +302,21 @@ mkdir -p $SRCS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 }
 
 [[ $THREADS_MODEL != win32 && $THREADS_MODEL != posix ]] && {
-	die "bad threads model. terminate."
+	die "bad threads model($THREADS_MODEL). terminate."
 }
 
-[[ ${#BUILD_ARCHITECTURES[@]} > 2 || ${#BUILD_ARCHITECTURES[@]} == 0 || \
-	${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
-	die "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
+[[ ${#BUILD_ARCHITECTURES[@]} == 0 ]] && {
+	die "build architecture is not specified. terminate."
 }
+
+[[ ${#BUILD_ARCHITECTURES[@]} > 2 ]] && {
+	die "too many build architectures specified(${BUILD_ARCHITECTURES[@]}). terminate."
+}
+
+[[ ${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
+	die "may not specify twice \"${BUILD_ARCHITECTURES[0]}\" as build architecture. terminate."
+}
+
 [[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
 	die "$EXCEPTIONS_MODEL exceptions not allowed on multilib architecture. terminate."
 }
@@ -536,12 +551,12 @@ SUBTARGETS_PART2=(
 				$SRC_DIR_NAME \
 				$TYPE \
 				$URL \
-				$SRCS_DIR/$SRC_DIR_NAME/download.log \
-				$SRCS_DIR/${SRC_DIR_NAME}_download.marker \
+				$MARKERS_DIR/${SRC_DIR_NAME}_download.log \
+				$MARKERS_DIR/${SRC_DIR_NAME}_download.marker \
 				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/download.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MARKERS_DIR/${SRC_DIR_NAME}_download.log &
 				die "Error $func_res"
 			}
 
@@ -549,11 +564,11 @@ SUBTARGETS_PART2=(
 				$SRCS_DIR \
 				$SRC_DIR_NAME \
 				$TYPE \
-				$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker \
-				$SRCS_DIR/$SRC_DIR_NAME/uncompress.log
+				$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.marker \
+				$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.log
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/uncompress.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/${SRC_DIR_NAME}_uncompress.log &
 				die "Error $func_res"
 			}
 		}
@@ -711,10 +726,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			;;
 		esac
 		
-		DOWNLOAD_LOG=$SRCS_DIR/$SRC_DIR_NAME/download.log
-		DOWNLOAD_MARKER=$SRCS_DIR/${SRC_DIR_NAME}_download.marker
-		UNCOMPRESS_LOG=$SRCS_DIR/$SRC_DIR_NAME/uncompress.log
-		UNCOMPRESS_MARKER=$SRCS_DIR/$SRC_DIR_NAME/_uncompress.marker
+		DOWNLOAD_LOG=$MARKERS_DIR/${SRC_DIR_NAME}_download.log
+		DOWNLOAD_MARKER=$MARKERS_DIR/${SRC_DIR_NAME}_download.marker
+		UNCOMPRESS_LOG=$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.log
+		UNCOMPRESS_MARKER=$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.marker
 		CONFIGURE_LOG=$CURR_LOGS_DIR/$NAME/configure.log
 		MAKE_LOG=$CURR_LOGS_DIR/$NAME/make.log
 		INSTALL_LOG=$CURR_LOGS_DIR/$NAME/install.log
@@ -896,8 +911,11 @@ done
 				$EXCEPTIONS_MODEL \
 		)
 		echo -e -n "-> \E[32;40mupload $ARCHITECTURE archive...\E[37;40m"
-#		echo "mingw_upload: ${upload_cmd}"
-		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
+		[[ $DEBUG_UPLOAD == yes ]] && {
+			echo "bin_cmd:${upload_cmd}"
+		} || {
+			eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
+		}
 
 		func_res=$?
 		[[ $func_res != 0 ]] && {
@@ -929,8 +947,12 @@ done
 			$GCC_NAME \
 			$sources_archive_name \
 	)
-#	echo "mingw_upload: ${upload_cmd}"
-	eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/sources-upload.log 2>&1"
+	[[ $DEBUG_UPLOAD == yes ]] && {
+		echo "src_cmd:${upload_cmd}"
+	} || {
+		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/sources-upload.log 2>&1"
+	}
+	
 	func_res=$?
 	[[ $func_res != 0 ]] && {
 		die "upload finished with error($func_res). terminate."

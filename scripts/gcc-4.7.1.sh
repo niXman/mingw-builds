@@ -87,7 +87,10 @@ CONFIGURE_FLAGS=(
 	--disable-cloog-version-check
 	--disable-libstdcxx-pch
 	--disable-libstdcxx-debug
-	--disable-bootstrap
+	$( [[ $BOOTSTRAPING == yes ]] \
+		&& echo "--enable-bootstrap" \
+		|| echo "--disable-bootstrap" \
+	)
 	--disable-rpath
 	--disable-win32-registry
 	--disable-nls
@@ -118,7 +121,7 @@ CONFIGURE_FLAGS=(
 #
 
 MAKE_FLAGS=(
-	-j$JOBS
+	-j1
 	all
 )
 

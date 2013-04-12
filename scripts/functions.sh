@@ -515,31 +515,32 @@ function func_install_toolchain {
 		return $?
 	}
 
-	function move_mingw {
-		# $1 - toolchains path
-		# $2 - destination path
-		# $3 - marker file name
-
-		[[ ! -f $3 ]] && {
-			# check if MinGW root directory name is valid
-			[[ ! -d $1/mingw ]] && {
-				die "bad MinGW root path name. terminate."
-			}
-
-			# rename MinGW directory
-			echo -n "--> move... "
-			mv $1/mingw $2
-			local _result=$?
-			[[ $_result != 0 ]] && {
-				die "error when move root MinGW path. terminate."
-			} || {
-				touch $3 && echo "done" || return 1
-			}
-		} || {
-			echo "---> moved"
-		}
-		return $_result
-	}
+	#function move_mingw {
+	#	# $1 - toolchains path
+	#	# $2 - destination path
+	#	# $3 - marker file name
+	#
+	#	[[ ! -f $3 ]] && {
+	#		# check if MinGW root directory name is valid
+	#		[[ ! -d $1/mingw ]] && {
+	#			die "bad MinGW root path name. terminate."
+	#		}
+	#
+	#		# rename MinGW directory
+	#		echo -n "--> move... "
+	#		mv $1/mingw $2
+	#		local _result=$?
+	#		[[ $_result != 0 ]] && {
+	#			die "error when move root MinGW path. terminate."
+	#		} || {
+	#			touch $3 && echo "done" || return 1
+	#		}
+	#	} || {
+	#		echo "---> moved"
+	#	}
+	#	return $_result
+	#	return 0
+	#}
 
 	[[ ! -d $2 || ! $2/bin/gcc.exe ]] && {
 		# x32 download
@@ -563,15 +564,15 @@ function func_install_toolchain {
 			return $_result
 		}
 
-		move_mingw \
-			$1 \
-			$2 \
-			$1/mingw-x32-move.marker
-		local _result=$?
-		[[ $_result != 0 ]] && {
-			echo "move error. terminate."
-			return $_result
-		}
+		#move_mingw \
+		#	$1 \
+		#	$2 \
+		#	$1/mingw-x32-move.marker
+		#local _result=$?
+		#[[ $_result != 0 ]] && {
+		#	echo "move error. terminate."
+		#	return $_result
+		#}
 	}
 
 	[[ $EXCEPTIONS_MODEL == seh || $EXCEPTIONS_MODEL == sjlj ]] && {
@@ -597,17 +598,17 @@ function func_install_toolchain {
 				return $_result
 			}
 
-			move_mingw \
-				$1 \
-				$3 \
-				$1/mingw-x64-move.marker
-			local _result=$?
-			[[ $_result != 0 ]] && {
-				echo "move error. terminate."
-				return $_result
-			}
+			#move_mingw \
+			#	$1 \
+			#	$3 \
+			#	$1/mingw-x64-move.marker
+			#local _result=$?
+			#[[ $_result != 0 ]] && {
+			#	echo "move error. terminate."
+			#	return $_result
+			#}
 
-			return $_result
+			return 0
 		}
 	}
 
@@ -635,10 +636,10 @@ function func_map_gcc_name_to_gcc_version {
 	case $1 in
 		gcc-?.?.?)			echo "${1/gcc-/}" ;;
 		gcc-4_6-branch)	echo "4.6.4" ;;
-		gcc-4_7-branch)	echo "4.7.3" ;;
+		gcc-4_7-branch)	echo "4.7.4" ;;
 		gcc-4_8-branch)	echo "4.8.1" ;;
 		gcc-4_9-branch)	echo "4.9.1" ;;
-		gcc-trunk)			echo "4.8.0" ;;
+		gcc-trunk)			echo "4.9.0" ;;
 		*) die "gcc name error: $1. terminate." ;;
 	esac
 }
@@ -732,9 +733,9 @@ function func_create_mingw_upload_cmd {
 	esac
 	case $3 in
 		gcc-4_6-branch) _upload_cmd="$_upload_cmd/4.6.4" ;;
-		gcc-4_7-branch) _upload_cmd="$_upload_cmd/4.7.3" ;;
+		gcc-4_7-branch) _upload_cmd="$_upload_cmd/4.7.4" ;;
 		gcc-4_8-branch) _upload_cmd="$_upload_cmd/4.8.1" ;;
-		gcc-trunk) _upload_cmd="$_upload_cmd/4.8.0" ;;
+		gcc-trunk) _upload_cmd="$_upload_cmd/4.9.0" ;;
 	esac
 	case $5 in
 		x32) _upload_cmd="$_upload_cmd/32-bit" ;;
