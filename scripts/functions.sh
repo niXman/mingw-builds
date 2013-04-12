@@ -732,7 +732,7 @@ function func_create_mingw_upload_cmd {
 		*) die "gcc name error: \"$3\". terminate." ;;
 	esac
 	case $3 in
-		gcc-4_6-branch) _upload_cmd="$_upload_cmd/4.6.4" ;;
+		gcc-4_6-branch) _upload_cmd="$_upload_cmd/4.6.5" ;;
 		gcc-4_7-branch) _upload_cmd="$_upload_cmd/4.7.4" ;;
 		gcc-4_8-branch) _upload_cmd="$_upload_cmd/4.8.1" ;;
 		gcc-trunk) _upload_cmd="$_upload_cmd/4.9.0" ;;
