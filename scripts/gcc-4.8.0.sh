@@ -35,10 +35,11 @@
 
 # **************************************************************************
 
-NAME=gcc-trunk
-SRC_DIR_NAME=gcc-trunk
-URL=svn://gcc.gnu.org/svn/gcc/trunk
-TYPE=svn
+VERSION=4.8.0
+NAME=gcc-${VERSION}
+SRC_DIR_NAME=gcc-${VERSION}
+URL=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
+TYPE=.tar.bz2
 PRIORITY=main
 
 #
@@ -48,6 +49,7 @@ PATCHES=(
 	gcc/gcc-4.8-iconv.patch
 	gcc/gcc-4.8-intrin.patch
 	gcc/gcc-4.8-libstdc++export.patch
+	gcc/gcc-4.8.0-cannot_modify_jumps.patch
 )
 
 #

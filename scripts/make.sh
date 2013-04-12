@@ -44,7 +44,9 @@ PRIORITY=extra
 
 #
 
-PATCHES=()
+PATCHES=(
+	make/make-Windows-Add-move-to-sh_cmds_dos.patch
+)
 
 #
 

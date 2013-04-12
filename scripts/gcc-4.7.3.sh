@@ -35,19 +35,19 @@
 
 # **************************************************************************
 
-NAME=gcc-trunk
-SRC_DIR_NAME=gcc-trunk
-URL=svn://gcc.gnu.org/svn/gcc/trunk
-TYPE=svn
+VERSION=4.7.3
+NAME=gcc-${VERSION}
+SRC_DIR_NAME=gcc-${VERSION}
+URL=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
+TYPE=.tar.bz2
 PRIORITY=main
 
 #
 
 PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
-	gcc/gcc-4.8-iconv.patch
-	gcc/gcc-4.8-intrin.patch
-	gcc/gcc-4.8-libstdc++export.patch
+	gcc/gcc-4.7-iconv.patch
+	gcc/gcc-4.7-vswprintf.patch
 )
 
 #
@@ -72,6 +72,7 @@ CONFIGURE_FLAGS=(
 	--enable-libgomp
 	--enable-lto
 	--enable-graphite
+	--enable-cloog-backend=isl
 	--enable-checking=release
 	--enable-fully-dynamic-string
 	--enable-version-specific-runtime-libs
@@ -82,7 +83,7 @@ CONFIGURE_FLAGS=(
 		&& echo "--enable-sjlj-exceptions" \
 	)
 	#
-	--disable-isl-version-check
+	--disable-ppl-version-check
 	--disable-cloog-version-check
 	--disable-libstdcxx-pch
 	--disable-libstdcxx-debug
@@ -107,8 +108,7 @@ CONFIGURE_FLAGS=(
 	)
 	--with-libiconv
 	--with-system-zlib
-	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
-	--enable-cloog-backend=isl
+	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	--with-pkgversion="\"$PKG_VERSION\""
 	--with-bugurl=$BUG_URL
 	#
