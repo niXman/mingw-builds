@@ -2,7 +2,7 @@
 // The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 //
 // This file is part of 'mingw-builds' project.
-// Copyright (c) 2011,2012, by niXman (i dotty nixman doggy gmail dotty com)
+// Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
 // All rights reserved.
 //
 // Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
