@@ -35,46 +35,94 @@
 
 # **************************************************************************
 
-NAME=make_git
-SRC_DIR_NAME=make_git
-URL="http://git.savannah.gnu.org/cgit/make.git"
-TYPE=git
-REV=
-PRIORITY=extra
+VERSION=4.6.4
+NAME=gcc-${VERSION}
+SRC_DIR_NAME=gcc-${VERSION}
+URL=ftp://ftp.gnu.org/gnu/gcc/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
+TYPE=.tar.bz2
+PRIORITY=main
 
 #
 
 PATCHES=(
-	make/make-linebuf-mingw.patch
-	make/make-getopt.patch
-	make/make-Windows-Add-move-to-sh_cmds_dos.patch
-)
-
-#
-
-EXECUTE_AFTER_PATCH=(
-	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make_git/doc/"
-	"autoreconf -i"
+	gcc/gcc-4.6-cloog_lang_c.patch
+	gcc/gcc-4.6-stdthreads.patch
+	gcc/gcc-4.6-iconv.patch
+	gcc/gcc-4.6-vswprintf.patch
 )
 
 #
 
 CONFIGURE_FLAGS=(
 	--host=$HOST
-	--build=$TARGET
-	--prefix=$PREFIX
-	--enable-case-insensitive-file-system
-	--program-prefix=mingw32-
-	--enable-job-server
-	--without-guile
+	--build=$BUILD
+	--target=$TARGET
+	#
+	--prefix=$MINGWPREFIX
+	--with-sysroot=$PREFIX
+	#
+	$LINK_TYPE_BOTH
+	#
+	$( [[ $USE_MULTILIB == yes ]] \
+		&& echo "--enable-targets=all --enable-multilib" \
+		|| echo "--disable-multilib" \
+	)
+	--enable-languages=$ENABLE_LANGUAGES,lto
+	--enable-libstdcxx-time=yes
+	--enable-threads=$THREADS_MODEL
+	--enable-libgomp
+	--enable-lto
+	--enable-graphite
+	--enable-cloog-backend=isl
+	--enable-checking=release
+	--enable-fully-dynamic-string
+	--enable-version-specific-runtime-libs
+	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
+		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
+	)
+	$( [[ $EXCEPTIONS_MODEL == sjlj ]] \
+		&& echo "--enable-sjlj-exceptions" \
+	)
+	#
+	--disable-ppl-version-check
+	--disable-cloog-version-check
+	--disable-libstdcxx-pch
+	--disable-libstdcxx-debug
+	$( [[ $BOOTSTRAPING == yes ]] \
+		&& echo "--enable-bootstrap" \
+		|| echo "--disable-bootstrap" \
+	)
+	--disable-rpath
+	--disable-win32-registry
+	--disable-nls
+	--disable-werror
+	--disable-symvers
+	#
+	--with-gnu-as
+	--with-gnu-ld
+	#
+	$PROCESSOR_OPTIMIZATION
+	$PROCESSOR_TUNE
+	#
+	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
+		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
+	)
+	--with-libiconv
+	--with-system-zlib
+	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--with-pkgversion="\"$PKG_VERSION\""
+	--with-bugurl=$BUG_URL
+	#
 	CFLAGS="\"$COMMON_CFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #
 
 MAKE_FLAGS=(
-	-j$JOBS
+	-j1
 	all
 )
 
@@ -82,6 +130,7 @@ MAKE_FLAGS=(
 
 INSTALL_FLAGS=(
 	-j$JOBS
+	DESTDIR=$BASE_BUILD_DIR
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
