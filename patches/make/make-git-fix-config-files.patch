@@ -1,0 +1,12 @@
+--- make_git/configure.ac.orig	2013-04-13 20:36:27.788085900 +0000
++++ make_git/configure.ac	2013-04-15 18:37:21.492187500 +0000
+@@ -509,8 +509,7 @@
+ ])
+ 
+ # Specify what files are to be created.
+-AC_CONFIG_FILES([Makefile glob/Makefile po/Makefile.in config/Makefile \
+-                 doc/Makefile w32/Makefile])
++AC_CONFIG_FILES([Makefile glob/Makefile po/Makefile.in config/Makefile doc/Makefile w32/Makefile])
+ 
+ # OK, do it!
+ 
