@@ -59,7 +59,7 @@ JOBS=1
 
 # **************************************************************************
 
-MINGW_BUILDS_VERSION="MinGW-builds-1.0.0"
+MINGW_BUILDS_VERSION="MinGW-builds-2.0.0"
 PKG_VERSION="Built by MinGW-builds project"
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
@@ -467,7 +467,7 @@ SUBTARGETS_PART2=(
 	gdbinit
 	gdb
 	gdb-wrapper
-	make_git
+	make_cvs
 	cleanup
 	licenses
 	put-versions
