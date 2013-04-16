@@ -467,7 +467,7 @@ SUBTARGETS_PART2=(
 	gdbinit
 	gdb
 	gdb-wrapper
-	make_cvs
+	make_git
 	cleanup
 	licenses
 	put-versions
