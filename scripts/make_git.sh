@@ -49,6 +49,7 @@ PATCHES=(
 	make/make-getopt.patch
 	make/make-Windows-Add-move-to-sh_cmds_dos.patch
 	make/make-git-fix-config-files.patch
+	make/make-git-main.c.patch
 )
 
 #
@@ -68,6 +69,7 @@ CONFIGURE_FLAGS=(
 	--enable-case-insensitive-file-system
 	--program-prefix=mingw32-
 	--enable-job-server
+	--disable-load
 	--without-guile
 	CFLAGS="\"$COMMON_CFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
