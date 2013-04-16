@@ -1,12 +1,25 @@
---- make_git/configure.ac.orig	2013-04-13 20:36:27.788085900 +0000
-+++ make_git/configure.ac	2013-04-15 18:37:21.492187500 +0000
+diff -urN a/Makefile.am b/Makefile.am
+--- a/Makefile.am	2013-04-15 20:39:09 +0100
++++ b/Makefile.am	2013-04-15 20:42:19 +0100
+@@ -28,7 +28,7 @@
+   W32LIB =	-Lw32 -lw32
+ endif
+ 
+-SUBDIRS =	glob config po doc $(MAYBE_W32)
++SUBDIRS =	glob config po $(MAYBE_W32)
+ 
+ bin_PROGRAMS =	make
+ include_HEADERS = gnumake.h
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2013-04-15 20:39:09 +0100
++++ b/configure.ac	2013-04-15 20:34:44 +0100
 @@ -509,8 +509,7 @@
  ])
  
  # Specify what files are to be created.
 -AC_CONFIG_FILES([Makefile glob/Makefile po/Makefile.in config/Makefile \
 -                 doc/Makefile w32/Makefile])
-+AC_CONFIG_FILES([Makefile glob/Makefile po/Makefile.in config/Makefile doc/Makefile w32/Makefile])
++AC_CONFIG_FILES([Makefile glob/Makefile po/Makefile.in config/Makefile w32/Makefile])
  
  # OK, do it!
  
