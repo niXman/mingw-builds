@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION=2.7.3
+VERSION=2.7.4
 NAME=Python-${VERSION}
 SRC_DIR_NAME=Python-${VERSION}
 URL=http://www.python.org/ftp/python/${VERSION}/Python-${VERSION}.tar.bz2
@@ -45,25 +45,34 @@ PRIORITY=extra
 #
 
 PATCHES=(
-	Python-${VERSION}/0000-CROSS.patch
-	Python-${VERSION}/0005-MINGW.patch
-	Python-${VERSION}/0006-mingw-removal-of-libffi-patch.patch
-	Python-${VERSION}/0007-mingw-system-libffi.patch	
-	Python-${VERSION}/0010-mingw-use-posix-getpath.patch
-	Python-${VERSION}/0015-cross-darwin.patch
-	Python-${VERSION}/0020-mingw-sysconfig-like-posix.patch
-	Python-${VERSION}/0025-mingw-pdcurses_ISPAD.patch
-	Python-${VERSION}/0030-mingw-static-tcltk.patch
-	Python-${VERSION}/0035-mingw-x86_64-size_t-format-specifier-pid_t.patch
-	Python-${VERSION}/0040-python-disable-dbm.patch
-	Python-${VERSION}/0045-disable-grammar-dependency-on-pgen-executable.patch
-	Python-${VERSION}/0050-add-python-config-sh.patch
-	Python-${VERSION}/0055-mingw-nt-threads-vs-pthreads.patch
-	Python-${VERSION}/0060-cross-dont-add-multiarch-paths-if.patch
-	Python-${VERSION}/0065-mingw-reorder-bininstall-ln-symlink-creation.patch
-	Python-${VERSION}/0070-mingw-use-backslashes-in-compileall-py.patch
-	Python-${VERSION}/0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch
-	Python-${VERSION}/0100-upgrade-internal-libffi-to-3.0.11.patch
+	Python/${VERSION}/0000-CROSS.patch
+	Python/${VERSION}/0005-MINGW.patch
+	Python/${VERSION}/0006-mingw-removal-of-libffi-patch.patch
+	Python/${VERSION}/0007-mingw-system-libffi.patch
+	Python/${VERSION}/0010-mingw-osdefs-DELIM.patch	
+	Python/${VERSION}/0015-mingw-use-posix-getpath.patch
+	Python/${VERSION}/0020-mingw-w64-test-for-REPARSE_DATA_BUFFER.patch
+	Python/${VERSION}/0025-mingw-regen-with-stddef-instead.patch
+	Python/${VERSION}/0030-mingw-add-libraries-for-_msi.patch
+	Python/${VERSION}/0035-MSYS-add-MSYSVPATH-AC_ARG.patch
+	Python/${VERSION}/0040-mingw-cygwinccompiler-use-CC-envvars-and-ld-from-print-prog-name.patch
+	Python/${VERSION}/0045-cross-darwin.patch
+	Python/${VERSION}/0050-mingw-sysconfig-like-posix.patch
+	Python/${VERSION}/0055-mingw-pdcurses_ISPAD.patch
+	Python/${VERSION}/0060-mingw-static-tcltk.patch
+	Python/${VERSION}/0065-mingw-x86_64-size_t-format-specifier-pid_t.patch
+	Python/${VERSION}/0070-python-disable-dbm.patch
+	Python/${VERSION}/0075-add-python-config-sh.patch
+	Python/${VERSION}/0080-mingw-nt-threads-vs-pthreads.patch
+	Python/${VERSION}/0085-cross-dont-add-multiarch-paths-if.patch
+	Python/${VERSION}/0090-mingw-reorder-bininstall-ln-symlink-creation.patch
+	Python/${VERSION}/0095-mingw-use-backslashes-in-compileall-py.patch
+	Python/${VERSION}/0100-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch
+	Python/${VERSION}/0105-mingw-MSYS-no-usr-lib-or-usr-include.patch
+	Python/${VERSION}/0110-mingw-_PyNode_SizeOf-decl-fix.patch
+	Python/${VERSION}/0115-mingw-cross-includes-lower-case.patch
+	Python/${VERSION}/0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch
+	Python/${VERSION}/9999-re-configure-d.patch
 )
 
 #
