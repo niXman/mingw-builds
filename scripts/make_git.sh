@@ -49,7 +49,6 @@ PATCHES=(
 	make/make-getopt.patch
 	make/make-Windows-Add-move-to-sh_cmds_dos.patch
 	make/make-git-fix-config-files.patch
-	make/make-git-main.c.patch
 )
 
 #
