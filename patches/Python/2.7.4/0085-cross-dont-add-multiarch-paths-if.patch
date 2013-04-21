@@ -1,0 +1,12 @@
+diff -urN a/setup.py b/setup.py
+--- a/setup.py	Wed Apr 17 23:43:47 2013
++++ b/setup.py	Wed Apr 17 23:43:57 2013
+@@ -491,7 +491,7 @@
+             # Ensure that /usr/local is always used
+             add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
+             add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+-        self.add_multiarch_paths()
++            self.add_multiarch_paths()
+ 
+         # Add paths specified in the environment variables LDFLAGS and
+         # CPPFLAGS for header and library files.

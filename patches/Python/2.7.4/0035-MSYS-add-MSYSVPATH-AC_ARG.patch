@@ -1,0 +1,40 @@
+--- a/Makefile.pre.in	2013-04-20 23:44:05 +0100
++++ b/Makefile.pre.in	2013-04-20 23:45:04 +0100
+@@ -27,6 +27,7 @@
+ VERSION=	@VERSION@
+ srcdir=		@srcdir@
+ VPATH=		@srcdir@
++MSYSVPATH=	@MSYSVPATH@
+ abs_srcdir=	@abs_srcdir@
+ abs_builddir=	@abs_builddir@
+ build=		@build@
+@@ -578,7 +579,7 @@
+ 		-DPREFIX='"$(prefix)"' \
+ 		-DEXEC_PREFIX='"$(exec_prefix)"' \
+ 		-DVERSION='"$(VERSION)"' \
+-		-DVPATH='"$(VPATH)"' \
++		-DVPATH='"$(MSYSVPATH)"' \
+ 		-o $@ $(srcdir)/Modules/getpath.c
+ 
+ # default sys.path calculations for windows platforms
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2013-04-20 23:44:05 +0100
++++ b/configure.ac	2013-04-20 23:47:39 +0100
+@@ -595,6 +595,17 @@
+ AC_MSG_RESULT([$DELIM])
+ AC_SUBST(DELIM)
+ 
++# MSYS make uses a 'virtual' VPATH, but getpath.c uses
++# GetModuleFileNameW (replacing \ with /). This allows the user to
++# define the 'actual 'real' value. Note, it should contain / not \,
++# (/ is returned by "pwd -W")
++AC_ARG_VAR(MSYSVPATH,
++           For MSYS, allows specifying the real VPATH. Use / not \)
++if test -z "$MSYSVPATH"; then
++    MSYSVPATH=$srcdir
++fi
++AC_SUBST(MSYSVPATH)
++
+ AC_MSG_CHECKING([for init system calls])
+ AC_SUBST(INITSYS)
+ case $host in
