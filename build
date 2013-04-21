@@ -568,7 +568,7 @@ SUBTARGETS_PART2=(
 				$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.log
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/${SRC_DIR_NAME}_uncompress.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MARKERS_DIR/${SRC_DIR_NAME}_uncompress.log &
 				die "Error $func_res"
 			}
 		}

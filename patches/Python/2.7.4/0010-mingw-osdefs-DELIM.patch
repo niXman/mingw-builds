@@ -1,0 +1,110 @@
+diff -urN a/Include/osdefs.h b/Include/osdefs.h
+--- a/Include/osdefs.h	Wed Apr 17 23:15:35 2013
++++ b/Include/osdefs.h	Wed Apr 17 23:16:06 2013
+@@ -10,7 +10,7 @@
+ /* Mod by chrish: QNX has WATCOM, but isn't DOS */
+ #if !defined(__QNX__)
+ #if defined(MS_WINDOWS) || defined(__BORLANDC__) || defined(__WATCOMC__) || defined(__DJGPP__) || defined(PYOS_OS2)
+-#if defined(PYOS_OS2) && defined(PYCC_GCC)
++#if (defined(PYOS_OS2) && defined(PYCC_GCC)) || defined(__MINGW32__)
+ #define MAXPATHLEN 260
+ #define SEP '/'
+ #define ALTSEP '\\'
+@@ -20,6 +20,7 @@
+ #define MAXPATHLEN 256
+ #endif
+ #define DELIM ';'
++#define DELIMSTR ";"
+ #endif
+ #endif
+ 
+@@ -27,6 +28,7 @@
+ #define SEP '.'
+ #define MAXPATHLEN 256
+ #define DELIM ','
++#define DELIMSTR ","
+ #endif
+ 
+ 
+@@ -55,6 +57,7 @@
+ /* Search path entry delimiter */
+ #ifndef DELIM
+ #define DELIM ':'
++#define DELIMSTR ":"
+ #endif
+ 
+ #ifdef __cplusplus
+diff -urN a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	Wed Apr 17 23:15:42 2013
++++ b/Makefile.pre.in	Wed Apr 17 23:19:38 2013
+@@ -84,7 +85,8 @@
+ # C flags used for building the interpreter object files
+ PY_CFLAGS=	$(CFLAGS) $(CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
+ 
+-
++# ; on Windows otherwise :
++DELIM=		@DELIM@
+ # Machine-dependent subdirectories
+ MACHDEP=	@MACHDEP@
+ 
+diff -urN a/Modules/Setup.dist b/Modules/Setup.dist
+--- a/Modules/Setup.dist	Wed Apr 17 23:15:42 2013
++++ b/Modules/Setup.dist	Wed Apr 17 23:16:06 2013
+@@ -84,22 +84,22 @@
+ # Empty since this is now just the runtime prefix.
+ DESTPATH=
+ 
+-# Site specific path components -- should begin with : if non-empty
++# Site specific path components -- should begin with $(DELIM) if non-empty
+ SITEPATH=
+ 
+ # Standard path components for test modules
+ TESTPATH=
+ 
+ # Path components for machine- or system-dependent modules and shared libraries
+-MACHDEPPATH=:plat-$(MACHDEP)
++MACHDEPPATH=$(DELIM)plat-$(MACHDEP)
+ EXTRAMACHDEPPATH=
+ 
+ # Path component for the Tkinter-related modules
+ # The TKPATH variable is always enabled, to save you the effort.
+-TKPATH=:lib-tk
++TKPATH=$(DELIM)lib-tk
+ 
+ # Path component for old modules.
+-OLDPATH=:lib-old
++OLDPATH=$(DELIM)lib-old
+ 
+ COREPYTHONPATH=$(DESTPATH)$(SITEPATH)$(TESTPATH)$(MACHDEPPATH)$(EXTRAMACHDEPPATH)$(TKPATH)$(OLDPATH)
+ PYTHONPATH=$(COREPYTHONPATH)
+diff -urN a/Modules/getpath.c b/Modules/getpath.c
+--- a/Modules/getpath.c	Wed Apr 17 23:15:42 2013
++++ b/Modules/getpath.c	Wed Apr 17 23:16:06 2013
+@@ -117,7 +121,7 @@
+ #endif
+ 
+ #ifndef PYTHONPATH
+-#define PYTHONPATH PREFIX "/lib/python" VERSION ":" \
++#define PYTHONPATH PREFIX "/lib/python" VERSION DELIMSTR \
+               EXEC_PREFIX "/lib/python" VERSION "/lib-dynload"
+ #endif
+ 
+--- a/configure.ac      2013-04-20 23:18:55 +0100
++++ b/configure.ac      2013-04-20 23:26:24 +0100
+@@ -585,6 +585,16 @@
+ fi
+ AC_MSG_RESULT($MACHDEP)
+
++# Windows uses ; to separate paths, everything else uses :
++AC_MSG_CHECKING(DELIM)
++DELIM=:
++if test "$MACHDEP" = "win"
++then
++       DELIM=\;
++fi
++AC_MSG_RESULT([$DELIM])
++AC_SUBST(DELIM)
++
+ AC_MSG_CHECKING([for init system calls])
+ AC_SUBST(INITSYS)
+ case $host in

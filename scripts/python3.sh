@@ -45,32 +45,32 @@ PRIORITY=extra
 #
 
 PATCHES=(
-	Python-${VERSION}/0000-add-python-config-sh.patch
-	Python-${VERSION}/0005-cross-fixes.patch
-	Python-${VERSION}/0010-cross-darwin-feature.patch
-	Python-${VERSION}/0030-py3k-20121004-MINGW.patch
-	Python-${VERSION}/0031-py3k-20121004-MINGW-removal-of-pthread-patch.patch
-	Python-${VERSION}/0032-py3k-20121004-MINGW-ntthreads.patch
-	Python-${VERSION}/0033-py3k-mingw-ntthreads-vs-pthreads.patch
-	Python-${VERSION}/0034-py3k-20121004-MINGW-removal-of-libffi-patch.patch
-	Python-${VERSION}/0035-mingw-system-libffi.patch
-	Python-${VERSION}/0045-mingw-use-posix-getpath.patch
-	Python-${VERSION}/0050-mingw-sysconfig-like-posix.patch
-	Python-${VERSION}/0055-mingw-_winapi_as_builtin_for_Popen_in_cygwinccompiler.patch
-	Python-${VERSION}/0060-mingw-x86_64-size_t-format-specifier-pid_t.patch
-	Python-${VERSION}/0065-cross-dont-add-multiarch-paths-if-cross-compiling.patch
-	Python-${VERSION}/0070-mingw-use-backslashes-in-compileall-py.patch
-	Python-${VERSION}/0075-msys-convert_path-fix-and-root-hack.patch
-	Python-${VERSION}/0080-mingw-hack-around-double-copy-scripts-issue.patch
-	Python-${VERSION}/0085-allow-static-tcltk.patch
-	Python-${VERSION}/0090-CROSS-avoid-ncursesw-include-path-hack.patch
-	Python-${VERSION}/0091-CROSS-properly-detect-WINDOW-_flags-for-different-nc.patch
-	Python-${VERSION}/0092-mingw-pdcurses_ISPAD.patch
-	Python-${VERSION}/0095-no-xxmodule-for-PYDEBUG.patch
-	Python-${VERSION}/0100-grammar-fixes.patch
-	Python-${VERSION}/0105-builddir-fixes.patch
-	Python-${VERSION}/0110-msys-monkeypatch-os-system-via-sh-exe.patch
-	Python-${VERSION}/0115-msys-replace-slashes-used-in-io-redirection.patch
+	Python/${VERSION}/0000-add-python-config-sh.patch
+	Python/${VERSION}/0005-cross-fixes.patch
+	Python/${VERSION}/0010-cross-darwin-feature.patch
+	Python/${VERSION}/0030-py3k-20121004-MINGW.patch
+	Python/${VERSION}/0031-py3k-20121004-MINGW-removal-of-pthread-patch.patch
+	Python/${VERSION}/0032-py3k-20121004-MINGW-ntthreads.patch
+	Python/${VERSION}/0033-py3k-mingw-ntthreads-vs-pthreads.patch
+	Python/${VERSION}/0034-py3k-20121004-MINGW-removal-of-libffi-patch.patch
+	Python/${VERSION}/0035-mingw-system-libffi.patch
+	Python/${VERSION}/0045-mingw-use-posix-getpath.patch
+	Python/${VERSION}/0050-mingw-sysconfig-like-posix.patch
+	Python/${VERSION}/0055-mingw-_winapi_as_builtin_for_Popen_in_cygwinccompiler.patch
+	Python/${VERSION}/0060-mingw-x86_64-size_t-format-specifier-pid_t.patch
+	Python/${VERSION}/0065-cross-dont-add-multiarch-paths-if-cross-compiling.patch
+	Python/${VERSION}/0070-mingw-use-backslashes-in-compileall-py.patch
+	Python/${VERSION}/0075-msys-convert_path-fix-and-root-hack.patch
+	Python/${VERSION}/0080-mingw-hack-around-double-copy-scripts-issue.patch
+	Python/${VERSION}/0085-allow-static-tcltk.patch
+	Python/${VERSION}/0090-CROSS-avoid-ncursesw-include-path-hack.patch
+	Python/${VERSION}/0091-CROSS-properly-detect-WINDOW-_flags-for-different-nc.patch
+	Python/${VERSION}/0092-mingw-pdcurses_ISPAD.patch
+	Python/${VERSION}/0095-no-xxmodule-for-PYDEBUG.patch
+	Python/${VERSION}/0100-grammar-fixes.patch
+	Python/${VERSION}/0105-builddir-fixes.patch
+	Python/${VERSION}/0110-msys-monkeypatch-os-system-via-sh-exe.patch
+	Python/${VERSION}/0115-msys-replace-slashes-used-in-io-redirection.patch
 )
 
 #

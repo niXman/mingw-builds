@@ -1,0 +1,12 @@
+diff -urN a/Lib/compileall.py b/Lib/compileall.py
+--- a/Lib/compileall.py	Wed Apr 17 23:45:02 2013
++++ b/Lib/compileall.py	Wed Apr 17 23:45:12 2013
+@@ -42,6 +42,8 @@
+     success = 1
+     for name in names:
+         fullname = os.path.join(dir, name)
++        if sys.platform == "win32" and sys.version.find("GCC") >= 0:
++            fullname = fullname.replace('\\','/')
+         if ddir is not None:
+             dfile = os.path.join(ddir, name)
+         else:
