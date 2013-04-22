@@ -199,7 +199,7 @@ diff -urN a/setup.py b/setup.py
          return True
  
      def configure_ctypes(self, ext):
--        if host_platform == 'win':
+-        if host_platform == 'win32':
 -            # win32 platform use own sources and includes
 -            # from Modules/_ctypes/libffi_msvc/
 -            srcdir = sysconfig.get_config_var('srcdir')
@@ -238,7 +238,7 @@ diff -urN a/setup.py b/setup.py
                                 fficonfig['ffi_sources'])
              ext.include_dirs.extend(include_dirs)
              ext.extra_compile_args.extend(extra_compile_args)
--            if host_platform == 'win':
+-            if host_platform == 'win32':
 -                ext.libraries.extend(['ole32', 'oleaut32', 'uuid'])
 -                #AdditionalOptions="/EXPORT:DllGetClassObject,PRIVATE /EXPORT:DllCanUnloadNow,PRIVATE"
 -                ext.export_symbols.extend(['DllGetClassObject PRIVATE',

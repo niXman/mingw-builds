@@ -55,7 +55,7 @@ diff -urN a/setup.py b/setup.py
 -        libs.append('tcl'+ version)
 +        libs.append('tk'+ version + tcltk_suffix)
 +        libs.append('tcl'+ version + tcltk_suffix)
-+        if host_platform == 'win':
++        if host_platform == 'win32':
 +            for winlib in ['ws2_32','gdi32','comctl32','comdlg32','imm32','uuid','oleaut32','ole32']:
 +                libs.append( winlib )
  
