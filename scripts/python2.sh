@@ -82,7 +82,6 @@ EXECUTE_AFTER_PATCH=(
 	"rm -rf Modules/zlib"
 	"autoconf"
 	"autoheader"
-	"rm pyconfig.h.in~"
 	"rm -rf autom4te.cache"
 	"touch Include/graminit.h"
 	"touch Python/graminit.c"
