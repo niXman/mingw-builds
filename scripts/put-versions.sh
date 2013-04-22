@@ -60,13 +60,19 @@
 			cd $SRCS_DIR/$_pack_name
 			[[ $? != 0 ]] && { echo "error in $SRCS_DIR/$_pack_name"; exit 1; }
 			
+			local _term=$TERM
+			export TERM=cygwin
+		
 			case $_pack_type in
 				cvs) echo "revision: $( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )" >> $VERSION_FILE ;;
 				svn) echo "revision: $( svn info | grep 'Revision: ' | sed 's|Revision: ||' )" >> $VERSION_FILE ;;
 				hg) echo "revision: unimplemented" >> $VERSION_FILE ;;
-				git) echo "revision: unimplemented" >> $VERSION_FILE ;;
+				git) echo "SHA1: $( git log -1 --pretty=format:%H )" >> $VERSION_FILE ;;
 				*) echo "version: $( echo $_pack_name | sed 's/[^0-9.]*\([0-9.]*\).*/\1/' )" >> $VERSION_FILE ;;
 			esac
+		
+			export TERM=$_term
+		
 			echo "" >> $VERSION_FILE
 		}
 	done
