@@ -1,50 +1,28 @@
-diff -urN a/Modules/parsermodule.c b/Modules/parsermodule.c
---- a/Modules/parsermodule.c	Wed Apr 17 23:20:51 2013
-+++ b/Modules/parsermodule.c	Wed Apr 17 23:21:15 2013
-@@ -39,7 +39,7 @@
- #include "ast.h"
- #include "pyarena.h"
- 
--extern grammar _PyParser_Grammar; /* From graminit.c */
-+PyAPI_DATA(grammar) _PyParser_Grammar; /* From graminit.c */
- 
- #ifdef lint
- #include <note.h>
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	Wed Apr 17 23:20:48 2013
-+++ b/configure.ac	Wed Apr 17 23:24:05 2013
-@@ -5,7 +5,7 @@
- # Set VERSION so we only need to edit in one place (i.e., here)
- m4_define(PYTHON_VERSION, 2.7)
- 
--AC_PREREQ(2.65)
-+AC_PREREQ(2.61)
- 
- AC_REVISION($Revision$)
- AC_INIT(python, PYTHON_VERSION, http://bugs.python.org/)
-@@ -257,6 +257,9 @@
- 		fi
- 		enable_framework=
- 		;;
+--- a/configure.ac	2013-04-22 02:19:34.199512942 +0100
++++ b/configure.ac	2013-04-22 02:19:34.586515888 +0100
+@@ -312,6 +312,10 @@
+        # `define_xopen_source' in the case statement below. For the
+        # current supported cross builds, this macro is not adjusted.
+ 	case "$host" in
 +	*-*-darwin*)
 +		ac_sys_system=Darwin
++		ac_sys_version=11
++		;;
+ 	*-*-linux*)
+ 		ac_sys_system=Linux
+ 		;;
+@@ -368,6 +372,9 @@
+ 	*-*-cygwin*|*-*-mingw*)
+ 		_host_cpu=
+ 		;;
++	*-*-darwin*)
++		_host_cpu=
 +		;;
  	*)
- 		PYTHONFRAMEWORKPREFIX="${enableval}"
- 		PYTHONFRAMEWORKINSTALLDIR=$PYTHONFRAMEWORKPREFIX/$PYTHONFRAMEWORKDIR
-@@ -398,6 +401,11 @@
- 	dnl - but an item in PYTHONPATH is "plat-win" !!! oops
- 	MACHDEP=win
- 	;;
-+    *-*-darwin*)
-+	ac_sys_system=Darwin
-+	ac_sys_version=11
-+    MACHDEP=darwin
-+    ;;
- 	esac
- fi
- if test -z "$MACHDEP"
-@@ -1263,6 +1271,16 @@
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+@@ -1171,6 +1178,16 @@
  UNIVERSAL_ARCH_FLAGS=
  AC_SUBST(UNIVERSAL_ARCH_FLAGS)
  
@@ -61,7 +39,7 @@ diff -urN a/configure.ac b/configure.ac
  # tweak BASECFLAGS based on compiler and platform
  case $GCC in
  yes)
-@@ -1323,7 +1341,7 @@
+@@ -1227,7 +1244,7 @@
  	    # Calculate the right deployment target for this build.
  	    #
  	    cur_target=`sw_vers -productVersion | sed 's/\(10\.[[0-9]]*\).*/\1/'`
@@ -70,7 +48,7 @@ diff -urN a/configure.ac b/configure.ac
  		    cur_target=10.3
  		    if test ${enable_universalsdk}; then
  			    if test "${UNIVERSAL_ARCHS}" = "all"; then
-@@ -1343,7 +1361,7 @@
+@@ -1247,7 +1264,7 @@
  				    cur_target='10.5'
  			    fi
  		    else
@@ -79,15 +57,7 @@ diff -urN a/configure.ac b/configure.ac
  				    # On Intel macs default to a deployment
  				    # target of 10.4, that's the first OSX
  				    # release with Intel support.
-@@ -1999,7 +2017,6 @@
-     ;;
- esac
- 
--
- ARCH_RUN_32BIT=""
- AC_SUBST(LIBTOOL_CRUFT)
- case $ac_sys_system/$ac_sys_release in
-@@ -2008,7 +2025,7 @@
+@@ -1912,7 +1929,7 @@
      if test "${enable_universalsdk}"; then
  	    :
      else
@@ -96,7 +66,7 @@ diff -urN a/configure.ac b/configure.ac
      fi
      LIBTOOL_CRUFT=$LIBTOOL_CRUFT' -install_name $(PYTHONFRAMEWORKINSTALLDIR)/Versions/$(VERSION)/$(PYTHONFRAMEWORK)'
      LIBTOOL_CRUFT=$LIBTOOL_CRUFT' -compatibility_version $(VERSION) -current_version $(VERSION)';;
-@@ -2033,7 +2050,7 @@
+@@ -1937,7 +1954,7 @@
      ]])],[ac_osx_32bit=yes],[ac_osx_32bit=no],[ac_osx_32bit=yes])
      
      if test "${ac_osx_32bit}" = "yes"; then
@@ -105,7 +75,7 @@ diff -urN a/configure.ac b/configure.ac
      	i386) 
      		MACOSX_DEFAULT_ARCH="i386" 
      		;;
-@@ -2045,7 +2062,7 @@
+@@ -1949,7 +1966,7 @@
      		;;
      	esac
      else
@@ -114,7 +84,7 @@ diff -urN a/configure.ac b/configure.ac
      	i386) 
      		MACOSX_DEFAULT_ARCH="x86_64" 
      		;;
-@@ -2084,8 +2101,8 @@
+@@ -1988,8 +2005,8 @@
  fi
  
  AC_MSG_CHECKING(for dyld)
@@ -125,7 +95,7 @@ diff -urN a/configure.ac b/configure.ac
    	AC_DEFINE(WITH_DYLD, 1, 
          [Define if you want to use the new-style (Openstep, Rhapsody, MacOS)
           dynamic linker (dyld) instead of the old-style (NextStep) dynamic
-@@ -2209,7 +2226,7 @@
+@@ -2113,7 +2130,7 @@
  		# Use -undefined dynamic_lookup whenever possible (10.3 and later).
  		# This allows an extension to be used in any Python
  
@@ -134,3 +104,15 @@ diff -urN a/configure.ac b/configure.ac
  		then
  			if test "${enable_universalsdk}"; then
  				LDFLAGS="${UNIVERSAL_ARCH_FLAGS} -isysroot ${UNIVERSALSDK} ${LDFLAGS}"
+diff -urN a/Modules/parsermodule.c b/Modules/parsermodule.c
+--- a/Modules/parsermodule.c	2013-04-22 02:19:34.148512554 +0100
++++ b/Modules/parsermodule.c	2013-04-22 02:19:34.588515903 +0100
+@@ -39,7 +39,7 @@
+ #include "ast.h"
+ #include "pyarena.h"
+ 
+-extern grammar _PyParser_Grammar; /* From graminit.c */
++PyAPI_DATA(grammar) _PyParser_Grammar; /* From graminit.c */
+ 
+ #ifdef lint
+ #include <note.h>

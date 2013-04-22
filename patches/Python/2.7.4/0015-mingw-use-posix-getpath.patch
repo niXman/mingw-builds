@@ -1,6 +1,27 @@
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2013-04-22 02:19:29.877480037 +0100
++++ b/configure.ac	2013-04-22 02:19:30.263482976 +0100
+@@ -3039,7 +3039,7 @@
+ AC_MSG_CHECKING(MACHDEP_OBJS)
+ case $host in
+   *-*-mingw*)
+-    extra_machdep_objs="PC/dl_nt.o PC/getpathp.o PC/import_nt.o"
++    extra_machdep_objs="PC/dl_nt.o Modules/getpath.o PC/import_nt.o"
+     ;;
+ esac
+ if test -z "$MACHDEP_OBJS"
+@@ -4794,7 +4794,7 @@
+     # FIXME: why windows builds don't use PC/frozen_dllmain.o ?
+     PYTHON_OBJS_FROZENMAIN=""
+     # default sys.path calculations for windows platforms
+-    MODULE_GETPATH=PC/getpathp.o
++    MODULE_GETPATH=Modules/getpath.o
+     ;;
+ esac
+ 
 diff -urN a/Modules/getpath.c b/Modules/getpath.c
---- a/Modules/getpath.c	2013-04-21 00:11:25 +0100
-+++ b/Modules/getpath.c	2013-04-21 00:12:58 +0100
+--- a/Modules/getpath.c	2013-04-22 02:19:29.825479641 +0100
++++ b/Modules/getpath.c	2013-04-22 02:19:30.265482992 +0100
 @@ -10,6 +10,10 @@
  #include <mach-o/dyld.h>
  #endif
@@ -119,8 +140,8 @@ diff -urN a/Modules/getpath.c b/Modules/getpath.c
          strncpy(argv0_path, progpath, MAXPATHLEN);
          argv0_path[MAXPATHLEN] = '\0';
 diff -urN a/Modules/posixmodule.c b/Modules/posixmodule.c
---- a/Modules/posixmodule.c	2013-04-21 00:11:25 +0100
-+++ b/Modules/posixmodule.c	2013-04-21 00:12:58 +0100
+--- a/Modules/posixmodule.c	2013-04-22 02:19:29.828479664 +0100
++++ b/Modules/posixmodule.c	2013-04-22 02:19:30.268483014 +0100
 @@ -2322,7 +2322,7 @@
              Py_END_ALLOW_THREADS
              /* FindNextFile sets error to ERROR_NO_MORE_FILES if
@@ -140,8 +161,8 @@ diff -urN a/Modules/posixmodule.c b/Modules/posixmodule.c
              win32_error("FindNextFile", namebuf);
              FindClose(hFindFile);
 diff -urN a/Parser/metagrammar.c b/Parser/metagrammar.c
---- a/Parser/metagrammar.c	2013-04-06 15:02:40 +0100
-+++ b/Parser/metagrammar.c	2013-04-21 00:12:58 +0100
+--- a/Parser/metagrammar.c	2013-04-22 02:19:29.839479748 +0100
++++ b/Parser/metagrammar.c	2013-04-22 02:19:30.269483022 +0100
 @@ -139,7 +139,7 @@
      {7, 0},
      {8, 0},
@@ -161,8 +182,8 @@ diff -urN a/Parser/metagrammar.c b/Parser/metagrammar.c
  
  grammar *
 diff -urN a/Python/pythonrun.c b/Python/pythonrun.c
---- a/Python/pythonrun.c	2013-04-06 15:02:40 +0100
-+++ b/Python/pythonrun.c	2013-04-21 00:12:58 +0100
+--- a/Python/pythonrun.c	2013-04-22 02:19:29.799479443 +0100
++++ b/Python/pythonrun.c	2013-04-22 02:19:30.269483022 +0100
 @@ -18,6 +18,7 @@
  #include "eval.h"
  #include "marshal.h"
@@ -185,24 +206,3 @@ diff -urN a/Python/pythonrun.c b/Python/pythonrun.c
      if (pn && *pn)
          progname = pn;
  }
-diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-04-21 00:11:25 +0100
-+++ b/configure.ac	2013-04-21 00:12:58 +0100
-@@ -3135,7 +3135,7 @@
- AC_MSG_CHECKING(MACHDEP_OBJS)
- case $host in
-   *-*-mingw*)
--    extra_machdep_objs="PC/dl_nt.o PC/getpathp.o PC/import_nt.o"
-+    extra_machdep_objs="PC/dl_nt.o Modules/getpath.o PC/import_nt.o"
-     ;;
- esac
- if test -z "$MACHDEP_OBJS"
-@@ -4896,7 +4918,7 @@
-     # FIXME: why windows builds don't use PC/frozen_dllmain.o ?
-     PYTHON_OBJS_FROZENMAIN=""
-     # default sys.path calculations for windows platforms
--    MODULE_GETPATH=PC/getpathp.o
-+    MODULE_GETPATH=Modules/getpath.o
-     ;;
- esac
- 
