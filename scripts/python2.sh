@@ -45,7 +45,6 @@ PRIORITY=extra
 #
 
 PATCHES=(
-	Python/${VERSION}/0000-CROSS.patch
 	Python/${VERSION}/0005-MINGW.patch
 	Python/${VERSION}/0006-mingw-removal-of-libffi-patch.patch
 	Python/${VERSION}/0007-mingw-system-libffi.patch

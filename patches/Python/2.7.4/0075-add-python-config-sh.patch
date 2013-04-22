@@ -1,7 +1,43 @@
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2013-04-22 02:19:38.593546386 +0100
++++ b/configure.ac	2013-04-22 02:19:38.983549354 +0100
+@@ -913,6 +913,7 @@
+ 
+ # Other platforms follow
+ if test $enable_shared = "yes"; then
++  PY_ENABLE_SHARED=1
+   AC_DEFINE(Py_ENABLE_SHARED, 1, [Defined if Python is built as a shared library.])
+   case $ac_sys_system in
+     BeOS*)
+@@ -981,6 +982,7 @@
+           ;;
+   esac
+ else # shared is disabled
++  PY_ENABLE_SHARED=0
+   case $ac_sys_system in
+     CYGWIN*)
+           BLDLIBRARY='$(LIBRARY)'
+@@ -992,6 +994,7 @@
+           LDLIBRARY='libpython$(VERSION).a';;
+   esac
+ fi
++AC_SUBST(PY_ENABLE_SHARED)
+ 
+ if test "$cross_compiling" = yes; then
+ 	RUNSHARED=
+@@ -4862,7 +4865,7 @@
+ AC_MSG_RESULT(done)
+ 
+ # generate output files
+-AC_CONFIG_FILES(Makefile.pre Modules/Setup.config Misc/python.pc)
++AC_CONFIG_FILES(Makefile.pre Modules/Setup.config Misc/python.pc Misc/python-config.sh)
+ AC_CONFIG_FILES([Modules/ld_so_aix], [chmod +x Modules/ld_so_aix])
+ AC_OUTPUT
+ 
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-04-21 00:50:10 +0100
-+++ b/Makefile.pre.in	2013-04-21 00:50:56 +0100
-@@ -1050,6 +1050,8 @@
+--- a/Makefile.pre.in	2013-04-22 02:19:38.579546280 +0100
++++ b/Makefile.pre.in	2013-04-22 02:19:38.985549369 +0100
+@@ -1046,6 +1046,8 @@
  	# Substitution happens here, as the completely-expanded BINDIR
  	# is not available in configure
  	sed -e "s,@EXENAME@,$(BINDIR)/python$(VERSION)$(EXE)," < $(srcdir)/Misc/python-config.in >python-config
@@ -10,7 +46,7 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  
  # Install the include files
  INCLDIRSTOMAKE=$(INCLUDEDIR) $(CONFINCLUDEDIR) $(INCLUDEPY) $(CONFINCLUDEPY)
-@@ -1108,6 +1110,7 @@
+@@ -1104,6 +1106,7 @@
  	$(INSTALL_SCRIPT) $(srcdir)/Modules/makesetup $(DESTDIR)$(LIBPL)/makesetup
  	$(INSTALL_SCRIPT) $(srcdir)/install-sh $(DESTDIR)$(LIBPL)/install-sh
  	$(INSTALL_SCRIPT) python-config $(DESTDIR)$(BINDIR)/python$(VERSION)-config
@@ -19,8 +55,8 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  	@if [ -s Modules/python.exp -a \
  		"`echo $(MACHDEP) | sed 's/^\(...\).*/\1/'`" = "aix" ]; then \
 diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
---- a/Misc/python-config.sh.in	1970-01-01 00:00:00 +0000
-+++ b/Misc/python-config.sh.in	2013-04-21 00:50:56 +0100
+--- a/Misc/python-config.sh.in	1970-01-01 01:00:00.000000000 +0100
++++ b/Misc/python-config.sh.in	2013-04-22 02:19:38.986549377 +0100
 @@ -0,0 +1,101 @@
 +#!/bin/sh
 +
@@ -123,38 +159,3 @@ diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
 +        ;;
 +esac
 +done
-diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-04-21 00:50:10 +0100
-+++ b/configure.ac	2013-04-21 00:50:56 +0100
-@@ -1006,6 +1006,7 @@
- 
- # Other platforms follow
- if test $enable_shared = "yes"; then
-+  PY_ENABLE_SHARED=1
-   AC_DEFINE(Py_ENABLE_SHARED, 1, [Defined if Python is built as a shared library.])
-   case $ac_sys_system in
-     BeOS*)
-@@ -1074,6 +1075,7 @@
-           ;;
-   esac
- else # shared is disabled
-+  PY_ENABLE_SHARED=0
-   case $ac_sys_system in
-     CYGWIN*)
-           BLDLIBRARY='$(LIBRARY)'
-@@ -1085,6 +1087,7 @@
-           LDLIBRARY='libpython$(VERSION).a';;
-   esac
- fi
-+AC_SUBST(PY_ENABLE_SHARED)
- 
- if test "$cross_compiling" = yes; then
- 	RUNSHARED=
-@@ -4986,6 +4989,6 @@
- 
- mv config.c Modules])
- AC_CONFIG_FILES([setup_info])
--AC_CONFIG_FILES([Makefile.pre Modules/Setup.config Misc/python.pc])
-+AC_CONFIG_FILES([Makefile.pre Modules/Setup.config Misc/python.pc Misc/python-config.sh])
- AC_CONFIG_FILES([Modules/ld_so_aix], [chmod +x Modules/ld_so_aix])
- AC_OUTPUT

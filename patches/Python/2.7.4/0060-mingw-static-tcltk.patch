@@ -1,7 +1,7 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	Wed Apr 17 23:28:01 2013
-+++ b/setup.py	Wed Apr 17 23:29:04 2013
-@@ -586,7 +586,7 @@
+--- a/setup.py	2013-04-22 02:19:36.404529726 +0100
++++ b/setup.py	2013-04-22 02:19:36.794532695 +0100
+@@ -562,7 +562,7 @@
          if host_platform == 'hp-ux11':
              lib_dirs += ['/usr/lib/hpux64', '/usr/lib/hpux32']
  
@@ -10,7 +10,7 @@ diff -urN a/setup.py b/setup.py
              # This should work on any unixy platform ;-)
              # If the user has bothered specifying additional -I and -L flags
              # in OPT and LDFLAGS we might as well use them here.
-@@ -596,6 +596,8 @@
+@@ -572,6 +572,8 @@
              # FIXME: Why LDFLAGS again ?
              cflags, ldflags = sysconfig.get_config_vars(
                      'CFLAGS', 'LDFLAGS')
@@ -19,7 +19,7 @@ diff -urN a/setup.py b/setup.py
              for item in cflags.split():
                  if item.startswith('-I'):
                      inc_dirs.append(item[2:])
-@@ -1961,14 +1963,19 @@
+@@ -1915,14 +1917,19 @@
          # The versions with dots are used on Unix, and the versions without
          # dots on Windows, for detection by cygwin.
          tcllib = tklib = tcl_includes = tk_includes = None
@@ -47,7 +47,7 @@ diff -urN a/setup.py b/setup.py
                  break
  
          # Now check for the header files
-@@ -2037,15 +2044,21 @@
+@@ -1991,15 +1998,21 @@
              libs.append('BLT')
  
          # Add the Tcl/Tk libraries
@@ -55,7 +55,7 @@ diff -urN a/setup.py b/setup.py
 -        libs.append('tcl'+ version)
 +        libs.append('tk'+ version + tcltk_suffix)
 +        libs.append('tcl'+ version + tcltk_suffix)
-+        if host_platform in ['mingw', 'win32']:
++        if host_platform == 'win':
 +            for winlib in ['ws2_32','gdi32','comctl32','comdlg32','imm32','uuid','oleaut32','ole32']:
 +                libs.append( winlib )
  

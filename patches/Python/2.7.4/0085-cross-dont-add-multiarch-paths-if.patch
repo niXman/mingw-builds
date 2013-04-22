@@ -1,11 +1,18 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	Wed Apr 17 23:43:47 2013
-+++ b/setup.py	Wed Apr 17 23:43:57 2013
-@@ -491,7 +491,7 @@
-             # Ensure that /usr/local is always used
-             add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
-             add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+--- a/setup.py	2013-04-22 02:19:40.064557580 +0100
++++ b/setup.py	2013-04-22 02:19:40.467560647 +0100
+@@ -467,10 +467,11 @@
+             os.unlink(tmpfile)
+ 
+     def detect_modules(self):
+-        # Ensure that /usr/local is always used
+-        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
+-        add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
 -        self.add_multiarch_paths()
++        if not cross_compiling:
++            # Ensure that /usr/local is always used
++            add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
++            add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
 +            self.add_multiarch_paths()
  
          # Add paths specified in the environment variables LDFLAGS and

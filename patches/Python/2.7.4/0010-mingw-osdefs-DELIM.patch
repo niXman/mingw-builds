@@ -1,6 +1,26 @@
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2013-04-22 02:19:29.041473671 +0100
++++ b/configure.ac	2013-04-22 02:19:29.526477364 +0100
+@@ -493,6 +493,16 @@
+ fi
+ AC_MSG_RESULT($MACHDEP)
+ 
++# Windows uses ; to separate paths, everything else uses :
++AC_MSG_CHECKING(DELIM)
++DELIM=:
++if test "$MACHDEP" = "win"
++then
++       DELIM=\;
++fi
++AC_MSG_RESULT([$DELIM])
++AC_SUBST(DELIM)
++
+ AC_MSG_CHECKING([for init system calls])
+ AC_SUBST(INITSYS)
+ case $host in
 diff -urN a/Include/osdefs.h b/Include/osdefs.h
---- a/Include/osdefs.h	Wed Apr 17 23:15:35 2013
-+++ b/Include/osdefs.h	Wed Apr 17 23:16:06 2013
+--- a/Include/osdefs.h	2013-04-22 02:19:29.039473656 +0100
++++ b/Include/osdefs.h	2013-04-22 02:19:29.528477380 +0100
 @@ -10,7 +10,7 @@
  /* Mod by chrish: QNX has WATCOM, but isn't DOS */
  #if !defined(__QNX__)
@@ -35,9 +55,9 @@ diff -urN a/Include/osdefs.h b/Include/osdefs.h
  
  #ifdef __cplusplus
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	Wed Apr 17 23:15:42 2013
-+++ b/Makefile.pre.in	Wed Apr 17 23:19:38 2013
-@@ -84,7 +85,8 @@
+--- a/Makefile.pre.in	2013-04-22 02:19:29.027473565 +0100
++++ b/Makefile.pre.in	2013-04-22 02:19:29.528477380 +0100
+@@ -84,7 +84,8 @@
  # C flags used for building the interpreter object files
  PY_CFLAGS=	$(CFLAGS) $(CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
  
@@ -47,9 +67,21 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  # Machine-dependent subdirectories
  MACHDEP=	@MACHDEP@
  
+diff -urN a/Modules/getpath.c b/Modules/getpath.c
+--- a/Modules/getpath.c	2013-04-22 02:19:28.985473245 +0100
++++ b/Modules/getpath.c	2013-04-22 02:19:29.528477380 +0100
+@@ -117,7 +117,7 @@
+ #endif
+ 
+ #ifndef PYTHONPATH
+-#define PYTHONPATH PREFIX "/lib/python" VERSION ":" \
++#define PYTHONPATH PREFIX "/lib/python" VERSION DELIMSTR \
+               EXEC_PREFIX "/lib/python" VERSION "/lib-dynload"
+ #endif
+ 
 diff -urN a/Modules/Setup.dist b/Modules/Setup.dist
---- a/Modules/Setup.dist	Wed Apr 17 23:15:42 2013
-+++ b/Modules/Setup.dist	Wed Apr 17 23:16:06 2013
+--- a/Modules/Setup.dist	2013-04-22 02:19:28.993473306 +0100
++++ b/Modules/Setup.dist	2013-04-22 02:19:29.529477387 +0100
 @@ -84,22 +84,22 @@
  # Empty since this is now just the runtime prefix.
  DESTPATH=
@@ -77,34 +109,3 @@ diff -urN a/Modules/Setup.dist b/Modules/Setup.dist
  
  COREPYTHONPATH=$(DESTPATH)$(SITEPATH)$(TESTPATH)$(MACHDEPPATH)$(EXTRAMACHDEPPATH)$(TKPATH)$(OLDPATH)
  PYTHONPATH=$(COREPYTHONPATH)
-diff -urN a/Modules/getpath.c b/Modules/getpath.c
---- a/Modules/getpath.c	Wed Apr 17 23:15:42 2013
-+++ b/Modules/getpath.c	Wed Apr 17 23:16:06 2013
-@@ -117,7 +121,7 @@
- #endif
- 
- #ifndef PYTHONPATH
--#define PYTHONPATH PREFIX "/lib/python" VERSION ":" \
-+#define PYTHONPATH PREFIX "/lib/python" VERSION DELIMSTR \
-               EXEC_PREFIX "/lib/python" VERSION "/lib-dynload"
- #endif
- 
---- a/configure.ac      2013-04-20 23:18:55 +0100
-+++ b/configure.ac      2013-04-20 23:26:24 +0100
-@@ -585,6 +585,16 @@
- fi
- AC_MSG_RESULT($MACHDEP)
-
-+# Windows uses ; to separate paths, everything else uses :
-+AC_MSG_CHECKING(DELIM)
-+DELIM=:
-+if test "$MACHDEP" = "win"
-+then
-+       DELIM=\;
-+fi
-+AC_MSG_RESULT([$DELIM])
-+AC_SUBST(DELIM)
-+
- AC_MSG_CHECKING([for init system calls])
- AC_SUBST(INITSYS)
- case $host in

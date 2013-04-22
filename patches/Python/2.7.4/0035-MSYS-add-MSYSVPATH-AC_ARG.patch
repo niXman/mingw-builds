@@ -1,26 +1,7 @@
---- a/Makefile.pre.in	2013-04-20 23:44:05 +0100
-+++ b/Makefile.pre.in	2013-04-20 23:45:04 +0100
-@@ -27,6 +27,7 @@
- VERSION=	@VERSION@
- srcdir=		@srcdir@
- VPATH=		@srcdir@
-+MSYSVPATH=	@MSYSVPATH@
- abs_srcdir=	@abs_srcdir@
- abs_builddir=	@abs_builddir@
- build=		@build@
-@@ -578,7 +579,7 @@
- 		-DPREFIX='"$(prefix)"' \
- 		-DEXEC_PREFIX='"$(exec_prefix)"' \
- 		-DVERSION='"$(VERSION)"' \
--		-DVPATH='"$(VPATH)"' \
-+		-DVPATH='"$(MSYSVPATH)"' \
- 		-o $@ $(srcdir)/Modules/getpath.c
- 
- # default sys.path calculations for windows platforms
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-04-20 23:44:05 +0100
-+++ b/configure.ac	2013-04-20 23:47:39 +0100
-@@ -595,6 +595,17 @@
+--- a/configure.ac	2013-04-22 02:19:32.747501889 +0100
++++ b/configure.ac	2013-04-22 02:19:33.132504820 +0100
+@@ -503,6 +503,17 @@
  AC_MSG_RESULT([$DELIM])
  AC_SUBST(DELIM)
  
@@ -38,3 +19,23 @@ diff -urN a/configure.ac b/configure.ac
  AC_MSG_CHECKING([for init system calls])
  AC_SUBST(INITSYS)
  case $host in
+diff -urN a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	2013-04-22 02:19:32.734501790 +0100
++++ b/Makefile.pre.in	2013-04-22 02:19:33.134504835 +0100
+@@ -27,6 +27,7 @@
+ VERSION=	@VERSION@
+ srcdir=		@srcdir@
+ VPATH=		@srcdir@
++MSYSVPATH=	@MSYSVPATH@
+ abs_srcdir=	@abs_srcdir@
+ abs_builddir=	@abs_builddir@
+ build=		@build@
+@@ -575,7 +576,7 @@
+ 		-DPREFIX='"$(prefix)"' \
+ 		-DEXEC_PREFIX='"$(exec_prefix)"' \
+ 		-DVERSION='"$(VERSION)"' \
+-		-DVPATH='"$(VPATH)"' \
++		-DVPATH='"$(MSYSVPATH)"' \
+ 		-o $@ $(srcdir)/Modules/getpath.c
+ 
+ # default sys.path calculations for windows platforms
