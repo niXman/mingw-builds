@@ -1,6 +1,6 @@
 diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
---- a/Lib/distutils/sysconfig.py	Wed Apr 17 23:24:39 2013
-+++ b/Lib/distutils/sysconfig.py	Wed Apr 17 23:26:05 2013
+--- a/Lib/distutils/sysconfig.py	2013-04-22 02:19:35.060519496 +0100
++++ b/Lib/distutils/sysconfig.py	2013-04-22 02:19:35.356521749 +0100
 @@ -120,7 +120,7 @@
      if prefix is None:
          prefix = plat_specific and EXEC_PREFIX or PREFIX
@@ -11,8 +11,8 @@ diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
                                   "lib", "python" + get_python_version())
          if standard_lib:
 diff -urN a/Lib/site.py b/Lib/site.py
---- a/Lib/site.py	Wed Apr 17 23:24:42 2013
-+++ b/Lib/site.py	Wed Apr 17 23:26:05 2013
+--- a/Lib/site.py	2013-04-22 02:19:35.013519139 +0100
++++ b/Lib/site.py	2013-04-22 02:19:35.358521765 +0100
 @@ -537,8 +537,9 @@
  
      abs__file__()
@@ -26,9 +26,9 @@ diff -urN a/Lib/site.py b/Lib/site.py
      if ENABLE_USER_SITE is None:
          ENABLE_USER_SITE = check_enableusersite()
 diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
---- a/Lib/sysconfig.py	Wed Apr 17 23:24:42 2013
-+++ b/Lib/sysconfig.py	Wed Apr 17 23:26:05 2013
-@@ -35,13 +35,13 @@
+--- a/Lib/sysconfig.py	2013-04-22 02:19:35.060519496 +0100
++++ b/Lib/sysconfig.py	2013-04-22 02:19:35.358521765 +0100
+@@ -27,13 +27,13 @@
          'data'   : '{base}',
          },
      'nt': {
@@ -49,7 +49,7 @@ diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
          'data'   : '{base}',
          },
      'os2': {
-@@ -64,12 +64,12 @@
+@@ -56,12 +56,12 @@
          'data'   : '{userbase}',
          },
      'nt_user': {
@@ -68,26 +68,3 @@ diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
          'data'   : '{userbase}',
          },
      'posix_user': {
-@@ -323,7 +323,7 @@
-     vars['INCLUDEPY'] = get_path('include')
-     vars['SO'] = '.pyd'
-     vars['EXE'] = '.exe'
--    vars['VERSION'] = _PY_VERSION_SHORT_NO_DOT
-+    vars['VERSION'] = _PY_VERSION_SHORT
-     vars['BINDIR'] = os.path.dirname(abspath(sys.executable))
- 
- #
-diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	Wed Apr 17 23:24:38 2013
-+++ b/configure.ac	Wed Apr 17 23:26:05 2013
-@@ -113,8 +113,8 @@
- AC_SUBST(VERSION)
- case $host in
-   *-*-mingw*)
--  dnl To be compatible with MSVC build.
--VERSION=`echo PYTHON_VERSION | sed -e 's|\.||g'`
-+  dnl To be *incompatible* with MSVC build!
-+VERSION=PYTHON_VERSION
-   ;;
-   *)
- VERSION=PYTHON_VERSION

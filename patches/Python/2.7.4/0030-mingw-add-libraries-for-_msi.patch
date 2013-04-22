@@ -1,7 +1,7 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	2013-04-20 23:35:46 +0100
-+++ b/setup.py	2013-04-20 23:37:24 +0100
-@@ -1004,7 +1004,8 @@
+--- a/setup.py	2013-04-22 02:19:32.024496384 +0100
++++ b/setup.py	2013-04-22 02:19:32.415499361 +0100
+@@ -958,7 +958,8 @@
                  for p in ['msvcrtmodule.c']]) )
  
              exts.append( Extension('_msi', [os.path.join(pc_srcdir, p)

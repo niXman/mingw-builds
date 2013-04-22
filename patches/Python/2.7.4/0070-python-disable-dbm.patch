@@ -1,7 +1,7 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	Wed Apr 17 23:31:10 2013
-+++ b/setup.py	Wed Apr 17 23:35:16 2013
-@@ -1369,7 +1369,7 @@
+--- a/setup.py	2013-04-22 02:19:37.853540755 +0100
++++ b/setup.py	2013-04-22 02:19:38.252543791 +0100
+@@ -1323,7 +1323,7 @@
  
          dbm_order = ['gdbm']
          # The standard Unix dbm module:

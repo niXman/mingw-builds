@@ -1,6 +1,6 @@
 diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
---- a/Lib/distutils/command/install.py	Wed Apr 17 23:45:46 2013
-+++ b/Lib/distutils/command/install.py	Wed Apr 17 23:46:14 2013
+--- a/Lib/distutils/command/install.py	2013-04-22 02:19:42.336574868 +0100
++++ b/Lib/distutils/command/install.py	2013-04-22 02:19:42.634577135 +0100
 @@ -8,7 +8,7 @@
  
  __revision__ = "$Id$"
@@ -47,11 +47,10 @@ diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
  
  if sys.version < "2.2":
      WINDOWS_SCHEME = {
-@@ -314,6 +343,14 @@
-         self.expand_basedirs()
+@@ -315,6 +344,14 @@
  
          self.dump_dirs("post-expand_basedirs()")
-+
+ 
 +        # MSYS (probably) will have transformed --root=/ to the
 +        # windows path where the msys is installed, so we check if root begins
 +        # with msysroot and if it does then remove this part.
@@ -59,12 +58,13 @@ diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
 +            msysroot = msys_root()
 +            if msysroot != None and self.root.find(msysroot)==0:
 +                self.root = self.root.replace(msysroot, "/")
- 
++
          # Now define config vars for the base directories so we can expand
          # everything else.
+         self.config_vars['base'] = self.install_base
 diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
---- a/Lib/distutils/util.py	Wed Apr 17 23:45:46 2013
-+++ b/Lib/distutils/util.py	Wed Apr 17 23:46:14 2013
+--- a/Lib/distutils/util.py	2013-04-22 02:19:42.339574891 +0100
++++ b/Lib/distutils/util.py	2013-04-22 02:19:42.635577143 +0100
 @@ -130,6 +130,13 @@
          paths.remove('.')
      if not paths:
