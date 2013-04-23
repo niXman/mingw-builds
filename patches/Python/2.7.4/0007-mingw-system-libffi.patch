@@ -160,7 +160,7 @@ diff -urN a/setup.py b/setup.py
          return True
  
      def configure_ctypes(self, ext):
-+        if host_platform == 'win':
++        if host_platform == 'win32':
 +            ext.libraries.extend(['ole32', 'oleaut32', 'uuid'])
 +            #AdditionalOptions="/EXPORT:DllGetClassObject,PRIVATE /EXPORT:DllCanUnloadNow,PRIVATE"
 +            ext.export_symbols.extend(['DllGetClassObject PRIVATE',
@@ -172,7 +172,7 @@ diff -urN a/setup.py b/setup.py
                  if not self.verbose:
                      config_args.append("-q")
  
-+                if host_platform == 'win':
++                if host_platform == 'win32':
 +                    table = maketrans('\\', '/')
 +                    ffi_builddir = ffi_builddir.translate(table)
 +                    ffi_srcdir = ffi_srcdir.translate(table)

@@ -79,7 +79,7 @@ diff -urN a/configure b/configure
  	darwin*) MACHDEP="darwin";;
  	atheos*) MACHDEP="atheos";;
          irix646) MACHDEP="irix6";;
-+	mingw*) MACHDEP="win";;
++	mingw*) MACHDEP="win32";;
  	'')	MACHDEP="unknown";;
      esac
  fi
@@ -103,7 +103,7 @@ diff -urN a/configure b/configure
 +{ $as_echo "$as_me:${as_lineno-$LINENO}: checking DELIM" >&5
 +$as_echo_n "checking DELIM... " >&6; }
 +DELIM=:
-+if test "$MACHDEP" = "win"
++if test "$MACHDEP" = "win32"
 +then
 +       DELIM=\;
 +fi
