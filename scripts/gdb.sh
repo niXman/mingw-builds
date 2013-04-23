@@ -70,7 +70,7 @@ CONFIGURE_FLAGS=(
 	--disable-tui
 	--disable-gdbtk
 	#
-	CFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
+	CFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib/python2.7/config\""
