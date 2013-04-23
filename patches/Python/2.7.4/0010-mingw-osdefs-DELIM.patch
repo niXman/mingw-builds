@@ -8,7 +8,7 @@ diff -urN a/configure.ac b/configure.ac
 +# Windows uses ; to separate paths, everything else uses :
 +AC_MSG_CHECKING(DELIM)
 +DELIM=:
-+if test "$MACHDEP" = "win"
++if test "$MACHDEP" = "win32"
 +then
 +       DELIM=\;
 +fi
