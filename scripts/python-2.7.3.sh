@@ -64,6 +64,8 @@ PATCHES=(
 	Python/${VERSION}/0070-mingw-use-backslashes-in-compileall-py.patch
 	Python/${VERSION}/0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch
 	Python/${VERSION}/0100-upgrade-internal-libffi-to-3.0.11.patch
+	Python/${VERSION}/0105-mingw-MSYS-no-usr-lib-or-usr-include.patch
+	Python/${VERSION}/9999-re-configure-d.patch
 )
 
 #
@@ -74,7 +76,6 @@ EXECUTE_AFTER_PATCH=(
 	"rm -rf Modules/zlib"
 	"autoconf"
 	"autoheader"
-	"rm pyconfig.h.in~"
 	"rm -rf autom4te.cache"
 	"touch Include/graminit.h"
 	"touch Python/graminit.c"
