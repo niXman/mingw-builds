@@ -42,12 +42,9 @@ URL=ftp://ftp.gnu.org/gnu/gdb/gdb-${VERSION}.tar.bz2
 TYPE=.tar.bz2
 PRIORITY=main
 
-#REL_PYTHON_PATH=$(func_absolute_to_relative $PREFIX/bin $PREFIX/opt/bin)
 #
 
-PATCHES=(
-	gdb/gdb-remove--Wformat-nonliteral-git.patch
-)
+PATCHES=()
 
 #
 
