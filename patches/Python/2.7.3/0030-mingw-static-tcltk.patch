@@ -1,6 +1,6 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	2012-06-24 21:00:44.404442659 +0100
-+++ b/setup.py	2012-06-24 21:00:44.607444094 +0100
+--- a/setup.py	2013-04-24 00:25:17.983149484 +0100
++++ b/setup.py	2013-04-24 00:25:18.356152153 +0100
 @@ -504,7 +504,7 @@
          if host_platform in ['osf1', 'unixware7', 'openunix8']:
              lib_dirs += ['/usr/ccs/lib']

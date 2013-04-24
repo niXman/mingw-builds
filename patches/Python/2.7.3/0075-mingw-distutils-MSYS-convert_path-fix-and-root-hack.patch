@@ -1,5 +1,6 @@
---- a/Lib/distutils/command/install.py	2012-04-10 03:07:29 +0400
-+++ b/Lib/distutils/command/install.py	2012-10-26 19:57:29 +0400
+diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
+--- a/Lib/distutils/command/install.py	2013-04-24 00:25:24.264194474 +0100
++++ b/Lib/distutils/command/install.py	2013-04-24 00:25:24.537196431 +0100
 @@ -8,7 +8,7 @@
  
  __revision__ = "$Id$"
@@ -46,7 +47,7 @@
  
  if sys.version < "2.2":
      WINDOWS_SCHEME = {
-@@ -315,6 +336,14 @@
+@@ -315,6 +344,14 @@
  
          self.dump_dirs("post-expand_basedirs()")
  
@@ -61,10 +62,9 @@
          # Now define config vars for the base directories so we can expand
          # everything else.
          self.config_vars['base'] = self.install_base
-
 diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
---- a/Lib/distutils/util.py	2012-04-10 00:07:30.000000000 +0100
-+++ b/Lib/distutils/util.py	2012-10-09 18:08:02.000000000 +0100
+--- a/Lib/distutils/util.py	2013-04-24 00:25:24.267194495 +0100
++++ b/Lib/distutils/util.py	2013-04-24 00:25:24.539196446 +0100
 @@ -210,6 +210,13 @@
          paths.remove('.')
      if not paths:

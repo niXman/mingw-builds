@@ -1,6 +1,6 @@
 diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
---- a/Lib/distutils/sysconfig.py	2013-04-22 02:19:35.060519496 +0100
-+++ b/Lib/distutils/sysconfig.py	2013-04-22 02:19:35.356521749 +0100
+--- a/Lib/distutils/sysconfig.py	2013-04-24 00:23:21.781279001 +0100
++++ b/Lib/distutils/sysconfig.py	2013-04-24 00:23:22.055281157 +0100
 @@ -120,7 +120,7 @@
      if prefix is None:
          prefix = plat_specific and EXEC_PREFIX or PREFIX
@@ -11,8 +11,8 @@ diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
                                   "lib", "python" + get_python_version())
          if standard_lib:
 diff -urN a/Lib/site.py b/Lib/site.py
---- a/Lib/site.py	2013-04-22 02:19:35.013519139 +0100
-+++ b/Lib/site.py	2013-04-22 02:19:35.358521765 +0100
+--- a/Lib/site.py	2013-04-24 00:23:21.734278631 +0100
++++ b/Lib/site.py	2013-04-24 00:23:22.057281173 +0100
 @@ -537,8 +537,9 @@
  
      abs__file__()
@@ -26,8 +26,8 @@ diff -urN a/Lib/site.py b/Lib/site.py
      if ENABLE_USER_SITE is None:
          ENABLE_USER_SITE = check_enableusersite()
 diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
---- a/Lib/sysconfig.py	2013-04-22 02:19:35.060519496 +0100
-+++ b/Lib/sysconfig.py	2013-04-22 02:19:35.358521765 +0100
+--- a/Lib/sysconfig.py	2013-04-24 00:23:21.781279001 +0100
++++ b/Lib/sysconfig.py	2013-04-24 00:23:22.058281181 +0100
 @@ -27,13 +27,13 @@
          'data'   : '{base}',
          },

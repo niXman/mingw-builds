@@ -1,6 +1,6 @@
-diff -urN a-2.7.3/configure.in b-2.7.3/configure.in
---- a-2.7.3/configure.in	2012-11-22 20:43:04.264639363 +0000
-+++ b-2.7.3/configure.in	2012-11-22 20:43:11.217073915 +0000
+diff -urN a/configure.in b/configure.in
+--- a/configure.in	2013-04-24 00:25:14.546124913 +0100
++++ b/configure.in	2013-04-24 00:25:14.888127357 +0100
 @@ -2347,14 +2347,32 @@
              [],
              [with_system_ffi="no"])
@@ -37,9 +37,9 @@ diff -urN a-2.7.3/configure.in b-2.7.3/configure.in
  
  # Check for --with-dbmliborder
  AC_MSG_CHECKING(for --with-dbmliborder)
-diff -urN a-2.7.3/Lib/ctypes/test/test_as_parameter.py b-2.7.3/Lib/ctypes/test/test_as_parameter.py
---- a-2.7.3/Lib/ctypes/test/test_as_parameter.py	2012-11-22 20:43:04.188678317 +0000
-+++ b-2.7.3/Lib/ctypes/test/test_as_parameter.py	2012-11-22 20:43:11.205080065 +0000
+diff -urN a/Lib/ctypes/test/test_as_parameter.py b/Lib/ctypes/test/test_as_parameter.py
+--- a/Lib/ctypes/test/test_as_parameter.py	2013-04-24 00:25:14.621125449 +0100
++++ b/Lib/ctypes/test/test_as_parameter.py	2013-04-24 00:25:14.889127364 +0100
 @@ -1,6 +1,7 @@
  import unittest
  from ctypes import *
@@ -59,9 +59,9 @@ diff -urN a-2.7.3/Lib/ctypes/test/test_as_parameter.py b-2.7.3/Lib/ctypes/test/t
      def test_struct_return_8H(self):
          class S8I(Structure):
              _fields_ = [("a", c_int),
-diff -urN a-2.7.3/Lib/ctypes/test/test_functions.py b-2.7.3/Lib/ctypes/test/test_functions.py
---- a-2.7.3/Lib/ctypes/test/test_functions.py	2012-11-22 20:43:04.188678317 +0000
-+++ b-2.7.3/Lib/ctypes/test/test_functions.py	2012-11-22 20:43:11.209078015 +0000
+diff -urN a/Lib/ctypes/test/test_functions.py b/Lib/ctypes/test/test_functions.py
+--- a/Lib/ctypes/test/test_functions.py	2013-04-24 00:25:14.621125449 +0100
++++ b/Lib/ctypes/test/test_functions.py	2013-04-24 00:25:14.889127364 +0100
 @@ -359,6 +359,10 @@
              s2h = windll.s_ret_2h_func(S2H(99, 88))
              self.assertEqual((s2h.x, s2h.y), (99*2, 88*3))
@@ -73,9 +73,9 @@ diff -urN a-2.7.3/Lib/ctypes/test/test_functions.py b-2.7.3/Lib/ctypes/test/test
      def test_struct_return_8H(self):
          class S8I(Structure):
              _fields_ = [("a", c_int),
-diff -urN a-2.7.3/Makefile.pre.in b-2.7.3/Makefile.pre.in
---- a-2.7.3/Makefile.pre.in	2012-11-22 20:43:04.164690619 +0000
-+++ b-2.7.3/Makefile.pre.in	2012-11-22 20:43:11.209078015 +0000
+diff -urN a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	2013-04-24 00:25:14.503124606 +0100
++++ b/Makefile.pre.in	2013-04-24 00:25:14.889127364 +0100
 @@ -410,11 +410,10 @@
  
  
@@ -92,9 +92,9 @@ diff -urN a-2.7.3/Makefile.pre.in b-2.7.3/Makefile.pre.in
  sharedmods: $(BUILDPYTHON)
  	@case $$MAKEFLAGS in \
  	*s*) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' $(RUNPYTHON) -E $(srcdir)/setup.py build @PYMOD_BUILDOPT@;; \
-diff -urN a-2.7.3/Modules/_ctypes/callproc.c b-2.7.3/Modules/_ctypes/callproc.c
---- a-2.7.3/Modules/_ctypes/callproc.c	2012-11-22 20:43:04.104721374 +0000
-+++ b-2.7.3/Modules/_ctypes/callproc.c	2012-11-22 20:43:11.213075965 +0000
+diff -urN a/Modules/_ctypes/callproc.c b/Modules/_ctypes/callproc.c
+--- a/Modules/_ctypes/callproc.c	2013-04-24 00:25:14.452124241 +0100
++++ b/Modules/_ctypes/callproc.c	2013-04-24 00:25:14.890127371 +0100
 @@ -822,8 +822,10 @@
  #ifndef DONT_USE_SEH
      __try {
@@ -122,9 +122,9 @@ diff -urN a-2.7.3/Modules/_ctypes/callproc.c b-2.7.3/Modules/_ctypes/callproc.c
      if ((flags & FUNCFLAG_PYTHONAPI) && PyErr_Occurred())
          return -1;
      return 0;
-diff -urN a-2.7.3/Modules/_ctypes/libffi/fficonfig.py.in b-2.7.3/Modules/_ctypes/libffi/fficonfig.py.in
---- a-2.7.3/Modules/_ctypes/libffi/fficonfig.py.in	2012-11-22 20:43:04.116715221 +0000
-+++ b-2.7.3/Modules/_ctypes/libffi/fficonfig.py.in	2012-11-22 20:43:11.213075965 +0000
+diff -urN a/Modules/_ctypes/libffi/fficonfig.py.in b/Modules/_ctypes/libffi/fficonfig.py.in
+--- a/Modules/_ctypes/libffi/fficonfig.py.in	2013-04-24 00:25:14.463124320 +0100
++++ b/Modules/_ctypes/libffi/fficonfig.py.in	2013-04-24 00:25:14.890127371 +0100
 @@ -1,7 +1,6 @@
  ffi_sources = """
  src/prep_cif.c
@@ -151,9 +151,9 @@ diff -urN a-2.7.3/Modules/_ctypes/libffi/fficonfig.py.in b-2.7.3/Modules/_ctypes
  ffi_sources += ffi_platforms['@TARGET@']
  
  ffi_cflags = '@CFLAGS@'
-diff -urN a-2.7.3/pyconfig.h.in b-2.7.3/pyconfig.h.in
---- a-2.7.3/pyconfig.h.in	2012-11-22 20:43:04.088729575 +0000
-+++ b-2.7.3/pyconfig.h.in	2012-11-22 20:43:11.221071865 +0000
+diff -urN a/pyconfig.h.in b/pyconfig.h.in
+--- a/pyconfig.h.in	2013-04-24 00:25:14.540124870 +0100
++++ b/pyconfig.h.in	2013-04-24 00:25:14.890127371 +0100
 @@ -1104,6 +1104,9 @@
  /* Define if you want to compile in Python-specific mallocs */
  #undef WITH_PYMALLOC
@@ -164,9 +164,9 @@ diff -urN a-2.7.3/pyconfig.h.in b-2.7.3/pyconfig.h.in
  /* Define if you want to compile in rudimentary thread support */
  #undef WITH_THREAD
  
-diff -urN a-2.7.3/setup.py b-2.7.3/setup.py
---- a-2.7.3/setup.py	2012-11-22 20:43:04.264639363 +0000
-+++ b-2.7.3/setup.py	2012-11-22 20:43:11.225069815 +0000
+diff -urN a/setup.py b/setup.py
+--- a/setup.py	2013-04-24 00:25:14.503124606 +0100
++++ b/setup.py	2013-04-24 00:25:14.891127378 +0100
 @@ -16,7 +16,7 @@
  from distutils.command.install import install
  from distutils.command.install_lib import install_lib
