@@ -125,7 +125,7 @@ CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	#
-	--prefix=$PREFIX/opt
+	--prefix=$([[ $PYTHON_ONLY_MODE == no ]] && echo $PREFIX/opt || echo $PREFIX)
 	#
 	--enable-shared
 	--without-pydebug

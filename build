@@ -641,7 +641,11 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	BUILDS_DIR=$BASE_BUILD_DIR/build
 	LIBS_DIR=$BASE_BUILD_DIR/libs
 	LOGS_DIR=$BASE_BUILD_DIR/logs
-	PREFIX=$BASE_BUILD_DIR/mingw${ARCHITECTURE/x/}
+	[[ $PYTHON_ONLY_MODE == no ]] && {
+		PREFIX=$BASE_BUILD_DIR/mingw${ARCHITECTURE/x/}
+	} || {
+		PREFIX=$BASE_BUILD_DIR/python-${PYTHON_VERSION}-${ARCHITECTURE}
+	}
 	MINGWPREFIX=/mingw${ARCHITECTURE/x/}
 
 	[[ $PYTHON_ONLY_MODE == no ]] && {
@@ -740,7 +744,13 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			}
 		}
 	} || {
-		SUBTARGETS=( ${PYTHON_SUBTARGETS[@]} )
+		SUBTARGETS=(
+			${PYTHON_SUBTARGETS[@]}
+			cleanup
+			licenses
+			put-versions
+			put-info
+		)
 	}
 
 	for sub in ${SUBTARGETS[@]}; do
