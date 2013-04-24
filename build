@@ -85,32 +85,34 @@ RUN_ARGS="$@"
 	echo "usage:"
 	echo "  ./${0##*/} <gcc version> <x32|x64> [OPTIONS]"
 	echo "  help:"
-	echo "    --buildroot=<path>     - specifies the build root directory"
-	echo "    --preload              - firstly downloads then builds"
-	echo "    --download             - download only the sources"
-	echo "    --exceptions=<type>    - specifies exceptions model for GCC"
-	echo "                             available: dwarf, seh, sjlj"
-	echo "    --use-lto              - build with LTO using"
-	echo "    --bootstrap            - bootstraping GCC"
-	echo "    --no-multilib          - build GCC without multilib support"
-	echo "    --no-strip             - don't strip dll's & executables on install"
-	echo "    --dyn-deps             - build GCC with dynamically dependencies"
-	echo "    --jobs=N               - specifies number of parallel make threads"
-	echo "    --rev=N                - specifies number of the build revision"
-	echo "    --threads=<model>      - specifies the threads model for GCC/libstdc++"
-	echo "                             available: win32, posix"
-	echo "    --version              - pring the version of the MinGW-builds scripts"
-	echo "    --mingw-compress       - compressing MinGW"
-	echo "    --srcs-compress        - compressing sources"
-	echo "    --mingw-upload=<user>  - upload toolchain archives to sf-project"
-	echo "    --src-upload=<user>    - upload sources archive to sf-project"
-	echo "    --cflags='<flags>'     - additional CFLAGS"
-	echo "    --cxxflags='<flags>'   - additional CXXFLAGS"
-	echo "    --cppflags='<flags>'   - additional CPPFLAGS"
-	echo "    --ldflags='<flags>'    - additional LDFLAGS"
-	echo "    --march-x32='<arch>'   - arch for x32 target"
-	echo "    --mtume-x32='<arch>'   - tune for x32 target"
-	echo "    --march-x64='<arch>'   - arch for x64 target"
+	echo "    --buildroot=<path>      - specifies the build root directory"
+	echo "    --preload               - firstly downloads then builds"
+	echo "    --download              - download only the sources"
+	echo "    --exceptions=<type>     - specifies exceptions model for GCC"
+	echo "                              available: dwarf, seh, sjlj"
+	echo "    --use-lto               - build with LTO using"
+	echo "    --bootstrap             - bootstraping GCC"
+	echo "    --no-multilib           - build GCC without multilib support"
+	echo "    --no-strip              - don't strip dll's & executables on install"
+	echo "    --dyn-deps              - build GCC with dynamically dependencies"
+	echo "    --jobs=N                - specifies number of parallel make threads"
+	echo "    --rev=N                 - specifies number of the build revision"
+	echo "    --threads=<model>       - specifies the threads model for GCC/libstdc++"
+	echo "                              available: win32, posix"
+	echo "    --python-only=<version> - only Python building mode"
+	echo "                              available versions: 2.7.3, 2.7.4, 3.3.0"
+	echo "    --version               - pring the version of the MinGW-builds scripts"
+	echo "    --mingw-compress        - compressing MinGW"
+	echo "    --srcs-compress         - compressing sources"
+	echo "    --mingw-upload=<user>   - upload toolchain archives to sf-project"
+	echo "    --src-upload=<user>     - upload sources archive to sf-project"
+	echo "    --cflags='<flags>'      - additional CFLAGS"
+	echo "    --cxxflags='<flags>'    - additional CXXFLAGS"
+	echo "    --cppflags='<flags>'    - additional CPPFLAGS"
+	echo "    --ldflags='<flags>'     - additional LDFLAGS"
+	echo "    --march-x32='<arch>'    - arch for x32 target"
+	echo "    --mtume-x32='<arch>'    - tune for x32 target"
+	echo "    --march-x64='<arch>'    - arch for x64 target"
 	echo "    --mtume-x64='<arch>'   - tune for x64 target"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
@@ -168,6 +170,8 @@ UPLOAD_BIN_TO_SF=no
 UPLOAD_SRC_TO_SF=no
 SF_USER=""
 DEBUG_UPLOAD=no
+PYTHON_ONLY_MODE=no
+PYTHON_VERSION=""
 
 PROCESSOR_OPTIMIZATION_TUNE_32='generic'
 PROCESSOR_OPTIMIZATION_ARCH_32='i686'
@@ -244,6 +248,13 @@ while [[ $# > 0 ]]; do
 			;;
 			esac
 		;;
+		--python-only=*)
+			PYTHON_ONLY_MODE=yes
+			PYTHON_VERSION=${1/--python-only=/}
+			[[ ! -f scripts/python-$PYTHON_VERSION.sh ]] && {
+				die "bad python version. terminate."
+			}
+		;;
 		--rev=*)
 			REV_NUM=${1/--rev=/}
 			PKG_VERSION="rev$REV_NUM, $PKG_VERSION"
@@ -297,12 +308,8 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 
 # **************************************************************************
 
-[[ -z $GCC_NAME ]] && {
-	die "please specify GCC version. terminate."
-}
-
-[[ $THREADS_MODEL != win32 && $THREADS_MODEL != posix ]] && {
-	die "bad threads model($THREADS_MODEL). terminate."
+[[ $PYTHON_ONLY_MODE == yes && ! -z $GCC_NAME ]] && {
+	die "you can't specify 'gcc-x.y.z' ang '--python-only' simultaneously. terminate."
 }
 
 [[ ${#BUILD_ARCHITECTURES[@]} == 0 ]] && {
@@ -317,24 +324,10 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 	die "may not specify twice \"${BUILD_ARCHITECTURES[0]}\" as build architecture. terminate."
 }
 
-[[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
-	die "$EXCEPTIONS_MODEL exceptions not allowed on multilib architecture. terminate."
-}
-[[ $EXCEPTIONS_MODEL == dwarf ]] && {
-	[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-		die "DWARF exceptions not allowed on x86_64 architecture. terminate."
-	}
-	[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
-		die "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
-	}
-}
-[[ $EXCEPTIONS_MODEL == seh ]] && {
-	[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
-		die "SEH exceptions not allowed on x86 architecture. terminate."
-	}
-	[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
-		die "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
-	}
+[[ ${BUILD_ARCHITECTURES[@]} =~ x32 && ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
+	build_for_both=1
+} || {
+	build_for_both=0
 }
 
 [[ $(env | grep PROCESSOR_ARCHITEW6432) =~ AMD64 ]] && {
@@ -343,12 +336,44 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 	IS_64BIT_HOST=no
 }
 
-[[ $IS_64BIT_HOST == no && ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-	die "you can't build 64-bit MinGW using 32-bit OS. terminate."
-}
+[[ $PYTHON_ONLY_MODE == no ]] && {
+	[[ -z $GCC_NAME ]] && {
+		die "please specify GCC version. terminate."
+	}
 
-[[ $IS_64BIT_HOST == no && $USE_MULTILIB == yes ]] && {
-	die "you can't build multitarget MinGW using 32-bit OS. terminate."
+	[[ $THREADS_MODEL != win32 && $THREADS_MODEL != posix ]] && {
+		die "bad threads model($THREADS_MODEL). terminate."
+	}
+
+	[[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
+		die "$EXCEPTIONS_MODEL exceptions not allowed on multilib architecture. terminate."
+	}
+	
+	[[ $EXCEPTIONS_MODEL == dwarf ]] && {
+		[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
+			die "DWARF exceptions not allowed on x86_64 architecture. terminate."
+		}
+		[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
+			die "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
+		}
+	}
+	
+	[[ $EXCEPTIONS_MODEL == seh ]] && {
+		[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
+			die "SEH exceptions not allowed on x86 architecture. terminate."
+		}
+		[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
+			die "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
+		}
+	}
+
+	[[ $IS_64BIT_HOST == no && ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
+		die "you can't build 64-bit MinGW using 32-bit OS. terminate."
+	}
+
+	[[ $IS_64BIT_HOST == no && $USE_MULTILIB == yes ]] && {
+		die "you can't build multitarget MinGW using 32-bit OS. terminate."
+	}
 }
 
 [[ $[ $COMPRESSING_MINGW == yes || $COMPRESSING_SRCS == yes ] == 1 && ! -f /bin/7za.exe ]] && {
@@ -439,6 +464,20 @@ SUBTARGETS_PART1=(
 	mingw-w64-crt
 )
 
+PYTHON_SUBTARGETS=(
+	libgnurx
+	bzip2
+	libffi
+	expat
+	#tcl
+	#tk
+	$([[ $PYTHON_VERSION == 3.3.0 ]] && echo "xz-utils")
+	sqlite
+	ncurses
+	readline
+	python-$PYTHON_VERSION
+)
+
 SUBTARGETS_PART2=(
 	mingw-w64-runtime-post
 	binutils
@@ -451,18 +490,7 @@ SUBTARGETS_PART2=(
 	mingw-w64-tools-genidl
 	mingw-w64-tools-genpeimg
 	mingw-w64-tools-widl
-	libgnurx
-	bzip2
-	libffi
-	expat
-	#tcl
-	#tk
-	#xz
-	sqlite
-	ncurses
-	readline
-	python2
-	#python3
+	${PYTHON_SUBTARGETS[@]}
 	3rdparty-post
 	gdbinit
 	gdb
@@ -476,60 +504,75 @@ SUBTARGETS_PART2=(
 	$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
 )
 
-[[ ${BUILD_ARCHITECTURES[@]} =~ x32 && ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-	build_for_both=1
-} || {
-	build_for_both=0
-}
-
-[[ $USE_MULTILIB == yes || $build_for_both == 1 ]] && {
-	SUBTARGETS=(
-		${LIBICONV_X32_SUBTARGETS[@]}
-		${LIBICONV_X64_SUBTARGETS[@]}
-		${ZLIB_X32_SUBTARGETS[@]}
-		${ZLIB_X64_SUBTARGETS[@]}		
-		${SUBTARGETS_PART1[@]}
-		${WINPTHREADS_X32_SUBTARGETS[@]}
-		${WINPTHREADS_X64_SUBTARGETS[@]}
-		${SUBTARGETS_PART2[@]}
-	)
-} || {
-	[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
+[[ $PYTHON_ONLY_MODE == no ]] && {
+	[[ $USE_MULTILIB == yes || $build_for_both == 1 ]] && {
 		SUBTARGETS=(
 			${LIBICONV_X32_SUBTARGETS[@]}
+			${LIBICONV_X64_SUBTARGETS[@]}
 			${ZLIB_X32_SUBTARGETS[@]}
+			${ZLIB_X64_SUBTARGETS[@]}		
 			${SUBTARGETS_PART1[@]}
 			${WINPTHREADS_X32_SUBTARGETS[@]}
-			${SUBTARGETS_PART2[@]}
-		)
-	} || {
-		SUBTARGETS=(
-			${LIBICONV_X64_SUBTARGETS[@]}
-			${ZLIB_X64_SUBTARGETS[@]}
-			${SUBTARGETS_PART1[@]}
 			${WINPTHREADS_X64_SUBTARGETS[@]}
 			${SUBTARGETS_PART2[@]}
 		)
+	} || {
+		[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
+			SUBTARGETS=(
+				${LIBICONV_X32_SUBTARGETS[@]}
+				${ZLIB_X32_SUBTARGETS[@]}
+				${SUBTARGETS_PART1[@]}
+				${WINPTHREADS_X32_SUBTARGETS[@]}
+				${SUBTARGETS_PART2[@]}
+			)
+		} || {
+			SUBTARGETS=(
+				${LIBICONV_X64_SUBTARGETS[@]}
+				${ZLIB_X64_SUBTARGETS[@]}
+				${SUBTARGETS_PART1[@]}
+				${WINPTHREADS_X64_SUBTARGETS[@]}
+				${SUBTARGETS_PART2[@]}
+			)
+		}
 	}
+} || {
+	SUBTARGETS=( ${PYTHON_SUBTARGETS[@]} )
 }
 
 # **************************************************************************
 
 [[ $PRELOAD_MODE == yes || $DOWNLOAD_MODE == yes ]] && {
 	[[ $PRELOAD_MODE == yes ]] && {
-		echo -n "-> preload sources for building MinGW-${GCC_NAME}-"
+		[[ $PYTHON_ONLY_MODE == no ]] && {
+			echo -n "-> preload sources for building MinGW-${GCC_NAME}-"
+		} || {
+			echo -n "-> preload sources for building python-${PYTHON_VERSION}-"
+		}
 	} || {
 		[[ $DOWNLOAD_MODE == yes ]] && {
-			echo -n "-> download sources for MinGW-${GCC_NAME}-"
+			[[ $PYTHON_ONLY_MODE == no ]] && {
+				echo -n "-> download sources for MinGW-${GCC_NAME}-"
+			} || {
+				echo -n "-> download sources for python-${PYTHON_VERSION}-"
+			}
 		}
 	}
-	[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ]] && echo -n "multilib-"
-	[[ $build_for_both == 1 ]] && {
-		echo -n "x32/x64-"
+	
+	[[ $PYTHON_ONLY_MODE == no ]] && {
+		[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ]] && echo -n "multilib-"
+		[[ $build_for_both == 1 ]] && {
+			echo -n "x32/x64-"
+		} || {
+			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && echo -n "x32-" || echo -n "x64-"
+		}
+		echo "$EXCEPTIONS_MODEL"
 	} || {
-		[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && echo -n "x32-" || echo -n "x64-"
+		[[ $build_for_both == 1 ]] && {
+			echo -n "x32/x64"
+		} || {
+			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && echo -n "x32" || echo -n "x64"
+		}
 	}
-	echo "$EXCEPTIONS_MODEL"
 
 	for sub in ${SUBTARGETS[@]}; do
 		[[ $sub == put-versions || $sub == put-info ]] && continue
@@ -590,17 +633,25 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	GCC_TYPE_STRING=$(func_map_gcc_name_to_gcc_type $GCC_NAME)
 	PREREQ_BUILD_DIR=$ROOT_DIR/prereq-build
 	PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
-	BASE_BUILD_DIR=$ROOT_DIR/$ARCHITECTURE-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}
+	[[ $PYTHON_ONLY_MODE == no ]] && {
+		BASE_BUILD_DIR=$ROOT_DIR/$ARCHITECTURE-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}
+	} || {
+		BASE_BUILD_DIR=$ROOT_DIR/python-$PYTHON_VERSION-$ARCHITECTURE$REV_STRING
+	}
 	BUILDS_DIR=$BASE_BUILD_DIR/build
 	LIBS_DIR=$BASE_BUILD_DIR/libs
 	LOGS_DIR=$BASE_BUILD_DIR/logs
 	PREFIX=$BASE_BUILD_DIR/mingw${ARCHITECTURE/x/}
 	MINGWPREFIX=/mingw${ARCHITECTURE/x/}
 
-	MINGW_BUILD_NAME=$ARCHITECTURE-${GCC_NAME/gcc-/}
-	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
-	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
-	echo "-> start building $MINGW_BUILD_NAME"
+	[[ $PYTHON_ONLY_MODE == no ]] && {
+		MINGW_BUILD_NAME=$ARCHITECTURE-${GCC_NAME/gcc-/}
+		MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
+		MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
+		echo "-> start building $MINGW_BUILD_NAME"
+	} || {
+		echo "-> start building python-${PYTHON_VERSION}-${ARCHITECTURE}"
+	}
 
 	[[ $ARCHITECTURE == x32 ]] && {
 		HOST=i686-w64-mingw32
@@ -651,41 +702,45 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	COMMON_CPPFLAGS="$BASE_CPPFLAGS"
 	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/$ARCHITECTURE-zlib/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/opt/lib"
 
-	[[ $USE_MULTILIB == yes ]] && {
-		SUBTARGETS=(
-			${LIBICONV_X32_SUBTARGETS[@]}
-			${LIBICONV_X64_SUBTARGETS[@]}
-			${ZLIB_X32_SUBTARGETS[@]}
-			${ZLIB_X64_SUBTARGETS[@]}	
-			${SUBTARGETS_PART1[@]}
-			${WINPTHREADS_X32_SUBTARGETS[@]}
-			${WINPTHREADS_X64_SUBTARGETS[@]}
-			${SUBTARGETS_PART2[@]}
-		)
-		PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
-		PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
-	} || {
-		[[ $ARCHITECTURE == x32 ]] && {
+	[[ $PYTHON_ONLY_MODE == no ]] && {
+		[[ $USE_MULTILIB == yes ]] && {
 			SUBTARGETS=(
 				${LIBICONV_X32_SUBTARGETS[@]}
+				${LIBICONV_X64_SUBTARGETS[@]}
 				${ZLIB_X32_SUBTARGETS[@]}
+				${ZLIB_X64_SUBTARGETS[@]}	
 				${SUBTARGETS_PART1[@]}
 				${WINPTHREADS_X32_SUBTARGETS[@]}
-				${SUBTARGETS_PART2[@]}
-			)
-			PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
-			PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
-		} || {
-			SUBTARGETS=(
-				${LIBICONV_X64_SUBTARGETS[@]}
-				${ZLIB_X64_SUBTARGETS[@]}
-				${SUBTARGETS_PART1[@]}
 				${WINPTHREADS_X64_SUBTARGETS[@]}
 				${SUBTARGETS_PART2[@]}
 			)
-			PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
-			PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
+			PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
+			PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
+		} || {
+			[[ $ARCHITECTURE == x32 ]] && {
+				SUBTARGETS=(
+					${LIBICONV_X32_SUBTARGETS[@]}
+					${ZLIB_X32_SUBTARGETS[@]}
+					${SUBTARGETS_PART1[@]}
+					${WINPTHREADS_X32_SUBTARGETS[@]}
+					${SUBTARGETS_PART2[@]}
+				)
+				PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
+				PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
+			} || {
+				SUBTARGETS=(
+					${LIBICONV_X64_SUBTARGETS[@]}
+					${ZLIB_X64_SUBTARGETS[@]}
+					${SUBTARGETS_PART1[@]}
+					${WINPTHREADS_X64_SUBTARGETS[@]}
+					${SUBTARGETS_PART2[@]}
+				)
+				PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
+				PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
+			}
 		}
+	} || {
+		SUBTARGETS=( ${PYTHON_SUBTARGETS[@]} )
 	}
 
 	for sub in ${SUBTARGETS[@]}; do
