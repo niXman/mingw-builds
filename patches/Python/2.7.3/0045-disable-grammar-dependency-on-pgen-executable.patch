@@ -1,6 +1,6 @@
-diff -urN a-2.7.3/Makefile.pre.in b-2.7.3/Makefile.pre.in
---- a-2.7.3/Makefile.pre.in	2012-11-22 20:47:09.135061383 +0000
-+++ b-2.7.3/Makefile.pre.in	2012-11-22 20:47:14.464328353 +0000
+diff -urN a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	2013-04-24 00:25:20.033164156 +0100
++++ b/Makefile.pre.in	2013-04-24 00:25:20.407166834 +0100
 @@ -556,7 +556,7 @@
  # FIXME: next may fail in cross-compilation environment
  # Use a stamp file to prevent make -j invoking pgen twice

@@ -1,6 +1,6 @@
-diff -urN a-2.7.3/configure.in b-2.7.3/configure.in
---- a-2.7.3/configure.in	2012-11-22 20:44:04.565714895 +0000
-+++ b-2.7.3/configure.in	2012-11-22 20:44:11.985909565 +0000
+diff -urN a/configure.in b/configure.in
+--- a/configure.in	2013-04-24 00:25:15.235129836 +0100
++++ b/configure.in	2013-04-24 00:25:15.572132245 +0100
 @@ -522,6 +522,27 @@
  fi
  AC_MSG_RESULT($MACHDEP)
@@ -77,9 +77,9 @@ diff -urN a-2.7.3/configure.in b-2.7.3/configure.in
      ;;
  esac
  
-diff -urN a-2.7.3/Include/osdefs.h b-2.7.3/Include/osdefs.h
---- a-2.7.3/Include/osdefs.h	2012-11-22 20:44:04.593700544 +0000
-+++ b-2.7.3/Include/osdefs.h	2012-11-22 20:44:11.989907515 +0000
+diff -urN a/Include/osdefs.h b/Include/osdefs.h
+--- a/Include/osdefs.h	2013-04-24 00:25:15.204129614 +0100
++++ b/Include/osdefs.h	2013-04-24 00:25:15.574132259 +0100
 @@ -10,7 +10,7 @@
  /* Mod by chrish: QNX has WATCOM, but isn't DOS */
  #if !defined(__QNX__)
@@ -113,9 +113,9 @@ diff -urN a-2.7.3/Include/osdefs.h b-2.7.3/Include/osdefs.h
  #endif
  
  #ifdef __cplusplus
-diff -urN a-2.7.3/Lib/distutils/cygwinccompiler.py b-2.7.3/Lib/distutils/cygwinccompiler.py
---- a-2.7.3/Lib/distutils/cygwinccompiler.py	2012-11-22 20:44:04.485755902 +0000
-+++ b-2.7.3/Lib/distutils/cygwinccompiler.py	2012-11-22 20:44:11.989907515 +0000
+diff -urN a/Lib/distutils/cygwinccompiler.py b/Lib/distutils/cygwinccompiler.py
+--- a/Lib/distutils/cygwinccompiler.py	2013-04-24 00:25:15.297130279 +0100
++++ b/Lib/distutils/cygwinccompiler.py	2013-04-24 00:25:15.575132266 +0100
 @@ -55,6 +55,7 @@
  from distutils.file_util import write_file
  from distutils.errors import DistutilsExecError, CompileError, UnknownFileError
@@ -156,23 +156,23 @@ diff -urN a-2.7.3/Lib/distutils/cygwinccompiler.py b-2.7.3/Lib/distutils/cygwinc
      if dllwrap_exe:
          out = os.popen(dllwrap_exe + ' --version','r')
          out_string = out.read()
-diff -urN a-2.7.3/Lib/plat-generic/regen b-2.7.3/Lib/plat-generic/regen
---- a-2.7.3/Lib/plat-generic/regen	2012-11-22 20:44:04.533731299 +0000
-+++ b-2.7.3/Lib/plat-generic/regen	2012-11-22 20:44:11.989907515 +0000
+diff -urN a/Lib/plat-generic/regen b/Lib/plat-generic/regen
+--- a/Lib/plat-generic/regen	2013-04-24 00:25:15.306130343 +0100
++++ b/Lib/plat-generic/regen	2013-04-24 00:25:15.576132273 +0100
 @@ -1,3 +1,9 @@
  #! /bin/sh
  set -v
 -python$EXE ../../Tools/scripts/h2py.py -i '(u_long)' /usr/include/netinet/in.h
 +if [ -n "$1" ]; then
 +    CCINSTALL=$($1 -print-search-dirs | head -1 | cut -d' ' -f2)
-+    REGENHEADER=$CCINSTALL/include/stddef.h
++    REGENHEADER=${CCINSTALL//\\//}/include/stddef.h
 +else
 +    REGENHEADER=/usr/include/netinet/in.h
 +fi
 +python$EXE ../../Tools/scripts/h2py.py -i '(u_long)' $REGENHEADER
-diff -urN a-2.7.3/Makefile.pre.in b-2.7.3/Makefile.pre.in
---- a-2.7.3/Makefile.pre.in	2012-11-22 20:44:04.465766152 +0000
-+++ b-2.7.3/Makefile.pre.in	2012-11-22 20:44:11.993905464 +0000
+diff -urN a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	2013-04-24 00:25:15.193129536 +0100
++++ b/Makefile.pre.in	2013-04-24 00:25:15.577132280 +0100
 @@ -27,6 +27,7 @@
  VERSION=	@VERSION@
  srcdir=		@srcdir@
@@ -217,9 +217,9 @@ diff -urN a-2.7.3/Makefile.pre.in b-2.7.3/Makefile.pre.in
  
  python-config: $(srcdir)/Misc/python-config.in
  	# Substitution happens here, as the completely-expanded BINDIR
-diff -urN a-2.7.3/Modules/getpath.c b-2.7.3/Modules/getpath.c
---- a-2.7.3/Modules/getpath.c	2012-11-22 20:44:04.433782555 +0000
-+++ b-2.7.3/Modules/getpath.c	2012-11-22 20:44:11.993905464 +0000
+diff -urN a/Modules/getpath.c b/Modules/getpath.c
+--- a/Modules/getpath.c	2013-04-24 00:25:15.155129264 +0100
++++ b/Modules/getpath.c	2013-04-24 00:25:15.579132295 +0100
 @@ -10,6 +10,10 @@
  #include <mach-o/dyld.h>
  #endif
@@ -346,9 +346,9 @@ diff -urN a-2.7.3/Modules/getpath.c b-2.7.3/Modules/getpath.c
                  absolutize(progpath);
          strncpy(argv0_path, progpath, MAXPATHLEN);
          argv0_path[MAXPATHLEN] = '\0';
-diff -urN a-2.7.3/Modules/posixmodule.c b-2.7.3/Modules/posixmodule.c
---- a-2.7.3/Modules/posixmodule.c	2012-11-22 20:44:04.433782555 +0000
-+++ b-2.7.3/Modules/posixmodule.c	2012-11-22 20:44:12.001901363 +0000
+diff -urN a/Modules/posixmodule.c b/Modules/posixmodule.c
+--- a/Modules/posixmodule.c	2013-04-24 00:25:15.158129286 +0100
++++ b/Modules/posixmodule.c	2013-04-24 00:25:15.580132302 +0100
 @@ -2180,7 +2180,7 @@
              Py_END_ALLOW_THREADS
              /* FindNextFile sets error to ERROR_NO_MORE_FILES if
@@ -367,9 +367,9 @@ diff -urN a-2.7.3/Modules/posixmodule.c b-2.7.3/Modules/posixmodule.c
              Py_DECREF(d);
              win32_error("FindNextFile", namebuf);
              FindClose(hFindFile);
-diff -urN a-2.7.3/Modules/Setup.config.in b-2.7.3/Modules/Setup.config.in
---- a-2.7.3/Modules/Setup.config.in	2012-11-22 20:44:04.433782555 +0000
-+++ b-2.7.3/Modules/Setup.config.in	2012-11-22 20:44:12.001901363 +0000
+diff -urN a/Modules/Setup.config.in b/Modules/Setup.config.in
+--- a/Modules/Setup.config.in	2013-04-24 00:25:15.160129300 +0100
++++ b/Modules/Setup.config.in	2013-04-24 00:25:15.580132302 +0100
 @@ -18,6 +18,9 @@
  @BUILDIN_WIN32_MODULE@operator operator.c	# operator.add() and similar goodies
  @BUILDIN_WIN32_MODULE@_locale _localemodule.c	# -lintl
@@ -380,9 +380,9 @@ diff -urN a-2.7.3/Modules/Setup.config.in b-2.7.3/Modules/Setup.config.in
  
  
  # The rest of the modules previously listed in this file are built
-diff -urN a-2.7.3/Modules/Setup.dist b-2.7.3/Modules/Setup.dist
---- a-2.7.3/Modules/Setup.dist	2012-11-22 20:44:04.433782555 +0000
-+++ b-2.7.3/Modules/Setup.dist	2012-11-22 20:44:12.005899313 +0000
+diff -urN a/Modules/Setup.dist b/Modules/Setup.dist
+--- a/Modules/Setup.dist	2013-04-24 00:25:15.163129322 +0100
++++ b/Modules/Setup.dist	2013-04-24 00:25:15.580132302 +0100
 @@ -84,22 +84,22 @@
  # Empty since this is now just the runtime prefix.
  DESTPATH=
@@ -410,9 +410,9 @@ diff -urN a-2.7.3/Modules/Setup.dist b-2.7.3/Modules/Setup.dist
  
  COREPYTHONPATH=$(DESTPATH)$(SITEPATH)$(TESTPATH)$(MACHDEPPATH)$(EXTRAMACHDEPPATH)$(TKPATH)$(OLDPATH)
  PYTHONPATH=$(COREPYTHONPATH)
-diff -urN a-2.7.3/Modules/socketmodule.h b-2.7.3/Modules/socketmodule.h
---- a-2.7.3/Modules/socketmodule.h	2012-11-22 20:44:04.425786655 +0000
-+++ b-2.7.3/Modules/socketmodule.h	2012-11-22 20:44:12.005899313 +0000
+diff -urN a/Modules/socketmodule.h b/Modules/socketmodule.h
+--- a/Modules/socketmodule.h	2013-04-24 00:25:15.164129329 +0100
++++ b/Modules/socketmodule.h	2013-04-24 00:25:15.581132309 +0100
 @@ -28,7 +28,7 @@
   * I use SIO_GET_MULTICAST_FILTER to detect a decent SDK.
   */
@@ -422,9 +422,9 @@ diff -urN a-2.7.3/Modules/socketmodule.h b-2.7.3/Modules/socketmodule.h
  #  define HAVE_ADDRINFO
  #  define HAVE_SOCKADDR_STORAGE
  #  define HAVE_GETADDRINFO
-diff -urN a-2.7.3/Parser/metagrammar.c b-2.7.3/Parser/metagrammar.c
---- a-2.7.3/Parser/metagrammar.c	2012-11-22 20:44:04.389805108 +0000
-+++ b-2.7.3/Parser/metagrammar.c	2012-11-22 20:44:12.005899313 +0000
+diff -urN a/Parser/metagrammar.c b/Parser/metagrammar.c
+--- a/Parser/metagrammar.c	2013-04-24 00:25:15.169129365 +0100
++++ b/Parser/metagrammar.c	2013-04-24 00:25:15.581132309 +0100
 @@ -139,7 +139,7 @@
      {7, 0},
      {8, 0},
@@ -443,9 +443,9 @@ diff -urN a-2.7.3/Parser/metagrammar.c b-2.7.3/Parser/metagrammar.c
  }
  
  grammar *
-diff -urN a-2.7.3/Python/pythonrun.c b-2.7.3/Python/pythonrun.c
---- a-2.7.3/Python/pythonrun.c	2012-11-22 20:44:04.561716945 +0000
-+++ b-2.7.3/Python/pythonrun.c	2012-11-22 20:44:12.009897263 +0000
+diff -urN a/Python/pythonrun.c b/Python/pythonrun.c
+--- a/Python/pythonrun.c	2013-04-24 00:25:15.131129093 +0100
++++ b/Python/pythonrun.c	2013-04-24 00:25:15.581132309 +0100
 @@ -18,6 +18,7 @@
  #include "eval.h"
  #include "marshal.h"
@@ -468,9 +468,9 @@ diff -urN a-2.7.3/Python/pythonrun.c b-2.7.3/Python/pythonrun.c
      if (pn && *pn)
          progname = pn;
  }
-diff -urN a-2.7.3/setup.py b-2.7.3/setup.py
---- a-2.7.3/setup.py	2012-11-22 20:44:04.565714895 +0000
-+++ b-2.7.3/setup.py	2012-11-22 20:44:12.013895213 +0000
+diff -urN a/setup.py b/setup.py
+--- a/setup.py	2013-04-24 00:25:15.193129536 +0100
++++ b/setup.py	2013-04-24 00:25:15.582132316 +0100
 @@ -923,7 +923,8 @@
                  for p in ['msvcrtmodule.c']]) )
  

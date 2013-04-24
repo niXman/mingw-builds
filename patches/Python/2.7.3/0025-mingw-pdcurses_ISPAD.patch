@@ -1,6 +1,6 @@
 diff -urN a/Include/py_curses.h b/Include/py_curses.h
---- a/Include/py_curses.h	Tue Apr 10 00:07:29 2012
-+++ b/Include/py_curses.h	Mon Oct  8 16:26:49 2012
+--- a/Include/py_curses.h	2013-04-24 00:25:17.323144763 +0100
++++ b/Include/py_curses.h	2013-04-24 00:25:17.686147360 +0100
 @@ -54,6 +54,10 @@
  #endif
  #endif

@@ -1,6 +1,6 @@
 diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
---- a/Lib/distutils/command/install.py	2013-04-22 02:19:42.336574868 +0100
-+++ b/Lib/distutils/command/install.py	2013-04-22 02:19:42.634577135 +0100
+--- a/Lib/distutils/command/install.py	2013-04-24 00:23:28.786334120 +0100
++++ b/Lib/distutils/command/install.py	2013-04-24 00:23:29.059336268 +0100
 @@ -8,7 +8,7 @@
  
  __revision__ = "$Id$"
@@ -63,8 +63,8 @@ diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
          # everything else.
          self.config_vars['base'] = self.install_base
 diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
---- a/Lib/distutils/util.py	2013-04-22 02:19:42.339574891 +0100
-+++ b/Lib/distutils/util.py	2013-04-22 02:19:42.635577143 +0100
+--- a/Lib/distutils/util.py	2013-04-24 00:23:28.789334143 +0100
++++ b/Lib/distutils/util.py	2013-04-24 00:23:29.059336268 +0100
 @@ -130,6 +130,13 @@
          paths.remove('.')
      if not paths:

@@ -1,6 +1,6 @@
 diff -urN a/configure.in b/configure.in
---- a/configure.in	2012-10-09 13:45:11.167271134 +0100
-+++ b/configure.in	2012-10-09 13:45:20.799964095 +0100
+--- a/configure.in	2013-04-24 00:25:16.684140194 +0100
++++ b/configure.in	2013-04-24 00:25:17.017142575 +0100
 @@ -86,8 +86,8 @@
  AC_SUBST(VERSION)
  case $host in
@@ -13,8 +13,8 @@ diff -urN a/configure.in b/configure.in
    *)
  VERSION=PYTHON_VERSION
 diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
---- a/Lib/distutils/sysconfig.py	2012-10-09 13:45:11.131253586 +0100
-+++ b/Lib/distutils/sysconfig.py	2012-10-09 13:45:20.799964095 +0100
+--- a/Lib/distutils/sysconfig.py	2013-04-24 00:25:16.748140652 +0100
++++ b/Lib/distutils/sysconfig.py	2013-04-24 00:25:17.019142589 +0100
 @@ -115,7 +115,7 @@
      if prefix is None:
          prefix = plat_specific and EXEC_PREFIX or PREFIX
@@ -25,8 +25,8 @@ diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
                                   "lib", "python" + get_python_version())
          if standard_lib:
 diff -urN a/Lib/site.py b/Lib/site.py
---- a/Lib/site.py	2012-04-10 00:07:31.000000000 +0100
-+++ b/Lib/site.py	2012-10-09 13:55:26.655131234 +0100
+--- a/Lib/site.py	2013-04-24 00:25:16.701140316 +0100
++++ b/Lib/site.py	2013-04-24 00:25:17.019142589 +0100
 @@ -537,8 +537,9 @@
  
      abs__file__()
@@ -40,8 +40,8 @@ diff -urN a/Lib/site.py b/Lib/site.py
      if ENABLE_USER_SITE is None:
          ENABLE_USER_SITE = check_enableusersite()
 diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
---- a/Lib/sysconfig.py	2012-10-09 13:45:11.131253587 +0100
-+++ b/Lib/sysconfig.py	2012-10-09 13:45:20.799964095 +0100
+--- a/Lib/sysconfig.py	2013-04-24 00:25:16.748140652 +0100
++++ b/Lib/sysconfig.py	2013-04-24 00:25:17.019142589 +0100
 @@ -35,13 +35,13 @@
          'data'   : '{base}',
          },
