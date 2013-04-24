@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-04-22 02:19:34.199512942 +0100
-+++ b/configure.ac	2013-04-22 02:19:34.586515888 +0100
+--- a/configure.ac	2013-04-24 00:23:20.999272848 +0100
++++ b/configure.ac	2013-04-24 00:23:21.369275759 +0100
 @@ -312,6 +312,10 @@
         # `define_xopen_source' in the case statement below. For the
         # current supported cross builds, this macro is not adjusted.
@@ -105,8 +105,8 @@ diff -urN a/configure.ac b/configure.ac
  			if test "${enable_universalsdk}"; then
  				LDFLAGS="${UNIVERSAL_ARCH_FLAGS} -isysroot ${UNIVERSALSDK} ${LDFLAGS}"
 diff -urN a/Modules/parsermodule.c b/Modules/parsermodule.c
---- a/Modules/parsermodule.c	2013-04-22 02:19:34.148512554 +0100
-+++ b/Modules/parsermodule.c	2013-04-22 02:19:34.588515903 +0100
+--- a/Modules/parsermodule.c	2013-04-24 00:23:20.950272462 +0100
++++ b/Modules/parsermodule.c	2013-04-24 00:23:21.370275767 +0100
 @@ -39,7 +39,7 @@
  #include "ast.h"
  #include "pyarena.h"

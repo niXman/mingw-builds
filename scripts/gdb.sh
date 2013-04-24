@@ -45,7 +45,9 @@ PRIORITY=main
 #REL_PYTHON_PATH=$(func_absolute_to_relative $PREFIX/bin $PREFIX/opt/bin)
 #
 
-PATCHES=()
+PATCHES=(
+	gdb/gdb-remove--Wformat-nonliteral-git.patch
+)
 
 #
 
@@ -63,17 +65,17 @@ CONFIGURE_FLAGS=(
 	--disable-rpath
 	#
 	--with-system-gdbinit=$PREFIX/etc/gdbinit
-	--with-python
+	--with-python=$PREFIX/opt/bin/python-config.sh
 	--with-expat
 	--with-libiconv
 	--with-zlib
 	--disable-tui
 	--disable-gdbtk
 	#
-	CFLAGS="\"$COMMON_CFLAGS -I$PREFIX/opt/include/python2.7\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib/python2.7/config\""
+	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #

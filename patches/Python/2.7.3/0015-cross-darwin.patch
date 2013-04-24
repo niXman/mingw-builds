@@ -1,6 +1,6 @@
 diff -urN a/configure.in b/configure.in
---- a/configure.in	2012-06-24 18:27:16.477514024 +0100
-+++ b/configure.in	2012-06-24 18:40:43.391973689 +0100
+--- a/configure.in	2013-04-24 00:25:15.996135275 +0100
++++ b/configure.in	2013-04-24 00:25:16.337137713 +0100
 @@ -5,7 +5,7 @@
  # Set VERSION so we only need to edit in one place (i.e., here)
  m4_define(PYTHON_VERSION, 2.7)
@@ -114,8 +114,8 @@ diff -urN a/configure.in b/configure.in
  			if test "${enable_universalsdk}"; then
  				LDFLAGS="${UNIVERSAL_ARCH_FLAGS} -isysroot ${UNIVERSALSDK} ${LDFLAGS}"
 diff -urN a/Modules/parsermodule.c b/Modules/parsermodule.c
---- a/Modules/parsermodule.c	2012-04-10 00:07:34.000000000 +0100
-+++ b/Modules/parsermodule.c	2012-06-24 18:27:16.738515771 +0100
+--- a/Modules/parsermodule.c	2013-04-24 00:25:15.917134710 +0100
++++ b/Modules/parsermodule.c	2013-04-24 00:25:16.339137727 +0100
 @@ -39,7 +39,7 @@
  #include "ast.h"
  #include "pyarena.h"

@@ -1,0 +1,28 @@
+diff -urN a/setup.py b/setup.py
+--- a/setup.py	2013-04-24 00:25:25.704204803 +0100
++++ b/setup.py	2013-04-24 00:25:26.121207795 +0100
+@@ -477,14 +477,16 @@
+         lib_dirs = self.compiler.library_dirs
+         inc_dirs = self.compiler.include_dirs
+         if not cross_compiling:
+-            # lib_dirs and inc_dirs are used to search for files;
+-            # if a file is found in one of those directories, it can
+-            # be assumed that no additional -I,-L directives are needed.
+-            lib_dirs += [
+-                '/lib64', '/usr/lib64',
+-                '/lib', '/usr/lib',
+-                ]
+-            inc_dirs += ['/usr/include']
++            # On MSYS shell, /usr/include is for MSYS, not MinGW-w64.
++            if not (sys.version.find('GCC') and host_platform in ['mingw', 'win32']):
++                # lib_dirs and inc_dirs are used to search for files;
++                # if a file is found in one of those directories, it can
++                # be assumed that no additional -I,-L directives are needed.
++                lib_dirs += [
++                    '/lib64', '/usr/lib64',
++                    '/lib', '/usr/lib',
++                    ]
++                inc_dirs += ['/usr/include']
+         exts = []
+         missing = []
+ 
