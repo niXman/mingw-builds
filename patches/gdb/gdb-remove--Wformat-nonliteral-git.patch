@@ -1,0 +1,22 @@
+--- gdb-7.5.1/gdb/configure.ac.orig	2012-07-18 07:43:40 +0400
++++ gdb-7.5.1/gdb/configure.ac	2013-04-24 08:13:03 +0400
+@@ -1854,7 +1854,7 @@
+ # NOTE: If you change this list, remember to update
+ # gdb/doc/gdbint.texinfo.
+ build_warnings="-Wall -Wdeclaration-after-statement -Wpointer-arith \
+--Wformat-nonliteral -Wno-pointer-sign \
++-Wno-pointer-sign \
+ -Wno-unused -Wunused-value -Wunused-function \
+ -Wno-switch -Wno-char-subscripts -Wmissing-prototypes \
+ -Wdeclaration-after-statement"
+--- gdb-7.5.1/gdb/configure.orig	2012-07-18 07:43:41 +0400
++++ gdb-7.5.1/gdb/configure	2013-04-24 08:13:26 +0400
+@@ -12388,7 +12388,7 @@
+ # NOTE: If you change this list, remember to update
+ # gdb/doc/gdbint.texinfo.
+ build_warnings="-Wall -Wdeclaration-after-statement -Wpointer-arith \
+--Wformat-nonliteral -Wno-pointer-sign \
++-Wno-pointer-sign \
+ -Wno-unused -Wunused-value -Wunused-function \
+ -Wno-switch -Wno-char-subscripts -Wmissing-prototypes \
+ -Wdeclaration-after-statement"
