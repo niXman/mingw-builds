@@ -1,7 +1,7 @@
-diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
---- a-3.3.0/configure.ac	Sat Nov 17 00:21:19 2012
-+++ b-3.3.0/configure.ac	Sat Nov 17 00:21:54 2012
-@@ -1676,7 +1676,9 @@
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2013-04-24 23:35:40.388749595 +0100
++++ b/configure.ac	2013-04-24 23:35:40.727751844 +0100
+@@ -1678,7 +1678,9 @@
      ;;
  esac
  ac_save_cppflags="$CPPFLAGS"
@@ -11,7 +11,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  AC_CHECK_HEADERS(asm/types.h conio.h curses.h direct.h dlfcn.h errno.h \
  fcntl.h grp.h \
  ieeefp.h io.h langinfo.h libintl.h ncurses.h process.h \
-@@ -4658,7 +4660,9 @@
+@@ -4660,7 +4662,9 @@
  fi
  
  ac_save_cppflags="$CPPFLAGS"

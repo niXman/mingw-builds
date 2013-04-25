@@ -1,6 +1,6 @@
-diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
---- a-3.3.0/configure.ac	Fri Nov 16 13:01:05 2012
-+++ b-3.3.0/configure.ac	Fri Nov 16 13:03:37 2012
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2013-04-24 23:35:29.236675591 +0100
++++ b/configure.ac	2013-04-24 23:35:29.576677847 +0100
 @@ -49,7 +49,7 @@
  	    AC_MSG_ERROR([python$PACKAGE_VERSION interpreter not found])
  	fi
@@ -23,9 +23,9 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  	case "$host" in
  	*-*-linux*)
  		ac_sys_system=Linux
-diff -urN a-3.3.0/setup.py b-3.3.0/setup.py
---- a-3.3.0/setup.py	Fri Nov 16 13:01:18 2012
-+++ b-3.3.0/setup.py	Fri Nov 16 13:03:37 2012
+diff -urN a/setup.py b/setup.py
+--- a/setup.py	2013-04-24 23:35:29.232675564 +0100
++++ b/setup.py	2013-04-24 23:35:29.577677854 +0100
 @@ -520,6 +520,9 @@
                  '/lib', '/usr/lib',
                  ]

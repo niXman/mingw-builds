@@ -1,6 +1,20 @@
-diff -urN a-3.3.0/Lib/distutils/sysconfig.py b-3.3.0/Lib/distutils/sysconfig.py
---- a-3.3.0/Lib/distutils/sysconfig.py	Fri Nov 16 17:23:38 2012
-+++ b-3.3.0/Lib/distutils/sysconfig.py	Fri Nov 16 17:24:11 2012
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2013-04-24 23:35:35.205715201 +0100
++++ b/configure.ac	2013-04-24 23:35:35.548717477 +0100
+@@ -89,8 +89,8 @@
+ AC_SUBST(VERSION)
+ case $host in
+   *-*-mingw*)
+-  dnl To be compatible with MSVC build.
+-VERSION=`echo PYTHON_VERSION | sed -e 's|\.||g'`
++  dnl To be *incompatible* with MSVC build!
++VERSION=PYTHON_VERSION
+   ;;
+   *)
+ VERSION=PYTHON_VERSION
+diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
+--- a/Lib/distutils/sysconfig.py	2013-04-24 23:35:35.289715758 +0100
++++ b/Lib/distutils/sysconfig.py	2013-04-24 23:35:35.547717470 +0100
 @@ -140,7 +140,7 @@
          else:
              prefix = plat_specific and EXEC_PREFIX or PREFIX
@@ -10,9 +24,9 @@ diff -urN a-3.3.0/Lib/distutils/sysconfig.py b-3.3.0/Lib/distutils/sysconfig.py
          libpython = os.path.join(prefix,
                                   "lib", "python" + get_python_version())
          if standard_lib:
-diff -urN a-3.3.0/Lib/sysconfig.py b-3.3.0/Lib/sysconfig.py
---- a-3.3.0/Lib/sysconfig.py	Fri Nov 16 17:23:39 2012
-+++ b-3.3.0/Lib/sysconfig.py	Fri Nov 16 17:24:11 2012
+diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
+--- a/Lib/sysconfig.py	2013-04-24 23:35:35.289715758 +0100
++++ b/Lib/sysconfig.py	2013-04-24 23:35:35.547717470 +0100
 @@ -43,13 +43,13 @@
          'data': '{base}',
          },
@@ -62,17 +76,3 @@ diff -urN a-3.3.0/Lib/sysconfig.py b-3.3.0/Lib/sysconfig.py
      vars['BINDIR'] = os.path.dirname(_safe_realpath(sys.executable))
  
  #
-diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
---- a-3.3.0/configure.ac	Fri Nov 16 17:23:36 2012
-+++ b-3.3.0/configure.ac	Fri Nov 16 17:24:11 2012
-@@ -89,8 +89,8 @@
- AC_SUBST(VERSION)
- case $host in
-   *-*-mingw*)
--  dnl To be compatible with MSVC build.
--VERSION=`echo PYTHON_VERSION | sed -e 's|\.||g'`
-+  dnl To be *incompatible* with MSVC build!
-+VERSION=PYTHON_VERSION
-   ;;
-   *)
- VERSION=PYTHON_VERSION
