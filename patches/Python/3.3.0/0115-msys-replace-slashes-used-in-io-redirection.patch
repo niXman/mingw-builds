@@ -1,6 +1,6 @@
-diff -urN a-3.3.0/setup.py b-3.3.0/setup.py
---- a-3.3.0/setup.py	Mon Nov 19 14:30:48 2012
-+++ b-3.3.0/setup.py	Mon Nov 19 14:44:34 2012
+diff -urN a/setup.py b/setup.py
+--- a/setup.py	2013-04-24 23:35:44.913779622 +0100
++++ b/setup.py	2013-04-24 23:35:45.256781898 +0100
 @@ -425,7 +425,7 @@
          # Debian/Ubuntu multiarch support.
          # https://wiki.ubuntu.com/MultiarchSpec

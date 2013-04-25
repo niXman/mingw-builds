@@ -1,6 +1,6 @@
-diff -urN a-3.3.0/Lib/distutils/cygwinccompiler.py b-3.3.0/Lib/distutils/cygwinccompiler.py
---- a-3.3.0/Lib/distutils/cygwinccompiler.py	Fri Nov 16 17:26:57 2012
-+++ b-3.3.0/Lib/distutils/cygwinccompiler.py	Fri Nov 16 17:27:14 2012
+diff -urN a/Lib/distutils/cygwinccompiler.py b/Lib/distutils/cygwinccompiler.py
+--- a/Lib/distutils/cygwinccompiler.py	2013-04-24 23:35:35.949720138 +0100
++++ b/Lib/distutils/cygwinccompiler.py	2013-04-24 23:35:36.206721843 +0100
 @@ -58,6 +58,7 @@
  from distutils import log
  from distutils.version import LooseVersion
@@ -34,9 +34,9 @@ diff -urN a-3.3.0/Lib/distutils/cygwinccompiler.py b-3.3.0/Lib/distutils/cygwinc
 +    # MinGW64 doesn't have i686-w64-mingw32-ld, so instead we ask gcc.
 +    commands = [gcc+' -dumpversion', ld+' -v', dllwrap+' --version']
      return tuple([_find_exe_version(cmd) for cmd in commands])
-diff -urN a-3.3.0/Modules/Setup.config.in b-3.3.0/Modules/Setup.config.in
---- a-3.3.0/Modules/Setup.config.in	Fri Nov 16 17:27:00 2012
-+++ b-3.3.0/Modules/Setup.config.in	Fri Nov 16 17:27:14 2012
+diff -urN a/Modules/Setup.config.in b/Modules/Setup.config.in
+--- a/Modules/Setup.config.in	2013-04-24 23:35:35.826719322 +0100
++++ b/Modules/Setup.config.in	2013-04-24 23:35:36.206721843 +0100
 @@ -17,6 +17,7 @@
  @BUILDIN_WIN32_MODULE@winreg ../PC/winreg.c
  @BUILDIN_WIN32_MODULE@time timemodule.c
@@ -45,9 +45,9 @@ diff -urN a-3.3.0/Modules/Setup.config.in b-3.3.0/Modules/Setup.config.in
  
  
  # The rest of the modules previously listed in this file are built
-diff -urN a-3.3.0/setup.py b-3.3.0/setup.py
---- a-3.3.0/setup.py	Fri Nov 16 17:27:05 2012
-+++ b-3.3.0/setup.py	Fri Nov 16 17:27:14 2012
+diff -urN a/setup.py b/setup.py
+--- a/setup.py	2013-04-24 23:35:35.861719554 +0100
++++ b/setup.py	2013-04-24 23:35:36.207721850 +0100
 @@ -972,7 +972,9 @@
                  for p in ['_msi.c']],
                  libraries=['msi','cabinet','rpcrt4']) )
