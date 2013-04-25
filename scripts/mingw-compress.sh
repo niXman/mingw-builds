@@ -36,8 +36,7 @@
 # **************************************************************************
 
 [[ $PYTHON_ONLY_MODE == no ]] && {
-	ARCHIVE_NAME=\
-	$( \
+	ARCHIVE_NAME=$( \
 		func_create_mingw_archive_name \
 			$ARCHIVES_DIR \
 			$SRCS_DIR \
