@@ -113,7 +113,7 @@ RUN_ARGS="$@"
 	echo "    --march-x32='<arch>'    - arch for x32 target"
 	echo "    --mtume-x32='<arch>'    - tune for x32 target"
 	echo "    --march-x64='<arch>'    - arch for x64 target"
-	echo "    --mtume-x64='<arch>'   - tune for x64 target"
+	echo "    --mtume-x64='<arch>'    - tune for x64 target"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -274,7 +274,7 @@ while [[ $# > 0 ]]; do
 				GCC_NAME=$1
 			}
 		;;
-		--version)echo $MINGW_BUILDS_VERSION; exit 0 ;;
+		--version) echo $MINGW_BUILDS_VERSION; exit 0 ;;
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
 		--srcs-compress) COMPRESSING_SRCS=yes ;;
 		--mingw-upload=*) UPLOAD_BIN_TO_SF=yes; SF_USER=${1/--mingw-upload=/} ;;
@@ -309,7 +309,7 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 # **************************************************************************
 
 [[ $PYTHON_ONLY_MODE == yes && ! -z $GCC_NAME ]] && {
-	die "you can't specify 'gcc-x.y.z' ang '--python-only' simultaneously. terminate."
+	die "you can't specify 'gcc-x.y.z' and '--python-only' simultaneously. terminate."
 }
 
 [[ ${#BUILD_ARCHITECTURES[@]} == 0 ]] && {
@@ -381,7 +381,7 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 }
 
 [[ $PYTHON_ONLY_MODE == yes && $COMPRESSING_SRCS == yes ]] && {
-	die "compressing sources in '--python-only' mode is currently unimplemented. terminate.";
+	die "compressing sources in '--python-only' mode is currently unimplemented. terminate."
 }
 
 # **************************************************************************
@@ -505,7 +505,7 @@ SUBTARGETS_PART2=(
 	put-versions
 	put-info
 	tests
-	$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
+	$([[ $COMPRESSING_MINGW == yes ]] && echo "mingw-compress")
 )
 
 [[ $PYTHON_ONLY_MODE == no ]] && {
