@@ -1,6 +1,44 @@
-diff -urN a-3.3.0/Makefile.pre.in b-3.3.0/Makefile.pre.in
---- a-3.3.0/Makefile.pre.in	Sat Sep 29 09:00:41 2012
-+++ b-3.3.0/Makefile.pre.in	Fri Nov 16 14:22:51 2012
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2012-09-29 09:00:50.000000000 +0100
++++ b/configure.ac	2013-04-24 23:35:28.927673540 +0100
+@@ -894,6 +894,7 @@
+ 
+ # Other platforms follow
+ if test $enable_shared = "yes"; then
++  PY_ENABLE_SHARED=1
+   AC_DEFINE(Py_ENABLE_SHARED, 1, [Defined if Python is built as a shared library.])
+   case $ac_sys_system in
+     CYGWIN*)
+@@ -949,6 +950,7 @@
+ 
+   esac
+ else # shared is disabled
++  PY_ENABLE_SHARED=0
+   case $ac_sys_system in
+     CYGWIN*)
+           BLDLIBRARY='$(LIBRARY)'
+@@ -956,6 +958,9 @@
+           ;;
+   esac
+ fi
++AC_SUBST(PY_ENABLE_SHARED)
++LIBPL="${prefix}"/lib/python"${VERSION}"/config-"${LDVERSION}"
++AC_SUBST(LIBPL)
+ 
+ if test "$cross_compiling" = yes; then
+ 	RUNSHARED=
+@@ -4597,7 +4602,7 @@
+ fi
+ 
+ # generate output files
+-AC_CONFIG_FILES(Makefile.pre Modules/Setup.config Misc/python.pc)
++AC_CONFIG_FILES(Makefile.pre Modules/Setup.config Misc/python.pc Misc/python-config.sh)
+ AC_CONFIG_FILES([Modules/ld_so_aix], [chmod +x Modules/ld_so_aix])
+ AC_OUTPUT
+ 
+diff -urN a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	2012-09-29 09:00:41.000000000 +0100
++++ b/Makefile.pre.in	2013-04-24 23:35:28.924673520 +0100
 @@ -1113,6 +1113,8 @@
  	# Substitution happens here, as the completely-expanded BINDIR
  	# is not available in configure
@@ -18,15 +56,15 @@ diff -urN a-3.3.0/Makefile.pre.in b-3.3.0/Makefile.pre.in
  	rm python-config
  	@if [ -s Modules/python.exp -a \
  		"`echo $(MACHDEP) | sed 's/^\(...\).*/\1/'`" = "aix" ]; then \
-diff -urN a-3.3.0/Misc/python-config.sh.in b-3.3.0/Misc/python-config.sh.in
---- a-3.3.0/Misc/python-config.sh.in	Thu Jan  1 00:00:00 1970
-+++ b-3.3.0/Misc/python-config.sh.in	Fri Nov 16 14:22:51 2012
-@@ -0,0 +1,97 @@
+diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
+--- a/Misc/python-config.sh.in	1970-01-01 01:00:00.000000000 +0100
++++ b/Misc/python-config.sh.in	2013-04-24 23:35:28.925673527 +0100
+@@ -0,0 +1,110 @@
 +#!/bin/sh
 +
 +exit_with_usage ()
 +{
-+    echo "Usage: $0 --prefix|--exec-prefix|--includes|--libs|--cflags|--ldflags|--help|--abiflags"
++    echo "Usage: $0 --prefix|--exec-prefix|--includes|--libs|--cflags|--ldflags|--extension-suffix|--help|--abiflags|--configdir"
 +    exit 1
 +}
 +
@@ -71,8 +109,11 @@ diff -urN a-3.3.0/Misc/python-config.sh.in b-3.3.0/Misc/python-config.sh.in
 +PY_ENABLE_SHARED="@PY_ENABLE_SHARED@"
 +LDVERSION="@LDVERSION@"
 +LIBDEST=${prefix}/lib/python${VERSION}
-+LIBPL=${LIBDEST}/config-${LDVERSION}
++LIBPL=$(echo "@LIBPL@" | sed "s#$prefix_build#$prefix_real#")
++SO="@SO@"
++PYTHONFRAMEWORK="@PYTHONFRAMEWORK@"
 +INCDIR="-I$includedir/python${VERSION}${ABIFLAGS}"
++PLATINCDIR="-I$includedir/python${VERSION}${ABIFLAGS}"
 +
 +# Scan for --help or unknown argument.
 +for ARG in $*
@@ -81,7 +122,7 @@ diff -urN a-3.3.0/Misc/python-config.sh.in b-3.3.0/Misc/python-config.sh.in
 +        --help)
 +            exit_with_usage
 +        ;;
-+        --prefix|--exec-prefix|--includes|--libs|--cflags|--ldflags|--abiflags)
++        --prefix|--exec-prefix|--includes|--libs|--cflags|--ldflags|--extension-suffix|--abiflags|--configdir)
 +        ;;
 +        *)
 +            exit_with_usage
@@ -108,50 +149,24 @@ diff -urN a-3.3.0/Misc/python-config.sh.in b-3.3.0/Misc/python-config.sh.in
 +            echo "$LIBS"
 +        ;;
 +        --ldflags)
++            LINKFORSHAREDUSED=
++            if [ -z "$PYTHONFRAMEWORK" ] ; then
++                LINKFORSHAREDUSED=$LINKFORSHARED
++            fi
 +            LIBPLUSED=
 +            if [ "$PY_ENABLE_SHARED" = "0" ] ; then
 +                LIBPLUSED="-L$LIBPL"
 +            fi
-+            echo "$LIBPLUSED -L$libdir $LIBS $LINKFORSHARED"
++            echo "$LIBPLUSED -L$libdir $LIBS $LINKFORSHAREDUSED"
++        ;;
++        --extension-suffix)
++            echo "$SO"
 +        ;;
 +        --abiflags)
 +            echo "$ABIFLAGS"
 +        ;;
++        --configdir)
++            echo "$LIBPL"
++        ;;
 +esac
 +done
-diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
---- a-3.3.0/configure.ac	Sat Sep 29 09:00:50 2012
-+++ b-3.3.0/configure.ac	Fri Nov 16 14:22:51 2012
-@@ -894,6 +894,7 @@
- 
- # Other platforms follow
- if test $enable_shared = "yes"; then
-+  PY_ENABLE_SHARED=1
-   AC_DEFINE(Py_ENABLE_SHARED, 1, [Defined if Python is built as a shared library.])
-   case $ac_sys_system in
-     CYGWIN*)
-@@ -949,6 +950,7 @@
- 
-   esac
- else # shared is disabled
-+  PY_ENABLE_SHARED=0
-   case $ac_sys_system in
-     CYGWIN*)
-           BLDLIBRARY='$(LIBRARY)'
-@@ -956,6 +958,7 @@
-           ;;
-   esac
- fi
-+AC_SUBST(PY_ENABLE_SHARED)
- 
- if test "$cross_compiling" = yes; then
- 	RUNSHARED=
-@@ -4597,7 +4600,7 @@
- fi
- 
- # generate output files
--AC_CONFIG_FILES(Makefile.pre Modules/Setup.config Misc/python.pc)
-+AC_CONFIG_FILES(Makefile.pre Modules/Setup.config Misc/python.pc Misc/python-config.sh)
- AC_CONFIG_FILES([Modules/ld_so_aix], [chmod +x Modules/ld_so_aix])
- AC_OUTPUT
- 

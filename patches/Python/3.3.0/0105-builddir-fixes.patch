@@ -1,6 +1,6 @@
-diff -urN a-3.3.0/Makefile.pre.in b-3.3.0/Makefile.pre.in
---- a-3.3.0/Makefile.pre.in	2012-11-17 23:40:08.365070820 +0000
-+++ b-3.3.0/Makefile.pre.in	2012-11-17 23:43:34.762212549 +0000
+diff -urN a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	2013-04-24 23:35:43.616771015 +0100
++++ b/Makefile.pre.in	2013-04-24 23:35:43.966773338 +0100
 @@ -596,13 +596,13 @@
  ############################################################################
  # Importlib

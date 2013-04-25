@@ -71,6 +71,7 @@ PATCHES=(
 	Python/${VERSION}/0105-builddir-fixes.patch
 	Python/${VERSION}/0110-msys-monkeypatch-os-system-via-sh-exe.patch
 	Python/${VERSION}/0115-msys-replace-slashes-used-in-io-redirection.patch
+	Python/${VERSION}/9999-re-configure-d.patch
 )
 
 #
@@ -81,7 +82,6 @@ EXECUTE_AFTER_PATCH=(
 	"rm -rf Modules/zlib"
 	"autoconf"
 	"autoheader"
-	"rm pyconfig.h.in~"
 	"rm -rf autom4te.cache"
 	"touch Include/graminit.h"
 	"touch Python/graminit.c"
