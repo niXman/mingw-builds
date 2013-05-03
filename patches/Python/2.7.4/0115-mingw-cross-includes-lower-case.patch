@@ -1,6 +1,6 @@
 diff -urN a/Modules/socketmodule.h b/Modules/socketmodule.h
---- a/Modules/socketmodule.h	2013-04-24 00:23:30.736349463 +0100
-+++ b/Modules/socketmodule.h	2013-04-24 00:23:31.149352713 +0100
+--- a/Modules/socketmodule.h	2013-05-02 00:44:50.065538599 +0100
++++ b/Modules/socketmodule.h	2013-05-02 00:44:50.498542176 +0100
 @@ -28,7 +28,7 @@
   * I use SIO_GET_MULTICAST_FILTER to detect a decent SDK.
   */

@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-04-24 00:23:19.630262076 +0100
-+++ b/configure.ac	2013-04-24 00:23:19.997264964 +0100
+--- a/configure.ac	2013-05-02 00:44:38.421442400 +0100
++++ b/configure.ac	2013-05-02 00:44:38.805445573 +0100
 @@ -503,6 +503,17 @@
  AC_MSG_RESULT([$DELIM])
  AC_SUBST(DELIM)
@@ -20,8 +20,8 @@ diff -urN a/configure.ac b/configure.ac
  AC_SUBST(INITSYS)
  case $host in
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-04-24 00:23:19.616261966 +0100
-+++ b/Makefile.pre.in	2013-04-24 00:23:19.999264979 +0100
+--- a/Makefile.pre.in	2013-05-02 00:44:38.407442284 +0100
++++ b/Makefile.pre.in	2013-05-02 00:44:38.807445589 +0100
 @@ -27,6 +27,7 @@
  VERSION=	@VERSION@
  srcdir=		@srcdir@

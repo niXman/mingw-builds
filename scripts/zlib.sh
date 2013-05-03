@@ -35,11 +35,11 @@
 
 # **************************************************************************
 
-VERSION=1.2.7
+VERSION=1.2.8
 NAME=zlib-${VERSION}
 SRC_DIR_NAME=zlib-${VERSION}
-URL=http://zlib.net/zlib-${VERSION}.tar.bz2
-TYPE=.tar.bz2
+URL=http://zlib.net/zlib-${VERSION}.tar.xz
+TYPE=.tar.xz
 PRIORITY=prereq
 
 #

@@ -71,6 +71,9 @@ PATCHES=(
 	Python/${VERSION}/0110-mingw-_PyNode_SizeOf-decl-fix.patch
 	Python/${VERSION}/0115-mingw-cross-includes-lower-case.patch
 	Python/${VERSION}/0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch
+	Python/${VERSION}/0505-add-build-sysroot-config-option.patch
+	Python/${VERSION}/0510-cross-PYTHON_FOR_BUILD-gteq-274-and-fullpath-it.patch
+	Python/${VERSION}/0515-mingw-add-GetModuleFileName-path-to-PATH.patch
 	Python/${VERSION}/9999-re-configure-d.patch
 )
 

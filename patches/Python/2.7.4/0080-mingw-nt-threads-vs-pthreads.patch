@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-04-24 00:23:25.899311403 +0100
-+++ b/configure.ac	2013-04-24 00:23:26.269314315 +0100
+--- a/configure.ac	2013-05-02 00:44:45.019496913 +0100
++++ b/configure.ac	2013-05-02 00:44:45.408500127 +0100
 @@ -1444,6 +1444,16 @@
    CFLAGS=$save_CFLAGS
  fi
@@ -80,8 +80,8 @@ diff -urN a/configure.ac b/configure.ac
  
  # check if we need libintl for locale functions
 diff -urN a/Python/thread.c b/Python/thread.c
---- a/Python/thread.c	2013-04-24 00:23:25.819310774 +0100
-+++ b/Python/thread.c	2013-04-24 00:23:26.269314315 +0100
+--- a/Python/thread.c	2013-05-02 00:44:44.933496203 +0100
++++ b/Python/thread.c	2013-05-02 00:44:45.408500127 +0100
 @@ -15,7 +15,9 @@
    __MINGW32__ to prevent case when in GCC 3.4.5 build
    envirionment is installed posix thread package.
