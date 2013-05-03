@@ -440,26 +440,6 @@ function func_install_toolchain {
 	# $4 - i686-mingw URL
 	# $5 - x86_64-mingw URL
 
-	# local _mingw32_archive_path=$1/${4##*/}
-	# local _mingw64_archive_path=$1/${5##*/}
-
-	# local _mingw32_download_log=$1/mingw32-download.log
-	# local _mingw64_download_log=$1/mingw64-download.log
-	# local _mingw32_download_marker=$1/mingw32-download.marker
-	# local _mingw64_download_marker=$1/mingw64-download.marker
-	# local _mingw32_uncompress_log=$1/mingw32-uncompress.log
-	# local _mingw64_uncompress_log=$1/mingw64-uncompress.log
-	# local _mingw32_uncompress_marker=$1/mingw32-uncompress.marker
-	# local _mingw64_uncompress_marker=$1/mingw64-uncompress.marker
-	# local _mingw32_move_marker=$1/mingw32-move.marker
-	# local _mingw64_move_marker=$1/mingw64-move.marker
-
-	# function func_check_toolchain {
-		# # $1 - toolchains path
-		# # $2 - is DWARF building
-		# echo
-	# }
-
 	function download_mingw_x32 {
 		# $1 - toolchains path
 		# $2 - i686-mingw URL
@@ -514,33 +494,6 @@ function func_install_toolchain {
 			$1/mingw-x64-uncompress.log
 		return $?
 	}
-
-	#function move_mingw {
-	#	# $1 - toolchains path
-	#	# $2 - destination path
-	#	# $3 - marker file name
-	#
-	#	[[ ! -f $3 ]] && {
-	#		# check if MinGW root directory name is valid
-	#		[[ ! -d $1/mingw ]] && {
-	#			die "bad MinGW root path name. terminate."
-	#		}
-	#
-	#		# rename MinGW directory
-	#		echo -n "--> move... "
-	#		mv $1/mingw $2
-	#		local _result=$?
-	#		[[ $_result != 0 ]] && {
-	#			die "error when move root MinGW path. terminate."
-	#		} || {
-	#			touch $3 && echo "done" || return 1
-	#		}
-	#	} || {
-	#		echo "---> moved"
-	#	}
-	#	return $_result
-	#	return 0
-	#}
 
 	[[ ! -d $2 || ! $2/bin/gcc.exe ]] && {
 		# x32 download
@@ -758,6 +711,36 @@ function func_create_sources_upload_cmd {
 	local _upload_cmd="cd $1 && scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir/mingw-sources/$(func_map_gcc_name_to_gcc_version $3)"
 
 	echo "$_upload_cmd"
+}
+
+# **************************************************************************
+
+function func_download_repository_file {
+	#1 - file name
+	
+	local _src="http://sourceforge.net/projects/mingwbuilds/files/host-windows/repository.txt"
+	wget $_src -o "$1"
+	local _result=$?
+	[[ $_result != 0 ]] && { die "error($_result) when downloading repository file. terminate." }
+}
+
+function func_update_repository_file {
+	#1 - file name
+	#2 - version
+	#3 - architecture
+	#4 - threads model
+	#5 - exceptions model
+	#6 - revision
+	#7 - url for archive
+	
+	echo "$2|$3|$4|$5|$6|$7" >> $1
+	local _result=$?
+	[[ $_result != 0 ]] && { die "error($_result) when updating repository file. terminate." }
+}
+
+function func_upload_repository_file {
+	#1 - file name
+	
 }
 
 # **************************************************************************
