@@ -1,6 +1,6 @@
 diff -urN a/Lib/distutils/cygwinccompiler.py b/Lib/distutils/cygwinccompiler.py
---- a/Lib/distutils/cygwinccompiler.py	2013-04-24 00:23:20.404268166 +0100
-+++ b/Lib/distutils/cygwinccompiler.py	2013-04-24 00:23:20.679270330 +0100
+--- a/Lib/distutils/cygwinccompiler.py	2013-05-02 00:44:39.242449183 +0100
++++ b/Lib/distutils/cygwinccompiler.py	2013-05-02 00:44:39.539451637 +0100
 @@ -442,7 +442,8 @@
      from distutils.spawn import find_executable
      import re
@@ -34,8 +34,8 @@ diff -urN a/Lib/distutils/cygwinccompiler.py b/Lib/distutils/cygwinccompiler.py
          out = os.popen(dllwrap_exe + ' --version','r')
          out_string = out.read()
 diff -urN a/Modules/Setup.config.in b/Modules/Setup.config.in
---- a/Modules/Setup.config.in	2013-04-24 00:23:20.264267064 +0100
-+++ b/Modules/Setup.config.in	2013-04-24 00:23:20.679270330 +0100
+--- a/Modules/Setup.config.in	2013-05-02 00:44:39.100448010 +0100
++++ b/Modules/Setup.config.in	2013-05-02 00:44:39.540451646 +0100
 @@ -18,6 +18,8 @@
  @BUILDIN_WIN32_MODULE@operator operator.c	# operator.add() and similar goodies
  @BUILDIN_WIN32_MODULE@_locale _localemodule.c	# -lintl
