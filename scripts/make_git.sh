@@ -68,7 +68,6 @@ CONFIGURE_FLAGS=(
 	--enable-case-insensitive-file-system
 	--program-prefix=mingw32-
 	--enable-job-server
-	--disable-load
 	--without-guile
 	CFLAGS="\"$COMMON_CFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
