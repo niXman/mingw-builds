@@ -38,8 +38,8 @@
 VERSION=1.2.8
 NAME=zlib-${VERSION}
 SRC_DIR_NAME=zlib-${VERSION}
-URL=http://zlib.net/zlib-${VERSION}.tar.xz
-TYPE=.tar.xz
+URL=http://sourceforge.net/projects/libpng/files/zlib/${VERSION}/zlib-${VERSION}.tar.gz
+TYPE=.tar.gz
 PRIORITY=prereq
 
 #
