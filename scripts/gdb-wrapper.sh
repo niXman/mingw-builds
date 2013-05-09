@@ -39,7 +39,7 @@
 	mkdir -p $BUILDS_DIR/gdb-wrapper
 	cd $BUILDS_DIR/gdb-wrapper
 	echo -n "--> building..."
-	$HOST-gcc ${COMMON_CFLAGS} -o gdb.exe ${SOURCES_DIR}/gdb-wrapper/gdb-wrapper.c
+	$HOST-gcc ${COMMON_CFLAGS} -U_DEBUG -o gdb.exe ${SOURCES_DIR}/gdb-wrapper/gdb-wrapper.c
 	echo " done"
 	echo -n "--> installing..."
 	[[ ! -f $PREFIX/bin/gdborig.exe ]] && {
