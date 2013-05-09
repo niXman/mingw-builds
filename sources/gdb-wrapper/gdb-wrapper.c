@@ -37,6 +37,28 @@
 #include <stdio.h>
 #include <strings.h>
 
+#ifdef _DEBUG
+ #define dbg_printf(...) printf(__VA_ARGS__)
+#else
+ #define dbg_printf(...) do {} while(0)
+#endif
+
+// When built for the Android NDK, values are
+// passed in on the GCC commandline, and when
+// built for mingw-builds, these defaults are
+// used.
+#ifndef GDB_TO_PYTHON_REL_DIR
+ #define GDB_TO_PYTHON_REL_DIR "..\\opt\\bin"
+#endif
+
+#ifndef GDB_EXECUTABLE_ORIG_FILENAME
+ #define GDB_EXECUTABLE_ORIG_FILENAME "gdborig.exe"
+#endif
+
+#ifndef PYTHONHOME_REL_DIR
+ #define PYTHONHOME_REL_DIR "..\\opt"
+#endif
+
 #define DIE_IF_FALSE(var) \
 	do { \
 		if ( !(var) ) { \
@@ -73,19 +95,19 @@ int main(int argc, char** argv) {
 	DIE_IF_FALSE(
 		GetEnvironmentVariable("PATH", envbuf, envbufsize)
 	);
-	//printf("env: %s\n", envbuf);
+    dbg_printf("env: %s\n", envbuf);
 
 	DIE_IF_FALSE(
 		GetModuleFileName(0, cmdbuf, exebufsize)
 	);
-	//printf("curdir: %s\n", cmdbuf);
+    dbg_printf("curdir: %s\n", cmdbuf);
 
 	DIE_IF_FALSE(
 		(sep = strrchr(cmdbuf, '\\'))
 	);
 	*(sep+1) = 0;
-	strcat(cmdbuf, "..\\opt\\bin");
-	//printf("sep: %s\n", cmdbuf);
+    strcat(cmdbuf, GDB_TO_PYTHON_REL_DIR);
+    dbg_printf("sep: %s\n", cmdbuf);
 
 	len = strlen(envbuf)+strlen(cmdbuf)
 		+1  /* for envronment separator */
@@ -98,21 +120,21 @@ int main(int argc, char** argv) {
 	DIE_IF_FALSE(
 		(snprintf(resbuf, len, "%s;%s", cmdbuf, envbuf) > 0)
 	);
-	//printf("res: %s\n", resbuf);
+    dbg_printf("PATH: %s\n", resbuf);
 
 	DIE_IF_FALSE(
 		SetEnvironmentVariable("PATH", resbuf)
 	);
 
 	*(sep+1) = 0;
-	strcat(cmdbuf, "..\\opt");
-	//printf("PYTHONHOME: %s\n", cmdbuf);
+    strcat(cmdbuf, PYTHONHOME_REL_DIR);
+    dbg_printf("PYTHONHOME: %s\n", cmdbuf);
 	DIE_IF_FALSE(
 		SetEnvironmentVariable("PYTHONHOME", cmdbuf)
 	);
 	
 	*(sep+1) = 0;
-	strcat(cmdbuf, "gdborig.exe ");
+    strcat(cmdbuf, GDB_EXECUTABLE_ORIG_FILENAME" ");
 	
 	if ( argc > 1 ) {
 		for ( ++argv; *argv; ++argv ) {
@@ -120,18 +142,18 @@ int main(int argc, char** argv) {
 			snprintf(cmdbuf+len, cmdbufsize-len, "%s ", *argv);
 		}
 	}
-	//printf("cmd: %s\n", cmdbuf);
+    dbg_printf("cmd: %s\n", cmdbuf);
 
 	HANDLE ghJob = CreateJobObject(NULL, "Gdb-Wrapper\0"/*NULL*/);
 	if ( ghJob == NULL ) {
-		printf("Could not create job object\n");
+        fprintf(stderr, "Could not create job object\n");
 	}
 	else{
 		JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli = { 0 };
 		// Configure all child processes associated with the job to terminate when the last handle to the job is closed
 		jeli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
 		if ( SetInformationJobObject(ghJob, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli)) == 0 ) {
-			printf("Could not SetInformationJobObject\n");
+            fprintf(stderr, "Could not SetInformationJobObject\n");
 		}
 	}
 
@@ -161,7 +183,7 @@ int main(int argc, char** argv) {
 
 	if ( ghJob != NULL )
 		if ( AssignProcessToJobObject(ghJob, pi.hProcess) == 0 ) {
-			printf("Could not AssignProcessToObject\n");
+            fprintf(stderr, "Could not AssignProcessToObject\n");
 		}
 
 	// Do not handle Ctrl-C in the wrapper
@@ -181,6 +203,8 @@ int main(int argc, char** argv) {
 	free(envbuf);
 	free(resbuf);
 	free(cmdbuf);
+
+    dbg_printf("exiting with exitCode %d", exitCode);
 
 	return exitCode;
 }
