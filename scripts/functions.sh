@@ -721,7 +721,7 @@ function func_download_repository_file {
 	local _src="http://sourceforge.net/projects/mingwbuilds/files/host-windows/repository.txt"
 	wget $_src -o "$1"
 	local _result=$?
-	[[ $_result != 0 ]] && { die "error($_result) when downloading repository file. terminate." }
+	[[ $_result != 0 ]] && { die "error($_result) when downloading repository file. terminate."; }
 }
 
 function func_update_repository_file {
@@ -733,14 +733,17 @@ function func_update_repository_file {
 	#6 - revision
 	#7 - url for archive
 	
+	[[ ! -f $1 ]] && {
+		die "repository file \"$1\" is not exists. terminate."
+		exit 1
+	}
+	
 	echo "$2|$3|$4|$5|$6|$7" >> $1
-	local _result=$?
-	[[ $_result != 0 ]] && { die "error($_result) when updating repository file. terminate." }
 }
 
 function func_upload_repository_file {
 	#1 - file name
-	
+	echo "";
 }
 
 # **************************************************************************
