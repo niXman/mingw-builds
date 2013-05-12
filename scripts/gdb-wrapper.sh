@@ -39,13 +39,13 @@
 	mkdir -p $BUILDS_DIR/gdb-wrapper
 	cd $BUILDS_DIR/gdb-wrapper
 	echo -n "--> building..."
-	$HOST-gcc ${COMMON_CFLAGS} -U_DEBUG -o gdb.exe ${SOURCES_DIR}/gdb-wrapper/gdb-wrapper.c || { echo "cannot build gdb-wrapper.exe"; exit 1; }
+	$HOST-gcc ${COMMON_CFLAGS} -U_DEBUG -o gdb.exe ${SOURCES_DIR}/gdb-wrapper/gdb-wrapper.c || { die "cannot build gdb-wrapper.exe"; }
 	echo " done"
 	echo -n "--> installing..."
 	[[ ! -f $PREFIX/bin/gdborig.exe ]] && {
 		mv $PREFIX/bin/gdb.exe $PREFIX/bin/gdborig.exe
 	}
-	cp -f gdb.exe $PREFIX/bin || exit 1
+	cp -f gdb.exe $PREFIX/bin || die "Cannot copy gdb.exe to $PREFIX/bin"
 	echo " done"
 	touch $BUILDS_DIR/gdb-wrapper.marker
 } || {
