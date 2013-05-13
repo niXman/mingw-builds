@@ -214,7 +214,7 @@ while [[ $# > 0 ]]; do
 				BUILD_ARCHITECTURES=( x64 )
 			;;
 			sjlj)
-				USE_MULTILIB=yes			
+				USE_MULTILIB=$USE_MULTILIB			
 			;;
 			*)
 				die "$EXCEPTIONS_MODEL is not valid exception model. Available models: dwarf, seh, sjlj"
