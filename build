@@ -50,12 +50,17 @@ LINK_TYPE_STATIC="--enable-static --disable-shared"
 GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
 LINK_TYPE_SUFFIX="static"
 
-#LOGVIEWER="c:/progra~1/notepad++/notepad++.exe"
-LOGVIEWER="c:/progra~2/notepad++/notepad++.exe"
-
 SHOW_LOG_ON_ERROR=yes
 
 JOBS=1
+
+[[ $(env | grep PROCESSOR_ARCHITEW6432) =~ AMD64 ]] && {
+	IS_64BIT_HOST=yes
+	LOGVIEWER="c:/progra~2/notepad++/notepad++.exe"
+} || {
+	IS_64BIT_HOST=no
+	LOGVIEWER="c:/progra~1/notepad++/notepad++.exe"
+}
 
 # **************************************************************************
 
@@ -328,12 +333,6 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 	build_for_both=1
 } || {
 	build_for_both=0
-}
-
-[[ $(env | grep PROCESSOR_ARCHITEW6432) =~ AMD64 ]] && {
-	IS_64BIT_HOST=yes
-} || {
-	IS_64BIT_HOST=no
 }
 
 [[ $PYTHON_ONLY_MODE == no ]] && {
