@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-05-02 00:44:44.241490486 +0100
-+++ b/configure.ac	2013-05-02 00:44:44.630493699 +0100
+--- a/configure.ac	2013-05-17 23:57:37.951460630 +0100
++++ b/configure.ac	2013-05-17 23:57:38.317464817 +0100
 @@ -913,6 +913,7 @@
  
  # Other platforms follow
@@ -35,9 +35,9 @@ diff -urN a/configure.ac b/configure.ac
  AC_OUTPUT
  
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-05-02 00:44:44.226490362 +0100
-+++ b/Makefile.pre.in	2013-05-02 00:44:44.631493708 +0100
-@@ -1046,6 +1046,8 @@
+--- a/Makefile.pre.in	2013-05-17 23:57:37.937460470 +0100
++++ b/Makefile.pre.in	2013-05-17 23:57:38.319464839 +0100
+@@ -1051,6 +1051,8 @@
  	# Substitution happens here, as the completely-expanded BINDIR
  	# is not available in configure
  	sed -e "s,@EXENAME@,$(BINDIR)/python$(VERSION)$(EXE)," < $(srcdir)/Misc/python-config.in >python-config
@@ -46,7 +46,7 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  
  # Install the include files
  INCLDIRSTOMAKE=$(INCLUDEDIR) $(CONFINCLUDEDIR) $(INCLUDEPY) $(CONFINCLUDEPY)
-@@ -1104,6 +1106,7 @@
+@@ -1109,6 +1111,7 @@
  	$(INSTALL_SCRIPT) $(srcdir)/Modules/makesetup $(DESTDIR)$(LIBPL)/makesetup
  	$(INSTALL_SCRIPT) $(srcdir)/install-sh $(DESTDIR)$(LIBPL)/install-sh
  	$(INSTALL_SCRIPT) python-config $(DESTDIR)$(BINDIR)/python$(VERSION)-config
@@ -56,7 +56,7 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  		"`echo $(MACHDEP) | sed 's/^\(...\).*/\1/'`" = "aix" ]; then \
 diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
 --- a/Misc/python-config.sh.in	1970-01-01 01:00:00.000000000 +0100
-+++ b/Misc/python-config.sh.in	2013-05-02 00:44:44.631493708 +0100
++++ b/Misc/python-config.sh.in	2013-05-17 23:57:38.320464851 +0100
 @@ -0,0 +1,112 @@
 +#!/usr/bin/env sh
 +

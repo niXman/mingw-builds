@@ -69,9 +69,9 @@ PKG_VERSION="Built by MinGW-builds project"
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
 x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.2/32-bit/threads-posix/sjlj/x32-4.7.2-release-posix-sjlj-rev11.7z
+/host-windows/releases/4.7.3/32-bit/threads-posix/sjlj/x32-4.7.3-release-posix-sjlj-rev0.7z
 x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.2/64-bit/threads-posix/sjlj/x64-4.7.2-release-posix-sjlj-rev11.7z
+/host-windows/releases/4.7.3/64-bit/threads-posix/sjlj/x64-4.7.3-release-posix-sjlj-rev0.7z
 
 ORIGINAL_PATH=$PATH
 TOP_DIR=$(func_simplify_path "$PWD")
@@ -105,7 +105,7 @@ RUN_ARGS="$@"
 	echo "    --threads=<model>       - specifies the threads model for GCC/libstdc++"
 	echo "                              available: win32, posix"
 	echo "    --python-only=<version> - only Python building mode"
-	echo "                              available versions: 2.7.3, 2.7.4, 3.3.0"
+	echo "                              available versions: 2.7.3, 2.7.4, 2.7.5, 3.3.0"
 	echo "    --version               - pring the version of the MinGW-builds scripts"
 	echo "    --mingw-compress        - compressing MinGW"
 	echo "    --srcs-compress         - compressing sources"
@@ -176,7 +176,7 @@ UPLOAD_SRC_TO_SF=no
 SF_USER=""
 DEBUG_UPLOAD=no
 PYTHON_ONLY_MODE=no
-PYTHON_VERSION="2.7.4"
+PYTHON_VERSION="2.7.5"
 
 PROCESSOR_OPTIMIZATION_TUNE_32='generic'
 PROCESSOR_OPTIMIZATION_ARCH_32='i686'
