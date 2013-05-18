@@ -57,7 +57,7 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
 diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
 --- a/Misc/python-config.sh.in	1970-01-01 01:00:00.000000000 +0100
 +++ b/Misc/python-config.sh.in	2013-05-02 00:44:44.631493708 +0100
-@@ -0,0 +1,107 @@
+@@ -0,0 +1,112 @@
 +#!/usr/bin/env sh
 +
 +exit_with_usage ()
@@ -80,8 +80,13 @@ diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
 +installed_prefix ()
 +{
 +    local RESULT=$(dirname $(cd $(dirname "$1") && pwd -P))
-+    if [ $(which readlink) ] ; then
-+        RESULT=$(readlink -f "$RESULT")
++    local READLINK=readlink
++    if [ "$(uname -s)" = "Darwin" ] ; then
++        # readlink in darwin can't handle -f.  Use greadlink from MacPorts instead.
++        READLINK=greadlink
++    fi
++    if [ $(which $READLINK) ] ; then
++        RESULT=$($READLINK -f "$RESULT")
 +    fi
 +    echo $RESULT
 +}
