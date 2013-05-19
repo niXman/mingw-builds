@@ -890,6 +890,21 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			}
 		}
 
+		[[ ${#EXECUTE_BEFORE_MAKE[@]} >0 ]] && {
+			func_execute \
+				$CURR_BUILD_DIR \
+				$SRC_DIR_NAME \
+				"execute commands..." \
+				"before_make" \
+				$CURR_LOGS_DIR \
+				EXECUTE_BEFORE_MAKE[@]
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CURR_BUILD_DIR/$SRC_DIR_NAME/exec-before_make-$_index.log &
+				exit $func_res
+			}
+		}
+
 		[[ ${#MAKE_FLAGS[@]} >0 ]] && {
 			make_flags="/bin/make ${MAKE_FLAGS[@]}"
 			func_make \

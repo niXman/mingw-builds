@@ -54,7 +54,6 @@ PATCHES=(
 #
 
 EXECUTE_AFTER_PATCH=(
-	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make/doc/"
 	"autoreconf -i"
 )
 
@@ -70,6 +69,13 @@ CONFIGURE_FLAGS=(
 	--without-guile
 	CFLAGS="\"$COMMON_CFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
+)
+
+#
+
+EXECUTE_BEFORE_MAKE=(
+	"make do-po-update"
+	"make scm-update"
 )
 
 #
