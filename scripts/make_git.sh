@@ -47,15 +47,11 @@ PRIORITY=extra
 PATCHES=(
 	make/make-linebuf-mingw.patch
 	make/make-getopt.patch
-	make/make-Windows-Add-move-to-sh_cmds_dos.patch
-	make/make-git-fix-config-files.patch
 )
 
 #
 
 EXECUTE_AFTER_PATCH=(
-	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make_git/doc/"
-	"cp -rf $PATCHES_DIR/make/po/* $SRCS_DIR/make_git/po/"
 	"autoreconf -i"
 )
 
@@ -71,6 +67,13 @@ CONFIGURE_FLAGS=(
 	--without-guile
 	CFLAGS="\"$COMMON_CFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
+)
+
+#
+
+EXECUTE_BEFORE_MAKE=(
+	"make do-po-update"
+	"make scm-update"
 )
 
 #
