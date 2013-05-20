@@ -273,6 +273,7 @@ function func_apply_patches {
 		local _patch_marker_name=$1/$2/_patch-$_index.marker
 
 		[[ ! -f $_patch_marker_name ]] && {
+			[[ -f $PATCH_DIR/${it} ]] || die "Patch $PATCH_DIR/${it} not found!"
 			( cd $1/$2 && patch -p1 < $4/${it} > $1/$2/patch-$_index.log 2>&1 )
 			_result=$?
 			[[ $_result == 0 ]] && {
