@@ -1,7 +1,7 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	2013-04-24 23:35:44.272775369 +0100
-+++ b/setup.py	2013-04-24 23:35:44.617777658 +0100
-@@ -27,6 +27,17 @@
+--- a/setup.py	Sun May 19 13:33:24 2013
++++ b/setup.py	Sun May 19 13:34:19 2013
+@@ -30,6 +30,17 @@
      return sys.platform
  host_platform = get_platform()
  
