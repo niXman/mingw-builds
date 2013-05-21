@@ -71,15 +71,10 @@ CONFIGURE_FLAGS=(
 
 #
 
-EXECUTE_BEFORE_MAKE=(
-	"make do-po-update"
-	"make scm-update"
-)
-
-#
-
 MAKE_FLAGS=(
 	-j$JOBS
+	do-po-update
+	scm-update
 	all
 )
 
