@@ -238,7 +238,7 @@ function func_execute {
 		((_index++))
 	done
 
-	[[ $_index == ${#_commands[@]} ]] && echo "done"
+	[[ $_index == ${#_commands[@]} ]] && echo " done"
 
 	return $_result
 }
@@ -286,7 +286,7 @@ function func_apply_patches {
 		((_index++))
 	done
 
-	[[ $_result == 0 ]] && echo "done" || echo "error!"
+	[[ $_result == 0 ]] && echo " done" || echo "error!"
 
 	return $_result
 }
