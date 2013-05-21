@@ -12,7 +12,7 @@ diff -urN a/setup.py b/setup.py
 +if sys.platform == "win32" and "MSYSTEM" in os.environ:
 +    os_system = os.system
 +    def msys_system(command):
-+        command_in_sh = 'sh.exe -c "%s"' % command.replace("\\", "\\\\")
++        command_in_sh = 'sh.exe -c "%s"' % command.replace("\\", "/")
 +        return os_system(command_in_sh)
 +    os.system = msys_system
 +
