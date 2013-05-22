@@ -38,9 +38,9 @@
 #include <strings.h>
 
 #ifdef _DEBUG
- #define dbg_printf(...) fprintf(stderr, __VA_ARGS__)
+#	define dbg_printf(...) fprintf(stderr, __VA_ARGS__)
 #else
- #define dbg_printf(...) do {} while(0)
+#	define dbg_printf(...) do {} while(0)
 #endif
 
 // When built for the Android NDK, values are
@@ -48,15 +48,15 @@
 // built for mingw-builds, these defaults are
 // used.
 #ifndef GDB_TO_PYTHON_REL_DIR
- #define GDB_TO_PYTHON_REL_DIR "..\\opt\\bin"
+#	define GDB_TO_PYTHON_REL_DIR "..\\opt\\bin"
 #endif
 
 #ifndef GDB_EXECUTABLE_ORIG_FILENAME
- #define GDB_EXECUTABLE_ORIG_FILENAME "gdborig.exe"
+#	define GDB_EXECUTABLE_ORIG_FILENAME "gdborig.exe"
 #endif
 
 #ifndef PYTHONHOME_REL_DIR
- #define PYTHONHOME_REL_DIR "..\\opt"
+#	define PYTHONHOME_REL_DIR "..\\opt"
 #endif
 
 #define DIE_IF_FALSE(expr) \
