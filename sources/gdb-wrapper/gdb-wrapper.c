@@ -59,14 +59,14 @@
  #define PYTHONHOME_REL_DIR "..\\opt"
 #endif
 
-#define DIE_IF_FALSE(var) \
+#define DIE_IF_FALSE(expr) \
 	do { \
-		if ( !(var) ) { \
+		if ( !(expr) ) { \
 			dbg_printf("%s(%d)[%d]: expression \"%s\" fail. terminate.\n" \
 				,__FILE__ \
 				,__LINE__ \
 				,GetLastError() \
-				,#var \
+				,#expr \
 			); \
 			exit(1); \
 		} \
