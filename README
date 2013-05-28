@@ -37,7 +37,7 @@ In order to use the scripts provided by the MinGW-builds project it is needed:
   The '--rev=N' option specifies to the script the number of the build revision.
   The '--threads=model' option specifies to the script the used threads model.
   The '--python-only=x.y.z' option specifies to the script to build python only.
-    available versions: 2.7.3, 2.7.4, 3.3.0
+    available versions: 2.7.3, 2.7.4, 2.7.5, 3.3.0
   For more options please run: "./build --help"
 
 8. Run:
