@@ -130,10 +130,10 @@ RUN_ARGS="$@"
 	echo "    gcc-4.7.2 (4.7.2 release)"
 	echo "    gcc-4.7.3 (4.7.3 release)"
 	echo "    gcc-4.8.0 (4.8.0 release)"
-	#echo "    gcc-4.8.1 (4.8.1 release)"
+	echo "    gcc-4.8.1 (4.8.1 release)"
 	echo "    gcc-4_6-branch (currently 4.6.5-prerelease)"
 	echo "    gcc-4_7-branch (currently 4.7.4-prerelease)"
-	echo "    gcc-4_8-branch (currently 4.8.1-prerelease)"
+	echo "    gcc-4_8-branch (currently 4.8.2-prerelease)"
 	echo "    gcc-trunk (currently 4.9.0-snapshot)"
 
 	exit 0
