@@ -926,15 +926,15 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		
 		[[ ${#EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
 			func_execute \
-				$SRCS_DIR \
-				$SRC_DIR_NAME \
+				$CURR_BUILD_DIR \
+				$NAME \
 				"execute commands..." \
 				"after_install" \
 				$CURR_LOGS_DIR \
 				EXECUTE_AFTER_INSTALL[@]
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_install-$_index.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CURR_BUILD_DIR/$NAME/exec-after_install-$_index.log &
 				exit $func_res
 			}
 		}
