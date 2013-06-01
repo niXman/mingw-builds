@@ -130,10 +130,10 @@ RUN_ARGS="$@"
 	echo "    gcc-4.7.2 (4.7.2 release)"
 	echo "    gcc-4.7.3 (4.7.3 release)"
 	echo "    gcc-4.8.0 (4.8.0 release)"
-	#echo "    gcc-4.8.1 (4.8.1 release)"
+	echo "    gcc-4.8.1 (4.8.1 release)"
 	echo "    gcc-4_6-branch (currently 4.6.5-prerelease)"
 	echo "    gcc-4_7-branch (currently 4.7.4-prerelease)"
-	echo "    gcc-4_8-branch (currently 4.8.1-prerelease)"
+	echo "    gcc-4_8-branch (currently 4.8.2-prerelease)"
 	echo "    gcc-trunk (currently 4.9.0-snapshot)"
 
 	exit 0
@@ -498,7 +498,7 @@ SUBTARGETS_PART2=(
 	gdbinit
 	gdb
 	gdb-wrapper
-	make_git
+	make_git_bat
 	cleanup
 	licenses
 	put-versions
@@ -926,15 +926,15 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		
 		[[ ${#EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
 			func_execute \
-				$SRCS_DIR \
-				$SRC_DIR_NAME \
+				$CURR_BUILD_DIR \
+				$NAME \
 				"execute commands..." \
 				"after_install" \
 				$CURR_LOGS_DIR \
 				EXECUTE_AFTER_INSTALL[@]
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_install-$_index.log &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CURR_BUILD_DIR/$NAME/exec-after_install-$_index.log &
 				exit $func_res
 			}
 		}

@@ -35,51 +35,46 @@
 
 # **************************************************************************
 
-VERSION=3071700
-NAME=sqlite-${VERSION}
-SRC_DIR_NAME=sqlite-autoconf-${VERSION}
-URL=http://www.sqlite.org/2013/sqlite-autoconf-${VERSION}.tar.gz
-TYPE=.tar.gz
+NAME=make_git
+SRC_DIR_NAME=make_git
+URL="http://git.savannah.gnu.org/cgit/make.git"
+TYPE=git
+REV=
 PRIORITY=extra
 
 #
 
-PATCHES=()
+PATCHES=(
+	make/make-linebuf-mingw.patch
+	make/make-getopt.patch
+)
 
 #
 
 EXECUTE_AFTER_PATCH=(
-	"perl -pi -e 's#archive_cmds_need_lc=yes#archive_cmds_need_lc=no#g' configure"
 )
+
 #
 
 CONFIGURE_FLAGS=(
-	--host=$HOST
-	--build=$BUILD
-	--target=$TARGET
-	#
-	--prefix=$LIBS_DIR
-	#
-	$LINK_TYPE_SHARED
-	#
-	CFLAGS="\"$COMMON_CFLAGS\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS -DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_RTREE\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #
 
 MAKE_FLAGS=(
-	-j$JOBS
-	all
 )
 
 #
 
 INSTALL_FLAGS=(
-	-j$JOBS
-	install
 )
 
+EXECUTE_AFTER_INSTALL=(
+	"cp -rf $SRCS_DIR/$NAME $CURR_BUILD_DIR/"
+	"cmd /c 'build_w32.bat gcc'"
+	"strip -s gnumake.exe -o mingw32-make.exe"
+	"cp -f mingw32-make.exe $PREFIX/bin/"
+	"cp -f libgnumake-1.dll.a $PREFIX/lib/"
+	"cp -f gnumake.h $PREFIX/include/"
+)
 # **************************************************************************

@@ -273,7 +273,7 @@ function func_apply_patches {
 		local _patch_marker_name=$1/$2/_patch-$_index.marker
 
 		[[ ! -f $_patch_marker_name ]] && {
-			[[ -f $PATCH_DIR/${it} ]] || die "Patch $PATCH_DIR/${it} not found!"
+			[[ -f $PATCHES_DIR/${it} ]] || die "Patch $PATCHES_DIR/${it} not found!"
 			( cd $1/$2 && patch -p1 < $4/${it} > $1/$2/patch-$_index.log 2>&1 )
 			_result=$?
 			[[ $_result == 0 ]] && {
@@ -591,7 +591,7 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-?.?.?)			echo "${1/gcc-/}" ;;
 		gcc-4_6-branch)	echo "4.6.4" ;;
 		gcc-4_7-branch)	echo "4.7.4" ;;
-		gcc-4_8-branch)	echo "4.8.1" ;;
+		gcc-4_8-branch)	echo "4.8.2" ;;
 		gcc-4_9-branch)	echo "4.9.1" ;;
 		gcc-trunk)			echo "4.9.0" ;;
 		*) die "gcc name error: $1. terminate." ;;
@@ -688,7 +688,7 @@ function func_create_mingw_upload_cmd {
 	case $3 in
 		gcc-4_6-branch) _upload_cmd="$_upload_cmd/4.6.5" ;;
 		gcc-4_7-branch) _upload_cmd="$_upload_cmd/4.7.4" ;;
-		gcc-4_8-branch) _upload_cmd="$_upload_cmd/4.8.1" ;;
+		gcc-4_8-branch) _upload_cmd="$_upload_cmd/4.8.2" ;;
 		gcc-trunk) _upload_cmd="$_upload_cmd/4.9.0" ;;
 	esac
 	case $5 in
