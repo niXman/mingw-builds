@@ -35,22 +35,21 @@
 
 # **************************************************************************
 
-VERSION=3071700
-NAME=sqlite-${VERSION}
-SRC_DIR_NAME=sqlite-autoconf-${VERSION}
-URL=http://www.sqlite.org/2013/sqlite-autoconf-${VERSION}.tar.gz
-TYPE=.tar.gz
-PRIORITY=extra
+VERSION=4.8.1
+NAME=gcc-${VERSION}
+SRC_DIR_NAME=gcc-${VERSION}
+URL=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
+TYPE=.tar.bz2
+PRIORITY=main
 
 #
 
-PATCHES=()
-
-#
-
-EXECUTE_AFTER_PATCH=(
-	"perl -pi -e 's#archive_cmds_need_lc=yes#archive_cmds_need_lc=no#g' configure"
+PATCHES=(
+	gcc/gcc-4.7-stdthreads.patch
+	gcc/gcc-4.8-iconv.patch
+	gcc/gcc-4.8-libstdc++export.patch
 )
+
 #
 
 CONFIGURE_FLAGS=(
@@ -58,20 +57,71 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$LIBS_DIR
+	--prefix=$MINGWPREFIX
+	--with-sysroot=$PREFIX
 	#
-	$LINK_TYPE_SHARED
+	$LINK_TYPE_BOTH
+	#
+	$( [[ $USE_MULTILIB == yes ]] \
+		&& echo "--enable-targets=all --enable-multilib" \
+		|| echo "--disable-multilib" \
+	)
+	--enable-languages=$ENABLE_LANGUAGES,lto
+	--enable-libstdcxx-time=yes
+	--enable-threads=$THREADS_MODEL
+	--enable-libgomp
+	--enable-lto
+	--enable-graphite
+	--enable-checking=release
+	--enable-fully-dynamic-string
+	--enable-version-specific-runtime-libs
+	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
+		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
+	)
+	$( [[ $EXCEPTIONS_MODEL == sjlj ]] \
+		&& echo "--enable-sjlj-exceptions" \
+	)
+	#
+	--disable-isl-version-check
+	--disable-cloog-version-check
+	--disable-libstdcxx-pch
+	--disable-libstdcxx-debug
+	$( [[ $BOOTSTRAPING == yes ]] \
+		&& echo "--enable-bootstrap" \
+		|| echo "--disable-bootstrap" \
+	)
+	--disable-rpath
+	--disable-win32-registry
+	--disable-nls
+	--disable-werror
+	--disable-symvers
+	#
+	--with-gnu-as
+	--with-gnu-ld
+	#
+	$PROCESSOR_OPTIMIZATION
+	$PROCESSOR_TUNE
+	#
+	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
+		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
+	)
+	--with-libiconv
+	--with-system-zlib
+	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--enable-cloog-backend=isl
+	--with-pkgversion="\"$PKG_VERSION\""
+	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS -DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_RTREE\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #
 
 MAKE_FLAGS=(
-	-j$JOBS
+	-j1
 	all
 )
 
@@ -79,7 +129,8 @@ MAKE_FLAGS=(
 
 INSTALL_FLAGS=(
 	-j$JOBS
-	install
+	DESTDIR=$BASE_BUILD_DIR
+	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
 # **************************************************************************
