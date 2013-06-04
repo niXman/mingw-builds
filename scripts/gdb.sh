@@ -35,14 +35,13 @@
 
 # **************************************************************************
 
-VERSION=7.5.1
+VERSION=7.6
 NAME=gdb-${VERSION}
 SRC_DIR_NAME=gdb-${VERSION}
 URL=ftp://ftp.gnu.org/gnu/gdb/gdb-${VERSION}.tar.bz2
 TYPE=.tar.bz2
 PRIORITY=main
 
-#REL_PYTHON_PATH=$(func_absolute_to_relative $PREFIX/bin $PREFIX/opt/bin)
 #
 
 PATCHES=()
@@ -63,17 +62,17 @@ CONFIGURE_FLAGS=(
 	--disable-rpath
 	#
 	--with-system-gdbinit=$PREFIX/etc/gdbinit
-	--with-python
+	--with-python=$PREFIX/opt/bin/python-config.sh
 	--with-expat
 	--with-libiconv
 	--with-zlib
 	--disable-tui
 	--disable-gdbtk
 	#
-	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -I$PREFIX/opt/include/python2.7 $([[ $ARCHITECTURE == x64 ]] && echo -DMS_WIN64)\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREFIX/opt/lib/python2.7/config\""
+	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #

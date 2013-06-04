@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION=5.1.1
+VERSION=5.1.2
 NAME=$ARCHITECTURE-gmp-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=gmp-${VERSION}
 URL=ftp://ftp.gmplib.org/pub/gmp-${VERSION}/gmp-${VERSION}.tar.bz2

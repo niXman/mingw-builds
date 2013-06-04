@@ -1,0 +1,14 @@
+diff -urN a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	2013-04-24 00:25:22.803183999 +0100
++++ b/Makefile.pre.in	2013-04-24 00:25:23.179186694 +0100
+@@ -811,9 +811,9 @@
+ 	then rm -f $(DESTDIR)$(BINDIR)/$(PYTHON); \
+ 	else true; \
+ 	fi
+-	(cd $(DESTDIR)$(BINDIR); $(LN) -s python2$(EXE) $(PYTHON))
+ 	-rm -f $(DESTDIR)$(BINDIR)/python2$(EXE)
+ 	(cd $(DESTDIR)$(BINDIR); $(LN) -s python$(VERSION)$(EXE) python2$(EXE))
++	(cd $(DESTDIR)$(BINDIR); $(LN) -s python2$(EXE) $(PYTHON))
+ 	-rm -f $(DESTDIR)$(BINDIR)/python2-config
+ 	(cd $(DESTDIR)$(BINDIR); $(LN) -s python$(VERSION)-config python2-config)
+ 	-rm -f $(DESTDIR)$(BINDIR)/python-config

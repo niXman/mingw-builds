@@ -207,40 +207,40 @@ function func_execute {
 
 	local _result=0
 	local -a _commands=( "${!6}" )
-	declare -i _index=${#_commands[@]}-1
+	
+	_index=0
+	((_index=${#_commands[@]}-1))
 	local _cmd_marker_name=$1/$2/exec-$4-$_index.marker
-
-   [[ -f $_cmd_marker_name ]] && {
+	[[ -f $_cmd_marker_name ]] && {
 		echo "---> executed"
 		return $_result
-   }
-   _index=0
+	}
+	_index=0
 
-   [[ ${#_commands[@]} > 0 ]] && {
+	[[ ${#_commands[@]} > 0 ]] && {
 		echo -n "--> $3"
-   }
+	}
 
-   for it in "${_commands[@]}"; do
+	for it in "${_commands[@]}"; do
 		_cmd_marker_name=$1/$2/exec-$4-$_index.marker
 		local _cmd_log_name=$1/$2/exec-$4-$_index.log
 
-      [[ ! -f $_cmd_marker_name ]] && {
-         ( cd $1/$2 && eval ${it} > $_cmd_log_name 2>&1 )
-         _result=$?
-         [[ $_result != 0 ]] && {
-            echo "error!"
-            return $_result
-         } || {
-            touch $_cmd_marker_name
-         }
-      }
+		[[ ! -f $_cmd_marker_name ]] && {
+			( cd $1/$2 && eval ${it} > $_cmd_log_name 2>&1 )
+			_result=$?
+			[[ $_result != 0 ]] && {
+				echo "error!"
+				return $_result
+			} || {
+				touch $_cmd_marker_name
+			}
+		}
+		((_index++))
+	done
 
-      ((_index++))
-   done
+	[[ $_index == ${#_commands[@]} ]] && echo " done"
 
-   [[ $_index == ${#_commands[@]} ]] && echo "done"
-
-   return $_result
+	return $_result
 }
 
 # **************************************************************************
@@ -273,6 +273,7 @@ function func_apply_patches {
 		local _patch_marker_name=$1/$2/_patch-$_index.marker
 
 		[[ ! -f $_patch_marker_name ]] && {
+			[[ -f $PATCHES_DIR/${it} ]] || die "Patch $PATCHES_DIR/${it} not found!"
 			( cd $1/$2 && patch -p1 < $4/${it} > $1/$2/patch-$_index.log 2>&1 )
 			_result=$?
 			[[ $_result == 0 ]] && {
@@ -285,7 +286,7 @@ function func_apply_patches {
 		((_index++))
 	done
 
-	[[ $_result == 0 ]] && echo "done" || echo "error!"
+	[[ $_result == 0 ]] && echo " done" || echo "error!"
 
 	return $_result
 }
@@ -440,26 +441,6 @@ function func_install_toolchain {
 	# $4 - i686-mingw URL
 	# $5 - x86_64-mingw URL
 
-	# local _mingw32_archive_path=$1/${4##*/}
-	# local _mingw64_archive_path=$1/${5##*/}
-
-	# local _mingw32_download_log=$1/mingw32-download.log
-	# local _mingw64_download_log=$1/mingw64-download.log
-	# local _mingw32_download_marker=$1/mingw32-download.marker
-	# local _mingw64_download_marker=$1/mingw64-download.marker
-	# local _mingw32_uncompress_log=$1/mingw32-uncompress.log
-	# local _mingw64_uncompress_log=$1/mingw64-uncompress.log
-	# local _mingw32_uncompress_marker=$1/mingw32-uncompress.marker
-	# local _mingw64_uncompress_marker=$1/mingw64-uncompress.marker
-	# local _mingw32_move_marker=$1/mingw32-move.marker
-	# local _mingw64_move_marker=$1/mingw64-move.marker
-
-	# function func_check_toolchain {
-		# # $1 - toolchains path
-		# # $2 - is DWARF building
-		# echo
-	# }
-
 	function download_mingw_x32 {
 		# $1 - toolchains path
 		# $2 - i686-mingw URL
@@ -514,33 +495,6 @@ function func_install_toolchain {
 			$1/mingw-x64-uncompress.log
 		return $?
 	}
-
-	#function move_mingw {
-	#	# $1 - toolchains path
-	#	# $2 - destination path
-	#	# $3 - marker file name
-	#
-	#	[[ ! -f $3 ]] && {
-	#		# check if MinGW root directory name is valid
-	#		[[ ! -d $1/mingw ]] && {
-	#			die "bad MinGW root path name. terminate."
-	#		}
-	#
-	#		# rename MinGW directory
-	#		echo -n "--> move... "
-	#		mv $1/mingw $2
-	#		local _result=$?
-	#		[[ $_result != 0 ]] && {
-	#			die "error when move root MinGW path. terminate."
-	#		} || {
-	#			touch $3 && echo "done" || return 1
-	#		}
-	#	} || {
-	#		echo "---> moved"
-	#	}
-	#	return $_result
-	#	return 0
-	#}
 
 	[[ ! -d $2 || ! $2/bin/gcc.exe ]] && {
 		# x32 download
@@ -637,7 +591,7 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-?.?.?)			echo "${1/gcc-/}" ;;
 		gcc-4_6-branch)	echo "4.6.4" ;;
 		gcc-4_7-branch)	echo "4.7.4" ;;
-		gcc-4_8-branch)	echo "4.8.1" ;;
+		gcc-4_8-branch)	echo "4.8.2" ;;
 		gcc-4_9-branch)	echo "4.9.1" ;;
 		gcc-trunk)			echo "4.9.0" ;;
 		*) die "gcc name error: $1. terminate." ;;
@@ -734,7 +688,7 @@ function func_create_mingw_upload_cmd {
 	case $3 in
 		gcc-4_6-branch) _upload_cmd="$_upload_cmd/4.6.5" ;;
 		gcc-4_7-branch) _upload_cmd="$_upload_cmd/4.7.4" ;;
-		gcc-4_8-branch) _upload_cmd="$_upload_cmd/4.8.1" ;;
+		gcc-4_8-branch) _upload_cmd="$_upload_cmd/4.8.2" ;;
 		gcc-trunk) _upload_cmd="$_upload_cmd/4.9.0" ;;
 	esac
 	case $5 in
@@ -758,6 +712,39 @@ function func_create_sources_upload_cmd {
 	local _upload_cmd="cd $1 && scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir/mingw-sources/$(func_map_gcc_name_to_gcc_version $3)"
 
 	echo "$_upload_cmd"
+}
+
+# **************************************************************************
+
+function func_download_repository_file {
+	#1 - file name
+	
+	local _src="http://sourceforge.net/projects/mingwbuilds/files/host-windows/repository.txt"
+	wget $_src -o "$1"
+	local _result=$?
+	[[ $_result != 0 ]] && { die "error($_result) when downloading repository file. terminate."; }
+}
+
+function func_update_repository_file {
+	#1 - file name
+	#2 - version
+	#3 - architecture
+	#4 - threads model
+	#5 - exceptions model
+	#6 - revision
+	#7 - url for archive
+	
+	[[ ! -f $1 ]] && {
+		die "repository file \"$1\" is not exists. terminate."
+		exit 1
+	}
+	
+	echo "$2|$3|$4|$5|$6|$7" >> $1
+}
+
+function func_upload_repository_file {
+	#1 - file name
+	echo "";
 }
 
 # **************************************************************************

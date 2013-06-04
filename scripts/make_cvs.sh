@@ -54,7 +54,6 @@ PATCHES=(
 #
 
 EXECUTE_AFTER_PATCH=(
-	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make/doc/"
 	"autoreconf -i"
 )
 
@@ -76,6 +75,8 @@ CONFIGURE_FLAGS=(
 
 MAKE_FLAGS=(
 	-j$JOBS
+	do-po-update
+	scm-update
 	all
 )
 

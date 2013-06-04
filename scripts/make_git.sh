@@ -47,16 +47,11 @@ PRIORITY=extra
 PATCHES=(
 	make/make-linebuf-mingw.patch
 	make/make-getopt.patch
-	make/make-Windows-Add-move-to-sh_cmds_dos.patch
-	make/make-git-fix-config-files.patch
-	make/make-git-main.c.patch
 )
 
 #
 
 EXECUTE_AFTER_PATCH=(
-	"cp -rf $PATCHES_DIR/make/doc/* $SRCS_DIR/make_git/doc/"
-	"cp -rf $PATCHES_DIR/make/po/* $SRCS_DIR/make_git/po/"
 	"autoreconf -i"
 )
 
@@ -69,7 +64,6 @@ CONFIGURE_FLAGS=(
 	--enable-case-insensitive-file-system
 	--program-prefix=mingw32-
 	--enable-job-server
-	--disable-load
 	--without-guile
 	CFLAGS="\"$COMMON_CFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
@@ -79,6 +73,8 @@ CONFIGURE_FLAGS=(
 
 MAKE_FLAGS=(
 	-j$JOBS
+	do-po-update
+	scm-update
 	all
 )
 

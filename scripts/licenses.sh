@@ -36,7 +36,13 @@
 # **************************************************************************
 
 [[ ! -f $BUILDS_DIR/licenses.marker ]] && {
-	cp -rf $TOP_DIR/licenses $PREFIX/
+	[[ $PYTHON_ONLY_MODE == no ]] && {
+		cp -rf $TOP_DIR/licenses $PREFIX/
+	} || {
+		mkdir -p $PREFIX/licenses && \
+			cp -rf $TOP_DIR/licenses/{bzip2,libffi,mingw-libgnurx,python,readline,tcl,tk,xz} \
+				$PREFIX/licenses/ || exit 1
+	}
 
 	touch $BUILDS_DIR/licenses.marker
 }

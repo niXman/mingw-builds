@@ -1,0 +1,13 @@
+diff -urN a/setup.py b/setup.py
+--- a/setup.py	2013-05-02 00:44:37.666436161 +0100
++++ b/setup.py	2013-05-02 00:44:38.070439500 +0100
+@@ -958,7 +958,8 @@
+                 for p in ['msvcrtmodule.c']]) )
+ 
+             exts.append( Extension('_msi', [os.path.join(pc_srcdir, p)
+-                for p in ['_msi.c']]) )
++                for p in ['_msi.c']],
++                libraries=['msi','cabinet','rpcrt4']) ) # To link with lib(msi|cabinet|rpcrt4).a
+ 
+             exts.append( Extension('_subprocess', [os.path.join(pc_srcdir, p)
+                 for p in ['_subprocess.c']]) )
