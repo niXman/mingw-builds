@@ -37,7 +37,7 @@
 
 NAME=pseh
 SRC_DIR_NAME=pseh
-URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-libraries/pseh
+URL=svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-libraries/pseh
 TYPE=svn
 REV=
 PRIORITY=extra

@@ -42,7 +42,7 @@ NAME=mingw-w64-headers
 	NAME=$ARCHITECTURE-$NAME-nomulti
 }
 SRC_DIR_NAME=mingw-w64-headers
-URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-headers
+URL=svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-headers
 TYPE=svn
 REV=
 PRIORITY=runtime

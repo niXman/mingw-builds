@@ -37,7 +37,7 @@
 
 NAME=genidl
 SRC_DIR_NAME=genidl
-URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-tools/genidl
+URL=svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-tools/genidl
 TYPE=svn
 REV=
 PRIORITY=extra
