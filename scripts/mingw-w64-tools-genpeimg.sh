@@ -37,7 +37,7 @@
 
 NAME=genpeimg
 SRC_DIR_NAME=genpeimg
-URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-tools/genpeimg
+URL=svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-tools/genpeimg
 TYPE=svn
 REV=
 PRIORITY=extra
