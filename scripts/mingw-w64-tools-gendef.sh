@@ -37,7 +37,7 @@
 
 NAME=gendef
 SRC_DIR_NAME=gendef
-URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-tools/gendef
+URL=svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-tools/gendef
 TYPE=svn
 REV=
 PRIORITY=extra

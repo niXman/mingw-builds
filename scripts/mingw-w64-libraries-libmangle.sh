@@ -37,7 +37,7 @@
 
 NAME=libmangle
 SRC_DIR_NAME=libmangle
-URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-libraries/libmangle
+URL=svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-libraries/libmangle
 TYPE=svn
 REV=
 PRIORITY=extra
