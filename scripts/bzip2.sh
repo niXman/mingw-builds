@@ -54,7 +54,7 @@ PATCHES=(
 #
 
 EXECUTE_AFTER_PATCH=(
-	"autogen.sh"
+	"./autogen.sh"
 )
 
 #
