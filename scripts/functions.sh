@@ -413,7 +413,7 @@ function func_test {
 				}
 				[[ $_last =~ .exe ]] && {
 					printf "%-50s" "--> execute $arch_it: \"$_last\" ... "
-					( cd $3/$arch_it && $_last > $_run_log 2>&1 )
+					( cd $3/$arch_it && ./$_last > $_run_log 2>&1 )
 					_result=$?
 					[[ $_result == 0 ]] && {
 						echo "-> $_result -> done"
