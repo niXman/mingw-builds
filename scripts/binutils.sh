@@ -49,7 +49,9 @@ PRIORITY=prereq
 
 #
 
-PATCHES=()
+PATCHES=(
+	binutils/binutils-2.23.2-fix-docs.patch
+)
 
 #
 
