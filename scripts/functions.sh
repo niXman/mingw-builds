@@ -42,6 +42,12 @@ function die {
 
 # **************************************************************************
 
+function check_program {
+	command -v "$@" > /dev/null 2>&1 || { die "Command $@ not found. Terminate."; }
+}
+
+# **************************************************************************
+
 function func_simplify_path {
 	# $1 - path
 
