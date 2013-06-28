@@ -1,70 +1,19 @@
 diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
---- a/Lib/distutils/command/install.py	2013-04-24 00:25:24.264194474 +0100
-+++ b/Lib/distutils/command/install.py	2013-04-24 00:25:24.537196431 +0100
-@@ -8,7 +8,7 @@
+--- a/Lib/distutils/command/install.py	2013-06-27 23:09:51.775636695 +0100
++++ b/Lib/distutils/command/install.py	2013-06-27 23:09:52.452303372 +0100
+@@ -348,7 +348,8 @@
  
- __revision__ = "$Id$"
+         # Convert directories from Unix /-separated syntax to the local
+         # convention.
+-        self.convert_paths('lib', 'purelib', 'platlib',
++        self.convert_paths('base', 'platbase',
++                           'lib', 'purelib', 'platlib',
+                            'scripts', 'data', 'headers',
+                            'userbase', 'usersite')
  
--import sys, os, string
-+import sys, os, string, re
- from types import *
- from distutils.core import Command
- from distutils.debug import DEBUG
-@@ -20,7 +20,36 @@
- from distutils.errors import DistutilsOptionError
- from site import USER_BASE
- from site import USER_SITE
-+from string import maketrans
- 
-+def is_msys_mingw():
-+    if sys.platform == "win32" and "MSYSTEM" in os.environ and sys.version.find("GCC") >= 0:
-+        if os.environ["MSYSTEM"] == "MINGW32":
-+            return 1
-+    return 0
-+
-+def has_msys():
-+    _msysdll = "msys-1.0.dll"
-+    for _path in os.environ["PATH"].split(os.pathsep):
-+        currpath = os.path.join(_path, _msysdll)
-+        if os.path.isfile(currpath) and os.access(currpath, os.F_OK):
-+            return _path
-+    return None
-+
-+def msys_root():
-+    if is_msys_mingw() and has_msys() is not None:
-+        arg = has_msys()
-+        arg = arg.rstrip("\\")
-+        if arg.endswith("\\bin"):
-+            # drop the \\bin
-+            arg = arg[:-4]
-+        table = maketrans('\\', '/')
-+        arg = arg.translate(table)
-+        if arg.endswith("/"):
-+            arg = arg[:-1]
-+        return arg
-+    else:
-+        return None
- 
- if sys.version < "2.2":
-     WINDOWS_SCHEME = {
-@@ -315,6 +344,14 @@
- 
-         self.dump_dirs("post-expand_basedirs()")
- 
-+        # MSYS (probably) will have transformed --root=/ to the
-+        # windows path where the msys is installed, so we check if root begins
-+        # with msysroot and if it does then remove this part.
-+        if self.root is not None and is_msys_mingw():
-+            msysroot = msys_root()
-+            if msysroot != None and self.root.find(msysroot)==0:
-+                self.root = self.root.replace(msysroot, "/")
-+
-         # Now define config vars for the base directories so we can expand
-         # everything else.
-         self.config_vars['base'] = self.install_base
 diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
---- a/Lib/distutils/util.py	2013-04-24 00:25:24.267194495 +0100
-+++ b/Lib/distutils/util.py	2013-04-24 00:25:24.539196446 +0100
+--- a/Lib/distutils/util.py	2013-06-27 23:09:51.772303362 +0100
++++ b/Lib/distutils/util.py	2013-06-27 23:09:52.455636706 +0100
 @@ -210,6 +210,13 @@
          paths.remove('.')
      if not paths:
@@ -79,3 +28,64 @@ diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
      return os.path.join(*paths)
  
  # convert_path ()
+@@ -220,6 +227,10 @@
+     relative, this is equivalent to "os.path.join(new_root,pathname)".
+     Otherwise, it requires making 'pathname' relative and then joining the
+     two, which is tricky on DOS/Windows and Mac OS.
++
++    If on Windows or OS/2 and both new_root and pathname are on different
++    drives, raises DistutilsChangeRootError as this is nonsensical,
++    otherwise use drive which can be in either of new_root or pathname.
+     """
+     if os.name == 'posix':
+         if not os.path.isabs(pathname):
+@@ -227,17 +238,20 @@
+         else:
+             return os.path.join(new_root, pathname[1:])
+ 
+-    elif os.name == 'nt':
+-        (drive, path) = os.path.splitdrive(pathname)
+-        if path[0] == '\\':
+-            path = path[1:]
+-        return os.path.join(new_root, path)
+-
+-    elif os.name == 'os2':
++    elif os.name == 'nt' or os.name == 'os2':
+         (drive, path) = os.path.splitdrive(pathname)
+         if path[0] == os.sep:
+             path = path[1:]
+-        return os.path.join(new_root, path)
++        (drive_r, path_r) = os.path.splitdrive(new_root)
++        drive_used = ''
++        if len(drive) == 2 and len(drive_r) == 2 and drive != drive_r:
++            raise DistutilsChangeRootError, \
++                  "root and pathname not on same drive (%s, %s)" % (drive,drive_r)
++        elif len(drive_r) == 2:
++            drive_used = drive_r+os.sep
++        else:
++            drive_used = drive+os.sep
++        return os.path.join(drive_used+path_r, path)
+ 
+     else:
+         raise DistutilsPlatformError, \
+diff -urN a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	2013-06-27 23:09:51.865636696 +0100
++++ b/Makefile.pre.in	2013-06-27 23:11:00.752304424 +0100
+@@ -1086,7 +1086,7 @@
+ 	   	--prefix=$(prefix) \
+ 		--install-scripts=$(BINDIR) \
+ 		--install-platlib=$(DESTSHARED) \
+-		--root=$(DESTDIR)/
++		--root=$(DESTDIR)
+ 
+ # Here are a couple of targets for MacOSX again, to install a full
+ # framework-based Python. frameworkinstall installs everything, the
+@@ -1158,7 +1158,7 @@
+ 	$(RUNPYTHON) $(srcdir)/Tools/scripts/setup.py install \
+ 	--prefix=$(prefix) \
+ 	--install-scripts=$(BINDIR) \
+-	--root=$(DESTDIR)/
++	--root=$(DESTDIR)
+ 
+ # Build the toplevel Makefile
+ Makefile.pre: Makefile.pre.in config.status
