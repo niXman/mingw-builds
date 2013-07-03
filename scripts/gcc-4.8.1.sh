@@ -124,14 +124,14 @@ CONFIGURE_FLAGS=(
 #
 
 MAKE_FLAGS=(
-	-j1
+	-j$JOBS
 	all
 )
 
 #
 
 INSTALL_FLAGS=(
-	-j$JOBS
+	-j1
 	DESTDIR=$BASE_BUILD_DIR
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
