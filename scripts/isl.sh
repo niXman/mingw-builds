@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION=0.11.1
+VERSION=0.12
 NAME=$ARCHITECTURE-isl-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=isl-${VERSION}
 URL=ftp://ftp.linux.student.kuleuven.be/pub/people/skimo/isl//isl-${VERSION}.tar.bz2
