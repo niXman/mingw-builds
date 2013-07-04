@@ -64,8 +64,8 @@
 	}
 
 	if [[ $USE_MULTILIB == yes ]]; then
-		# 64 bit dlls
 		[[ $ARCHITECTURE == x32 ]] && {
+			# 64 bit dlls
 			# libgcc_s.a
 			cp -f $PREFIX/lib/gcc/$TARGET/lib64/libgcc_s.a $PREFIX/$TARGET/lib64/ \
 				|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib64/"
