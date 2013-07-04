@@ -49,6 +49,9 @@
 		|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version"
 	cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/libobjc/.libs/libobjc.dll.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/ \
 		|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version"
+	# objc headers
+	cp -rf ${SRCS_DIR}/${GCC_NAME}/libobjc/objc $PREFIX/lib/gcc/$TARGET/$_gcc_version/include \
+		|| die "Cannot copy objc headers to $PREFIX/lib/gcc/$TARGET/$_gcc_version/include"
 
 	# builded architecture dlls
 	DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 \
@@ -69,6 +72,7 @@
 			# libgcc_s.a
 			cp -f $PREFIX/lib/gcc/$TARGET/lib64/libgcc_s.a $PREFIX/$TARGET/lib64/ \
 				|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib64/"
+
 			# libobjc libraries
 			cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/64/libobjc/.libs/libobjc.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/64/ \
 				|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/64"
@@ -87,6 +91,7 @@
 			# libgcc_s.a
 			cp -f $PREFIX/lib/gcc/$TARGET/lib32/libgcc_s.a $PREFIX/$TARGET/lib32/ \
 				|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib32"
+
 			# libobjc libraries
 			cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/32/libobjc/.libs/libobjc.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/32/ \
 				|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/32"
