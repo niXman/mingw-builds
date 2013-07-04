@@ -67,7 +67,8 @@
 		# 64 bit dlls
 		[[ $ARCHITECTURE == x32 ]] && {
 			# libgcc_s.a
-			cp -f $PREFIX/lib/gcc/$TARGET/lib64/libgcc_s.a $PREFIX/$TARGET/lib64/ || die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib64/"
+			cp -f $PREFIX/lib/gcc/$TARGET/lib64/libgcc_s.a $PREFIX/$TARGET/lib64/ \
+				|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib64/"
 			# libobjc libraries
 			cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/64/libobjc/.libs/libobjc.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/64/ \
 				|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/64"
@@ -84,7 +85,8 @@
 		} || {
 			# 32 bit dlls
 			# libgcc_s.a
-			cp -f $PREFIX/lib/gcc/$TARGET/lib32/libgcc_s.a $PREFIX/$TARGET/lib32/ || exit 1
+			cp -f $PREFIX/lib/gcc/$TARGET/lib32/libgcc_s.a $PREFIX/$TARGET/lib32/ \
+				|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib32"
 			# libobjc libraries
 			cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/32/libobjc/.libs/libobjc.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/32/ \
 				|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/32"
