@@ -80,8 +80,8 @@
 				|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/64"
 
 			find $BUILDS_DIR/$GCC_NAME/$TARGET/64 -path $BUILDS_DIR/$GCC_NAME/$TARGET/64/libada/adainclude \
-				-type f -iname *.dll ! -iname *winpthread* \
-				| xargs -i cp {} $PREFIX/$TARGET/lib64/ || die "Error copying 64-bit dlls"
+				-prune -o -type f -iname *.dll ! -iname *winpthread* -print0 \
+				| xargs -0 -I{} cp -f {} $PREFIX/$TARGET/lib64/ || die "Error copying 64-bit dlls"
 				
 			[[ $STRIP_ON_INSTALL == yes ]] && {
 				strip $PREFIX/$TARGET/lib64/*.dll || die "Error stripping 64-bit dlls"
@@ -99,8 +99,8 @@
 				|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/32"
 
 			find $BUILDS_DIR/$GCC_NAME/$TARGET/32 -path $BUILDS_DIR/$GCC_NAME/$TARGET/32/libada/adainclude \
-				-type f -iname *.dll ! -iname *winpthread* \
-				| xargs -i cp {} $PREFIX/$TARGET/lib32/ || die "Error copying 32-bit dlls"
+				-prune -o -type f -iname *.dll ! -iname *winpthread* -print0 \
+				| xargs -0 -I{} cp -f {} $PREFIX/$TARGET/lib32/ || die "Error copying 32-bit dlls"
 
 			[[ $STRIP_ON_INSTALL == yes ]] && {
 				strip $PREFIX/$TARGET/lib32/*.dll || die "Error stripping 32-bit dlls"
