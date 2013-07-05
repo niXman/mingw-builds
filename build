@@ -71,9 +71,9 @@ PKG_VERSION="Built by MinGW-builds project"
 BUG_URL=http://sourceforge.net/projects/mingwbuilds/
 
 x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.3/32-bit/threads-posix/sjlj/x32-4.7.3-release-posix-sjlj-rev0.7z
+/host-windows/releases/4.7.3/32-bit/threads-posix/sjlj/x32-4.7.3-release-posix-sjlj-rev1.7z
 x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.3/64-bit/threads-posix/sjlj/x64-4.7.3-release-posix-sjlj-rev0.7z
+/host-windows/releases/4.7.3/64-bit/threads-posix/sjlj/x64-4.7.3-release-posix-sjlj-rev1.7z
 
 ORIGINAL_PATH=$PATH
 TOP_DIR=$(func_simplify_path "$PWD")
