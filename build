@@ -121,6 +121,8 @@ RUN_ARGS="$@"
 	echo "    --mtume-x32='<arch>'    - tune for x32 target"
 	echo "    --march-x64='<arch>'    - arch for x64 target"
 	echo "    --mtume-x64='<arch>'    - tune for x64 target"
+	echo "    --enable-languages=<langs> - comma separated list of gcc supported languages"
+	echo "                              available languages: ada, c, c++, fortran, objc, objc++"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -207,6 +209,10 @@ while [[ $# > 0 ]]; do
 		--bootstrap) BOOTSTRAPING=yes ;;
 		--preload) PRELOAD_MODE=yes ;;
 		--download) DOWNLOAD_MODE=yes ;;
+		--enable-languages=*)
+			check_languages "${1/--enable-languages=/}"
+			ENABLE_LANGUAGES=${1/--enable-languages=/}
+		;;
 		--exceptions=*)
 			EXCEPTIONS_MODEL=${1/--exceptions=/}
 			case $EXCEPTIONS_MODEL in
