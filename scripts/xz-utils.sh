@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION=5.0.4
+VERSION=5.0.5
 NAME=xz-${VERSION}
 SRC_DIR_NAME=xz-${VERSION}
 URL=http://tukaani.org/xz/xz-${VERSION}.tar.xz
