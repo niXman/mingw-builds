@@ -59,7 +59,6 @@ function check_languages {
 		die "You must specify languages to build"
 	} || {
 		for sub in ${langs[@]}; do
-			echo "SUB Is: $sub"
 			! [[ "$sub" == "ada" || "$sub" == "c" || "$sub" == "c++" || \
 				  "$sub" == "fortran" || "$sub" == "objc" || "$sub" == "obj-c++" ]] && {
 				errs=$errs' '$sub
@@ -70,6 +69,28 @@ function check_languages {
 			die "Follow languages not supported: $errs"
 		}
 	}
+}
+
+# **************************************************************************
+
+function has_lang {
+	OLD_IFS=$IFS                 
+	IFS=","                           
+	local langs=( $ENABLE_LANGUAGES )
+	IFS=$OLD_IFS
+	local errs=""
+		
+	[[ ${#langs[@]} == 0 ]] && {
+		return "0"
+	} || {
+		for sub in ${langs[@]}; do
+			echo "SUB Is: $sub"
+			[[ "$sub" == "$1" ]] && {
+				return "1"
+			}
+		done
+	}
+	return "0"
 }
 
 # **************************************************************************
