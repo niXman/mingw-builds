@@ -51,6 +51,7 @@ PATCHES=(
 	gcc/gcc-4.8-libstdc++export.patch
 	gcc/gcc-4.8.0-filename-normalize.patch
 	gcc/pr56742.patch
+	gcc/gcc-4.8.1-objc-exceptions.patch
 )
 
 #
