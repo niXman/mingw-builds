@@ -50,6 +50,7 @@ PATCHES=(
 	gcc/gcc-4.8-intrin.patch
 	gcc/gcc-4.8-libstdc++export.patch
 	gcc/gcc-4.8.0-cannot_modify_jumps.patch
+	gcc-4.8.1-objc-exceptions.patch
 )
 
 #
