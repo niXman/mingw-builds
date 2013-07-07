@@ -773,7 +773,7 @@ function func_download_repository_file {
 	#1 - repository file name
 	
 	local _src="http://sourceforge.net/projects/mingwbuilds/files/host-windows/repository.txt"
-	wget $_src -o "$1"
+	wget $_src -O "$1"
 	local _result=$?
 	[[ $_result != 0 ]] && { die "error($_result) when downloading repository file. terminate."; }
 }
