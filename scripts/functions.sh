@@ -657,11 +657,11 @@ function func_map_gcc_name_to_gcc_build_name {
 	# $1 - sources root dir
 	# $2 - gcc name
 
-	local _type_str=$(func_map_gcc_name_to_gcc_type $2)
+	local _gcc_type=$(func_map_gcc_name_to_gcc_type $2)
 	local _gcc_version=$(func_map_gcc_name_to_gcc_version $2)
-	local _build_name=$_gcc_version-$_type_str
+	local _build_name=$_gcc_version-$_gcc_type
 
-	[[ $_type_str != release ]] && {
+	[[ $_gcc_type != release ]] && {
 		case $2 in
 			gcc-*-branch|gcc-trunk)
 				local _gcc_rev="rev$(cd $1/$2 && svn info | grep 'Revision: ' | sed 's|Revision: ||')"
