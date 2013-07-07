@@ -770,7 +770,7 @@ function func_create_sources_upload_cmd {
 # **************************************************************************
 
 function func_download_repository_file {
-	#1 - file name
+	#1 - repository file name
 	
 	local _src="http://sourceforge.net/projects/mingwbuilds/files/host-windows/repository.txt"
 	wget $_src -o "$1"
@@ -779,7 +779,7 @@ function func_download_repository_file {
 }
 
 function func_update_repository_file {
-	#1 - file name
+	#1 - repository file name
 	#2 - version
 	#3 - architecture
 	#4 - threads model
