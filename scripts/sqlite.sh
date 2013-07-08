@@ -38,8 +38,10 @@
 VERSION=3071700
 NAME=sqlite-${VERSION}
 SRC_DIR_NAME=sqlite-autoconf-${VERSION}
-URL=http://www.sqlite.org/2013/sqlite-autoconf-${VERSION}.tar.gz
 TYPE=.tar.gz
+URL=(
+	"http://www.sqlite.org/2013/sqlite-autoconf-${VERSION}.tar.gz"
+)
 PRIORITY=extra
 
 #

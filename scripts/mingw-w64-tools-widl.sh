@@ -37,9 +37,11 @@
 
 NAME=widl
 SRC_DIR_NAME=widl
-URL=svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-tools/widl
 TYPE=svn
-REV=
+URL=(
+	"svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-tools/widl|repo:$TYPE"
+)
+
 PRIORITY=extra
 
 #

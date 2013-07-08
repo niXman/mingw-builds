@@ -38,8 +38,11 @@
 VERSION=7.6
 NAME=gdb-${VERSION}
 SRC_DIR_NAME=gdb-${VERSION}
-URL=ftp://ftp.gnu.org/gnu/gdb/gdb-${VERSION}.tar.bz2
 TYPE=.tar.bz2
+URL=(
+	"ftp://ftp.gnu.org/gnu/gdb/gdb-${VERSION}.tar.bz2"
+)
+
 PRIORITY=main
 
 #

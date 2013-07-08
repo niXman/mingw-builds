@@ -38,8 +38,11 @@
 VERSION=1.0
 NAME=$ARCHITECTURE-ppl-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=ppl-${VERSION}
-URL=http://bugseng.com/products/ppl/download/ftp/releases/${VERSION}/ppl-${VERSION}.tar.bz2
 TYPE=.tar.bz2
+URL=(
+	"http://bugseng.com/products/ppl/download/ftp/releases/${VERSION}/ppl-${VERSION}.tar.bz2"
+)
+
 PRIORITY=prereq
 
 #

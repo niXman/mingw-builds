@@ -38,8 +38,11 @@
 VERSION=5.0.5
 NAME=xz-${VERSION}
 SRC_DIR_NAME=xz-${VERSION}
-URL=http://tukaani.org/xz/xz-${VERSION}.tar.xz
 TYPE=.tar.xz
+URL=(
+	"http://tukaani.org/xz/xz-${VERSION}.tar.xz"
+)
+
 PRIORITY=extra
 
 #

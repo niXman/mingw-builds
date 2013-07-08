@@ -38,8 +38,11 @@
 VERSION=3.1.2
 NAME=$ARCHITECTURE-mpfr-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=mpfr-${VERSION}
-URL=ftp://ftp.gnu.org/gnu/mpfr/mpfr-${VERSION}.tar.bz2
 TYPE=.tar.bz2
+URL=(
+	"ftp://ftp.gnu.org/gnu/mpfr/mpfr-${VERSION}.tar.bz2"
+)
+
 PRIORITY=prereq
 
 #

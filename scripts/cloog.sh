@@ -38,8 +38,10 @@
 VERSION=0.18.0
 NAME=$ARCHITECTURE-cloog-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=cloog-${VERSION}
-URL=http://www.bastoul.net/cloog/pages/download/count.php3?url=./cloog-${VERSION}.tar.gz
 TYPE=.tar.gz
+URL=(
+	"http://www.bastoul.net/cloog/pages/download/count.php3?url=./cloog-${VERSION}.tar.gz"
+)
 PRIORITY=prereq
 
 #

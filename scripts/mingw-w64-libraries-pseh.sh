@@ -37,9 +37,11 @@
 
 NAME=pseh
 SRC_DIR_NAME=pseh
-URL=svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-libraries/pseh
 TYPE=svn
-REV=
+URL=(
+	"svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-libraries/pseh|repo:$TYPE"
+)
+
 PRIORITY=extra
 
 #

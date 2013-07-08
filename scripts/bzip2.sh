@@ -38,8 +38,11 @@
 VERSION=1.0.6
 NAME=bzip2-${VERSION}
 SRC_DIR_NAME=bzip2-${VERSION}
-URL=http://www.bzip.org/${VERSION}/${SRC_DIR_NAME}.tar.gz
 TYPE=.tar.gz
+URL=(
+	"http://www.bzip.org/${VERSION}/${SRC_DIR_NAME}.tar.gz"
+)
+
 PRIORITY=extra
 
 #
