@@ -38,8 +38,11 @@
 VERSION=3.0.13
 NAME=libffi-${VERSION}
 SRC_DIR_NAME=libffi-${VERSION}
-URL=ftp://sourceware.org/pub/libffi/libffi-${VERSION}.tar.gz
 TYPE=.tar.gz
+URL=(
+	"ftp://sourceware.org/pub/libffi/libffi-${VERSION}.tar.gz"
+)
+
 PRIORITY=extra
 
 #

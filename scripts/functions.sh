@@ -179,6 +179,7 @@ function func_download {
 		local _rev=
 		local _dir=
 		local _module=
+		local _lib_name=
 		
 		local _index=1
 		while [ "$_index" -lt "${#_params[@]}" ]
@@ -197,14 +198,19 @@ function func_download {
 			_index=$(($_index+1))
 		done
 
-		_filename=$(basename $_url)
-		_marker_name=$MARKERS_DIR/${_filename}-download.log
-		_log_name=$MARKERS_DIR/${_filename}-download.marker
-		[[ -n $_dir ]] && {
-			local _lib_name=$SRCS_DIR/$_filename
+		[[ -n $_module ]] && {
+			_filename=$_module
 		} || {
-			local _lib_name=$SRCS_DIR/$_dir/$_filename
-		}	
+			_filename=$(basename $_url)
+		}
+		[[ -n $_dir ]] && {
+			_lib_name=$SRCS_DIR/$_filename
+		} || {
+			_lib_name=$SRCS_DIR/$_dir/$_filename
+		}
+
+		_marker_name=$MARKERS_DIR/${_filename}-download.log
+		_log_name=$MARKERS_DIR/${_filename}-download.marker	
 		[[ ! -f $_marker_name ]] && {
 			[[ $_repo == cvs || $_repo == svn || $_repo == hg || $_repo == git ]] && {
 				echo -n "--> download $_filename..."
@@ -214,9 +220,9 @@ function func_download {
 						local _prev_dir=$PWD
 						cd $SRCS_DIR
 						[[ -n $_rev ]] && {
-							cvs -z9 -d $_url co -D$_rev $_module > $_log_name 2>&1
+							cvs -z9 -d $_url co -D$_rev $_filename > $_log_name 2>&1
 						} || {
-							cvs -z9 -d $_url co $_module > $_log_name 2>&1
+							cvs -z9 -d $_url co $_filename > $_log_name 2>&1
 						}
 						cd $_prev_dir
 						_result=$?
@@ -285,28 +291,50 @@ function func_uncompress {
 		echo -n "--> Unpack..."
 	}
 
-	local _result=0
-	local _unpack_cmd
-	local _marker_name=
-	local _log_name=
-	local _filename=
-	local _ext=
-
 	for it in ${_list[@]} ; do
-		_marker_name=$MARKERS_DIR/${it}-unpack.log
-		_log_name=$MARKERS_DIR/${it}-unpack.marker
-		_filename=$(basename $it)
+		OLD_IFS=$IFS                 
+		IFS="|"                           
+		local _params=( $it )
+		IFS=$OLD_IFS
+		
+		local _result=0
+		local _unpack_cmd
+		local _marker_name=
+		local _log_name=
+		local _filename=
+		local _ext=
+		local _url=${_params[0]}
+		local _module=
+		local _lib_name=$SRCS_DIR
+		
+		local _index=1
+		while [ "$_index" -lt "${#_params[@]}" ]
+		do
+			OLD_IFS=$IFS                 
+			IFS=":"                           
+			local _params2=( ${_params[$_index]} )
+			IFS=$OLD_IFS
+			case ${_params2[0]} in
+				dir)    _lib_name=$_lib_name/${_params2[1]} ;;
+				module) _module=${_params2[1]} ;;
+			esac
+			_index=$(($_index+1))
+		done
+
+		_filename=$(basename ${_params[0]})
+		_marker_name=$MARKERS_DIR/${_filename}-unpack.log
+		_log_name=$MARKERS_DIR/${_filename}-unpack.marker
 		_ext=$(get_filename_extension $_filename)
 		[[ $_ext == .tar.gz || $_ext == .tar.bz2 || $_ext == .tar.lzma \
-		|| $_ext == .tar.xz || $_ext == .tar.7z || $_ext == .7z ]] && {
+		|| $_ext == .tar.xz || $_ext == .tar.7z || $_ext == .7z || $_ext == .tgz ]] && {
 			[[ ! -f $_marker_name ]] && {
 				echo -n "--> unpack $_filename..."
-				case $3 in
-					.tar.gz) _unpack_cmd="tar xvf $1/$_filename -C $1 > $_log_name 2>&1" ;;
-					.tar.bz2) _unpack_cmd="tar xvjf $1/$_filename -C $1 > $_log_name 2>&1" ;;
-					.tar.lzma|.tar.xz) _unpack_cmd="tar xvJf $1/$_filename -C $1 > $_log_name 2>&1" ;;
+				case $_ext in
+					.tar.gz|.tgz) _unpack_cmd="tar xvf $SRCS_DIR/$_filename -C $_lib_name > $_log_name 2>&1" ;;
+					.tar.bz2) _unpack_cmd="tar xvjf $SRCS_DIR/$_filename -C $_lib_name > $_log_name 2>&1" ;;
+					.tar.lzma|.tar.xz) _unpack_cmd="tar xvJf $SRCS_DIR/$_filename -C $_lib_name > $_log_name 2>&1" ;;
 					.tar.7z) die "unimplemented. terminate." ;;
-					.7z) _unpack_cmd="7za x $1/$_filename -o$1 > $_log_name 2>&1" ;;
+					.7z) _unpack_cmd="7za x $SRCS_DIR/$_filename -o$_lib_name > $_log_name 2>&1" ;;
 					*) die " error. bad archive type: $_ext" ;;
 				esac
 				eval ${_unpack_cmd}

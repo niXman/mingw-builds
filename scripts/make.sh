@@ -38,8 +38,11 @@
 VERSION=3.82
 NAME=make-${VERSION}
 SRC_DIR_NAME=make-${VERSION}
-URL=ftp://ftp.gnu.org/gnu/make/make-${VERSION}.tar.bz2
 TYPE=.tar.bz2
+URL=(
+	"ftp://ftp.gnu.org/gnu/make/make-${VERSION}.tar.bz2"
+)
+
 PRIORITY=extra
 
 #

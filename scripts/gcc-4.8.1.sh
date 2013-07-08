@@ -38,8 +38,11 @@
 VERSION=4.8.1
 NAME=gcc-${VERSION}
 SRC_DIR_NAME=gcc-${VERSION}
-URL=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
 TYPE=.tar.bz2
+URL=(
+	"ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2"
+)
+
 PRIORITY=main
 
 #

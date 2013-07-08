@@ -37,9 +37,11 @@
 
 NAME=gendef
 SRC_DIR_NAME=gendef
-URL=svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-tools/gendef
 TYPE=svn
-REV=
+URL=(
+	"svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-tools/gendef|repo:$TYPE"
+)
+
 PRIORITY=extra
 
 #

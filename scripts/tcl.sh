@@ -38,8 +38,11 @@
 VERSION=8.6.0
 NAME=tcl${VERSION}
 SRC_DIR_NAME=tcl${VERSION}/win
-URL=http://prdownloads.sourceforge.net/tcl/tcl${VERSION}-src.tar.gz
 TYPE=.tar.gz
+URL=(
+	"http://prdownloads.sourceforge.net/tcl/tcl${VERSION}-src.tar.gz"
+)
+
 PRIORITY=extra
 
 #

@@ -38,8 +38,11 @@
 VERSION=6.2
 NAME=readline-${VERSION}
 SRC_DIR_NAME=readline-${VERSION}
-URL=ftp://ftp.gnu.org/gnu/readline/readline-${VERSION}.tar.gz
 TYPE=.tar.gz
+URL=(
+	"ftp://ftp.gnu.org/gnu/readline/readline-${VERSION}.tar.gz"
+)
+
 PRIORITY=extra
 
 #

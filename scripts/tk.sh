@@ -38,8 +38,11 @@
 VERSION=8.6.0
 NAME=tk${VERSION}
 SRC_DIR_NAME=tk${VERSION}/win
-URL=http://prdownloads.sourceforge.net/tcl/tk${VERSION}-src.tar.gz
 TYPE=.tar.gz
+URL=(
+	"http://prdownloads.sourceforge.net/tcl/tk${VERSION}-src.tar.gz"
+)
+
 PRIORITY=extra
 
 #
