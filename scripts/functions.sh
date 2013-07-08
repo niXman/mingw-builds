@@ -174,21 +174,20 @@ function func_download {
 	for it in ${_list[@]} ; do
 		_marker_name=$MARKERS_DIR/${it}-download.log
 		_log_name=$MARKERS_DIR/${it}-download.marker	
-
+		_filename=$(basename $it)
 		[[ ! -f $_marker_name ]] && {
 			[[ $4 == cvs || $4 == svn || $4 == hg || $4 == git ]] && {
-				_filename=
-				local _lib_name=$1/$2
-				echo -n "--> download $2..."
+				local _lib_name=$1/$_filename
+				echo -n "--> download $_filename..."
 	
 				case $4 in
 					cvs)
 						local _prev_dir=$PWD
 						cd $1
 						[[ -n $5 ]] && {
-							cvs -z9 -d $it co -D$5 $2 > $_log_name 2>&1
+							cvs -z9 -d $it co -D$5 $_filename > $_log_name 2>&1
 						} || {
-							cvs -z9 -d $it co $2 > $_log_name 2>&1
+							cvs -z9 -d $it co $_filename > $_log_name 2>&1
 						}
 						cd $_prev_dir
 						_result=$?
@@ -215,7 +214,6 @@ function func_download {
 					;;
 				esac	
 			} || {
-				_filename=$(basename $it)
 				local _lib_name=$1/$_filename
 				[[ -f $1/$_filename ]] && {
 					echo -n "--> Delete corrupted download..."
@@ -223,7 +221,6 @@ function func_download {
 					echo " done"
 				}
 				echo -n "--> download $_filename..."
-				[[ ! -f $_marker_name && -f $_lib_name ]] && rm -rf $_lib_name
 				wget \
 					--tries=$_WGET_TRIES \
 					--timeout=$_WGET_TIMEOUT \
