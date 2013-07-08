@@ -48,6 +48,26 @@ function check_program {
 
 # **************************************************************************
 
+get_filename_extension () {
+	local _filename=$1
+	local _ext=
+	local _finish=0
+	case "${_filename##*.}" in
+		bz2|gz|lzma|xz) 
+			_ext=$_ext'.'${_filename##*.}
+			_filename=${_filename%$_ext}
+			local _sub_ext=$(get_filename_extension $_filename)
+			[[ "$_sub_ext" == ".tar" ]] && _ext=$_sub_ext$_ext
+		;;
+		*)
+			_ext='.'${_filename##*.}
+		;;
+	esac
+	echo "$_ext"
+}
+
+# **************************************************************************
+
 function check_languages {
 	OLD_IFS=$IFS                 
 	IFS=","                           
@@ -131,84 +151,95 @@ function func_absolute_to_relative {
 function func_download {
 	# $1 - srcs root path
 	# $2 - src dir name
-	# $3 - sources type: .tar.gz, .tar.bz2 e.t.c...
-	#      if sources get from a repository, choose it's type: cvs, svn, hg, git
-	# $4 - URL
-	# $5 - log file name
-	# $6 - marker file name
-	# $7 - revision
+	# $3 - list of URLs	
+	# $4 - if sources get from a repository, choose it's type: cvs, svn, hg, git
+	# $5 - revision (or branch for git)
 
-	[[ -z $4 ]] && {
-		die "URL is empty. terminate."
+	local -a _list=( "${!3}" )
+	[[ ${#_list[@]} == 0 ]] && {
+		echo "--> Doesn't need to download."
+		return 0
+	} || {
+		echo -n "--> Downloading..."
 	}
 
 	local _WGET_TIMEOUT=5
 	local _WGET_TRIES=10
 	local _WGET_WAIT=2
 	local _result=0
-	local _filename=$(basename $4)
+	local _filename=
+	local _marker_name=
+	local _log_name=
 
-	[[ $3 == cvs || $3 == svn || $3 == hg || $3 == git ]] && {
-		local _lib_name=$1/$2
-	} || {
-		local _lib_name=$1/$2$3
-	}
-
-	[[ ! -f $6 ]] && {
-		[[ -f $1/$_filename ]] && {
-			echo -n "--> Delete corrupted download..."
-			rm -f $1/$_filename
-			echo " done"
-		}
-		echo -n "--> download..."
-		case $3 in
-			cvs)
-				local _prev_dir=$PWD
-				cd $1
-				[[ -n $7 ]] && {
-					cvs -z9 -d $4 co -D$7 $2 > $5 2>&1
-				} || {
-					cvs -z9 -d $4 co $2 > $5 2>&1
+	for it in ${_list[@]} ; do
+		_marker_name=$MARKERS_DIR/${it}-download.log
+		_log_name=$MARKERS_DIR/${it}-download.marker	
+		_filename=$(basename $it)
+		[[ ! -f $_marker_name ]] && {
+			[[ $4 == cvs || $4 == svn || $4 == hg || $4 == git ]] && {
+				local _lib_name=$1/$_filename
+				echo -n "--> download $_filename..."
+	
+				case $4 in
+					cvs)
+						local _prev_dir=$PWD
+						cd $1
+						[[ -n $5 ]] && {
+							cvs -z9 -d $it co -D$5 $_filename > $_log_name 2>&1
+						} || {
+							cvs -z9 -d $it co $_filename > $_log_name 2>&1
+						}
+						cd $_prev_dir
+						_result=$?
+					;;
+					svn)
+						[[ -n $5 ]] && {
+							svn co -r $5 $it $_lib_name > $_log_name 2>&1
+						} || {
+							svn co $it $_lib_name > $_log_name 2>&1
+						}
+						_result=$?
+					;;
+					hg)
+						hg clone $it $_lib_name > $_log_name 2>&1
+						_result=$?
+					;;
+					git)
+						[[ -n $5 ]] && {
+							git clone --branch $5 $it $_lib_name > $_log_name 2>&1
+						} || {
+							git clone $it $_lib_name > $_log_name 2>&1
+						}
+						_result=$?
+					;;
+				esac	
+			} || {
+				local _lib_name=$1/$_filename
+				[[ -f $1/$_filename ]] && {
+					echo -n "--> Delete corrupted download..."
+					rm -f $1/$_filename
+					echo " done"
 				}
-				cd $_prev_dir
-				_result=$?
-			;;
-			svn)
-				[[ -n $7 ]] && {
-					svn co -r $7 $4 $_lib_name > $5 2>&1
-				} || {
-					svn co $4 $_lib_name > $5 2>&1
-				}
-				_result=$?
-			;;
-			hg)
-				hg clone $4 $_lib_name > $5 2>&1
-				_result=$?
-			;;
-			git)
-				[[ -n $7 ]] && {
-					git clone --branch $7 $4 $_lib_name > $5 2>&1
-				} || {
-					git clone $4 $_lib_name > $5 2>&1
-				}
-				_result=$?
-			;;
-			*)
-				[[ ! -f $6 && -f $_lib_name ]] && rm -rf $_lib_name
+				echo -n "--> download $_filename..."
 				wget \
 					--tries=$_WGET_TRIES \
 					--timeout=$_WGET_TIMEOUT \
 					--wait=$_WGET_WAIT \
 					--no-check-certificate \
-					$4 -O $_lib_name > $5 2>&1
+					$it -O $_lib_name > $_log_name 2>&1
 				_result=$?
-			;;
-		esac
-
-		[[ $_result == 0 ]] && { echo " done"; touch $6; } || { echo " error!"; }
-	} || {
-		echo "---> downloaded"
-	}
+			}
+			[[ $_result == 0 ]] && {
+				echo " done"
+				touch $_marker_name
+			} || {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_marker_name &
+				die "Error $_result"
+			}
+		} || {
+			echo "---> $_filename downloaded"
+		}	
+	done
 	return $_result
 }
 
@@ -217,33 +248,54 @@ function func_download {
 # uncompress sources
 function func_uncompress {
 	# $1 - srcs root path
-	# $2 - name
-	# $3 - ext
-	# $4 - marker file name
-	# $5 - log file name
+	# $2 - list of archives
+
+	local -a _list=( "${!2}" )
+	[[ ${#_list[@]} == 0 ]] && {
+		echo "--> Unpack doesn't need."
+		return 0
+	} || {
+		echo -n "--> Unpack..."
+	}
 
 	local _result=0
 	local _unpack_cmd
+	local _marker_name=
+	local _log_name=
+	local _filename=
+	local _ext=
 
-	[[ $3 == .tar.gz || $3 == .tar.bz2 || $3 == .tar.lzma \
-	|| $3 == .tar.xz || $3 == .tar.7z || $3 == .7z ]] && {
-		[[ ! -f $4 ]] && {
-			echo -n "--> unpack..."
-			case $3 in
-				.tar.gz) _unpack_cmd="tar xvf $1/$2$3 -C $1 > $5 2>&1" ;;
-				.tar.bz2) _unpack_cmd="tar xvjf $1/$2$3 -C $1 > $5 2>&1" ;;
-				.tar.lzma|.tar.xz) _unpack_cmd="tar xvJf $1/$2$3 -C $1 > $5 2>&1" ;;
-				.tar.7z) echo "unimplemented. terminate."; exit 1 ;;
-				.7z) _unpack_cmd="7za x $1/$2$3 -o$1 > $5 2>&1" ;;
-				*) echo " error. bad archive type: $3"; return 1 ;;
-			esac
-			eval ${_unpack_cmd}
-			_result=$?
-			[[ $_result == 0 ]] && { echo " done"; touch $4; } || { echo " error!"; }
-		} || {
-			echo "---> unpacked"
+	for it in ${_list[@]} ; do
+		_marker_name=$MARKERS_DIR/${it}-unpack.log
+		_log_name=$MARKERS_DIR/${it}-unpack.marker
+		_filename=$(basename $it)
+		_ext=$(get_filename_extension $_filename)
+		[[ $_ext == .tar.gz || $_ext == .tar.bz2 || $_ext == .tar.lzma \
+		|| $_ext == .tar.xz || $_ext == .tar.7z || $_ext == .7z ]] && {
+			[[ ! -f $_marker_name ]] && {
+				echo -n "--> unpack $_filename..."
+				case $3 in
+					.tar.gz) _unpack_cmd="tar xvf $1/$_filename -C $1 > $_log_name 2>&1" ;;
+					.tar.bz2) _unpack_cmd="tar xvjf $1/$_filename -C $1 > $_log_name 2>&1" ;;
+					.tar.lzma|.tar.xz) _unpack_cmd="tar xvJf $1/$_filename -C $1 > $_log_name 2>&1" ;;
+					.tar.7z) die "unimplemented. terminate." ;;
+					.7z) _unpack_cmd="7za x $1/$_filename -o$1 > $_log_name 2>&1" ;;
+					*) die " error. bad archive type: $_ext" ;;
+				esac
+				eval ${_unpack_cmd}
+				_result=$?
+				[[ $_result == 0 ]] && {
+					echo " done"
+					touch $_marker_name
+				} || {
+					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_marker_name &
+					die "Error $_result"
+				}
+			} || {
+				echo "---> unpacked"
+			}
 		}
-	}
+	done
 	return $_result
 }
 
@@ -304,7 +356,7 @@ function func_apply_patches {
 	# $2 - src dir name
 	# $3 - logs dir
 	# $4 - patches dir
-	# $5 - list
+	# $5 - patches list
 	
 	local _result=0
 	_index=0
