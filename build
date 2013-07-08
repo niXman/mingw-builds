@@ -601,16 +601,9 @@ SUBTARGETS_PART2=(
 
 			mkdir -p $SRCS_DIR/$SRC_DIR_NAME
 
-			func_download \
-				$SRCS_DIR \
-				$SRC_DIR_NAME \
-				$TYPE \
-				URL[@] \
-				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
+			func_download URL[@]
 
-			func_uncompress \
-				$SRCS_DIR \
-				URL[@]
+			func_uncompress URL[@]
 		}
 	done
 }
@@ -797,16 +790,9 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$NAME
 		#[[ $NAME != $SRC_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$NAME
 
-		func_download \
-			$SRCS_DIR \
-			$SRC_DIR_NAME \
-			$TYPE \
-			URL[@] \
-			$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
+		func_download URL[@]
 
-		func_uncompress \
-			$SRCS_DIR \
-			URL[@]
+		func_uncompress URL[@]
 
 		[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
 			func_execute \
