@@ -605,27 +605,12 @@ SUBTARGETS_PART2=(
 				$SRCS_DIR \
 				$SRC_DIR_NAME \
 				$TYPE \
-				$URL \
-				$MARKERS_DIR/${SRC_DIR_NAME}_download.log \
-				$MARKERS_DIR/${SRC_DIR_NAME}_download.marker \
+				URL[@] \
 				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MARKERS_DIR/${SRC_DIR_NAME}_download.log &
-				die "Error $func_res"
-			}
 
 			func_uncompress \
 				$SRCS_DIR \
-				$SRC_DIR_NAME \
-				$TYPE \
-				$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.marker \
-				$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.log
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MARKERS_DIR/${SRC_DIR_NAME}_uncompress.log &
-				die "Error $func_res"
-			}
+				URL[@]
 		}
 	done
 }
@@ -804,10 +789,6 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			;;
 		esac
 		
-		DOWNLOAD_LOG=$MARKERS_DIR/${SRC_DIR_NAME}_download.log
-		DOWNLOAD_MARKER=$MARKERS_DIR/${SRC_DIR_NAME}_download.marker
-		UNCOMPRESS_LOG=$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.log
-		UNCOMPRESS_MARKER=$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.marker
 		CONFIGURE_LOG=$CURR_LOGS_DIR/$NAME/configure.log
 		MAKE_LOG=$CURR_LOGS_DIR/$NAME/make.log
 		INSTALL_LOG=$CURR_LOGS_DIR/$NAME/install.log
@@ -820,27 +801,12 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 			$SRCS_DIR \
 			$SRC_DIR_NAME \
 			$TYPE \
-			$URL \
-			$DOWNLOAD_LOG \
-			$DOWNLOAD_MARKER \
+			URL[@] \
 			$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG &
-			exit $func_res
-		}
 
 		func_uncompress \
 			$SRCS_DIR \
-			$SRC_DIR_NAME \
-			$TYPE \
-			$UNCOMPRESS_MARKER \
-			$UNCOMPRESS_LOG
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $UNCOMPRESS_LOG &
-			exit $func_res
-		}
+			URL[@]
 
 		[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
 			func_execute \
