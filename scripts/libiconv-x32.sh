@@ -38,8 +38,11 @@
 VERSION=1.14
 NAME=libiconv-x32-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=libiconv-${VERSION}
-URL=http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${VERSION}.tar.gz
 TYPE=.tar.gz
+URL=(
+	"http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${VERSION}.tar.gz"
+)
+
 PRIORITY=prereq
 
 #

@@ -37,9 +37,12 @@
 
 NAME=make
 SRC_DIR_NAME=make
-URL=":pserver:anonymous:@cvs.sv.gnu.org:/sources/make"
 TYPE=cvs
 REV=09/21/2012
+URL=(
+	":pserver:anonymous:@cvs.sv.gnu.org:/sources/make|repo:$TYPE|rev:$REV|module:$NAME"
+)
+
 PRIORITY=extra
 
 #

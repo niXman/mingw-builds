@@ -37,9 +37,11 @@
 
 NAME=genpeimg
 SRC_DIR_NAME=genpeimg
-URL=svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-tools/genpeimg
 TYPE=svn
-REV=
+URL=(
+	"svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-tools/genpeimg|repo:$TYPE"
+)
+
 PRIORITY=extra
 
 #

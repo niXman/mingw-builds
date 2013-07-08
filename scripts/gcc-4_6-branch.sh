@@ -37,8 +37,11 @@
 
 NAME=gcc-4_6-branch
 SRC_DIR_NAME=gcc-4_6-branch
-URL=svn://gcc.gnu.org/svn/gcc/branches/gcc-4_6-branch
 TYPE=svn
+URL=(
+	"svn://gcc.gnu.org/svn/gcc/branches/gcc-4_6-branch|repo:$TYPE"
+)
+
 PRIORITY=main
 
 #

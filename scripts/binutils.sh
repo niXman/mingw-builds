@@ -43,8 +43,11 @@ NAME=binutils-${VERSION}
 	NAME=$ARCHITECTURE-$NAME-nomulti
 }
 SRC_DIR_NAME=binutils-${VERSION}
-URL=ftp://mirrors.kernel.org/sources.redhat.com/binutils/releases/binutils-${VERSION}.tar.bz2
 TYPE=.tar.bz2
+URL=(
+	"ftp://mirrors.kernel.org/sources.redhat.com/binutils/releases/binutils-${VERSION}.tar.bz2"
+)
+
 PRIORITY=prereq
 
 #

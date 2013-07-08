@@ -37,9 +37,11 @@
 
 NAME=make_git
 SRC_DIR_NAME=make_git
-URL="http://git.savannah.gnu.org/cgit/make.git"
 TYPE=git
-REV=
+URL=(
+	"http://git.savannah.gnu.org/cgit/make.git|repo:$TYPE|module:$NAME"
+)
+
 PRIORITY=extra
 
 #

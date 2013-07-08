@@ -37,9 +37,11 @@
 
 NAME=winpthreads-x64
 SRC_DIR_NAME=winpthreads
-URL=svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-libraries/winpthreads
 TYPE=svn
-REV=
+URL=(
+	"svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-libraries/winpthreads|repo:$TYPE"
+)
+
 PRIORITY=runtime
 
 #

@@ -42,8 +42,11 @@ NAME=mingw-w64-crt
 	NAME=$ARCHITECTURE-$NAME-nomulti
 }
 SRC_DIR_NAME=mingw-w64-crt
-URL=svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-crt
 TYPE=svn
+URL=(
+	"svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-crt|repo:$TYPE"
+)
+
 REV=
 PRIORITY=runtime
 
