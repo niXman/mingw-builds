@@ -149,13 +149,9 @@ function func_absolute_to_relative {
 
 # download the sources
 function func_download {
-	# $1 - srcs root path
-	# $2 - src dir name
-	# $3 - list of URLs	
-	# $4 - if sources get from a repository, choose it's type: cvs, svn, hg, git
-	# $5 - revision (or branch for git)
+	# $1 - list of URLs	
 
-	local -a _list=( "${!3}" )
+	local -a _list=( "${!1}" )
 	[[ ${#_list[@]} == 0 ]] && {
 		echo "--> Doesn't need to download."
 		return 0
@@ -167,57 +163,89 @@ function func_download {
 	local _WGET_TRIES=10
 	local _WGET_WAIT=2
 	local _result=0
-	local _filename=
-	local _marker_name=
-	local _log_name=
 
 	for it in ${_list[@]} ; do
-		_marker_name=$MARKERS_DIR/${it}-download.log
-		_log_name=$MARKERS_DIR/${it}-download.marker	
-		_filename=$(basename $it)
+		OLD_IFS=$IFS                 
+		IFS="|"                           
+		local _params=( $it )
+		IFS=$OLD_IFS
+
+		local _filename=
+		local _marker_name=
+		local _log_name=
+		local _url=${_params[0]}
+		local _repo=
+		local _branch=
+		local _rev=
+		local _dir=
+		local _module=
+		
+		local _index=1
+		while [ "$_index" -lt "${#_params[@]}" ]
+		do
+			OLD_IFS=$IFS                 
+			IFS=":"                           
+			local _params2=( ${_params[$_index]} )
+			IFS=$OLD_IFS
+			case ${_params2[0]} in
+				branch) _branch=${_params2[1]} ;;
+				dir)    _dir=${_params2[1]} ;;
+				module) _module=${_params2[1]} ;;
+				repo)   _repo=${_params2[1]} ;;
+				rev)    _rev=${_params2[1]} ;;	
+			esac
+			_index=$(($_index+1))
+		done
+
+		_filename=$(basename $_url)
+		_marker_name=$MARKERS_DIR/${_filename}-download.log
+		_log_name=$MARKERS_DIR/${_filename}-download.marker
+		[[ -n $_dir ]] && {
+			local _lib_name=$SRCS_DIR/$_filename
+		} || {
+			local _lib_name=$SRCS_DIR/$_dir/$_filename
+		}	
 		[[ ! -f $_marker_name ]] && {
-			[[ $4 == cvs || $4 == svn || $4 == hg || $4 == git ]] && {
-				local _lib_name=$1/$_filename
+			[[ $_repo == cvs || $_repo == svn || $_repo == hg || $_repo == git ]] && {
 				echo -n "--> download $_filename..."
 	
-				case $4 in
+				case $_repo in
 					cvs)
 						local _prev_dir=$PWD
-						cd $1
-						[[ -n $5 ]] && {
-							cvs -z9 -d $it co -D$5 $_filename > $_log_name 2>&1
+						cd $SRCS_DIR
+						[[ -n $_rev ]] && {
+							cvs -z9 -d $_url co -D$_rev $_module > $_log_name 2>&1
 						} || {
-							cvs -z9 -d $it co $_filename > $_log_name 2>&1
+							cvs -z9 -d $_url co $_module > $_log_name 2>&1
 						}
 						cd $_prev_dir
 						_result=$?
 					;;
 					svn)
-						[[ -n $5 ]] && {
-							svn co -r $5 $it $_lib_name > $_log_name 2>&1
+						[[ -n $_rev ]] && {
+							svn co -r $_rev $_url $_lib_name > $_log_name 2>&1
 						} || {
-							svn co $it $_lib_name > $_log_name 2>&1
+							svn co $_url $_lib_name > $_log_name 2>&1
 						}
 						_result=$?
 					;;
 					hg)
-						hg clone $it $_lib_name > $_log_name 2>&1
+						hg clone $_url $_lib_name > $_log_name 2>&1
 						_result=$?
 					;;
 					git)
-						[[ -n $5 ]] && {
-							git clone --branch $5 $it $_lib_name > $_log_name 2>&1
+						[[ -n $_branch ]] && {
+							git clone --branch $_branch $_url $_lib_name > $_log_name 2>&1
 						} || {
-							git clone $it $_lib_name > $_log_name 2>&1
+							git clone $_url $_lib_name > $_log_name 2>&1
 						}
 						_result=$?
 					;;
 				esac	
 			} || {
-				local _lib_name=$1/$_filename
-				[[ -f $1/$_filename ]] && {
+				[[ -f $_lib_name ]] && {
 					echo -n "--> Delete corrupted download..."
-					rm -f $1/$_filename
+					rm -f $_filename
 					echo " done"
 				}
 				echo -n "--> download $_filename..."
@@ -226,7 +254,7 @@ function func_download {
 					--timeout=$_WGET_TIMEOUT \
 					--wait=$_WGET_WAIT \
 					--no-check-certificate \
-					$it -O $_lib_name > $_log_name 2>&1
+					$_url -O $_lib_name > $_log_name 2>&1
 				_result=$?
 			}
 			[[ $_result == 0 ]] && {
@@ -247,10 +275,9 @@ function func_download {
 
 # uncompress sources
 function func_uncompress {
-	# $1 - srcs root path
-	# $2 - list of archives
+	# $1 - list of archives
 
-	local -a _list=( "${!2}" )
+	local -a _list=( "${!1}" )
 	[[ ${#_list[@]} == 0 ]] && {
 		echo "--> Unpack doesn't need."
 		return 0
