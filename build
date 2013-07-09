@@ -108,6 +108,8 @@ RUN_ARGS="$@"
 	echo "                                 available: win32, posix"
 	echo "    --python-only=<version>    - only Python building mode"
 	echo "                                 available versions: 2.7.3, 2.7.4, 2.7.5, 3.3.0"
+	echo "    --llvm=<version>           - building LLVM compiler only mode"
+	echo "                                 available versions: 3.3, git"
 	echo "    --version                  - print the version of the MinGW-builds scripts"
 	echo "    --mingw-compress           - compressing MinGW"
 	echo "    --srcs-compress            - compressing sources"
@@ -182,6 +184,8 @@ SF_USER=""
 DEBUG_UPLOAD=no
 PYTHON_ONLY_MODE=no
 PYTHON_VERSION="2.7.5"
+LLVM_MODE=no
+LLVM_VERSION=3.3
 
 PROCESSOR_OPTIMIZATION_TUNE_32='generic'
 PROCESSOR_OPTIMIZATION_ARCH_32='i686'
@@ -267,6 +271,13 @@ while [[ $# > 0 ]]; do
 			PYTHON_VERSION=${1/--python-only=/}
 			[[ ! -f scripts/python-$PYTHON_VERSION.sh ]] && {
 				die "bad python version. terminate."
+			}
+		;;
+		--llvm=*)
+			LLVM_MODE=yes
+			LLVM_VERSION=${1/--llvm=/}
+			[[ ! -f scripts/llvm-$LLVM_VERSION.sh ]] && {
+				die "bad LLVM version. terminate."
 			}
 		;;
 		--rev=*)
@@ -488,6 +499,10 @@ PYTHON_SUBTARGETS=(
 	ncurses
 	readline
 	python-$PYTHON_VERSION
+)
+
+LLVM_SUBTARGETS=(
+	llvm-$LLVM_VERSION
 )
 
 SUBTARGETS_PART2=(
