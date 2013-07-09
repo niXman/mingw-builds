@@ -155,8 +155,6 @@ function func_download {
 	[[ ${#_list[@]} == 0 ]] && {
 		echo "--> Doesn't need to download."
 		return 0
-	} || {
-		echo -n "--> Downloading..."
 	}
 
 	local _WGET_TIMEOUT=5
@@ -209,8 +207,8 @@ function func_download {
 			_lib_name=$SRCS_DIR/$_dir/$_filename
 		}
 
-		_marker_name=$MARKERS_DIR/${_filename}-download.log
-		_log_name=$MARKERS_DIR/${_filename}-download.marker	
+		_log_name=$MARKERS_DIR/${_filename}-download.log
+		_marker_name=$MARKERS_DIR/${_filename}-download.marker	
 		[[ ! -f $_marker_name ]] && {
 			[[ $_repo == cvs || $_repo == svn || $_repo == hg || $_repo == git ]] && {
 				echo -n "--> download $_filename..."
@@ -267,7 +265,7 @@ function func_download {
 				echo " done"
 				touch $_marker_name
 			} || {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_marker_name &
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_log_name &
 				die "Error $_result"
 			}
 		} || {
@@ -287,8 +285,6 @@ function func_uncompress {
 	[[ ${#_list[@]} == 0 ]] && {
 		echo "--> Unpack doesn't need."
 		return 0
-	} || {
-		echo -n "--> Unpack..."
 	}
 
 	for it in ${_list[@]} ; do
@@ -322,8 +318,8 @@ function func_uncompress {
 		done
 
 		_filename=$(basename ${_params[0]})
-		_marker_name=$MARKERS_DIR/${_filename}-unpack.log
-		_log_name=$MARKERS_DIR/${_filename}-unpack.marker
+		_log_name=$MARKERS_DIR/${_filename}-unpack.log
+		_marker_name=$MARKERS_DIR/${_filename}-unpack.marker
 		_ext=$(get_filename_extension $_filename)
 		[[ $_ext == .tar.gz || $_ext == .tar.bz2 || $_ext == .tar.lzma \
 		|| $_ext == .tar.xz || $_ext == .tar.7z || $_ext == .7z || $_ext == .tgz ]] && {
@@ -343,7 +339,7 @@ function func_uncompress {
 					echo " done"
 					touch $_marker_name
 				} || {
-					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_marker_name &
+					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_log_name &
 					die "Error $_result"
 				}
 			} || {
