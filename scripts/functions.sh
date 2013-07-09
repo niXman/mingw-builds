@@ -218,9 +218,9 @@ function func_download {
 						local _prev_dir=$PWD
 						cd $SRCS_DIR
 						[[ -n $_rev ]] && {
-							cvs -z9 -d $_url co -D$_rev $_filename > $_log_name 2>&1
+							cvs -z9 -d $_url co -D$_rev $_module > $_log_name 2>&1
 						} || {
-							cvs -z9 -d $_url co $_filename > $_log_name 2>&1
+							cvs -z9 -d $_url co $_module > $_log_name 2>&1
 						}
 						cd $_prev_dir
 						_result=$?
