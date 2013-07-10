@@ -37,7 +37,7 @@
 
 VERSION=3.3
 NAME=llvm-${VERSION}.src
-SRC_DIR_NAME=llvm-${VERSION}
+SRC_DIR_NAME=llvm-${VERSION}.src
 TYPE=.tar.gz
 URL=(
 	"http://llvm.org/releases/${VERSION}/llvm-3.3.src.tar.gz"
@@ -51,6 +51,14 @@ PRIORITY=main
 #
 
 PATCHES=()
+
+#
+
+EXECUTE_AFTER_PATCH=(
+	"mv $SRCS_DIR/$NAME/tools/cfe-${VERSION}.src $SRCS_DIR/$NAME/tools/clang"
+	"mv $SRCS_DIR/$NAME/projects/compiler-rt-${VERSION}.src $SRCS_DIR/$NAME/projects/compiler-rt"
+	"mv $SRCS_DIR/$NAME/projects/test-suite-${VERSION}.src $SRCS_DIR/$NAME/projects/test-suite"
+)
 
 #
 
