@@ -130,7 +130,7 @@ CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	#
-	--prefix=$([[ $PYTHON_ONLY_MODE == no ]] && echo $PREFIX/opt || echo $PREFIX)
+	--prefix=$([[ $BUILD_MODE == gcc ]] && echo $PREFIX/opt || echo $PREFIX)
 	#
 	--enable-shared
 	--disable-ipv6
