@@ -37,7 +37,7 @@
 
 VERSION=3.3
 NAME=llvm-${VERSION}.src
-SRC_DIR_NAME=llvm-${VERSION}
+SRC_DIR_NAME=llvm-${VERSION}.src
 TYPE=.tar.gz
 URL=(
 	"http://llvm.org/releases/${VERSION}/llvm-3.3.src.tar.gz"
