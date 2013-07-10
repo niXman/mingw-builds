@@ -54,6 +54,14 @@ PATCHES=()
 
 #
 
+EXECUTE_AFTER_PATCH=(
+	"mv $SRCS_DIR/$NAME/tools/cfe-${VERSION}.src $SRCS_DIR/$NAME/tools/clang"
+	"mv $SRCS_DIR/$NAME/projects/compiler-rt-${VERSION}.src $SRCS_DIR/$NAME/projects/compiler-rt"
+	"mv $SRCS_DIR/$NAME/projects/test-suite-${VERSION}.src $SRCS_DIR/$NAME/projects/test-suite"
+)
+
+#
+
 CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
