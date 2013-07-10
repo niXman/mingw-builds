@@ -361,7 +361,7 @@ function func_uncompress {
 					die "Error $_result"
 				}
 			} || {
-				echo "---> unpacked"
+				echo "---> $_filename unpacked"
 			}
 		}
 	done
