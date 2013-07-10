@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-NAME=winpthreads-x64
+NAME=x64-winpthreads
 SRC_DIR_NAME=winpthreads
 TYPE=svn
 URL=(
@@ -55,7 +55,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$RUNTIME_DIR/winpthreads-x64
+	--prefix=$RUNTIME_DIR/x64-winpthreads
 	#
 	$LINK_TYPE_BOTH
 	#
