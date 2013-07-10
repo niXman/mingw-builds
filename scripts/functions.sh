@@ -50,8 +50,8 @@ function check_program {
 
 function get_reverse_triplet {
 	case ${1%%-*} in
-		i686) echo "x86_64-${1#*-}"
-		amd64|x86_64) echo "i686-${1#*-}"
+		i686) echo "x86_64-${1#*-}" ;;
+		amd64|x86_64) echo "i686-${1#*-}" ;;
 	esac
 }
 
@@ -59,8 +59,8 @@ function get_reverse_triplet {
 
 function get_reverse_arch {
 	case $1 in
-		x32) echo "x64"
-		x64) echo "x32"
+		x32) echo "x64" ;;
+		x64) echo "x32" ;;
 	esac
 }
 
