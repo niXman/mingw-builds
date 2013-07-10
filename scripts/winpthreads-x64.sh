@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-NAME=winpthreads-x64
+NAME=x64-winpthreads
 SRC_DIR_NAME=winpthreads
 TYPE=svn
 URL=(

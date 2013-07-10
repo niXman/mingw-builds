@@ -36,7 +36,7 @@
 # **************************************************************************
 
 VERSION=1.14
-NAME=libiconv-x64-$LINK_TYPE_SUFFIX
+NAME=x64-libiconv-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=libiconv-${VERSION}
 TYPE=.tar.gz
 URL=(
@@ -56,7 +56,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREREQ_DIR/libiconv-x64-$LINK_TYPE_SUFFIX
+	--prefix=$PREREQ_DIR/$NAME
 	#
 	$GCC_DEPS_LINK_TYPE
 	#
