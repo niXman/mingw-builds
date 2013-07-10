@@ -43,6 +43,11 @@
 		BUILD=$OLD_BUILD
 		TARGET=$OLD_TARGET
 	}
+
+	unset BEFORE_WINPTHREADS32_PRE_PATH
+	unset OLD_HOST
+	unset OLD_BUILD
+	unset OLD_TARGET
 }
 
 # **************************************************************************

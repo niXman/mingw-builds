@@ -48,7 +48,25 @@ function check_program {
 
 # **************************************************************************
 
-get_filename_extension () {
+function get_reverse_triplet {
+	case ${1%%-*} in
+		i686) echo "x86_64-${1#*-}" ;;
+		amd64|x86_64) echo "i686-${1#*-}" ;;
+	esac
+}
+
+# **************************************************************************
+
+function get_reverse_arch {
+	case $1 in
+		x32) echo "x64" ;;
+		x64) echo "x32" ;;
+	esac
+}
+
+# **************************************************************************
+
+function get_filename_extension {
 	local _filename=$1
 	local _ext=
 	local _finish=0

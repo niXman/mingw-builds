@@ -35,20 +35,26 @@
 
 # **************************************************************************
 
-[[ $PYTHON_ONLY_MODE == no ]] && {
-	ARCHIVE_NAME=$( \
-		func_create_mingw_archive_name \
-			$ARCHIVES_DIR \
-			$SRCS_DIR \
-			$GCC_NAME \
-			$ARCHITECTURE \
-			$EXCEPTIONS_MODEL \
-			$THREADS_MODEL \
-			$REV_NUM \
-	)
-} || {
-	ARCHIVE_NAME=$ARCHIVES_DIR/python-$PYTHON_VERSION-$ARCHITECTURE.7z
-}
+case $BUILD_MODE in
+	clang)
+		ARCHIVE_NAME=$ARCHIVES_DIR/clang-$CLANG_VERSION-$ARCHITECTURE.7z
+	;;
+	gcc)
+		ARCHIVE_NAME=$( \
+			func_create_mingw_archive_name \
+				$ARCHIVES_DIR \
+				$SRCS_DIR \
+				$GCC_NAME \
+				$ARCHITECTURE \
+				$EXCEPTIONS_MODEL \
+				$THREADS_MODEL \
+				$REV_NUM \
+		)
+	;;
+	python)
+		ARCHIVE_NAME=$ARCHIVES_DIR/python-$PYTHON_VERSION-$ARCHITECTURE.7z
+	;;
+esac
 
 [[ ! -f $ARCHIVE_NAME ]] && {
 	echo "-> compressing $PREFIX"
