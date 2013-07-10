@@ -668,9 +668,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		TARGET=i686-w64-mingw32
 		
 		[[ $USE_MULTILIB == yes ]] && {
-			TVIN_HOST=x86_64-w64-mingw32
-			TVIN_BUILD=x86_64-w64-mingw32
-			TVIN_TARGET=x86_64-w64-mingw32
+			REVERSE_HOST=x86_64-w64-mingw32
+			REVERSE_BUILD=x86_64-w64-mingw32
+			REVERSE_TARGET=x86_64-w64-mingw32
+			REVERSE_ARCHITECTURE=x64
 		}
 		
 		[[ $USE_MULTILIB == yes ]] && {
@@ -688,9 +689,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		TARGET=x86_64-w64-mingw32
 		
 		[[ $USE_MULTILIB == yes ]] && {
-			TVIN_HOST=i686-w64-mingw32
-			TVIN_BUILD=i686-w64-mingw32
-			TVIN_TARGET=i686-w64-mingw32
+			REVERSE_HOST=i686-w64-mingw32
+			REVERSE_BUILD=i686-w64-mingw32
+			REVERSE_TARGET=i686-w64-mingw32
+			REVERSE_ARCHITECTURE=x32
 		}
 		
 		[[ $USE_MULTILIB == yes ]] && {

@@ -196,23 +196,22 @@ function func_download {
 			_index=$(($_index+1))
 		done
 
-		[[ -n $_module ]] && {
+		[[ -n $_module && -n $_repo ]] && {
 			_filename=$_module
 		} || {
 			_filename=$(basename $_url)
 		}
-		[[ -n $_dir ]] && {
-			_lib_name=$SRCS_DIR/$_filename
-		} || {
-			_lib_name=$SRCS_DIR/$_dir/$_filename
-		}
-
 		_log_name=$MARKERS_DIR/${_filename}-download.log
 		_marker_name=$MARKERS_DIR/${_filename}-download.marker	
 		[[ ! -f $_marker_name ]] && {
 			[[ $_repo == cvs || $_repo == svn || $_repo == hg || $_repo == git ]] && {
 				echo -n "--> download $_filename..."
-	
+				
+				[[ -n $_dir ]] && {
+					_lib_name=$SRCS_DIR/$_filename
+				} || {
+					_lib_name=$SRCS_DIR/$_dir/$_filename
+				}
 				case $_repo in
 					cvs)
 						local _prev_dir=$PWD
@@ -247,6 +246,7 @@ function func_download {
 					;;
 				esac	
 			} || {
+				_lib_name=$SRCS_DIR/$_filename
 				[[ -f $_lib_name ]] && {
 					echo -n "--> Delete corrupted download..."
 					rm -f $_filename
