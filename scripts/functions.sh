@@ -193,6 +193,7 @@ function func_download {
 		local _branch=
 		local _rev=
 		local _dir=
+		local _root=$SRCS_DIR
 		local _module=
 		local _lib_name=
 		
@@ -208,7 +209,8 @@ function func_download {
 				dir)    _dir=${_params2[1]} ;;
 				module) _module=${_params2[1]} ;;
 				repo)   _repo=${_params2[1]} ;;
-				rev)    _rev=${_params2[1]} ;;	
+				rev)    _rev=${_params2[1]} ;;
+				root)   _root=${_params2[1]} ;;
 			esac
 			_index=$(($_index+1))
 		done
@@ -218,16 +220,17 @@ function func_download {
 		} || {
 			_filename=$(basename $_url)
 		}
+
 		_log_name=$MARKERS_DIR/${_filename}-download.log
 		_marker_name=$MARKERS_DIR/${_filename}-download.marker	
 		[[ ! -f $_marker_name ]] && {
 			[[ $_repo == cvs || $_repo == svn || $_repo == hg || $_repo == git ]] && {
 				echo -n "--> download $_filename..."
-				
+
 				[[ -n $_dir ]] && {
-					_lib_name=$SRCS_DIR/$_filename
+					_lib_name=$_root/$_filename
 				} || {
-					_lib_name=$SRCS_DIR/$_dir/$_filename
+					_lib_name=$_root/$_dir/$_filename
 				}
 				case $_repo in
 					cvs)
@@ -318,7 +321,9 @@ function func_uncompress {
 		local _ext=
 		local _url=${_params[0]}
 		local _module=
-		local _lib_name=$SRCS_DIR
+		local _dir=
+		local _root=$SRCS_DIR
+		local _lib_name=
 		
 		local _index=1
 		while [ "$_index" -lt "${#_params[@]}" ]
@@ -328,13 +333,15 @@ function func_uncompress {
 			local _params2=( ${_params[$_index]} )
 			IFS=$OLD_IFS
 			case ${_params2[0]} in
-				dir)    _lib_name=$_lib_name/${_params2[1]} ;;
+				dir)    _dir=${_params2[1]} ;;
+				root)   _root=${_params2[1]} ;;
 				module) _module=${_params2[1]} ;;
 			esac
 			_index=$(($_index+1))
 		done
 
-		_filename=$(basename ${_params[0]})
+		_lib_name=${_root}/${_dir}
+		_filename=$(basename ${_params[0]})	
 		_log_name=$MARKERS_DIR/${_filename}-unpack.log
 		_marker_name=$MARKERS_DIR/${_filename}-unpack.marker
 		_ext=$(get_filename_extension $_filename)
@@ -614,128 +621,22 @@ function func_install_toolchain {
 	# $4 - i686-mingw URL
 	# $5 - x86_64-mingw URL
 
-	function download_mingw_x32 {
-		# $1 - toolchains path
-		# $2 - i686-mingw URL
-
-		func_download \
-			$1 \
-			$(basename $2 .7z) \
-			.7z \
-			$2 \
-			$1/mingw-x32-download.log \
-			$1/mingw-x32-download.marker \
-			""
-		return $?
-	}
-
-	function download_mingw_x64 {
-		# $1 - toolchains path
-		# $2 - x86_64-mingw URL
-
-		func_download \
-			$1 \
-			$(basename $2 .7z) \
-			.7z \
-			$2 \
-			$1/mingw-x64-download.log \
-			$1/mingw-x64-download.marker \
-			""
-		return $?
-	}
-
-	function uncompress_mingw_x32 {
-		# $1 - toolchains path
-		# $2 - i686-mingw archive filename
-
-		func_uncompress \
-			$1 \
-			$(basename $2 .7z) \
-			.7z \
-			$1/mingw-x32-uncompress.marker \
-			$1/mingw-x32-uncompress.log
-		return $?
-	}
-	function uncompress_mingw_x64 {
-		# $1 - toolchains path
-		# $2 - x86_64-mingw archive filename
-
-		func_uncompress \
-			$1 \
-			$(basename $2 .7z) \
-			.7z \
-			$1/mingw-x64-uncompress.marker \
-			$1/mingw-x64-uncompress.log
-		return $?
-	}
-
 	[[ ! -d $2 || ! $2/bin/gcc.exe ]] && {
 		# x32 download
 		echo -e "-> \E[32;40mx32 toolchain\E[37;40m"
-		download_mingw_x32 \
-			$1 \
-			$4
-		local _result=$?
-		[[ $_result != 0 ]] && {
-			echo "download error. terminate."
-			return $_result
-		}
+		local -a _url32=( "$4|root:$1" )
+		func_download _url32[@]
+		func_uncompress _url32[@]
 
-		# x32 uncompress
-		uncompress_mingw_x32 \
-			$1 \
-			$4
-		local _result=$?
-		[[ $_result != 0 ]] && {
-			echo "uncompress error. terminate."
-			return $_result
-		}
-
-		#move_mingw \
-		#	$1 \
-		#	$2 \
-		#	$1/mingw-x32-move.marker
-		#local _result=$?
-		#[[ $_result != 0 ]] && {
-		#	echo "move error. terminate."
-		#	return $_result
-		#}
 	}
 
 	[[ $EXCEPTIONS_MODEL == seh || $EXCEPTIONS_MODEL == sjlj ]] && {
 		[[ ! -d $3 || ! $3/bin/gcc.exe ]] && {
 			# x64 download
 			echo -e "-> \E[32;40mx64 toolchain\E[37;40m"
-			download_mingw_x64 \
-				$1 \
-				$5
-			local _result=$?
-			[[ $_result != 0 ]] && {
-				echo "download error. terminate."
-				return $_result
-			}
-
-			# x64 uncompress
-			uncompress_mingw_x64 \
-				$1 \
-				$5
-			local _result=$?
-			[[ $_result != 0 ]] && {
-				echo "uncompress error. terminate."
-				return $_result
-			}
-
-			#move_mingw \
-			#	$1 \
-			#	$3 \
-			#	$1/mingw-x64-move.marker
-			#local _result=$?
-			#[[ $_result != 0 ]] && {
-			#	echo "move error. terminate."
-			#	return $_result
-			#}
-
-			return 0
+			local -a _url64=( "$5|root:$1" )
+			func_download _url64[@]
+			func_uncompress _url64[@]
 		}
 	}
 
