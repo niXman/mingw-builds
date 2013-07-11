@@ -666,10 +666,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	}
 
 	[[ $USE_MULTILIB == yes ]] && {
-		ENABLE_TARGETS=${TARGET},${REVERSE_TARGET}
 		REVERSE_HOST=$(get_reverse_triplet $HOST)
 		REVERSE_BUILD=$(get_reverse_triplet $BUILD)
 		REVERSE_TARGET=$(get_reverse_triplet $TARGET)
+		ENABLE_TARGETS=${TARGET},${REVERSE_TARGET}
 		REVERSE_ARCHITECTURE=$(get_reverse_arch $ARCHITECTURE)
 	} || {
 		ENABLE_TARGETS=$TARGET
