@@ -122,7 +122,6 @@ function has_lang {
 		return "0"
 	} || {
 		for sub in ${langs[@]}; do
-			echo "SUB Is: $sub"
 			[[ "$sub" == "$1" ]] && {
 				return "1"
 			}
