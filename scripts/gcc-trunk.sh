@@ -39,7 +39,7 @@ NAME=gcc-trunk
 SRC_DIR_NAME=gcc-trunk
 TYPE=svn
 URL=(
-	"svn://gcc.gnu.org/svn/gcc/trunk|repo:$TYPE"
+	"svn://gcc.gnu.org/svn/gcc/trunk|repo:$TYPE|module:$NAME"
 )
 
 PRIORITY=main
