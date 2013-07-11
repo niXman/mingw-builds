@@ -58,7 +58,8 @@
 	}
 
 	# builded architecture dlls
-	DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/${REVERSE_ARCHITECTURE/x/} \
+	DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 \
+			-o -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 \
 			-o -path $BUILDS_DIR/$GCC_NAME/gcc/ada \
 			-o -path $BUILDS_DIR/$GCC_NAME/$TARGET/libada/adainclude \) -prune -o -type f -name *.dll) )
 	cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
