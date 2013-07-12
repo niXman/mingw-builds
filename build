@@ -375,8 +375,8 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 	}
 }
 
-[[ $[ $COMPRESSING_MINGW == yes || $COMPRESSING_SRCS == yes ] == 1 && ! -f /bin/7za.exe ]] && {
-	die "7za.exe is not found in your /bin directory. terminate."
+[[ $[ $COMPRESSING_MINGW == yes || $COMPRESSING_SRCS == yes ] == 1 && ! -f /bin/7za ]] && {
+	die "7za is not found in your /bin directory. terminate."
 }
 
 [[ $PYTHON_ONLY_MODE == yes && $COMPRESSING_SRCS == yes ]] && {
