@@ -910,7 +910,7 @@ done
 
 # ***************************************************************************
 
-func_download_repository_file "$HOME/repository.txt"
+# func_download_repository_file "$HOME/repository.txt"
 
 [[ $UPLOAD_BIN_TO_SF == yes ]] && {
 	cd $TOP_DIR; . ./scripts/upload.sh
