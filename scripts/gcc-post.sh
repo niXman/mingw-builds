@@ -44,7 +44,7 @@
 	cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ \
 		|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib"
 
-	has_lang objc
+	func_has_lang objc
 	is_objc=$?
 	[[ $is_objc == 1 ]] && {
 		# libobjc

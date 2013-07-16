@@ -215,7 +215,7 @@ while [[ $# > 0 ]]; do
 		--preload) PRELOAD_MODE=yes ;;
 		--download) DOWNLOAD_MODE=yes ;;
 		--enable-languages=*)
-			check_languages "${1/--enable-languages=/}"
+			func_check_languages "${1/--enable-languages=/}"
 			ENABLE_LANGUAGES=${1/--enable-languages=/}
 		;;
 		--exceptions=*)
@@ -387,7 +387,7 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 }
 
 [[ $[ $COMPRESSING_MINGW == yes || $COMPRESSING_SRCS == yes ] == 1 ]] && {
-	check_program "7za"
+	func_check_program "7za"
 }
 
 [[ $BUILD_MODE != gcc && $COMPRESSING_SRCS == yes ]] && {
@@ -666,11 +666,11 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 	}
 
 	[[ $USE_MULTILIB == yes ]] && {
-		REVERSE_HOST=$(get_reverse_triplet $HOST)
-		REVERSE_BUILD=$(get_reverse_triplet $BUILD)
-		REVERSE_TARGET=$(get_reverse_triplet $TARGET)
+		REVERSE_HOST=$(func_get_reverse_triplet $HOST)
+		REVERSE_BUILD=$(func_get_reverse_triplet $BUILD)
+		REVERSE_TARGET=$(func_get_reverse_triplet $TARGET)
 		ENABLE_TARGETS=${TARGET},${REVERSE_TARGET}
-		REVERSE_ARCHITECTURE=$(get_reverse_arch $ARCHITECTURE)
+		REVERSE_ARCHITECTURE=$(func_get_reverse_arch $ARCHITECTURE)
 	} || {
 		ENABLE_TARGETS=$TARGET
 	}

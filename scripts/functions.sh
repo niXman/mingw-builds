@@ -42,13 +42,13 @@ function die {
 
 # **************************************************************************
 
-function check_program {
+function func_check_program {
 	command -v "$@" > /dev/null 2>&1 || { die "Command $@ not found. Terminate."; }
 }
 
 # **************************************************************************
 
-function get_reverse_triplet {
+function func_get_reverse_triplet {
 	case ${1%%-*} in
 		i686) echo "x86_64-${1#*-}" ;;
 		amd64|x86_64) echo "i686-${1#*-}" ;;
@@ -57,7 +57,7 @@ function get_reverse_triplet {
 
 # **************************************************************************
 
-function get_reverse_arch {
+function func_get_reverse_arch {
 	case $1 in
 		x32) echo "x64" ;;
 		x64) echo "x32" ;;
@@ -66,7 +66,7 @@ function get_reverse_arch {
 
 # **************************************************************************
 
-function get_filename_extension {
+function func_get_filename_extension {
 	local _filename=$1
 	local _ext=
 	local _finish=0
@@ -74,7 +74,7 @@ function get_filename_extension {
 		bz2|gz|lzma|xz) 
 			_ext=$_ext'.'${_filename##*.}
 			_filename=${_filename%$_ext}
-			local _sub_ext=$(get_filename_extension $_filename)
+			local _sub_ext=$(func_get_filename_extension $_filename)
 			[[ "$_sub_ext" == ".tar" ]] && _ext=$_sub_ext$_ext
 		;;
 		*)
@@ -86,7 +86,7 @@ function get_filename_extension {
 
 # **************************************************************************
 
-function check_languages {
+function func_check_languages {
 	OLD_IFS=$IFS                 
 	IFS=","                           
 	local langs=( $1 )
@@ -111,7 +111,7 @@ function check_languages {
 
 # **************************************************************************
 
-function has_lang {
+function func_has_lang {
 	OLD_IFS=$IFS                 
 	IFS=","                           
 	local langs=( $ENABLE_LANGUAGES )
@@ -344,7 +344,7 @@ function func_uncompress {
 		_filename=$(basename ${_params[0]})	
 		_log_name=$MARKERS_DIR/${_filename}-unpack.log
 		_marker_name=$MARKERS_DIR/${_filename}-unpack.marker
-		_ext=$(get_filename_extension $_filename)
+		_ext=$(func_get_filename_extension $_filename)
 		[[ $_ext == .tar.gz || $_ext == .tar.bz2 || $_ext == .tar.lzma \
 		|| $_ext == .tar.xz || $_ext == .tar.7z || $_ext == .7z || $_ext == .tgz ]] && {
 			[[ ! -f $_marker_name ]] && {
@@ -663,7 +663,7 @@ function func_map_gcc_name_to_gcc_version {
 
 	case $1 in
 		gcc-?.?.?)			echo "${1/gcc-/}" ;;
-		gcc-4_6-branch)	echo "4.6.4" ;;
+		gcc-4_6-branch)	echo "4.6.5" ;;
 		gcc-4_7-branch)	echo "4.7.4" ;;
 		gcc-4_8-branch)	echo "4.8.2" ;;
 		gcc-4_9-branch)	echo "4.9.1" ;;
