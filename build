@@ -912,13 +912,16 @@ done
 
 # func_download_repository_file "$HOME/repository.txt"
 
-[[ $UPLOAD_BIN_TO_SF == yes ]] && {
+[[ $UPLOAD_BIN_TO_SF == yes || $UPLOAD_SRC_TO_SF == yes ]] && {
 	cd $TOP_DIR; . ./scripts/upload.sh
+
 	[[ -z $SF_USER ]] && {
 		echo "user name is not specified. terminate."
-		exit 0
+		exit 1
 	}
+}
 
+[[ $UPLOAD_BIN_TO_SF == yes ]] && {
 	for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 		mingw_archive_name=$( \
 			func_create_mingw_archive_name \
@@ -941,7 +944,8 @@ done
 				$THREADS_MODEL \
 				$EXCEPTIONS_MODEL \
 		)
-		echo -e -n "-> \E[32;40mupload $ARCHITECTURE archive...\E[37;40m"
+		mingw_archive_size=$(du -h $mingw_archive_name | cut -f 1)
+		echo -e -n "-> \E[32;40mupload $(basename $mingw_archive_name) ($mingw_archive_size) ...\E[37;40m"
 		[[ $DEBUG_UPLOAD == yes ]] && {
 			echo "bin_cmd:${upload_cmd}"
 		} || {
@@ -958,12 +962,6 @@ done
 }
 
 [[ $UPLOAD_SRC_TO_SF == yes ]] && {
-	cd $TOP_DIR; . ./scripts/upload.sh
-	[[ -z $SF_USER ]] && {
-		echo "user name is not specified. terminate."
-		exit 0
-	}
-	
 	sources_archive_name=$( \
 		func_create_sources_archive_name \
 			$ARCHIVES_DIR \
@@ -978,6 +976,8 @@ done
 			$GCC_NAME \
 			$sources_archive_name \
 	)
+	sources_archive_size=$(du -h $sources_archive_name | cut -f 1)
+	echo -e -n "-> \E[32;40mupload $(basename $sources_archive_name) ($sources_archive_size) ...\E[37;40m"
 	[[ $DEBUG_UPLOAD == yes ]] && {
 		echo "src_cmd:${upload_cmd}"
 	} || {
@@ -987,6 +987,8 @@ done
 	func_res=$?
 	[[ $func_res != 0 ]] && {
 		die "upload finished with error($func_res). terminate."
+	} || {
+		echo "done"
 	}
 }
 
