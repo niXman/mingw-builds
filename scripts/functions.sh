@@ -751,25 +751,18 @@ function func_create_mingw_upload_cmd {
 	# $6 - threads model
 	# $7 - exceptions model
 
-	local _project_fs_root_dir=/home/frs/project/mingwbuilds/host-windows
-	local _upload_cmd="cd $1 && scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir"
+	local _project_fs_root_dir="/home/frs/project/mingwbuilds/host-windows"
+	local _upload_cmd="scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir"
+	local _gcc_type=$(func_map_gcc_name_to_gcc_type $3)
+	local _gcc_version=$(func_map_gcc_name_to_gcc_version $3)
 
-	case $3 in
-		gcc-?.?.?) _upload_cmd="$_upload_cmd/releases/$(echo $3 | sed 's|gcc-||')" ;;
-		gcc-?_?-branch|gcc-trunk) _upload_cmd="$_upload_cmd/testing" ;;
-		*) die "gcc name error: \"$3\". terminate." ;;
-	esac
-	case $3 in
-		gcc-4_6-branch) _upload_cmd="$_upload_cmd/4.6.5" ;;
-		gcc-4_7-branch) _upload_cmd="$_upload_cmd/4.7.4" ;;
-		gcc-4_8-branch) _upload_cmd="$_upload_cmd/4.8.2" ;;
-		gcc-trunk) _upload_cmd="$_upload_cmd/4.9.0" ;;
-	esac
-	case $5 in
-		x32) _upload_cmd="$_upload_cmd/32-bit" ;;
-		x64) _upload_cmd="$_upload_cmd/64-bit" ;;
-	esac
-	_upload_cmd="$_upload_cmd/threads-$6/$7"
+	[[ $_gcc_type == release ]] && {
+		_upload_cmd="$_upload_cmd/releases/$_gcc_version"
+	} || {
+		_upload_cmd="$_upload_cmd/testing/$_gcc_version"
+	}
+
+	_upload_cmd="$_upload_cmd/$( [[ $5 == x32 ]] && echo 32-bit || echo 64-bit )/threads-$6/$7"
 
 	echo "$_upload_cmd"
 }
@@ -782,8 +775,8 @@ function func_create_sources_upload_cmd {
 	# $3 - gcc name
 	# $4 - archive name
 
-	local _project_fs_root_dir=/home/frs/project/mingwbuilds
-	local _upload_cmd="cd $1 && scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir/mingw-sources/$(func_map_gcc_name_to_gcc_version $3)"
+	local _project_fs_root_dir="/home/frs/project/mingwbuilds/mingw-sources"
+	local _upload_cmd="scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir/$(func_map_gcc_name_to_gcc_version $3)"
 
 	echo "$_upload_cmd"
 }
