@@ -953,9 +953,8 @@ done
 		[[ $DEBUG_UPLOAD == yes ]] && {
 			echo "bin_cmd:${upload_cmd}"
 		} || {
-			#eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
-			#func_res=$?
-			func_res=0
+			eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
+			func_res=$?
 			[[ $func_res != 0 ]] && {
 				die "upload finished with error($func_res). terminate."
 			} || {
