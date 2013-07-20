@@ -77,7 +77,7 @@ PKG_VERSION="Built by MinGW-builds project"
 PROJECT_ROOT_URL=http://sourceforge.net/projects/mingwbuilds
 BUG_URL=$PROJECT_ROOT_URL
 PROJECT_FS_ROOT_DIR=/home/frs/project/mingwbuilds
-REPOSITORY_FILE=http://sourceforge.net/projects/mingwbuilds/files/host-windows/repository.txt
+REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-windows/repository.txt
 
 # **************************************************************************
 
