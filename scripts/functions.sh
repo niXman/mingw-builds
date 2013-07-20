@@ -751,8 +751,7 @@ function func_create_mingw_upload_cmd {
 	# $6 - threads model
 	# $7 - exceptions model
 
-	local _project_fs_root_dir="/home/frs/project/mingwbuilds/host-windows"
-	local _upload_cmd="scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir"
+	local _upload_cmd="scp $4 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/host-windows"
 	local _gcc_type=$(func_map_gcc_name_to_gcc_type $3)
 	local _gcc_version=$(func_map_gcc_name_to_gcc_version $3)
 
@@ -775,43 +774,62 @@ function func_create_sources_upload_cmd {
 	# $3 - gcc name
 	# $4 - archive name
 
-	local _project_fs_root_dir="/home/frs/project/mingwbuilds/mingw-sources"
-	local _upload_cmd="scp $4 $2@frs.sourceforge.net:$_project_fs_root_dir/$(func_map_gcc_name_to_gcc_version $3)"
-
-	echo "$_upload_cmd"
+	echo "scp $4 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/mingw-sources/$(func_map_gcc_name_to_gcc_version $3)"
 }
 
 # **************************************************************************
 
+function func_create_url_for_archive {
+	# $1 - base URL
+	# $2 - gcc name
+	# $3 - architecture
+	# $4 - threads model
+	# $5 - exceptions model
+
+	local _upload_url="$1/files/host-windows"
+	local _gcc_type=$(func_map_gcc_name_to_gcc_type $2)
+	local _gcc_version=$(func_map_gcc_name_to_gcc_version $2)
+
+	[[ $_gcc_type == release ]] && {
+		_upload_url="$_upload_url/releases/$_gcc_version"
+	} || {
+		_upload_url="$_upload_url/testing/$_gcc_version"
+	}
+
+	echo "$_upload_url/$( [[ $3 == x32 ]] && echo 32-bit || echo 64-bit )/threads-$4/$5"
+}
+
 function func_download_repository_file {
-	#1 - repository file name
+	#1 - repository local file name
 	
-	local _src="http://sourceforge.net/projects/mingwbuilds/files/host-windows/repository.txt"
-	wget $_src -O "$1"
+	wget $REPOSITORY_FILE -O "$1" > /dev/null 2>&1
 	local _result=$?
 	[[ $_result != 0 ]] && { die "error($_result) when downloading repository file. terminate."; }
 }
 
 function func_update_repository_file {
-	#1 - repository file name
-	#2 - version
-	#3 - architecture
-	#4 - threads model
-	#5 - exceptions model
-	#6 - revision
-	#7 - url for archive
+	# $1 - repository file name
+	# $2 - version
+	# $3 - architecture
+	# $4 - threads model
+	# $5 - exceptions model
+	# $6 - revision
+	# $7 - url for archive
+	# $8 - archive file name
 	
-	[[ ! -f $1 ]] && {
-		die "repository file \"$1\" is not exists. terminate."
-		exit 1
-	}
+	[[ ! -f $1 ]] && { die "repository file \"$1\" is not exists. terminate."; }
 	
-	echo "$2|$3|$4|$5|$6|$7" >> $1
+	printf "%5s|%3s|%5s|%-5s|%-5s|%s\n" $2 $3 $4 $5 "rev$6" "$7/$8" >> $1
 }
 
 function func_upload_repository_file {
-	#1 - file name
-	echo "";
+	# $1 - file name
+	# $2 - sf user name
+
+	scp $1 $2@frs.sourceforge.net:$(dirname $REPOSITORY_FILE)
+	local _result=$?
+	
+	[[ $_result != 0 ]] && { die "error($_result) when uploading repository file. terminate."; }
 }
 
 # **************************************************************************

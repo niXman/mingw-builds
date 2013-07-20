@@ -66,14 +66,20 @@ JOBS=1
 
 # **************************************************************************
 
-MINGW_BUILDS_VERSION="MinGW-builds-4.0.0"
-PKG_VERSION="Built by MinGW-builds project"
-BUG_URL=http://sourceforge.net/projects/mingwbuilds/
-
 x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
 /host-windows/releases/4.7.3/32-bit/threads-posix/sjlj/x32-4.7.3-release-posix-sjlj-rev1.7z
 x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
 /host-windows/releases/4.7.3/64-bit/threads-posix/sjlj/x64-4.7.3-release-posix-sjlj-rev1.7z
+
+MINGW_BUILDS_VERSION="MinGW-builds-4.0.0"
+PKG_VERSION="Built by MinGW-builds project"
+
+PROJECT_ROOT_URL=http://sourceforge.net/projects/mingwbuilds
+BUG_URL=$PROJECT_ROOT_URL
+PROJECT_FS_ROOT_DIR=/home/frs/project/mingwbuilds
+REPOSITORY_FILE=http://sourceforge.net/projects/mingwbuilds/files/host-windows/repository.txt
+
+# **************************************************************************
 
 ORIGINAL_PATH=$PATH
 TOP_DIR=$(func_simplify_path "$PWD")
@@ -910,8 +916,6 @@ done
 
 # ***************************************************************************
 
-# func_download_repository_file "$HOME/repository.txt"
-
 [[ $UPLOAD_BIN_TO_SF == yes || $UPLOAD_SRC_TO_SF == yes ]] && {
 	cd $TOP_DIR; . ./scripts/upload.sh
 
@@ -949,14 +953,32 @@ done
 		[[ $DEBUG_UPLOAD == yes ]] && {
 			echo "bin_cmd:${upload_cmd}"
 		} || {
-			eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
-		}
+			#eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
+			#func_res=$?
+			func_res=0
+			[[ $func_res != 0 ]] && {
+				die "upload finished with error($func_res). terminate."
+			} || {
+				echo "done"
+				[[ $(func_map_gcc_name_to_gcc_type $GCC_NAME) == release ]] && {
+					func_download_repository_file \
+						$TMP/$(basename $REPOSITORY_FILE)
+					
+					func_update_repository_file \
+						$TMP/$(basename $REPOSITORY_FILE) \
+						$(func_map_gcc_name_to_gcc_version $GCC_NAME) \
+						$ARCHITECTURE \
+						$THREADS_MODEL \
+						$EXCEPTIONS_MODEL \
+						$REV_NUM \
+						$(func_create_url_for_archive $PROJECT_ROOT_URL $GCC_NAME $ARCHITECTURE $THREADS_MODEL $EXCEPTIONS_MODEL ) \
+						$(basename $mingw_archive_name)
 
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			die "upload finished with error($func_res). terminate."
-		} || {
-			echo "done"
+					func_upload_repository_file \
+						$TMP/$(basename $REPOSITORY_FILE) \
+						$SF_USER
+				}
+			}
 		}
 	done
 }
