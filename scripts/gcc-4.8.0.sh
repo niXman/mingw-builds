@@ -108,9 +108,6 @@ CONFIGURE_FLAGS=(
 	$PROCESSOR_OPTIMIZATION
 	$PROCESSOR_TUNE
 	#
-	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
-		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
-	)
 	--with-libiconv
 	--with-system-zlib
 	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
