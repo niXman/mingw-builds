@@ -1,0 +1,45 @@
+--- gcc-4.7.3/libgcc/config/i386/cygming-crtbegin.c.orig	2011-11-02 19:26:35.000000000 +0400
++++ gcc-4.7.3/libgcc/config/i386/cygming-crtbegin.c	2013-07-25 13:45:17.048828100 +0400
+@@ -82,6 +82,8 @@
+ extern void __gcc_register_frame (void);
+ extern void __gcc_deregister_frame (void);
+ 
++static HANDLE libgcc_dll;
++
+ void
+ __gcc_register_frame (void)
+ {
+@@ -94,8 +96,11 @@
+   void (*register_frame_fn) (const void *, struct object *);
+   HANDLE h = GetModuleHandle (LIBGCC_SONAME);
+   if (h)
+-    register_frame_fn = (void (*) (const void *, struct object *))
+-			GetProcAddress (h, "__register_frame_info");
++    {
++      libgcc_dll = LoadLibrary (LIBGCC_SONAME); /* Hold reference */
++      register_frame_fn = (void (*) (const void *, struct object *))
++       GetProcAddress (h, "__register_frame_info");
++    }
+   else 
+     register_frame_fn = __register_frame_info;
+   if (register_frame_fn)
+@@ -124,13 +129,16 @@
+ {
+ #if DWARF2_UNWIND_INFO
+   void *  (*deregister_frame_fn) (const void *);
+-  HANDLE h = GetModuleHandle (LIBGCC_SONAME);
+-  if (h)
++  if (libgcc_dll)
+     deregister_frame_fn = (void* (*) (const void *))
+-			  GetProcAddress (h, "__deregister_frame_info");
++			  GetProcAddress (libgcc_dll, "__deregister_frame_info");
+   else 
+     deregister_frame_fn = __deregister_frame_info;
+   if (deregister_frame_fn)
+      deregister_frame_fn (__EH_FRAME_BEGIN__);
++
++  if (libgcc_dll)
++     FreeLibrary (libgcc_dll);
++
+ #endif
+ }
