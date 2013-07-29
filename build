@@ -185,6 +185,7 @@ COMPRESSING_SRCS=no
 UPLOAD_BIN_TO_SF=no
 UPLOAD_SRC_TO_SF=no
 SF_USER=""
+SF_PASSWORD=""
 DEBUG_UPLOAD=no
 
 BUILD_MODE=
@@ -306,8 +307,10 @@ while [[ $# > 0 ]]; do
 		--version) echo $MINGW_BUILDS_VERSION; exit 0 ;;
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
 		--srcs-compress) COMPRESSING_SRCS=yes ;;
-		--mingw-upload=*) UPLOAD_BIN_TO_SF=yes; SF_USER=${1/--mingw-upload=/} ;;
-		--src-upload=*) UPLOAD_SRC_TO_SF=yes; SF_USER=${1/--src-upload=/} ;;
+		--mingw-upload) UPLOAD_BIN_TO_SF=yes ;;
+		--src-upload) UPLOAD_SRC_TO_SF=yes ;;
+		--sf-user=*) SF_USER=${1/--sf-user=/} ;;
+		--sf-password=*) SF_PASSWORD=${1/--sf-password=/} ;;
 		--debug-upload) DEBUG_UPLOAD=yes ;;
 		*)
 			echo "bad command line: \"$1\""
@@ -334,6 +337,13 @@ PREREQ_DIR=$ROOT_DIR/mingw-prereq
 RUNTIME_DIR=$ROOT_DIR/mingw-runtime
 ARCHIVES_DIR=$ROOT_DIR/mingw-archives
 mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
+
+# **************************************************************************
+
+[[ $UPLOAD_BIN_TO_SF == yes || $UPLOAD_SRC_TO_SF == yes ]] && {
+	[[ -z $SF_USER ]]     && { die "please specify sourceforge user login with '--sf-user=<user>'"; }
+	[[ -z $SF_PASSWORD ]] && { die "please specify sourceforge user password with '--sf-password=<password>'"; }
+}
 
 # **************************************************************************
 
