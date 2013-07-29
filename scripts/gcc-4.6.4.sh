@@ -51,6 +51,7 @@ PATCHES=(
 	gcc/gcc-4.6-stdthreads.patch
 	gcc/gcc-4.6-iconv.patch
 	gcc/gcc-4.6-vswprintf.patch
+	gcc/gcc-4.6.4-fix-dw2.patch
 )
 
 #
