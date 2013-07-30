@@ -293,17 +293,13 @@ while [[ $# > 0 ]]; do
 				*) die "Unsupported mode: $BUILD_MODE."
 			esac
 		;;
+		--arch=*)
+			[[ ${BUILD_ARCHITECTURES[@]} =~ ${1/--arch=/} ]] && { shift; continue; }
+			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} ${1/--arch=/} )
+		;;
 		--rev=*)
 			REV_NUM=${1/--rev=/}
 			PKG_VERSION="rev$REV_NUM, $PKG_VERSION"
-		;;
-		x32)
-			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
-			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
-		;;
-		x64)
-			[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && { shift; continue; }
-			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x64 )
 		;;
 		--version) echo $MINGW_BUILDS_VERSION; exit 0 ;;
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
