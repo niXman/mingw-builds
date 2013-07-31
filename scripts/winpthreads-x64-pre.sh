@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-[[ $ARCHITECTURE == x32 ]] && {
+[[ $BUILD_ARCHITECTURE == x32 ]] && {
 	BEFORE_WINPTHREADS64_PRE_PATH=$PATH
 	export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 

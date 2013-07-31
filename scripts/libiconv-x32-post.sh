@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-[[ $ARCHITECTURE == x64 ]] && {
+[[ $BUILD_ARCHITECTURE == x64 ]] && {
 	export PATH=$BEFORE_LIBICONV32_PRE_PATH
 	
 	[[ $USE_MULTILIB == yes ]] && {

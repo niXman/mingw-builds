@@ -37,9 +37,9 @@
 
 NAME=mingw-w64-crt
 [[ $USE_MULTILIB == yes ]] && {
-	NAME=$ARCHITECTURE-$NAME-multi
+	NAME=$BUILD_ARCHITECTURE-$NAME-multi
 } || {
-	NAME=$ARCHITECTURE-$NAME-nomulti
+	NAME=$BUILD_ARCHITECTURE-$NAME-nomulti
 }
 SRC_DIR_NAME=mingw-w64-crt
 TYPE=svn
@@ -58,10 +58,10 @@ PATCHES=()
 
 [[ $USE_MULTILIB == yes ]] && {
 	LIBCONF="--enable-lib32 --enable-lib64"
-	CRTPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi
+	CRTPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-multi
 } || {
-	CRTPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
-	[[ $ARCHITECTURE == x32 ]] && {
+	CRTPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-nomulti
+	[[ $BUILD_ARCHITECTURE == x32 ]] && {
 		LIBCONF="--enable-lib32 --disable-lib64"
 	} || {
 		LIBCONF="--disable-lib32 --enable-lib64"

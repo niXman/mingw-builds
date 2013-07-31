@@ -545,7 +545,7 @@ function func_test {
 	local -a _list=( "${!2}" )
 
 	[[ $USE_MULTILIB == no ]] && {
-		[[ $ARCHITECTURE == x32 ]] && {
+		[[ $BUILD_ARCHITECTURE == x32 ]] && {
 			local -a _archs=(32)
 		} || {
 			local -a _archs=(64)

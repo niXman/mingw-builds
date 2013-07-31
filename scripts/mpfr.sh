@@ -36,7 +36,7 @@
 # **************************************************************************
 
 VERSION=3.1.2
-NAME=$ARCHITECTURE-mpfr-${VERSION}-$LINK_TYPE_SUFFIX
+NAME=$BUILD_ARCHITECTURE-mpfr-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=mpfr-${VERSION}
 TYPE=.tar.bz2
 URL=(
