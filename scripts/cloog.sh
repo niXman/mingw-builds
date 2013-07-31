@@ -36,7 +36,7 @@
 # **************************************************************************
 
 VERSION=0.18.0
-NAME=$ARCHITECTURE-cloog-${VERSION}-$LINK_TYPE_SUFFIX
+NAME=$BUILD_ARCHITECTURE-cloog-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=cloog-${VERSION}
 TYPE=.tar.gz
 URL=(

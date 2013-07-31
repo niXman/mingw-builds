@@ -44,9 +44,9 @@
 
 [[ ! -f $BUILDS_DIR/mingw-w64-runtime-post.marker ]] && {
 	[[ $USE_MULTILIB == yes ]] && {
-		RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi
+		RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-multi
 	} || {
-		RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
+		RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-nomulti
 	}
 
 	cp -rf $RUNTIMEPREFIX/* $PREFIX/$TARGET || exit 1
@@ -54,13 +54,13 @@
 
 	mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
 	
-	cp -f $PREREQ_DIR/$ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-	cp -f $PREREQ_DIR/$ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
+	cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+	cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
-	cp -f $RUNTIME_DIR/$ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
-	cp -f $RUNTIME_DIR/$ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
-	cp -f $RUNTIME_DIR/$ARCHITECTURE-winpthreads/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-	cp -f $RUNTIME_DIR/$ARCHITECTURE-winpthreads/include/*.h $PREFIX/$TARGET/include/ || exit 1
+	cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+	cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+	cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+	cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/include/*.h $PREFIX/$TARGET/include/ || exit 1
 	
 	[[ $USE_MULTILIB == yes ]] && {
 		mkdir -p $PREFIX/$TARGET/lib${REVERSE_ARCHITECTURE/x/}
@@ -78,7 +78,7 @@
 
 	[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
 		cp -f $PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
-		cp -f $PREREQ_DIR/$ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
+		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
 	}
 
 	touch $BUILDS_DIR/mingw-w64-runtime-post.marker || exit 1

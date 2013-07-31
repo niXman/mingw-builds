@@ -38,9 +38,9 @@
 VERSION=2.23.2
 NAME=binutils-${VERSION}
 [[ $USE_MULTILIB == yes ]] && {
-	NAME=$ARCHITECTURE-$NAME-multi
+	NAME=$BUILD_ARCHITECTURE-$NAME-multi
 } || {
-	NAME=$ARCHITECTURE-$NAME-nomulti
+	NAME=$BUILD_ARCHITECTURE-$NAME-nomulti
 }
 SRC_DIR_NAME=binutils-${VERSION}
 TYPE=.tar.bz2
@@ -59,11 +59,11 @@ PATCHES=(
 #
 
 [[ $USE_MULTILIB == yes ]] && {
-	BINUTILSPREFIX=$PREREQ_DIR/$ARCHITECTURE-binutils-multi
-	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-multi
+	BINUTILSPREFIX=$PREREQ_DIR/$BUILD_ARCHITECTURE-binutils-multi
+	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-multi
 } || {
-	BINUTILSPREFIX=$PREREQ_DIR/$ARCHITECTURE-binutils-nomulti
-	RUNTIMEPREFIX=$RUNTIME_DIR/$ARCHITECTURE-mingw-w64-nomulti
+	BINUTILSPREFIX=$PREREQ_DIR/$BUILD_ARCHITECTURE-binutils-nomulti
+	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-nomulti
 }
 
 CONFIGURE_FLAGS=(
@@ -85,7 +85,7 @@ CONFIGURE_FLAGS=(
 	#
 	--enable-lto
 	#
-	--with-libiconv-prefix=$PREREQ_DIR/libiconv-$ARCHITECTURE
+	--with-libiconv-prefix=$PREREQ_DIR/libiconv-$BUILD_ARCHITECTURE
 	#
 	--disable-nls
 	#
@@ -94,7 +94,7 @@ CONFIGURE_FLAGS=(
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $ARCHITECTURE == x32 ]] && echo -Wl,--large-address-aware )\""
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == x32 ]] && echo -Wl,--large-address-aware )\""
 )
 
 #

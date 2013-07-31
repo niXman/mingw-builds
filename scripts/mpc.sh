@@ -36,7 +36,7 @@
 # **************************************************************************
 
 VERSION=1.0.1
-NAME=$ARCHITECTURE-mpc-${VERSION}-$LINK_TYPE_SUFFIX
+NAME=$BUILD_ARCHITECTURE-mpc-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=mpc-${VERSION}
 TYPE=.tar.gz
 URL=(

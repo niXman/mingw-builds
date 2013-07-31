@@ -36,7 +36,7 @@
 # **************************************************************************
 
 VERSION=0.12
-NAME=$ARCHITECTURE-isl-${VERSION}-$LINK_TYPE_SUFFIX
+NAME=$BUILD_ARCHITECTURE-isl-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=isl-${VERSION}
 TYPE=.tar.bz2
 URL=(

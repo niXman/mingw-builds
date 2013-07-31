@@ -36,9 +36,9 @@
 # **************************************************************************
 
 [[ $USE_MULTILIB == yes ]] && {
-	BINUTILSPREFIX=$PREREQ_DIR/$ARCHITECTURE-binutils-multi
+	BINUTILSPREFIX=$PREREQ_DIR/$BUILD_ARCHITECTURE-binutils-multi
 } || {
-	BINUTILSPREFIX=$PREREQ_DIR/$ARCHITECTURE-binutils-nomulti
+	BINUTILSPREFIX=$PREREQ_DIR/$BUILD_ARCHITECTURE-binutils-nomulti
 }
 
 [[ ! -f $BUILDS_DIR/binutils-post.marker ]] && {

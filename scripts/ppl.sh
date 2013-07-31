@@ -36,7 +36,7 @@
 # **************************************************************************
 
 VERSION=1.0
-NAME=$ARCHITECTURE-ppl-${VERSION}-$LINK_TYPE_SUFFIX
+NAME=$BUILD_ARCHITECTURE-ppl-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=ppl-${VERSION}
 TYPE=.tar.bz2
 URL=(

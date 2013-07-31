@@ -36,7 +36,7 @@
 # **************************************************************************
 
 VERSION=5.1.2
-NAME=$ARCHITECTURE-gmp-${VERSION}-$LINK_TYPE_SUFFIX
+NAME=$BUILD_ARCHITECTURE-gmp-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=gmp-${VERSION}
 TYPE=.tar.bz2
 URL=(
