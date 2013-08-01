@@ -231,11 +231,11 @@ while [[ $# > 0 ]]; do
 			case $EXCEPTIONS_MODEL in
 			dwarf)
 				USE_MULTILIB=no
-				[[ ${BUILD_ARCHITECTURE} == x32 ]] && { shift; continue; }
+				BUILD_ARCHITECTURE=x32
 			;;
 			seh)
 				USE_MULTILIB=no
-				[[ ${BUILD_ARCHITECTURE} == x64 ]] && { shift; continue; }
+				BUILD_ARCHITECTURE=x64
 			;;
 			sjlj)
 				USE_MULTILIB=$USE_MULTILIB			
@@ -294,8 +294,10 @@ while [[ $# > 0 ]]; do
 		--arch=*)
 			BUILD_ARCHITECTURE=${1/--arch=/}
 			case $BUILD_ARCHITECTURE in
-				x32|x64) ;;
-				*) die "Unsupported architecture $BUILD_ARCHITECTURE"
+				x32|x64)
+				;;
+				*) die "Unsupported architecture $BUILD_ARCHITECTURE" 
+				;;
 			esac
 		;;
 		--rev=*)
@@ -350,33 +352,31 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 }
 
 [[ $BUILD_MODE == gcc ]] && {
-
-	[[ $THREADS_MODEL != win32 && $THREADS_MODEL != posix ]] && {
-		die "bad threads model($THREADS_MODEL). terminate."
+	[[ $IS_64BIT_HOST == no ]] && {
+		[[ $BUILD_ARCHITECTURE == x64 ]] && {
+			die "you can't build 64-bit toolchain using 32-bit OS. terminate."
+		}
+		[[ $USE_MULTILIB == yes ]] && {
+			die "you can't build multitarget MinGW using 32-bit OS. terminate."
+		}
 	}
-
+	case $EXCEPTIONS_MODEL in
+		dwarf)
+			[[ ${BUILD_ARCHITECTURE} == x64 ]] && {
+				die "DWARF exceptions not allowed on x86_64 architecture. terminate."
+			}
+		;;
+		seh)
+			[[ ${BUILD_ARCHITECTURE} == x32 ]] && {
+				die "SEH exceptions not allowed on x86 architecture. terminate."
+			}
+		;;	
+		sjlj)
+		
+		;;
+	esac
 	[[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
 		die "$EXCEPTIONS_MODEL exceptions not allowed on multilib architecture. terminate."
-	}
-	
-	[[ $EXCEPTIONS_MODEL == dwarf ]] && {
-		[[ ${BUILD_ARCHITECTURE} == x64 ]] && {
-			die "DWARF exceptions not allowed on x86_64 architecture. terminate."
-		}
-	}
-	
-	[[ $EXCEPTIONS_MODEL == seh ]] && {
-		[[ ${BUILD_ARCHITECTURE} == x32 ]] && {
-			die "SEH exceptions not allowed on x86 architecture. terminate."
-		}
-	}
-
-	[[ $IS_64BIT_HOST == no && ${BUILD_ARCHITECTURE} == x64 ]] && {
-		die "you can't build 64-bit MinGW using 32-bit OS. terminate."
-	}
-
-	[[ $IS_64BIT_HOST == no && $USE_MULTILIB == yes ]] && {
-		die "you can't build multitarget MinGW using 32-bit OS. terminate."
 	}
 }
 
@@ -517,20 +517,32 @@ SUBTARGETS_PART2=(
 )
 
 case $BUILD_MODE in
+	clang)
+		SUBTARGETS=(
+			${CLANG_SUBTARGETS[@]}
+			cleanup
+			licenses
+			put-versions
+			put-info
+			$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
+		)
+	;;
 	gcc)
 		[[ $USE_MULTILIB == yes ]] && {
 			SUBTARGETS=(
 				${LIBICONV_X32_SUBTARGETS[@]}
 				${LIBICONV_X64_SUBTARGETS[@]}
 				${ZLIB_X32_SUBTARGETS[@]}
-				${ZLIB_X64_SUBTARGETS[@]}		
+				${ZLIB_X64_SUBTARGETS[@]}	
 				${SUBTARGETS_PART1[@]}
 				${WINPTHREADS_X32_SUBTARGETS[@]}
 				${WINPTHREADS_X64_SUBTARGETS[@]}
 				${SUBTARGETS_PART2[@]}
 			)
+			PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
+			PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
 		} || {
-			[[ ${BUILD_ARCHITECTURE} == x32 ]] && {
+			[[ $ARCHITECTURE == x32 ]] && {
 				SUBTARGETS=(
 					${LIBICONV_X32_SUBTARGETS[@]}
 					${ZLIB_X32_SUBTARGETS[@]}
@@ -538,6 +550,8 @@ case $BUILD_MODE in
 					${WINPTHREADS_X32_SUBTARGETS[@]}
 					${SUBTARGETS_PART2[@]}
 				)
+				PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
+				PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
 			} || {
 				SUBTARGETS=(
 					${LIBICONV_X64_SUBTARGETS[@]}
@@ -546,14 +560,20 @@ case $BUILD_MODE in
 					${WINPTHREADS_X64_SUBTARGETS[@]}
 					${SUBTARGETS_PART2[@]}
 				)
+				PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
+				PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
 			}
-		}	
-	;;
-	clang)
-		SUBTARGETS=( ${CLANG_SUBTARGETS[@]} )
+		}
 	;;
 	python)
-		SUBTARGETS=( ${PYTHON_SUBTARGETS[@]} )
+		SUBTARGETS=(
+			${PYTHON_SUBTARGETS[@]}
+			cleanup
+			licenses
+			put-versions
+			put-info
+			$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
+		)
 	;;
 esac
 
@@ -571,7 +591,7 @@ esac
 		[[ ${BUILD_ARCHITECTURE} == x32 ]] && echo -n "x32-" || echo -n "x64-"
 		echo "$EXCEPTIONS_MODEL"
 	} || {
-			[[ ${BUILD_ARCHITECTURE} == x32 ]] && echo -n "x32" || echo -n "x64"
+		[[ ${BUILD_ARCHITECTURE} == x32 ]] && echo -n "x32" || echo -n "x64"
 	}
 
 	for sub in ${SUBTARGETS[@]}; do
@@ -666,67 +686,6 @@ COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTU
 COMMON_CXXFLAGS="$COMMON_CFLAGS"
 COMMON_CPPFLAGS="$BASE_CPPFLAGS"
 COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/opt/lib"
-
-case $BUILD_MODE in
-	clang)
-		SUBTARGETS=(
-			${CLANG_SUBTARGETS[@]}
-			cleanup
-			licenses
-			put-versions
-			put-info
-			$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
-		)
-	;;
-	gcc)
-		[[ $USE_MULTILIB == yes ]] && {
-			SUBTARGETS=(
-				${LIBICONV_X32_SUBTARGETS[@]}
-				${LIBICONV_X64_SUBTARGETS[@]}
-				${ZLIB_X32_SUBTARGETS[@]}
-				${ZLIB_X64_SUBTARGETS[@]}	
-				${SUBTARGETS_PART1[@]}
-				${WINPTHREADS_X32_SUBTARGETS[@]}
-				${WINPTHREADS_X64_SUBTARGETS[@]}
-				${SUBTARGETS_PART2[@]}
-			)
-			PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
-			PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
-		} || {
-			[[ $ARCHITECTURE == x32 ]] && {
-				SUBTARGETS=(
-					${LIBICONV_X32_SUBTARGETS[@]}
-					${ZLIB_X32_SUBTARGETS[@]}
-					${SUBTARGETS_PART1[@]}
-					${WINPTHREADS_X32_SUBTARGETS[@]}
-					${SUBTARGETS_PART2[@]}
-				)
-				PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
-				PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
-			} || {
-				SUBTARGETS=(
-					${LIBICONV_X64_SUBTARGETS[@]}
-					${ZLIB_X64_SUBTARGETS[@]}
-					${SUBTARGETS_PART1[@]}
-					${WINPTHREADS_X64_SUBTARGETS[@]}
-					${SUBTARGETS_PART2[@]}
-				)
-				PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
-				PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
-			}
-		}
-	;;
-	python)
-		SUBTARGETS=(
-			${PYTHON_SUBTARGETS[@]}
-			cleanup
-			licenses
-			put-versions
-			put-info
-			$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
-		)
-	;;
-esac
 
 for sub in ${SUBTARGETS[@]}; do
 	echo -e "-> \E[32;40m$sub\E[37;40m"
