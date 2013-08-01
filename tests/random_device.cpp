@@ -5,5 +5,5 @@
 int main() {
 	std::random_device rd;
 	
-	return rd() != rd();
+	return rd() == rd();
 }
