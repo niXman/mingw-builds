@@ -542,7 +542,7 @@ case $BUILD_MODE in
 			PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
 			PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
 		} || {
-			[[ $ARCHITECTURE == x32 ]] && {
+			[[ $BUILD_ARCHITECTURE == x32 ]] && {
 				SUBTARGETS=(
 					${LIBICONV_X32_SUBTARGETS[@]}
 					${ZLIB_X32_SUBTARGETS[@]}
@@ -889,7 +889,7 @@ done
 	[[ $DEBUG_UPLOAD == yes ]] && {
 		echo "bin_cmd:${upload_cmd}"
 	} || {
-		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
+		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$BUILD_ARCHITECTURE-upload.log 2>&1"
 		func_res=$?
 		[[ $func_res != 0 ]] && {
 			die "upload finished with error($func_res). terminate."
