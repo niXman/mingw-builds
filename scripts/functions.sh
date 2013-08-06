@@ -92,14 +92,15 @@ function func_check_languages {
 	local langs=( $1 )
 	IFS=$OLD_IFS
 	local errs=""
+	local lang=
 	
 	[[ ${#langs[@]} == 0 ]] && {
 		die "You must specify languages to build"
 	} || {
-		for sub in ${langs[@]}; do
-			! [[ "$sub" == "ada" || "$sub" == "c" || "$sub" == "c++" || \
-				  "$sub" == "fortran" || "$sub" == "objc" || "$sub" == "obj-c++" ]] && {
-				errs=$errs' '$sub
+		for lang in ${langs[@]}; do
+			! [[ "$lang" == "ada" || "$lang" == "c" || "$sub" == "c++" || \
+				  "$lang" == "fortran" || "$lang" == "objc" || "$lang" == "obj-c++" ]] && {
+				errs=$errs' '$lang
 			}
 		done
 
@@ -117,12 +118,13 @@ function func_has_lang {
 	local langs=( $ENABLE_LANGUAGES )
 	IFS=$OLD_IFS
 	local errs=""
-		
+	local lang=
+
 	[[ ${#langs[@]} == 0 ]] && {
 		return "0"
 	} || {
-		for sub in ${langs[@]}; do
-			[[ "$sub" == "$1" ]] && {
+		for lang in ${langs[@]}; do
+			[[ "$lang" == "$1" ]] && {
 				return "1"
 			}
 		done
@@ -178,6 +180,7 @@ function func_download {
 	local _WGET_TRIES=10
 	local _WGET_WAIT=2
 	local _result=0
+	local it=
 
 	for it in ${_list[@]} ; do
 		OLD_IFS=$IFS                 
@@ -302,6 +305,7 @@ function func_uncompress {
 	# $1 - list of archives
 
 	local -a _list=( "${!1}" )
+	local it=
 	[[ ${#_list[@]} == 0 ]] && {
 		echo "--> Unpack doesn't need."
 		return 0
@@ -387,6 +391,7 @@ function func_execute {
 
 	local _result=0
 	local -a _commands=( "${!6}" )
+	local it=
 	
 	_index=0
 	((_index=${#_commands[@]}-1))
@@ -434,6 +439,7 @@ function func_apply_patches {
 	# $5 - patches list
 	
 	local _result=0
+	local it=
 	_index=0
 	local -a _list=( "${!5}" )
 	[[ ${#_list[@]} == 0 ]] && return 0
@@ -543,6 +549,8 @@ function func_test {
 
 	local _result=0
 	local -a _list=( "${!2}" )
+	local arch_it=
+	local src_it=
 
 	[[ $USE_MULTILIB == no ]] && {
 		[[ $BUILD_ARCHITECTURE == x32 ]] && {
