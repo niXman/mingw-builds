@@ -46,8 +46,7 @@ MSYS2:
 8. Run:
   "./build gcc-4.6.3 x32" for building i686-MinGW
   "./build gcc-4.6.3 x64" for building x86_64-MinGW
-  "./build gcc-4.6.3 x32 x64" for building i686-MinGW and x86_64-MinGW
-  "./build gcc-4.6.3 --preload x32 x64" for building i686-MinGW and x86_64-MinGW
+  "./build gcc-4.6.3 --preload x64" for preload sources and building x86_64-MinGW
   "./build gcc-4.6.3 --exceptions=dwarf" for building i686-MinGW with DWARF exception handling
 
 For example, during the process of building of the i686-gcc-4.7.2 will
