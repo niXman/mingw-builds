@@ -33,4 +33,29 @@
 #
 
 # **************************************************************************
+
+x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/4.7.3/32-bit/threads-posix/sjlj/x32-4.7.3-release-posix-sjlj-rev1.7z
+x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/4.7.3/64-bit/threads-posix/sjlj/x64-4.7.3-release-posix-sjlj-rev1.7z
+
+# **************************************************************************
+
+x32_HOST=i686-w64-mingw32
+x32_BUILD=i686-w64-mingw32
+x32_TARGET=i686-w64-mingw32
+
+x64_HOST=x86_64-w64-mingw32
+x64_BUILD=x86_64-w64-mingw32
+x64_TARGET=x86_64-w64-mingw32
+
+# **************************************************************************
+
+REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-windows/repository.txt
+
+# **************************************************************************
+
+LOGVIEWERS=(
+	"c:/progra~2/notepad++/notepad++.exe"
+	"c:/progra~1/notepad++/notepad++.exe"
+)
+
 # **************************************************************************

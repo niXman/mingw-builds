@@ -40,7 +40,7 @@ NAME=$BUILD_ARCHITECTURE-isl-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=isl-${VERSION}
 TYPE=.tar.bz2
 URL=(
-	"ftp://ftp.linux.student.kuleuven.be/pub/people/skimo/isl//isl-${VERSION}.tar.bz2"
+	"ftp://ftp.linux.student.kuleuven.be/pub/people/skimo/isl/isl-${VERSION}.tar.bz2"
 )
 
 PRIORITY=prereq

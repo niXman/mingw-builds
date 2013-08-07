@@ -34,6 +34,49 @@
 
 # **************************************************************************
 
+export MSYSTEM=MINGW32
+export LC_ALL=en_US.UTF-8
+
+# **************************************************************************
+
+ENABLE_LANGUAGES='ada,c,c++,fortran,objc,obj-c++'
+
+BASE_CFLAGS="-O2 -pipe"
+BASE_CXXFLAGS="$BASE_CFLAGS"
+BASE_CPPFLAGS=""
+BASE_LDFLAGS="-pipe"
+
+LINK_TYPE_BOTH="--enable-shared --enable-static"
+LINK_TYPE_SHARED="--enable-shared --disable-static"
+LINK_TYPE_STATIC="--enable-static --disable-shared"
+GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
+LINK_TYPE_SUFFIX="static"
+
+SHOW_LOG_ON_ERROR=yes
+
+JOBS=1
+
+# **************************************************************************
+
+MINGW_BUILDS_VERSION="MinGW-W64-builds-0.0.1"
+PKG_VERSION="Built by MinGW-W64 project"
+
+# **************************************************************************
+
+PROJECT_ROOT_URL=http://sourceforge.net/projects/mingw-w64
+BUG_URL=$PROJECT_ROOT_URL
+PROJECT_FS_ROOT_DIR=/home/frs/project/mingw-w64
+
+# **************************************************************************
+
+[[ $(env | grep PROCESSOR_ARCHITEW6432) =~ AMD64 || $(env | grep PROCESSOR_ARCHITECTURE) =~ AMD64 ]] && {
+	IS_64BIT_HOST=yes
+} || {
+	IS_64BIT_HOST=no
+}
+
+# **************************************************************************
+
 IS_LINUX_HOST=no
 IS_WINDOWS_HOST=no
 IS_MACOSX_HOST=no
@@ -59,7 +102,32 @@ esac
 
 # **************************************************************************
 
-export MSYSTEM=MINGW32
-export LC_ALL=en_US.UTF-8
+LOGVIEWER=
+
+func_find_logviewer \
+	LOGVIEWERS[@] \
+	LOGVIEWER
+
+[[ $? != 0 ]] && {
+	die "logviewer not found. terminate."
+}
+
+[[ -z $LOGVIEWER ]] && {
+	die "var LOGVIEWER is NULL. terminate."
+}
+
+# **************************************************************************
+
+[[ -z $x32_HOST_MINGW_PATH_URL || -z $x64_HOST_MINGW_PATH_URL ]] && {
+	die "x32_HOST_MINGW_PATH_URL or x64_HOST_MINGW_PATH_URL is empty. terminate."
+}
+
+func_test_vars_list_for_null \
+  "x32_HOST \
+	x32_BUILD \
+	x32_TARGET \
+	x64_HOST \
+	x64_BUILD \
+	x64_TARGET"
 
 # **************************************************************************

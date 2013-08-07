@@ -35,48 +35,8 @@
 
 # **************************************************************************
 
-. ./scripts/config.sh
 . ./scripts/functions.sh
-
-ENABLE_LANGUAGES='ada,c,c++,fortran,objc,obj-c++'
-
-BASE_CFLAGS="-O2 -pipe"
-BASE_CXXFLAGS="$BASE_CFLAGS"
-BASE_CPPFLAGS=""
-BASE_LDFLAGS="-pipe"
-
-LINK_TYPE_BOTH="--enable-shared --enable-static"
-LINK_TYPE_SHARED="--enable-shared --disable-static"
-LINK_TYPE_STATIC="--enable-static --disable-shared"
-GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
-LINK_TYPE_SUFFIX="static"
-
-SHOW_LOG_ON_ERROR=yes
-
-JOBS=1
-
-[[ $(env | grep PROCESSOR_ARCHITEW6432) =~ AMD64 || $(env | grep PROCESSOR_ARCHITECTURE) =~ AMD64 ]] && {
-	IS_64BIT_HOST=yes
-	LOGVIEWER="c:/progra~2/notepad++/notepad++.exe"
-} || {
-	IS_64BIT_HOST=no
-	LOGVIEWER="c:/progra~1/notepad++/notepad++.exe"
-}
-
-# **************************************************************************
-
-x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.3/32-bit/threads-posix/sjlj/x32-4.7.3-release-posix-sjlj-rev1.7z
-x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.3/64-bit/threads-posix/sjlj/x64-4.7.3-release-posix-sjlj-rev1.7z
-
-MINGW_BUILDS_VERSION="MinGW-builds-4.0.0"
-PKG_VERSION="Built by MinGW-builds project"
-
-PROJECT_ROOT_URL=http://sourceforge.net/projects/mingwbuilds
-BUG_URL=$PROJECT_ROOT_URL
-PROJECT_FS_ROOT_DIR=/home/frs/project/mingwbuilds
-REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-windows/repository.txt
+. ./scripts/config.sh
 
 # **************************************************************************
 
@@ -117,7 +77,7 @@ RUN_ARGS="$@"
 	echo "    --mingw-compress           - compressing MinGW"
 	echo "    --srcs-compress            - compressing sources"
 	echo "    --mingw-upload             - upload toolchain archives to sf-project"
-	echo "    --src-upload               - upload sources archive to sf-project"
+	echo "    --srcs-upload              - upload sources archive to sf-project"
 	echo "    --sf-user=<username>       - username to upload to sf-project"
 	echo "    --sf-password=<user_pass>  - password to upload to sf-project"	
 	echo "    --cflags='<flags>'         - additional CFLAGS"
@@ -309,7 +269,7 @@ while [[ $# > 0 ]]; do
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
 		--srcs-compress) COMPRESSING_SRCS=yes ;;
 		--mingw-upload) UPLOAD_BIN_TO_SF=yes ;;
-		--src-upload) UPLOAD_SRC_TO_SF=yes ;;
+		--srcs-upload) UPLOAD_SRC_TO_SF=yes ;;
 		--sf-user=*) SF_USER=${1/--sf-user=/} ;;
 		--sf-password=*) SF_PASSWORD=${1/--sf-password=/} ;;
 		--debug-upload) DEBUG_UPLOAD=yes ;;
@@ -369,7 +329,7 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 		;;
 		seh)
 			[[ ${BUILD_ARCHITECTURE} == x32 ]] && {
-				die "SEH exceptions not allowed on x86 architecture. terminate."
+				die "SEH exceptions not allowed on i686 architecture. terminate."
 			}
 		;;	
 		sjlj)
@@ -377,7 +337,7 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 		;;
 	esac
 	[[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
-		die "$EXCEPTIONS_MODEL exceptions not allowed on multilib architecture. terminate."
+		die "\"$EXCEPTIONS_MODEL\" exceptions not allowed on multilib architecture. terminate."
 	}
 }
 
@@ -386,7 +346,7 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 }
 
 [[ $BUILD_MODE != gcc && $COMPRESSING_SRCS == yes ]] && {
-	die "compressing sources in $BUILD_MODE mode is currently unimplemented. terminate."
+	die "compressing sources for \"$BUILD_MODE\" mode is currently unimplemented. terminate."
 }
 
 # **************************************************************************
@@ -420,7 +380,7 @@ mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 			$x64_HOST_MINGW_PATH_URL
 		func_res=$?
 		[[ $func_res != 0 ]] && {
-			echo "toolchain install error $func_res. terminate."
+			echo "toolchain install error($func_res). terminate."
 			die "see log-files in \"$TOOLCHAINS_DIR\" directory."
 		}
 	}
@@ -652,21 +612,21 @@ LOGS_DIR=$BASE_BUILD_DIR/logs
 }
 
 [[ $BUILD_ARCHITECTURE == x32 ]] && {
-	HOST=i686-w64-mingw32
-	BUILD=i686-w64-mingw32
-	TARGET=i686-w64-mingw32
+	HOST=$x32_HOST
+	BUILD=$x32_BUILD
+	TARGET=$x32_TARGET
 
-	[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc.exe ]] && {
-		die "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
+	[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc ]] && {
+		die "gcc is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
 	}
 	export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 } || {
-	HOST=x86_64-w64-mingw32
-	BUILD=x86_64-w64-mingw32
-	TARGET=x86_64-w64-mingw32
+	HOST=$x64_HOST
+	BUILD=$x64_BUILD
+	TARGET=$x64_TARGET
 	
-	[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc.exe ]] && {
-		die "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
+	[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc ]] && {
+		die "gcc is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
 	}
 	export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 }
@@ -681,7 +641,14 @@ LOGS_DIR=$BASE_BUILD_DIR/logs
 	ENABLE_TARGETS=$TARGET
 }
 
-mkdir -p $BASE_BUILD_DIR $BUILDS_DIR $LIBS_DIR $LOGS_DIR $PREFIX $PREREQ_BUILD_DIR $PREREQ_LOGS_DIR
+mkdir -p \
+	$BASE_BUILD_DIR \
+	$BUILDS_DIR \
+	$LIBS_DIR \
+	$LOGS_DIR \
+	$PREFIX \
+	$PREREQ_BUILD_DIR \
+	$PREREQ_LOGS_DIR
 
 COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
 COMMON_CXXFLAGS="$COMMON_CFLAGS"
@@ -879,6 +846,7 @@ done
 		func_create_mingw_upload_cmd \
 			$ARCHIVES_DIR \
 			$SF_USER \
+			$SF_PASSWORD \
 			$GCC_NAME \
 			$mingw_archive_name \
 			$BUILD_ARCHITECTURE \
@@ -890,15 +858,18 @@ done
 	[[ $DEBUG_UPLOAD == yes ]] && {
 		echo "bin_cmd:${upload_cmd}"
 	} || {
-		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$BUILD_ARCHITECTURE-upload.log 2>&1"
+		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-mingw-upload.log 2>&1"
 		func_res=$?
 		[[ $func_res != 0 ]] && {
 			die "upload finished with error($func_res). terminate."
 		} || {
 			echo "done"
 			[[ $(func_map_gcc_name_to_gcc_type $GCC_NAME) == release ]] && {
-				func_download_repository_file \
-					$TMP/$(basename $REPOSITORY_FILE)
+				wget $REPOSITORY_FILE -O $TMP/$(basename $REPOSITORY_FILE) > /dev/null 2>&1
+				func_res=$?
+				[[ $func_res != 0 ]] && {
+					die "error($func_res) when downloading repository file. terminate."
+				}
 			
 				func_update_repository_file \
 					$TMP/$(basename $REPOSITORY_FILE) \
@@ -907,12 +878,30 @@ done
 					$THREADS_MODEL \
 					$EXCEPTIONS_MODEL \
 					$REV_NUM \
-					$(func_create_url_for_archive $PROJECT_ROOT_URL $GCC_NAME $BUILD_ARCHITECTURE $THREADS_MODEL $EXCEPTIONS_MODEL ) \
+					$(func_create_url_for_archive \
+						$PROJECT_ROOT_URL \
+						$GCC_NAME \
+						$BUILD_ARCHITECTURE \
+						$THREADS_MODEL \
+						$EXCEPTIONS_MODEL \
+					) \
 					$(basename $mingw_archive_name)
 
-				func_upload_repository_file \
-					$TMP/$(basename $REPOSITORY_FILE) \
-					$SF_USER
+				upload_cmd=$( \
+					func_create_repository_file_upload_cmd \
+						$TMP/$(basename $REPOSITORY_FILE) \
+						$SF_USER \
+						$SF_PASSWORD \
+				)
+				[[ $DEBUG_UPLOAD == yes ]] && {
+					echo "rep_cmd:${upload_cmd}"
+				} || {
+					eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-upload.log 2>&1"
+					func_res=$?
+					[[ $func_res != 0 ]] && {
+						die "error($func_res) when uploading repository file. terminate."
+					}
+				}
 			}
 		}
 	}
@@ -930,6 +919,7 @@ done
 		func_create_sources_upload_cmd \
 			$ARCHIVES_DIR \
 			$SF_USER \
+			$SF_PASSWORD \
 			$GCC_NAME \
 			$sources_archive_name \
 	)

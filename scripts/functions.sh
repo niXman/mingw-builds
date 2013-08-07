@@ -43,7 +43,7 @@ function die {
 # **************************************************************************
 
 function func_check_program {
-	command -v "$@" > /dev/null 2>&1 || { die "Command $@ not found. Terminate."; }
+	command -v "$@" > /dev/null 2>&1 || { die "command \"$@\" not found. terminate."; }
 }
 
 # **************************************************************************
@@ -91,11 +91,11 @@ function func_check_languages {
 	IFS=","                           
 	local langs=( $1 )
 	IFS=$OLD_IFS
-	local errs=""
+	local errs=
 	local lang=
 	
 	[[ ${#langs[@]} == 0 ]] && {
-		die "You must specify languages to build"
+		die "you must specify languages to build. terminate."
 	} || {
 		for lang in ${langs[@]}; do
 			! [[ "$lang" == "ada" || "$lang" == "c" || "$sub" == "c++" || \
@@ -104,10 +104,24 @@ function func_check_languages {
 			}
 		done
 
-		[[ x"$errs" != x ]] && {
-			die "Follow languages not supported: $errs"
+		[[ -n "$errs" ]] && {
+			die "following languages are not supported: $errs"
 		}
 	}
+}
+
+# **************************************************************************
+
+function func_test_vars_list_for_null {
+	# $1 - array of vars
+	
+	local list=( $1 )
+	local it=
+	
+	for it in ${list[@]}; do
+		eval "test -z $it"
+		[[ $? == 0 ]] && { die "var \"$it\" is NULL. terminate."; }
+	done
 }
 
 # **************************************************************************
@@ -130,6 +144,25 @@ function func_has_lang {
 		done
 	}
 	return "0"
+}
+
+# **************************************************************************
+
+# find the first installed logviewer from the list
+function func_find_logviewer {
+	# $1 - list of viewers
+	# $2 - var name to pass viewer name
+
+	local -a _arr=( "${!1}" )
+	for it in ${_arr[@]}; do
+		command -v "$it" > /dev/null 2>&1
+		[[ $? == 0 ]] && {
+			eval "$2=\"$it\""
+			return 0;
+		}
+	done
+	
+	return 1
 }
 
 # **************************************************************************
@@ -753,15 +786,16 @@ function func_create_sources_archive_name {
 function func_create_mingw_upload_cmd {
 	# $1 - build root dir
 	# $2 - sf user name
-	# $3 - gcc name
-	# $4 - archive name
-	# $5 - architecture
-	# $6 - threads model
-	# $7 - exceptions model
+	# $3 - sf password
+	# $4 - gcc name
+	# $5 - archive name
+	# $6 - architecture
+	# $7 - threads model
+	# $8 - exceptions model
 
-	local _upload_cmd="scp $4 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/host-windows"
-	local _gcc_type=$(func_map_gcc_name_to_gcc_type $3)
-	local _gcc_version=$(func_map_gcc_name_to_gcc_version $3)
+	local _upload_cmd="sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/host-windows"
+	local _gcc_type=$(func_map_gcc_name_to_gcc_type $4)
+	local _gcc_version=$(func_map_gcc_name_to_gcc_version $4)
 
 	[[ $_gcc_type == release ]] && {
 		_upload_cmd="$_upload_cmd/releases/$_gcc_version"
@@ -769,7 +803,7 @@ function func_create_mingw_upload_cmd {
 		_upload_cmd="$_upload_cmd/testing/$_gcc_version"
 	}
 
-	_upload_cmd="$_upload_cmd/$( [[ $5 == x32 ]] && echo 32-bit || echo 64-bit )/threads-$6/$7"
+	_upload_cmd="$_upload_cmd/$( [[ $6 == x32 ]] && echo 32-bit || echo 64-bit )/threads-$7/$8"
 
 	echo "$_upload_cmd"
 }
@@ -779,10 +813,11 @@ function func_create_mingw_upload_cmd {
 function func_create_sources_upload_cmd {
 	# $1 - build root dir
 	# $2 - sf user name
-	# $3 - gcc name
-	# $4 - archive name
+	# $3 - sf user password
+	# $4 - gcc name
+	# $5 - archive name
 
-	echo "scp $4 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/mingw-sources/$(func_map_gcc_name_to_gcc_version $3)"
+	echo "sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/mingw-sources/$(func_map_gcc_name_to_gcc_version $4)"
 }
 
 # **************************************************************************
@@ -807,14 +842,6 @@ function func_create_url_for_archive {
 	echo "$_upload_url/$( [[ $3 == x32 ]] && echo 32-bit || echo 64-bit )/threads-$4/$5"
 }
 
-function func_download_repository_file {
-	#1 - repository local file name
-	
-	wget $REPOSITORY_FILE -O "$1" > /dev/null 2>&1
-	local _result=$?
-	[[ $_result != 0 ]] && { die "error($_result) when downloading repository file. terminate."; }
-}
-
 function func_update_repository_file {
 	# $1 - repository file name
 	# $2 - version
@@ -830,14 +857,12 @@ function func_update_repository_file {
 	printf "%5s|%3s|%5s|%-5s|%-5s|%s\n" $2 $3 $4 $5 "rev$6" "$7/$8" >> $1
 }
 
-function func_upload_repository_file {
-	# $1 - file name
+function func_create_repository_file_upload_cmd {
+	# $1 - local file name
 	# $2 - sf user name
+	# $3 - sf user password
 
-	scp $1 $2@frs.sourceforge.net:$(dirname $REPOSITORY_FILE)
-	local _result=$?
-	
-	[[ $_result != 0 ]] && { die "error($_result) when uploading repository file. terminate."; }
+	echo "sshpass -p $3 scp $1 $2@frs.sourceforge.net:$(dirname $REPOSITORY_FILE)"
 }
 
 # **************************************************************************
