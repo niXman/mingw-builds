@@ -34,9 +34,8 @@
 #
 
 # **************************************************************************
-export MSYSTEM=MINGW32
-export LC_ALL=en_US.UTF-8
 
+. ./scripts/config.sh
 . ./scripts/functions.sh
 
 ENABLE_LANGUAGES='ada,c,c++,fortran,objc,obj-c++'
