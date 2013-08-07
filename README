@@ -25,14 +25,12 @@ MSYS2:
   "cd && cd mingw-builds"
 
 7.
-  '--mode=[gcc|python|clang]-version' option specifies building software with version
-  '--arch=<x32|x64>' option specifies the architecture
+  '--mode=[gcc|python|clang]-version' option specifies building software with version.
+  '--arch=<x32|x64>' option specifies the architecture.
   '--buildroot=<path>' option specifies to the script to use '<path>' as build directory.
     By default used MSYS user home directory.
-  '--preload' option specifies to the script to pre-download all the sources
-    and only after that, to begin the building. This allows to build different
-    versions of GCC simultaneously.
-  '--download' option specifies to the script to download only the sources.
+  '--fetch-only' option specifies to the script only to download all the sources
+    without start building.
   '--exceptions=model' option specifies to the script using exceptions handling
     model. Available models are: dwarf, seh(for gcc>=4.8.0 only), sjlj.
   '--use-lto' option specifies to the script to build with using LTO.
@@ -41,8 +39,6 @@ MSYS2:
   '--dyn-deps' option specifies to the script to build GCC with dynamically dependencies.
   '--rev=N' option specifies to the script the number of the build revision.
   '--threads=model' option specifies to the script the used threads model.
-  '--python-only=x.y.z' option specifies to the script to build python only.
-    available versions: 2.7.3, 2.7.4, 2.7.5, 3.3.0
   For more options run: "./build --help"
 
 8. Run:
