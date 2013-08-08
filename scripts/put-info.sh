@@ -75,6 +75,10 @@
 		echo "$NAME configuration:" >> $INFO_FILE
 		echo "${CONFIGURE_FLAGS[@]}" >> $INFO_FILE
 		echo >> $INFO_FILE
+		[[ ${#PATCHES[@]} > 0 ]] && {
+			echo "patches:" >> $INFO_FILE
+			echo "${PATCHES[@]}" | sed "s| |,|g" >> $INFO_FILE
+		}
 		echo "# **************************************************************************" >> $INFO_FILE
 		echo >> $INFO_FILE
 	done
