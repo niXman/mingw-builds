@@ -335,6 +335,10 @@ MARKERS_DIR=$SRCS_DIR/MARKERS
 PREREQ_DIR=$ROOT_DIR/mingw-prereq
 RUNTIME_DIR=$ROOT_DIR/mingw-runtime
 ARCHIVES_DIR=$ROOT_DIR/mingw-archives
+
+x32_PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+x64_PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+
 mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
 
 # **************************************************************************
@@ -650,7 +654,7 @@ LOGS_DIR=$BASE_BUILD_DIR/logs
 	[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc.exe ]] && {
 		die "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
 	}
-	export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+	export PATH=$x32_PATH
 } || {
 	HOST=x86_64-w64-mingw32
 	BUILD=x86_64-w64-mingw32
@@ -659,7 +663,7 @@ LOGS_DIR=$BASE_BUILD_DIR/logs
 	[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc.exe ]] && {
 		die "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
 	}
-	export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+	export PATH=$x64_PATH
 }
 
 [[ $USE_MULTILIB == yes ]] && {
