@@ -78,6 +78,7 @@
 		[[ ${#PATCHES[@]} > 0 ]] && {
 			echo "patches:" >> $INFO_FILE
 			echo "${PATCHES[@]}" | sed "s| |\n|g" >> $INFO_FILE
+			echo >> $INFO_FILE
 		}
 		echo "# **************************************************************************" >> $INFO_FILE
 		echo >> $INFO_FILE
