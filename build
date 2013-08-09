@@ -578,43 +578,6 @@ esac
 
 # **************************************************************************
 
-[[ $FETCH_MODE == yes ]] && {
-	echo -n "-> fetch sources for building ${BUILD_MODE_VERSION}-"
-	
-	[[ $BUILD_MODE == gcc ]] && {
-		[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ]] && echo -n "multilib-"
-		[[ ${BUILD_ARCHITECTURE} == x32 ]] && echo -n "x32-" || echo -n "x64-"
-		echo "$EXCEPTIONS_MODEL"
-	} || {
-		[[ ${BUILD_ARCHITECTURE} == x32 ]] && echo -n "x32" || echo -n "x64"
-	}
-
-	for sub in ${SUBTARGETS[@]}; do
-		[[ $sub == put-versions || $sub == put-info ]] && continue
-		[[ -n $( grep 'URL=' $TOP_DIR/scripts/${sub}.sh ) ]] && {
-			echo -e "-> \E[32;40m$sub\E[37;40m"
-			[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
-				die "script for subtarget \"$sub\" is not exists. terminate."
-			}
-
-			NAME=""
-			cd $TOP_DIR && . ./scripts/$sub.sh
-
-			[[ -z $NAME ]] && continue
-
-			mkdir -p $SRCS_DIR/$SRC_DIR_NAME
-
-			func_download URL[@]
-
-			func_uncompress URL[@]
-		}
-	done
-	echo "-> Sources downloaded successfully."
-	exit 0
-}
-
-# **************************************************************************
-
 [[ -n $REV_NUM ]] && REV_STRING="-r$REV_NUM" || REV_STRING=""
 GCC_PART_NAME=${GCC_NAME/gcc-/}
 GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
@@ -636,10 +599,8 @@ LOGS_DIR=$BASE_BUILD_DIR/logs
 	MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
-	echo "-> start building $MINGW_BUILD_NAME"
 } || {
 	PREFIX=$BASE_BUILD_DIR/${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}
-	echo "-> start building ${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}"
 }
 
 [[ $BUILD_ARCHITECTURE == x32 ]] && {
@@ -679,11 +640,31 @@ COMMON_CXXFLAGS="$COMMON_CFLAGS"
 COMMON_CPPFLAGS="$BASE_CPPFLAGS"
 COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/opt/lib"
 
+[[ $FETCH_MODE == yes ]] && {
+	echo -n "-> fetch sources for building ${BUILD_MODE_VERSION}-"
+	[[ $BUILD_MODE == gcc ]] && {
+		[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ]] && echo -n "multilib-"
+		[[ ${BUILD_ARCHITECTURE} == x32 ]] && echo -n "x32-" || echo -n "x64-"
+		echo "$EXCEPTIONS_MODEL"
+	} || {
+		[[ ${BUILD_ARCHITECTURE} == x32 ]] && echo -n "x32" || echo -n "x64"
+	}
+} || {
+	[[ $BUILD_MODE == gcc ]] && {
+		echo "-> start building $MINGW_BUILD_NAME"
+	} || {
+		echo "-> start building ${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}"
+	}
+}
+
 for sub in ${SUBTARGETS[@]}; do
-	echo -e "-> \E[32;40m$sub\E[37;40m"
 	[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
 		die "script for subtarget \"$sub\" is not exists. terminate."
 	}
+	[[ $FETCH_MODE == yes ]] && {
+		[[ -z $( grep 'URL=' $TOP_DIR/scripts/${sub}.sh ) ]] && continue
+	}
+	echo -e "-> \E[32;40m$sub\E[37;40m"
 
 	NAME=""
 	PRIORITY=""
@@ -693,12 +674,6 @@ for sub in ${SUBTARGETS[@]}; do
 	EXECUTE_AFTER_INSTALL=()
 
 	cd $TOP_DIR && . ./scripts/$sub.sh
-
-	[[ $sub == "gcc-post" ]] && {
-		echo -n "--> Switching to new compiler..."
-		export PATH=$PREFIX/bin:$PREFIX/opt/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
-		echo "done"
-	}
 
 	[[ -z $NAME ]] && continue
 
@@ -729,112 +704,119 @@ for sub in ${SUBTARGETS[@]}; do
 
 	func_uncompress URL[@]
 
-	[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
-		func_execute \
+	[[ $FETCH_MODE == no ]] && {
+		[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
+			func_execute \
+				$SRCS_DIR \
+				$SRC_DIR_NAME \
+				"execute commands..." \
+				"after_unpack" \
+				$CURR_LOGS_DIR \
+				EXECUTE_AFTER_UNCOMPRESS[@]
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_unpack-$_index.log &
+				exit $func_res
+			}
+		}
+
+		func_apply_patches \
 			$SRCS_DIR \
 			$SRC_DIR_NAME \
-			"execute commands..." \
-			"after_unpack" \
 			$CURR_LOGS_DIR \
-			EXECUTE_AFTER_UNCOMPRESS[@]
+			$PATCHES_DIR \
+			PATCHES[@]
 		func_res=$?
 		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_unpack-$_index.log &
+			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/patch-$_index.log &
 			exit $func_res
 		}
-	}
 
-	func_apply_patches \
-		$SRCS_DIR \
-		$SRC_DIR_NAME \
-		$CURR_LOGS_DIR \
-		$PATCHES_DIR \
-		PATCHES[@]
-	func_res=$?
-	[[ $func_res != 0 ]] && {
-		[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/patch-$_index.log &
-		exit $func_res
-	}
-
-	[[ ${#EXECUTE_AFTER_PATCH[@]} >0 ]] && {
-		func_execute \
-			$SRCS_DIR \
-			$SRC_DIR_NAME \
-			"execute commands..." \
-			"after_patch" \
-			$CURR_LOGS_DIR \
-			EXECUTE_AFTER_PATCH[@]
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_patch-$_index.log &
-			exit $func_res
+		[[ ${#EXECUTE_AFTER_PATCH[@]} >0 ]] && {
+			func_execute \
+				$SRCS_DIR \
+				$SRC_DIR_NAME \
+				"execute commands..." \
+				"after_patch" \
+				$CURR_LOGS_DIR \
+				EXECUTE_AFTER_PATCH[@]
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_patch-$_index.log &
+				exit $func_res
+			}
 		}
-	}
 
-	[[ ${#CONFIGURE_FLAGS[@]} >0 ]] && {
-		configure_flags="${CONFIGURE_FLAGS[@]}"
-		func_configure \
-			$NAME \
-			$SRC_DIR_NAME \
-			"$configure_flags" \
-			$CONFIGURE_LOG \
-			$CURR_BUILD_DIR
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG &
-			exit $func_res
+		[[ ${#CONFIGURE_FLAGS[@]} >0 ]] && {
+			configure_flags="${CONFIGURE_FLAGS[@]}"
+			func_configure \
+				$NAME \
+				$SRC_DIR_NAME \
+				"$configure_flags" \
+				$CONFIGURE_LOG \
+				$CURR_BUILD_DIR
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG &
+				exit $func_res
+			}
 		}
-	}
 
-	[[ ${#MAKE_FLAGS[@]} >0 ]] && {
-		make_flags="/bin/make ${MAKE_FLAGS[@]}"
-		func_make \
-			$NAME \
-			$SRC_DIR_NAME \
-			"$make_flags" \
-			$MAKE_LOG \
-			"building..." \
-			"built" \
-			$CURR_BUILD_DIR
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG &
-			exit $func_res
+		[[ ${#MAKE_FLAGS[@]} >0 ]] && {
+			make_flags="/bin/make ${MAKE_FLAGS[@]}"
+			func_make \
+				$NAME \
+				$SRC_DIR_NAME \
+				"$make_flags" \
+				$MAKE_LOG \
+				"building..." \
+				"built" \
+				$CURR_BUILD_DIR
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG &
+				exit $func_res
+			}
 		}
-	}
 
-	[[ ${#INSTALL_FLAGS[@]} >0 ]] && {
-		install_flags="/bin/make ${INSTALL_FLAGS[@]}"
-		func_make \
-			$NAME \
-			$SRC_DIR_NAME \
-			"$install_flags" \
-			$INSTALL_LOG \
-			"installing..." \
-			"installed" \
-			$CURR_BUILD_DIR
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG &
-			exit $func_res
+		[[ ${#INSTALL_FLAGS[@]} >0 ]] && {
+			install_flags="/bin/make ${INSTALL_FLAGS[@]}"
+			func_make \
+				$NAME \
+				$SRC_DIR_NAME \
+				"$install_flags" \
+				$INSTALL_LOG \
+				"installing..." \
+				"installed" \
+				$CURR_BUILD_DIR
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG &
+				exit $func_res
+			}
 		}
-	}
 	
-	[[ ${#EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
-		func_execute \
-			$CURR_BUILD_DIR \
-			$NAME \
-			"execute commands..." \
-			"after_install" \
-			$CURR_LOGS_DIR \
-			EXECUTE_AFTER_INSTALL[@]
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CURR_BUILD_DIR/$NAME/exec-after_install-$_index.log &
-			exit $func_res
+		[[ ${#EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
+			func_execute \
+				$CURR_BUILD_DIR \
+				$NAME \
+				"execute commands..." \
+				"after_install" \
+				$CURR_LOGS_DIR \
+				EXECUTE_AFTER_INSTALL[@]
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CURR_BUILD_DIR/$NAME/exec-after_install-$_index.log &
+				exit $func_res
+			}
 		}
 	}
 done
+
+[[ $FETCH_MODE == yes ]] && {
+	echo "Sources downloaded successfully."
+	exit 0
+}
 
 # ***************************************************************************
 
