@@ -342,9 +342,13 @@ readonly ARCHIVES_DIR=$ROOT_DIR/mingw-archives
 mkdir -p \
 	$SRCS_DIR \
 	$MARKERS_DIR \
-	$ARCHIVES_DIR \
-	$PREREQ_DIR \
-	$RUNTIME_DIR
+	$ARCHIVES_DIR
+
+[[ $BUILD_MODE == gcc ]] && {
+	mkdir -p \
+		$PREREQ_DIR \
+		$RUNTIME_DIR
+}
 
 # **************************************************************************
 
@@ -426,7 +430,12 @@ mkdir -p \
 
 # **************************************************************************
 
-[[ -n $REV_NUM ]] && readonly REV_STRING="-r$REV_NUM" || readonly REV_STRING=""
+[[ -n $REV_NUM ]] && {
+	readonly REV_STRING="-r$REV_NUM"
+} || {
+	readonly REV_STRING=""
+}
+
 GCC_PART_NAME=${GCC_NAME/gcc-/}
 GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
 readonly GCC_PART_NAME=${GCC_PART_NAME//./}
@@ -450,6 +459,21 @@ readonly PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
 } || {
 	readonly PREFIX=$BASE_BUILD_DIR/${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}
 	echo "-> start building ${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}"
+}
+
+readonly BUILDS_DIR=$BASE_BUILD_DIR/build
+readonly LIBS_DIR=$BASE_BUILD_DIR/libs
+readonly LOGS_DIR=$BASE_BUILD_DIR/logs
+
+[[ $BUILD_MODE == gcc || $BUILD_MODE == python ]] && {
+	mkdir -p \
+		$BASE_BUILD_DIR \
+		$BUILDS_DIR \
+		$LIBS_DIR \
+		$LOGS_DIR \
+		$PREFIX \
+		$PREREQ_BUILD_DIR \
+		$PREREQ_LOGS_DIR
 }
 
 # **************************************************************************
@@ -487,19 +511,6 @@ readonly PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
 }
 
 # **************************************************************************
-
-readonly BUILDS_DIR=$BASE_BUILD_DIR/build
-readonly LIBS_DIR=$BASE_BUILD_DIR/libs
-readonly LOGS_DIR=$BASE_BUILD_DIR/logs
-
-mkdir -p \
-	$BASE_BUILD_DIR \
-	$BUILDS_DIR \
-	$LIBS_DIR \
-	$LOGS_DIR \
-	$PREFIX \
-	$PREREQ_BUILD_DIR \
-	$PREREQ_LOGS_DIR
 
 readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
 readonly COMMON_CXXFLAGS="$COMMON_CFLAGS"
