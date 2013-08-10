@@ -73,6 +73,7 @@ function func_build_info() {
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
 
+	local it=
 	for it in ${SUBTARGETS[@]}; do
 		[[ $it == build-info ]] && continue
 		[[ -z $(grep 'CONFIGURE_FLAGS=' $TOP_DIR/scripts/$it.sh) ]] && continue
@@ -91,11 +92,11 @@ function func_build_info() {
 		cd $prev_dir
 		
 		[[ ${#URL[@]} > 1 ]] && {
-			local it=
+			local it1=
 			local urls=
 			
-			for it in ${URL[@]}; do
-				urls="$urls $(echo $it | sed -n 's/\([^|]*\)|.*/\1/p')"
+			for it1 in ${URL[@]}; do
+				urls="$urls $(echo $it1 | sed -n 's/\([^|]*\)|.*/\1/p')"
 			done
 			
 			echo "urls         : $(echo $urls | sed 's| |, |g')" >> $INFO_FILE
