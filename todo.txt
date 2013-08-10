@@ -17,3 +17,15 @@
 
 3. install only required licenses for each mode.
    (gcc, python, clang)
+
+4. there is no need to change the IFS when converting a string to the list.
+   just use the: arr=( ${str[@]} )
+
+5. creating a list of subtargets rewrite as a function that
+   will be used as follows:
+	function get_subtargets_list() {
+	   # $1 - mode (gcc, clang, python)
+		# $2 - version
+		...
+	}
+	subtargets=( $(get_subtargets_list $mode $version) )
