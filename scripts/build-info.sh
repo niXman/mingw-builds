@@ -1,4 +1,3 @@
-
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
@@ -44,7 +43,9 @@ function func_build_info() {
 	echo "user    : $(whoami)" >> $INFO_FILE
 	echo "date    : $(date +%m.%d.%Y-%X)" >> $INFO_FILE
 	[[ -n $(echo $RUN_ARGS | grep '\-\-sf-password=') ]] && {
-		local _RUN_ARGS=$(echo $RUN_ARGS | sed "s|$SF_PASSWORD|***********|g")
+		local readonly _RUN_ARGS=$(echo $RUN_ARGS | sed "s|$SF_PASSWORD|***********|g")
+	} || {
+		local readonly _RUN_ARGS="$RUN_ARGS"
 	}
 	echo "args    : $_RUN_ARGS" >> $INFO_FILE
 	echo "PATH    : $ORIGINAL_PATH" >> $INFO_FILE
