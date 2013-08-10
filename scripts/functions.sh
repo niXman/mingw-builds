@@ -153,6 +153,7 @@ function func_find_logviewer {
 	# $2 - var name to pass viewer name
 
 	local -a _arr=( "${!1}" )
+	local it=
 	for it in ${_arr[@]}; do
 		command -v "$it" > /dev/null 2>&1
 		[[ $? == 0 ]] && {
