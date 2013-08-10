@@ -90,7 +90,18 @@ function func_build_info() {
 		esac
 		cd $prev_dir
 		
-		echo "url          : $URL" >> $INFO_FILE
+		[[ ${#URL[@]} > 1 ]] && {
+			local it=
+			local urls=
+			
+			for it in ${URL[@]}; do
+				urls="$urls $(echo $it | sed -n 's/\([^|]*\)|.*/\1/p')"
+			done
+			
+			echo "urls         : $(echo $urls | sed 's| |, |g')" >> $INFO_FILE
+		} || {
+			echo "url          : $URL" >> $INFO_FILE
+		}
 		echo "patches      : $(echo ${PATCHES[@]} | sed 's| |, |g')" >> $INFO_FILE
 		echo "configuration: ${CONFIGURE_FLAGS[@]}" >> $INFO_FILE
 		echo >> $INFO_FILE
