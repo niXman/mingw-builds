@@ -2,11 +2,11 @@
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -15,7 +15,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -50,7 +50,6 @@ LINK_TYPE_BOTH="--enable-shared --enable-static"
 LINK_TYPE_SHARED="--enable-shared --disable-static"
 LINK_TYPE_STATIC="--enable-static --disable-shared"
 GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
-LINK_TYPE_SUFFIX="static"
 
 SHOW_LOG_ON_ERROR=yes
 
@@ -58,7 +57,7 @@ JOBS=1
 
 # **************************************************************************
 
-MINGW_BUILDS_VERSION="MinGW-W64-builds-0.0.1"
+MINGW_W64_BUILDS_VERSION="MinGW-W64-builds-0.0.1"
 PKG_VERSION="Built by MinGW-W64 project"
 
 # **************************************************************************
@@ -107,13 +106,12 @@ LOGVIEWER=
 func_find_logviewer \
 	LOGVIEWERS[@] \
 	LOGVIEWER
-
 [[ $? != 0 ]] && {
 	die "logviewer not found. terminate."
 }
 
 [[ -z $LOGVIEWER ]] && {
-	die "var LOGVIEWER is NULL. terminate."
+	die "LOGVIEWER variable is empty. terminate."
 }
 
 # **************************************************************************

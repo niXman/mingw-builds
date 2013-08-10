@@ -1,20 +1,18 @@
-The scripts provided by the MinGW-builds project[1][2] are designed
-for building the dual-target(i686/x86_64) MinGW compiler for i686/x86_64 hosts.
+The scripts provided by the MinGW-W64 project[1] are designed
+for building the dual-target(i686/x86_64) MinGW-W64 compiler for i686/x86_64 hosts.
 
-The scripts are distributed under the 'BSD 3' license[3].
+The scripts are distributed under the 'BSD 3' license[2].
 
-In order to use the scripts provided by the MinGW-builds project it is needed:
+In order to use the scripts provided by the MinGW-W64 project it is needed:
 
 1. Windows-64bit or Linux + Wine-64bit
 
 2. Install MSYS:
-MSYS1:
-  http://sourceforge.net/projects/mingwbuilds/files/external-binary-packages/
 MSYS2:
   https://sourceforge.net/projects/msys2/files/Alpha-versions/
 
-3. Get the scripts into '<msys root>/home/<user>/mingw-builds':
-  "cd && git clone git://github.com/niXman/mingw-builds.git"
+3. Get the scripts into '<msys root>/home/<user>/mingw-w64-builds':
+  "cd && git clone <paste correct url>"
 
 4. In the MSYS file structure delete the '/MinGW' directory.
 
@@ -22,33 +20,32 @@ MSYS2:
   environment variable.
 
 6. Go into the MinGW-builds root directory.
-  "cd && cd mingw-builds"
+  "cd && cd mingw-w64-builds"
 
-7.
-  The '--buildroot=<path>' option specifies to the script to use '<path>' as build directory.
+7. Options:
+  '--mode=[gcc|python|clang]-version' option specifies building software with version.
+  '--arch=<x32|x64>' option specifies the architecture.
+  '--buildroot=<path>' option specifies to the script to use '<path>' as build directory.
     By default used MSYS user home directory.
-  The '--preload' option specifies to the script to pre-download all the sources
-    and only after that, to begin the building. This allows to build different
-    versions of GCC simultaneously.
-  The '--download' option specifies to the script to download only the sources.
-  The '--exceptions=model' option specifies to the script using exceptions handling
+  '--fetch-only' option specifies to the script only to download all the sources
+    without start building.
+  '--exceptions=model' option specifies to the script using exceptions handling
     model. Available models are: dwarf, seh(for gcc>=4.8.0 only), sjlj.
-  The '--use-lto' option specifies to the script to build with using LTO.
-  The '--no-strip' option specifies to the script to install without striping.
-  The '--no-multilib' option specifies to the script to build without multilib support.
-  The '--dyn-deps' option specifies to the script to build GCC with dynamically dependencies.
-  The '--rev=N' option specifies to the script the number of the build revision.
-  The '--threads=model' option specifies to the script the used threads model.
-  The '--python-only=x.y.z' option specifies to the script to build python only.
-    available versions: 2.7.3, 2.7.4, 2.7.5, 3.3.0
-  For more options please run: "./build --help"
+  '--use-lto' option specifies to the script to build with using LTO.
+  '--no-strip' option specifies to the script to install without striping.
+  '--no-multilib' option specifies to the script to build without multilib support.
+  '--dyn-deps' option specifies to the script to build GCC with dynamically dependencies.
+  '--rev=N' option specifies to the script the number of the build revision.
+  '--threads=model' option specifies to the script the used threads model.
+  '--enable-languages=<langs>' option specifies a comma separated list(without spaces)
+    of gcc supported languages. available languages: ada,c,c++,fortran,obj-c,obj-c++
+  For more options run: "./build --help"
 
 8. Run:
-  "./build gcc-4.6.3 x32" for building i686-MinGW
-  "./build gcc-4.6.3 x64" for building x86_64-MinGW
-  "./build gcc-4.6.3 x32 x64" for building i686-MinGW and x86_64-MinGW
-  "./build gcc-4.6.3 --preload x32 x64" for building i686-MinGW and x86_64-MinGW
-  "./build gcc-4.6.3 --exceptions=dwarf" for building i686-MinGW with DWARF exception handling
+  "./build --mode=gcc-4.8.1 --arch=x32" for building i686-MinGW
+  "./build --mode=gcc-4.8.1 --arch=x64" for building x86_64-MinGW
+  "./build --mode=gcc-4.8.1 --arch=x64 --preload" for preload sources and building x86_64-MinGW
+  "./build --mode=gcc-4.8.1 --arch=x32 --exceptions=dwarf" for building i686-MinGW with DWARF exception handling
 
 For example, during the process of building of the i686-gcc-4.7.2 will
   be created the following directories:
@@ -89,6 +86,5 @@ Big thanks for these patches to:
   2010-2012 Roumen Petrov, Руслан Ижбулатов
   2012 Ray Donnelly
  
-[1] http://code.google.com/p/mingw-builds/
-[2] http://sourceforge.net/projects/mingwbuilds/
-[3] http://www.opensource.org/licenses/BSD-3-Clause
+[1] http://sourceforge.net/projects/mingw-w64/
+[2] http://www.opensource.org/licenses/BSD-3-Clause

@@ -2,11 +2,11 @@
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -15,7 +15,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -34,28 +34,43 @@
 
 # **************************************************************************
 
-x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/4.7.3/32-bit/threads-posix/sjlj/x32-4.7.3-release-posix-sjlj-rev1.7z
-x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/4.7.3/64-bit/threads-posix/sjlj/x64-4.7.3-release-posix-sjlj-rev1.7z
+readonly x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingw-w64/files/host-windows/releases/4.7.3/32-bit/threads-posix/sjlj/x32-4.7.3-release-posix-sjlj-rev1.7z
+readonly x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingw-w64/files/host-windows/releases/4.7.3/64-bit/threads-posix/sjlj/x64-4.7.3-release-posix-sjlj-rev1.7z
 
 # **************************************************************************
 
-x32_HOST=i686-w64-mingw32
-x32_BUILD=i686-w64-mingw32
-x32_TARGET=i686-w64-mingw32
+readonly x32_HOST=i686-w64-mingw32
+readonly x32_BUILD=i686-w64-mingw32
+readonly x32_TARGET=i686-w64-mingw32
 
-x64_HOST=x86_64-w64-mingw32
-x64_BUILD=x86_64-w64-mingw32
-x64_TARGET=x86_64-w64-mingw32
-
-# **************************************************************************
-
-REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-windows/repository.txt
+readonly x64_HOST=x86_64-w64-mingw32
+readonly x64_BUILD=x86_64-w64-mingw32
+readonly x64_TARGET=x86_64-w64-mingw32
 
 # **************************************************************************
 
-LOGVIEWERS=(
+readonly REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-windows/repository.txt
+
+# **************************************************************************
+
+readonly LOGVIEWERS=(
 	"c:/progra~2/notepad++/notepad++.exe"
 	"c:/progra~1/notepad++/notepad++.exe"
+	"notepad"
 )
+
+# **************************************************************************
+
+[[ -d /mingw ]] && {
+	die "please remove \"/mingw\" directory. terminate."
+}
+
+[[ -n $(which "gcc.exe" 2>/dev/null) || \
+	-n $(which "i686-pc-mingw32-gcc.exe" 2>/dev/null) || \
+	-n $(which "i686-w64-mingw32-gcc.exe" 2>/dev/null) || \
+	-n $(which "x86_64-w64-mingw32-gcc.exe" 2>/dev/null) \
+]] && {
+	die "remove from PATH any existing MinGW directory. terminate."
+}
 
 # **************************************************************************

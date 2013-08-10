@@ -1,0 +1,16 @@
+
+1. rewrite usage docs in README for win/nix/osx platforms.
+   or, maybe, create separate files for each OS.
+   (usage-win.txt, usage-nix.txt, usage-osx.txt)
+
+2. in rules rename variables to avoid conflicts with other global variables:
+   VERSION         -> PKG_VERSION
+   NAME            -> PKG_NAME
+   SRC_DIR_NAME    -> PKG_DIR_NAME
+   TYPE            -> PKG_TYPE
+   URL             -> PKG_URLS
+   PRIORITY        -> PKG_PRIORITY
+   PATCHES         -> PKG_PATCHES
+   CONFIGURE_FLAGS -> PKG_CONFIGURE_FLAGS
+   MAKE_FLAGS      -> PKG_MAKE_FLAGS
+   INSTALL_FLAGS   -> PKG_INSTALL_FLAGS

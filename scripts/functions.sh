@@ -1,13 +1,12 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +15,7 @@
 # - Redistributions in binary form must reproduce the above copyright
 #     notice, this list of conditions and the following disclaimer in
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may
 #     be used to endorse or promote products derived from this software
 #     without specific prior written permission.
 #
@@ -67,6 +66,8 @@ function func_get_reverse_arch {
 # **************************************************************************
 
 function func_get_filename_extension {
+	# $1 - filename
+	
 	local _filename=$1
 	local _ext=
 	local _finish=0
@@ -87,6 +88,8 @@ function func_get_filename_extension {
 # **************************************************************************
 
 function func_check_languages {
+	# $1 - langs separated by comma
+	
 	OLD_IFS=$IFS                 
 	IFS=","                           
 	local langs=( $1 )
@@ -98,15 +101,11 @@ function func_check_languages {
 		die "you must specify languages to build. terminate."
 	} || {
 		for lang in ${langs[@]}; do
-			! [[ "$lang" == "ada" || "$lang" == "c" || "$sub" == "c++" || \
-				  "$lang" == "fortran" || "$lang" == "objc" || "$lang" == "obj-c++" ]] && {
-				errs=$errs' '$lang
-			}
+			case $lang in
+				ada|c|c++|fortran|obj-c|obj-c++) ;;
+				*) die "language \"$lang\" is not supported. terminate." ;;
+			esac
 		done
-
-		[[ -n "$errs" ]] && {
-			die "following languages are not supported: $errs"
-		}
 	}
 }
 

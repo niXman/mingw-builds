@@ -2,11 +2,11 @@
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -15,7 +15,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -34,26 +34,26 @@
 
 # **************************************************************************
 
-x32_HOST_MINGW_PATH_URL=
-x64_HOST_MINGW_PATH_URL=
+readonly x32_HOST_MINGW_PATH_URL=
+readonly x64_HOST_MINGW_PATH_URL=
 
 # **************************************************************************
 
-x32_HOST=
-x32_BUILD=
-x32_TARGET=
+readonly x32_HOST=
+readonly x32_BUILD=
+readonly x32_TARGET=
 
-x64_HOST=
-x64_BUILD=
-x64_TARGET=
-
-# **************************************************************************
-
-REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-osx/repository.txt
+readonly x64_HOST=
+readonly x64_BUILD=
+readonly x64_TARGET=
 
 # **************************************************************************
 
-LOGVIEWERS=(
+readonly REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-osx/repository.txt
+
+# **************************************************************************
+
+readonly LOGVIEWERS=(
 )
 
 # **************************************************************************

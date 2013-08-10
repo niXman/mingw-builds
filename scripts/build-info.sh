@@ -1,13 +1,12 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +15,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,17 +34,22 @@
 
 # **************************************************************************
 
-[[ ! -f $BUILDS_DIR/put-info.marker ]] && {
-	INFO_FILE=$PREFIX/info.txt
+function func_build_info() {
+	local readonly INFO_FILE=$PREFIX/build-info.txt
 	echo > $INFO_FILE
-	
+
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
-	echo "!!!!: $MINGW_BUILDS_VERSION" >> $INFO_FILE
-	echo "user: $(whoami)" >> $INFO_FILE
-	echo "date: $(date +%m.%d.%Y-%X)" >> $INFO_FILE
-	echo "args: $RUN_ARGS" >> $INFO_FILE
-	echo "PATH: $ORIGINAL_PATH" >> $INFO_FILE
+	echo "version : $MINGW_W64_BUILDS_VERSION" >> $INFO_FILE
+	echo "user    : $(whoami)" >> $INFO_FILE
+	echo "date    : $(date +%m.%d.%Y-%X)" >> $INFO_FILE
+	[[ -n $(echo $RUN_ARGS | grep '\-\-sf-password=') ]] && {
+		local _RUN_ARGS=$(echo $RUN_ARGS | sed "s|$SF_PASSWORD|***********|g")
+	}
+	echo "args    : $_RUN_ARGS" >> $INFO_FILE
+	echo "PATH    : $ORIGINAL_PATH" >> $INFO_FILE
+	echo "x32_PATH: $x32_PATH" >> $INFO_FILE
+	echo "x64_PATH: $x64_PATH" >> $INFO_FILE
 	echo >> $INFO_FILE
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
@@ -61,25 +65,41 @@
 		echo "# **************************************************************************" >> $INFO_FILE
 		echo >> $INFO_FILE
 	}
-	
+
 	echo "host ld:" >> $INFO_FILE
 	$x32_HOST_MINGW_PATH/bin/ld -V 2>&1 >> $INFO_FILE
 	echo >> $INFO_FILE
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
-	
+
 	for it in ${SUBTARGETS[@]}; do
-		[[ $it == put-info ]] && continue
+		[[ $it == build-info ]] && continue
 		[[ -z $(grep 'CONFIGURE_FLAGS=' $TOP_DIR/scripts/$it.sh) ]] && continue
 		. $TOP_DIR/scripts/$it.sh
-		echo "$NAME configuration:" >> $INFO_FILE
-		echo "${CONFIGURE_FLAGS[@]}" >> $INFO_FILE
+		echo "name         : $NAME" >> $INFO_FILE
+		echo "type         : $TYPE" >> $INFO_FILE
+		local prev_dir=$PWD
+		cd $SRCS_DIR/$SRC_DIR_NAME
+		case $TYPE in
+			cvs) echo "revision     : $REV" >> $INFO_FILE ;;
+			svn) echo "revision     : $( svn info | grep 'Revision: ' | sed 's|Revision: ||' )" >> $INFO_FILE ;;
+			hg)  echo "revision     : unimplemented" >> $INFO_FILE ;;
+			git) echo "SHA          : $( export TERM=cygwin && git log -1 --pretty=format:%H )" >> $INFO_FILE ;;
+			*)   echo "version      : $VERSION" >> $INFO_FILE ;;
+		esac
+		cd $prev_dir
+		
+		echo "url          : $URL" >> $INFO_FILE
+		echo "patches      : $(echo ${PATCHES[@]} | sed 's| |, |g')" >> $INFO_FILE
+		echo "configuration: ${CONFIGURE_FLAGS[@]}" >> $INFO_FILE
 		echo >> $INFO_FILE
 		echo "# **************************************************************************" >> $INFO_FILE
 		echo >> $INFO_FILE
 	done
-
-	touch $BUILDS_DIR/put-info.marker
 }
+
+# **************************************************************************
+
+func_build_info
 
 # **************************************************************************

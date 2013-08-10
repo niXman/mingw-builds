@@ -1,0 +1,8 @@
+
+1. As indentation TAB is used.
+2. Global variables should mainly consist of uppercase characters.
+3. Global variables that should not be changed, should be defined with the 'readonly' keyword.
+4. Functions are defined using the 'function' keyword.
+5. Function name must begin with the 'func_' prefix.
+6. Variables used only inside the functions must be defined by using 'local' keyword.
+7. Arguments of functions must have an explanation inside the function immediately after the function name.
