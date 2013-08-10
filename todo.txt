@@ -3,7 +3,7 @@
    or, maybe, create separate files for each OS.
    (usage-win.txt, usage-nix.txt, usage-osx.txt)
 
-2. in rules rename variables to avoid conflicts with other global variables:
+2. in rules, rename variables to avoid conflicts with other global variables:
    VERSION         -> PKG_VERSION
    NAME            -> PKG_NAME
    SRC_DIR_NAME    -> PKG_DIR_NAME
@@ -14,3 +14,6 @@
    CONFIGURE_FLAGS -> PKG_CONFIGURE_FLAGS
    MAKE_FLAGS      -> PKG_MAKE_FLAGS
    INSTALL_FLAGS   -> PKG_INSTALL_FLAGS
+
+3. install only required licenses for each mode.
+   (gcc, python, clang)

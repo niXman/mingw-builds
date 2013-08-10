@@ -34,8 +34,8 @@
 
 # **************************************************************************
 
-readonly x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingw-w64/files/host-windows/releases/4.7.3/32-bit/threads-posix/sjlj/x32-4.7.3-release-posix-sjlj-rev1.7z
-readonly x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingw-w64/files/host-windows/releases/4.7.3/64-bit/threads-posix/sjlj/x64-4.7.3-release-posix-sjlj-rev1.7z
+readonly x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/4.8.1/32-bit/threads-posix/sjlj/x32-4.8.1-release-posix-sjlj-rev3.7z
+readonly x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/4.8.1/64-bit/threads-posix/sjlj/x64-4.8.1-release-posix-sjlj-rev3.7z
 
 # **************************************************************************
 
