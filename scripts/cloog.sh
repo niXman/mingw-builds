@@ -45,7 +45,9 @@ PRIORITY=prereq
 
 #
 
-PATCHES=()
+PATCHES=(
+	cloog/cloog-0.18.0-no-undefined.patch
+)
 
 #
 

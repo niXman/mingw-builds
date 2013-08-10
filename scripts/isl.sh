@@ -47,6 +47,7 @@ PRIORITY=prereq
 #
 
 PATCHES=(
+	isl/isl-0.12-no-undefined.patch
 )
 
 #
