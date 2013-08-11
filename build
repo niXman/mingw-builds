@@ -146,6 +146,8 @@ PROCESSOR_OPTIMIZATION_ARCH_32='i686'
 PROCESSOR_OPTIMIZATION_TUNE_64='core2'
 PROCESSOR_OPTIMIZATION_ARCH_64='nocona'
 
+# **************************************************************************
+
 while [[ $# > 0 ]]; do
 	case $1 in
 		--march-x32=*) PROCESSOR_OPTIMIZATION_ARCH_32=${1/--march-x32=/} ;;
