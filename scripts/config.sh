@@ -117,7 +117,7 @@ func_find_logviewer \
 }
 
 func_test_vars_list_for_null \
-  "x32_HOST \
+	"x32_HOST \
 	x32_BUILD \
 	x32_TARGET \
 	x64_HOST \
