@@ -1,4 +1,3 @@
-
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
@@ -116,18 +115,14 @@ LOGVIEWER=
 func_find_logviewer \
 	LOGVIEWERS[@] \
 	LOGVIEWER
-[[ $? != 0 ]] && {
+[[ $? != 0 || -z $LOGVIEWER ]] && {
 	die "logviewer not found. terminate."
-}
-
-[[ -z $LOGVIEWER ]] && {
-	die "LOGVIEWER variable is empty. terminate."
 }
 
 # **************************************************************************
 
 func_test_vars_list_for_null \
-  "x32_HOST \
+	"x32_HOST \
 	x32_BUILD \
 	x32_TARGET \
 	x64_HOST \
