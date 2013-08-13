@@ -79,3 +79,39 @@ readonly LOGVIEWERS=(
 }
 
 # **************************************************************************
+
+[[ ! -d $x32_HOST_MINGW_PATH || ! -d $x64_HOST_MINGW_PATH ]] && {
+	[[ $EXCEPTIONS_MODEL == dwarf && ! -d $x32_HOST_MINGW_PATH ]] || \
+	[[ $EXCEPTIONS_MODEL == seh && ! -d $x64_HOST_MINGW_PATH ]] || \
+	[[ $EXCEPTIONS_MODEL == sjlj && ! -d $x64_HOST_MINGW_PATH ]] && {
+		echo -n "host toolchains is not installed. you wish to install (y/n)?"
+		while :
+		do
+			read -s -n1
+			echo ": $REPLY"
+			[[ $REPLY != y && $REPLY != n ]] && continue
+			[[ $REPLY == n ]] && {
+				die "you can't build MinGW without installed host toolchains. terminate."
+			}
+			[[ $REPLY == y ]] && break
+		done
+
+		mkdir -p $TOOLCHAINS_DIR
+		[[ $? != 0 ]] && {
+			die "can't create toolchains directory. terminate."
+		}
+
+		func_install_toolchain \
+			$TOOLCHAINS_DIR \
+			$x32_HOST_MINGW_PATH \
+			$x64_HOST_MINGW_PATH \
+			$x32_HOST_MINGW_PATH_URL \
+			$x64_HOST_MINGW_PATH_URL
+		func_res=$?
+		[[ $func_res != 0 ]] && {
+			die "toolchain install error($func_res). see log-files in \"$TOOLCHAINS_DIR\" directory. terminate."
+		}
+	}
+}
+
+# **************************************************************************
