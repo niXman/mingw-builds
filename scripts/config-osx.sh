@@ -54,6 +54,19 @@ readonly REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-osx/repository.txt
 
 # **************************************************************************
 
+case `uname -m` in
+	x86_64 | amd64)
+		IS_64BIT_HOST=yes
+	;;
+	i[3456789]86)
+		IS_64BIT_HOST=no
+	;;
+	*)
+		die "Unsupported machine."
+esac
+
+# **************************************************************************
+
 readonly LOGVIEWERS=(
 )
 
