@@ -62,6 +62,10 @@ readonly LOGVIEWERS=(
 
 # **************************************************************************
 
+[[ -z $x32_HOST_MINGW_PATH_URL || -z $x64_HOST_MINGW_PATH_URL ]] && {
+	die "x32_HOST_MINGW_PATH_URL or x64_HOST_MINGW_PATH_URL is empty. terminate."
+}
+
 [[ -d /mingw ]] && {
 	die "please remove \"/mingw\" directory. terminate."
 }
