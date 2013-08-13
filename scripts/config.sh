@@ -69,26 +69,43 @@ PROJECT_FS_ROOT_DIR=/home/frs/project/mingw-w64
 
 # **************************************************************************
 
-IS_LINUX_HOST=no
-IS_WINDOWS_HOST=no
-IS_MACOSX_HOST=no
+echo -n "Checking operating system... "
+readonly U_SYSTEM=`(uname -s) 2>/dev/null`  || U_SYSTEM=unknown
+echo "$U_SYSTEM"
 
-case $OSTYPE in
-	linux-gnu)
-		IS_LINUX_HOST=yes
+case "${U_SYSTEM}" in
+	Linux)
 		. ./scripts/config-nix.sh
 	;;
-	msys)
-		IS_WINDOWS_HOST=yes
+	MSYS|MINGW*)
 		. ./scripts/config-win.sh
 	;;
-	darwin*)
-		IS_MACOSX_HOST=yes
+	Darwin)
 		. ./scripts/config-osx.sh
 	;;
 	*)
-		echo "bad host($OSTYPE). terminate."
-		exit 1
+		die "Unsupported OS ($U_SYSTEM). terminate."
+	;;
+esac
+
+echo -n "Checking OS bitness... "
+readonly U_MACHINE=`(uname -m) 2>/dev/null` || U_MACHINE=unknown
+case "${U_MACHINE}" in
+	i[34567]86)
+		[[ $(env | grep PROCESSOR_ARCHITEW6432) =~ AMD64 || $(env | grep PROCESSOR_ARCHITECTURE) =~ AMD64 ]] && {
+			IS_64BIT_HOST=yes
+			echo "64-bit"
+		} || {
+			IS_64BIT_HOST=no
+			echo "32-bit"
+		}
+	;;
+	x86_64 | amd64)
+		IS_64BIT_HOST=yes
+		echo "64-bit"
+	;;
+	*)
+		die "Unsupported bitness ($U_MACHINE). terminate."
 	;;
 esac
 

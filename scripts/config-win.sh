@@ -54,14 +54,6 @@ readonly REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-windows/repository.txt
 
 # **************************************************************************
 
-[[ $(env | grep PROCESSOR_ARCHITEW6432) =~ AMD64 || $(env | grep PROCESSOR_ARCHITECTURE) =~ AMD64 ]] && {
-	IS_64BIT_HOST=yes
-} || {
-	IS_64BIT_HOST=no
-}
-
-# **************************************************************************
-
 readonly LOGVIEWERS=(
 	"c:/progra~2/notepad++/notepad++.exe"
 	"c:/progra~1/notepad++/notepad++.exe"
