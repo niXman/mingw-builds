@@ -89,13 +89,10 @@ function func_get_filename_extension {
 # **************************************************************************
 
 function func_check_languages {
-	# $1 - langs separated by comma
-	
 	OLD_IFS=$IFS                 
 	IFS=","                           
 	local langs=( $1 )
 	IFS=$OLD_IFS
-	local errs=
 	local lang=
 	
 	[[ ${#langs[@]} == 0 ]] && {
@@ -103,8 +100,8 @@ function func_check_languages {
 	} || {
 		for lang in ${langs[@]}; do
 			case $lang in
-				ada|c|c++|fortran|obj-c|obj-c++) ;;
-				*) die "language \"$lang\" is not supported. terminate." ;;
+				ada|c|c++|fortran|objc|obj-c++) ;;
+				*) die "the following language not supported: $lang" ;;
 			esac
 		done
 	}
