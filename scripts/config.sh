@@ -76,7 +76,7 @@ case "${U_SYSTEM}" in
 	Linux)
 		. ./scripts/config-nix.sh
 	;;
-	MSYS|MINGW*)
+	MSYS*|MINGW*)
 		. ./scripts/config-win.sh
 	;;
 	Darwin)
