@@ -89,10 +89,7 @@ function func_get_filename_extension {
 # **************************************************************************
 
 function func_check_languages {
-	OLD_IFS=$IFS                 
-	IFS=","                           
-	local langs=( $1 )
-	IFS=$OLD_IFS
+	local langs=( ${1//,/ } )
 	local lang=
 	
 	[[ ${#langs[@]} == 0 ]] && {
@@ -124,11 +121,8 @@ function func_test_vars_list_for_null {
 # **************************************************************************
 
 function func_has_lang {
-	OLD_IFS=$IFS                 
-	IFS=","                           
-	local langs=( $ENABLE_LANGUAGES )
-	IFS=$OLD_IFS
-	local errs=""
+	local langs=( ${ENABLE_LANGUAGES//,/ } )
+	local errs=
 	local lang=
 
 	[[ ${#langs[@]} == 0 ]] && {
@@ -214,10 +208,7 @@ function func_download {
 	local it=
 
 	for it in ${_list[@]} ; do
-		OLD_IFS=$IFS                 
-		IFS="|"                           
-		local _params=( $it )
-		IFS=$OLD_IFS
+		local _params=( ${it//|/ } )
 
 		local _filename=
 		local _marker_name=
@@ -232,12 +223,8 @@ function func_download {
 		local _lib_name=
 		
 		local _index=1
-		while [ "$_index" -lt "${#_params[@]}" ]
-		do
-			OLD_IFS=$IFS                 
-			IFS=":"                           
-			local _params2=( ${_params[$_index]} )
-			IFS=$OLD_IFS
+		while [ "$_index" -lt "${#_params[@]}" ]; do
+			local _params2=( $(echo ${_params[$_index]} | sed 's|:| |g') )
 			case ${_params2[0]} in
 				branch) _branch=${_params2[1]} ;;
 				dir)    _dir=${_params2[1]} ;;
@@ -343,11 +330,7 @@ function func_uncompress {
 	}
 
 	for it in ${_list[@]} ; do
-		OLD_IFS=$IFS                 
-		IFS="|"                           
-		local _params=( $it )
-		IFS=$OLD_IFS
-		
+		local _params=( ${it//|/ } )
 		local _result=0
 		local _unpack_cmd
 		local _marker_name=
@@ -363,10 +346,7 @@ function func_uncompress {
 		local _index=1
 		while [ "$_index" -lt "${#_params[@]}" ]
 		do
-			OLD_IFS=$IFS                 
-			IFS=":"                           
-			local _params2=( ${_params[$_index]} )
-			IFS=$OLD_IFS
+			local _params2=( $(echo ${_params[$_index]} | sed 's|:| |g') )
 			case ${_params2[0]} in
 				dir)    _dir=${_params2[1]} ;;
 				root)   _root=${_params2[1]} ;;
