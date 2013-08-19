@@ -91,22 +91,17 @@ function func_check_languages {
 	IFS=","                           
 	local langs=( $1 )
 	IFS=$OLD_IFS
-	local errs=""
 	local lang=
 	
 	[[ ${#langs[@]} == 0 ]] && {
 		die "You must specify languages to build"
 	} || {
 		for lang in ${langs[@]}; do
-			! [[ "$lang" == "ada" || "$lang" == "c" || "$sub" == "c++" || \
-				  "$lang" == "fortran" || "$lang" == "objc" || "$lang" == "obj-c++" ]] && {
-				errs=$errs' '$lang
-			}
+			case $lang in
+				ada|c|c++|fortran|objc|obj-c++) ;;
+				*) die "the following language not supported: $lang" ;;
+			esac
 		done
-
-		[[ x"$errs" != x ]] && {
-			die "Follow languages not supported: $errs"
-		}
 	}
 }
 
