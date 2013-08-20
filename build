@@ -36,15 +36,15 @@
 
 # **************************************************************************
 
+# Loading functions
+. $TOP_DIR/library/functions
+
 readonly ORIGINAL_PATH=$PATH
 readonly TOP_DIR=$(func_simplify_path "$PWD")
 
 # **************************************************************************
-# Load global configuration and functions
-# **************************************************************************
-
+# Loading default configuration
 . $TOP_DIR/library/default_config
-. $TOP_DIR/library/functions
 
 # **************************************************************************
 
