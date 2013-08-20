@@ -324,7 +324,8 @@ done
 }
 
 # **************************************************************************
-
+# Creating necessary directories
+# **************************************************************************
 [[ ! -d $ROOT_DIR ]] && {
 	mkdir -p $ROOT_DIR
 	[[ $? == 0 ]] && {
@@ -339,31 +340,8 @@ readonly MARKERS_DIR=$SRCS_DIR/MARKERS
 readonly PREREQ_DIR=$ROOT_DIR/mingw-prereq
 readonly RUNTIME_DIR=$ROOT_DIR/mingw-runtime
 readonly ARCHIVES_DIR=$ROOT_DIR/mingw-archives
-
-[[ $LINK_TYPE_SUFFIX == shared ]] && {
-	readonly x32_PATH=$PREREQ_DIR/$x32_HOST-$LINK_TYPE_SUFFIX/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-	readonly x64_PATH=$PREREQ_DIR/$x64_HOST-$LINK_TYPE_SUFFIX/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-} || {
-	readonly x32_PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-	readonly x64_PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-}
-
-mkdir -p \
-	$SRCS_DIR \
-	$MARKERS_DIR \
-	$ARCHIVES_DIR
-
-[[ $BUILD_MODE == gcc ]] && {
-	mkdir -p \
-		$PREREQ_DIR \
-		$RUNTIME_DIR
-}
-
-# **************************************************************************
-
-. ./scripts/subtargets.sh
-
-# **************************************************************************
+readonly PREREQ_BUILD_DIR=$ROOT_DIR/prereq-build
+readonly PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
 
 [[ -n $REV_NUM ]] && {
 	readonly REV_STRING="-r$REV_NUM"
@@ -371,26 +349,19 @@ mkdir -p \
 	readonly REV_STRING=""
 }
 
-GCC_PART_NAME=${GCC_NAME/gcc-/}
-GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
-readonly GCC_PART_NAME=${GCC_PART_NAME//./}
-readonly GCC_TYPE_STRING=$(func_map_gcc_name_to_gcc_type $GCC_NAME)
-readonly PREREQ_BUILD_DIR=$ROOT_DIR/prereq-build
-readonly PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
-
 [[ $BUILD_MODE == gcc ]] && {
+	GCC_PART_NAME=${GCC_NAME/gcc-/}
+	GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
+	readonly GCC_PART_NAME=${GCC_PART_NAME//./}
+	readonly GCC_TYPE_STRING=$(func_map_gcc_name_to_gcc_type $GCC_NAME)
 	readonly BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}
-} || {
-	readonly BASE_BUILD_DIR=$ROOT_DIR/$BUILD_MODE-${BUILD_ARCHITECTURE}$REV_STRING
-}
-
-[[ $BUILD_MODE == gcc ]] && {
 	readonly PREFIX=$BASE_BUILD_DIR/mingw${BUILD_ARCHITECTURE/x/}
 	readonly MINGWPREFIX=/mingw${BUILD_ARCHITECTURE/x/}
 	MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
-	readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
+	readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)	
 } || {
+	readonly BASE_BUILD_DIR=$ROOT_DIR/$BUILD_MODE-${BUILD_ARCHITECTURE}$REV_STRING
 	readonly PREFIX=$BASE_BUILD_DIR/${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}
 }
 
@@ -398,15 +369,35 @@ readonly BUILDS_DIR=$BASE_BUILD_DIR/build
 readonly LIBS_DIR=$BASE_BUILD_DIR/libs
 readonly LOGS_DIR=$BASE_BUILD_DIR/logs
 
-[[ $BUILD_MODE == gcc || $BUILD_MODE == python ]] && {
+mkdir -p \
+	$SRCS_DIR \
+	$MARKERS_DIR \
+	$ARCHIVES_DIR \
+	$BASE_BUILD_DIR \
+	$PREFIX \
+	$BUILDS_DIR \
+	$LIBS_DIR \
+	$LOGS_DIR
+
+[[ $BUILD_MODE == gcc ]] && {
 	mkdir -p \
-		$BASE_BUILD_DIR \
-		$BUILDS_DIR \
-		$LIBS_DIR \
-		$LOGS_DIR \
-		$PREFIX \
+		$PREREQ_DIR \
+		$RUNTIME_DIR \
 		$PREREQ_BUILD_DIR \
 		$PREREQ_LOGS_DIR
+}
+# **************************************************************************
+
+. ./scripts/subtargets.sh
+
+# **************************************************************************
+
+[[ $LINK_TYPE_SUFFIX == shared ]] && {
+	readonly x32_PATH=$PREREQ_DIR/$x32_HOST-$LINK_TYPE_SUFFIX/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+	readonly x64_PATH=$PREREQ_DIR/$x64_HOST-$LINK_TYPE_SUFFIX/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+} || {
+	readonly x32_PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+	readonly x64_PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 }
 
 # **************************************************************************
