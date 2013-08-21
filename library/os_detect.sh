@@ -40,13 +40,13 @@ echo "$U_SYSTEM"
 
 case "${U_SYSTEM}" in
 	Linux)
-		. $TOP_DIR/library/config_nix
+		. $TOP_DIR/library/config-nix.sh
 	;;
 	MSYS*|MINGW*)
-		. $TOP_DIR/library/config_win
+		. $TOP_DIR/library/config-win.sh
 	;;
 	Darwin)
-		. $TOP_DIR/library/config_osx
+		. $TOP_DIR/library/config-osx.sh
 	;;
 	*)
 		die "Unsupported OS ($U_SYSTEM). terminate."
