@@ -36,19 +36,15 @@
 
 # **************************************************************************
 
-. ./scripts/functions.sh
-
-# **************************************************************************
+# Loading functions
+. $TOP_DIR/library/functions.sh
 
 readonly ORIGINAL_PATH=$PATH
 readonly TOP_DIR=$(func_simplify_path "$PWD")
-readonly PATCHES_DIR=$TOP_DIR/patches
-readonly SOURCES_DIR=$TOP_DIR/sources
-readonly TESTS_DIR=$TOP_DIR/tests
-readonly TOOLCHAINS_DIR=$TOP_DIR/toolchains
 
-readonly x32_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
-readonly x64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
+# **************************************************************************
+# Loading default configuration
+. $TOP_DIR/library/default_config.sh
 
 # **************************************************************************
 
@@ -113,38 +109,6 @@ readonly RUN_ARGS="$@"
 
 	exit 0
 }
-
-# **************************************************************************
-
-ROOT_DIR=$(func_simplify_path "$HOME")
-
-FETCH_MODE=no
-BUILD_ARCHITECTURE=
-EXCEPTIONS_MODEL=sjlj
-USE_MULTILIB=yes
-STRIP_ON_INSTALL=yes
-BOOTSTRAPING=no
-THREADS_MODEL=posix
-REV_NUM=
-COMPRESSING_MINGW=no
-COMPRESSING_SRCS=no
-UPLOAD_MINGW=no
-UPLOAD_SOURCES=no
-SF_USER=
-SF_PASSWORD=
-DEBUG_UPLOAD=no
-LINK_TYPE_SUFFIX=static
-
-BUILD_MODE=
-BUILD_MODE_VERSION=
-GCC_NAME=
-PYTHON_VERSION=2.7.5
-CLANG_VERSION=
-
-PROCESSOR_OPTIMIZATION_TUNE_32='generic'
-PROCESSOR_OPTIMIZATION_ARCH_32='i686'
-PROCESSOR_OPTIMIZATION_TUNE_64='core2'
-PROCESSOR_OPTIMIZATION_ARCH_64='nocona'
 
 # **************************************************************************
 
@@ -220,7 +184,7 @@ while [[ $# > 0 ]]; do
 			esac
 		;;
 		--mode=*)
-			[[ ! -f scripts/${1/--mode=/}.sh ]] && {
+			[[ ! -f $TOP_DIR/scripts/${1/--mode=/}.sh ]] && {
 				die "bad mode. Script ${1/--mode=/}.sh not found. terminate."
 			}
 			BUILD_MODE_VERSION=${1/--mode=/}
@@ -282,7 +246,7 @@ done
 # **************************************************************************
 # Determine operating system and load appropriate config
 # **************************************************************************
-. ./scripts/config.sh
+. $TOP_DIR/library/os_detect.sh
 
 # **************************************************************************
 
@@ -388,7 +352,7 @@ mkdir -p \
 }
 # **************************************************************************
 
-. ./scripts/subtargets.sh
+. ./library/subtargets.sh
 
 # **************************************************************************
 
@@ -476,7 +440,7 @@ for sub in ${SUBTARGETS[@]}; do
 	EXECUTE_AFTER_PATCH=()
 	EXECUTE_AFTER_INSTALL=()
 
-	cd $TOP_DIR && . ./scripts/$sub.sh
+	. $TOP_DIR/scripts/$sub.sh
 
 	[[ -z $NAME ]] && continue
 
@@ -627,7 +591,7 @@ done
 
 [[ $COMPRESSING_SRCS == yes ]] && {
 	echo -e "-> \E[32;40mcompress mingw sources\E[37;40m"
-	cd $TOP_DIR && . ./scripts/srcs-compress.sh
+	. $TOP_DIR/scripts/srcs-compress.sh
 }
 
 # ***************************************************************************
