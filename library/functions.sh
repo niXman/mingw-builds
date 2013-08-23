@@ -1,4 +1,3 @@
-
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
@@ -840,7 +839,7 @@ function func_create_repository_file_upload_cmd {
 	# $2 - sf user name
 	# $3 - sf user password
 
-	echo "sshpass -p $3 scp $1 $2@frs.sourceforge.net:$(dirname $REPOSITORY_FILE)"
+	echo "sshpass -p $3 scp $1 $2@frs.sourceforge.net:$$PROJECT_FS_ROOT_DIR/host-windows"
 }
 
 # **************************************************************************
