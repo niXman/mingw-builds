@@ -874,9 +874,12 @@ done
 		} || {
 			echo "done"
 			[[ $(func_map_gcc_name_to_gcc_type $GCC_NAME) == release ]] && {
+				echo -e -n "--> \E[32;40mdownload repository file...\E[37;40m"
 				func_download_repository_file \
 					$TMP/$(basename $REPOSITORY_FILE)
-			
+				echo "done"
+
+				echo -e -n "--> \E[32;40mupdate repository file...\E[37;40m"
 				func_update_repository_file \
 					$TMP/$(basename $REPOSITORY_FILE) \
 					$(func_map_gcc_name_to_gcc_version $GCC_NAME) \
@@ -886,10 +889,13 @@ done
 					$REV_NUM \
 					$(func_create_url_for_archive $PROJECT_ROOT_URL $GCC_NAME $BUILD_ARCHITECTURE $THREADS_MODEL $EXCEPTIONS_MODEL ) \
 					$(basename $mingw_archive_name)
+				echo "done"
 
+				echo -e -n "--> \E[32;40mupload repository file...\E[37;40m"
 				func_upload_repository_file \
 					$TMP/$(basename $REPOSITORY_FILE) \
 					$SF_USER
+				echo "done"
 			}
 		}
 	}
