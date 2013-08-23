@@ -809,7 +809,7 @@ function func_upload_repository_file {
 	# $1 - file name
 	# $2 - sf user name
 
-	scp $1 $2@frs.sourceforge.net:$(dirname $REPOSITORY_FILE)
+	scp $1 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/host-windows
 	local _result=$?
 	
 	[[ $_result != 0 ]] && { die "error($_result) when uploading repository file. terminate."; }
