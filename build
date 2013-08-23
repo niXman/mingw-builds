@@ -634,6 +634,7 @@ done
 		}
 	}
 	[[ $(func_map_gcc_name_to_gcc_type $GCC_NAME) == release ]] && {
+		echo -e -n "--> \E[32;40mdownload repository file...\E[37;40m"
 		[[ $DEBUG_UPLOAD == yes ]] && {
 			func_res=0
 		} || {
@@ -642,8 +643,11 @@ done
 		}
 		[[ $func_res != 0 ]] && {
 			die "error($func_res) when downloading repository file. terminate."
+		} || {
+			echo "done"
 		}
 	
+		echo -e -n "--> \E[32;40mupdate repository file...\E[37;40m"
 		[[ $DEBUG_UPLOAD == no ]] && {
 			func_update_repository_file \
 				$TMP/$(basename $REPOSITORY_FILE) \
@@ -661,12 +665,15 @@ done
 				) \
 				$(basename $mingw_archive_name)
 		}
+		echo "done"
+		
 		upload_cmd=$( \
 			func_create_repository_file_upload_cmd \
 				$TMP/$(basename $REPOSITORY_FILE) \
 				$SF_USER \
 				$SF_PASSWORD \
 		)
+		echo -e -n "--> \E[32;40mupload repository file...\E[37;40m"
 		[[ $DEBUG_UPLOAD == yes ]] && {
 			echo "rep_cmd:${upload_cmd}"
 		} || {
@@ -674,6 +681,8 @@ done
 			func_res=$?
 			[[ $func_res != 0 ]] && {
 				die "error($func_res) when uploading repository file. terminate."
+			} || {
+				echo "done"
 			}
 		}
 	}
