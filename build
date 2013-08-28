@@ -37,14 +37,14 @@
 # **************************************************************************
 
 # Loading functions
-. $TOP_DIR/library/functions.sh
+source library/functions.sh
 
 readonly ORIGINAL_PATH=$PATH
 readonly TOP_DIR=$(func_simplify_path "$PWD")
 
 # **************************************************************************
 # Loading default configuration
-. $TOP_DIR/library/default_config.sh
+source library/default_config.sh
 
 # **************************************************************************
 
