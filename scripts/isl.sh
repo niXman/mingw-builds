@@ -38,9 +38,9 @@
 VERSION=0.12.1
 NAME=$BUILD_ARCHITECTURE-isl-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=isl-${VERSION}
-TYPE=.tar.bz2
+TYPE=.tar.lzma
 URL=(
-	"ftp://ftp.linux.student.kuleuven.be/pub/people/skimo/isl/isl-${VERSION}.tar.bz2"
+	"http://garage.kotnet.org/~skimo/isl/isl-${VERSION}.tar.lzma"
 )
 
 PRIORITY=prereq
