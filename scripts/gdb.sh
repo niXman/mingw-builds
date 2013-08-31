@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION=7.6
+VERSION=7.6.1
 NAME=gdb-${VERSION}
 SRC_DIR_NAME=gdb-${VERSION}
 TYPE=.tar.bz2
