@@ -40,7 +40,7 @@ NAME=$BUILD_ARCHITECTURE-isl-${VERSION}-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=isl-${VERSION}
 TYPE=.tar.lzma
 URL=(
-	"http://garage.kotnet.org/~skimo/isl/isl-${VERSION}.tar.lzma"
+	"http://ftp.cross-lfs.org/pub/clfs/conglomeration/isl/isl-${VERSION}.tar.lzma"
 )
 
 PRIORITY=prereq
