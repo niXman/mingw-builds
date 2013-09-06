@@ -60,7 +60,7 @@ function func_build_info() {
 	echo >> $INFO_FILE
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
-	[[ $USE_MULTILIB == yes ]] && {
+	[[ -f $x64_HOST_MINGW_PATH/bin/gcc ]] && {
 		echo "host gcc 64-bit:" >> $INFO_FILE
 		$x64_HOST_MINGW_PATH/bin/gcc -v >> $INFO_FILE 2>&1
 		echo >> $INFO_FILE
