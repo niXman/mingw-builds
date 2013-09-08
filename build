@@ -70,9 +70,9 @@ readonly RUN_ARGS="$@"
 	echo "    --mode=<[clang|gcc|python]-version>  - specify building software with version"
 	echo "    --version                  - print the version of the MinGW-W64 builds scripts"
 	echo "    --mingw-compress           - compressing MinGW"
-	echo "    --srcs-compress            - compressing sources"
+	echo "    --src-compress             - compressing sources"
 	echo "    --mingw-upload             - upload toolchain archives to sf-project"
-	echo "    --srcs-upload              - upload sources archive to sf-project"
+	echo "    --src-upload               - upload sources archive to sf-project"
 	echo "    --sf-user=<username>       - username to upload to sf-project"
 	echo "    --sf-password=<user_pass>  - password to upload to sf-project"	
 	echo "    --cflags='<flags>'         - additional CFLAGS"
@@ -217,9 +217,9 @@ while [[ $# > 0 ]]; do
 		;;
 		--version) echo $MINGW_W64_BUILDS_VERSION; exit 0 ;;
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
-		--srcs-compress) COMPRESSING_SRCS=yes ;;
+		--src-compress) COMPRESSING_SRCS=yes ;;
 		--mingw-upload) UPLOAD_MINGW=yes ;;
-		--srcs-upload) UPLOAD_SOURCES=yes ;;
+		--src-upload) UPLOAD_SOURCES=yes ;;
 		--sf-user=*) SF_USER=${1/--sf-user=/} ;;
 		--sf-password=*) SF_PASSWORD=${1/--sf-password=/} ;;
 		--debug-upload) DEBUG_UPLOAD=yes ;;
