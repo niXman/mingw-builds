@@ -579,18 +579,17 @@ function func_test {
 				local _prev=$( echo $src_it | sed '$s/ *\([^ ]* *\)$//' )
 				local _last=$( echo $src_it | sed 's/^.* //' )
 				local _ext=${_first##*.}
-				local _run_log=$3/$arch_it/$_first-execution.log
-
+				
 				case $_ext in
 					c)
 						printf "%-50s" "--> GCC     $arch_it: \"$_first\" ... "
-						local _log_file=$3/$arch_it/$_first-c-compilation.log
+						local _log_file=$3/$arch_it/$_first-compilation.log
 						echo "gcc -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
 						( cd $3/$arch_it && gcc -m${arch_it} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
 					;;
 					cpp)
 						printf "%-50s" "--> G++     $arch_it: \"$_first\" ... "
-						local _log_file=$3/$arch_it/$_first-cpp-compilation.log
+						local _log_file=$3/$arch_it/$_first-compilation.log
 						echo "g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
 						( cd $3/$arch_it && g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
 					;;
@@ -611,6 +610,7 @@ function func_test {
 				}
 				[[ $_last =~ .exe ]] && {
 					printf "%-50s" "--> execute $arch_it: \"$_last\" ... "
+					local _run_log=$3/$arch_it/$_first-execution.log
 					( cd $3/$arch_it && ./$_last > $_run_log 2>&1 )
 					_result=$?
 					[[ $_result == 0 ]] && {

@@ -20,7 +20,7 @@
 
 4. there is no need to change the IFS when converting a string to the list.
    just use the: arr=( $str )
-	if items in string separated any char other than whitespace -
+	if items in string separated by any char other than whitespace -
 	just use the: arr=( $(echo $str | sed 's|<separator>| |g') )
 
 5. creating a list of subtargets rewrite as a function that
