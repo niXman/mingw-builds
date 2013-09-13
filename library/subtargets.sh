@@ -1,4 +1,3 @@
-
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
@@ -120,7 +119,7 @@ readonly SUBTARGETS_PART2=(
 	licenses
 	build-info
 	tests
-	$([[ $COMPRESSING_MINGW == yes ]] && echo "mingw-compress")
+	$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
 )
 
 case $BUILD_MODE in
