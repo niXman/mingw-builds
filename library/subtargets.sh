@@ -86,7 +86,7 @@ readonly PYTHON_SUBTARGETS=(
 	expat
 	#tcl
 	#tk
-	$([[ $PYTHON_VERSION == 3.3.0 ]] && echo "xz-utils")
+	$([[ $PYTHON_VERSION == 3.3.0 ]] && echo xz-utils)
 	sqlite
 	ncurses
 	readline
