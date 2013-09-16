@@ -55,6 +55,7 @@ readonly RUN_ARGS="$@"
 	echo "  help:"
 	echo "    --buildroot=<path>         - specifies the build root directory"
 	echo "    --fetch-only               - download sources without building"
+	echo "    --update-sources           - try to update sources from repositories before build"
 	echo "    --exceptions=<type>        - specifies exceptions model for GCC"
 	echo "                                 available: dwarf, seh, sjlj"
 	echo "    --use-lto                  - build with LTO using"
@@ -133,6 +134,7 @@ while [[ $# > 0 ]]; do
 		;;
 		--bootstrap) BOOTSTRAPING=yes ;;
 		--fetch-only) FETCH_MODE=yes ;;
+		--update-sources) UPDATE_SOURCES=yes ;;
 		--enable-languages=*)
 			func_check_languages "${1/--enable-languages=/}"
 			ENABLE_LANGUAGES=${1/--enable-languages=/}

@@ -29,6 +29,7 @@ MSYS2:
     By default used MSYS user home directory.
   '--fetch-only' option specifies to the script only to download all the sources
     without start building.
+  '--update-sources' - try to update sources from repositories before build.
   '--exceptions=model' option specifies to the script using exceptions handling
     model. Available models are: dwarf, seh(for gcc>=4.8.0 only), sjlj.
   '--use-lto' option specifies to the script to build with using LTO.

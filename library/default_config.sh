@@ -89,6 +89,7 @@ JOBS=1
 # **************************************************************************
 
 FETCH_MODE=no
+UPDATE_SOURCES=no
 BUILD_ARCHITECTURE=
 EXCEPTIONS_MODEL=sjlj
 USE_MULTILIB=yes
