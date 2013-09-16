@@ -242,9 +242,18 @@ function func_download {
 		}
 
 		_log_name=$MARKERS_DIR/${_filename}-download.log
-		_marker_name=$MARKERS_DIR/${_filename}-download.marker	
-		[[ ! -f $_marker_name ]] && {
-			[[ $_repo == cvs || $_repo == svn || $_repo == hg || $_repo == git ]] && {
+		_marker_name=$MARKERS_DIR/${_filename}-download.marker
+		local _repo_update=no
+		local _is_repo=no
+		[[ $_repo == cvs || $_repo == svn || $_repo == hg || $_repo == git ]] && {
+			_is_repo=yes
+			if [[ $UPDATE_SOURCES == yes ]]
+			then
+				_repo_update=yes
+			fi
+		}
+		[[ ! -f $_marker_name || $_repo_update == yes ]] && {
+			[[ $_is_repo == yes ]] && {
 				echo -n "--> download $_filename..."
 
 				[[ -n $_dir ]] && {
@@ -265,10 +274,20 @@ function func_download {
 						_result=$?
 					;;
 					svn)
-						[[ -n $_rev ]] && {
-							svn co -r $_rev $_url $_lib_name > $_log_name 2>&1
+						[[ -d $_lib_name/.svn ]] && {
+							pushd $_lib_name > /dev/null
+							[[ -n $_rev ]] && {
+								svn up -r $_rev > $_log_name 2>&1
+							} || {
+								svn up > $_log_name 2>&1
+							}
+							popd > /dev/null
 						} || {
-							svn co $_url $_lib_name > $_log_name 2>&1
+							[[ -n $_rev ]] && {
+								svn co -r $_rev $_url $_lib_name > $_log_name 2>&1
+							} || {
+								svn co $_url $_lib_name > $_log_name 2>&1
+							}
 						}
 						_result=$?
 					;;
@@ -277,10 +296,16 @@ function func_download {
 						_result=$?
 					;;
 					git)
-						[[ -n $_branch ]] && {
-							git clone --branch $_branch $_url $_lib_name > $_log_name 2>&1
+						[[ -d $_lib_name/.git ]] && {
+							pushd $_lib_name > /dev/null
+							git pull > $_log_name 2>&1
+							popd > /dev/null
 						} || {
-							git clone $_url $_lib_name > $_log_name 2>&1
+							[[ -n $_branch ]] && {
+								git clone --branch $_branch $_url $_lib_name > $_log_name 2>&1
+							} || {
+								git clone $_url $_lib_name > $_log_name 2>&1
+							}
 						}
 						_result=$?
 					;;
