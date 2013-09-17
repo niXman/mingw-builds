@@ -77,10 +77,6 @@ readonly LOGVIEWERS=(
 
 # **************************************************************************
 
-readonly TOOLCHAINS_DIR=$TOP_DIR/toolchains
-
-# **************************************************************************
-
 [[ ! -d $x32_HOST_MINGW_PATH || ! -d $x64_HOST_MINGW_PATH ]] && {
 	[[ $EXCEPTIONS_MODEL == dwarf && ! -d $x32_HOST_MINGW_PATH ]] || \
 	[[ $EXCEPTIONS_MODEL == seh && ! -d $x64_HOST_MINGW_PATH ]] || \
