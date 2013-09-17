@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-VERSION=3071700
+VERSION=3080002
 NAME=sqlite-${VERSION}
 SRC_DIR_NAME=sqlite-autoconf-${VERSION}
 TYPE=.tar.gz
