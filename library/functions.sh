@@ -681,7 +681,7 @@ function func_abstract_toolchain {
 	local _filename=$(basename $2)
 	local _do_install=no
 
-	[[ ! -f $MARKERS_DIR/${_filename}-download.marker ]] && {
+	[[ ! -f $MARKERS_DIR/${_filename}-unpack.marker ]] && {
 		[[ -d $3 ]] && {
 			echo -n "Found previously installed $4 toolchain. Do you want to upgrade it (y/n)?"
 			local _reply=
