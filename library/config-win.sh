@@ -39,13 +39,9 @@ readonly x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/fil
 
 # **************************************************************************
 
-readonly x32_HOST=i686-w64-mingw32
-readonly x32_BUILD=i686-w64-mingw32
-readonly x32_TARGET=i686-w64-mingw32
-
-readonly x64_HOST=x86_64-w64-mingw32
-readonly x64_BUILD=x86_64-w64-mingw32
-readonly x64_TARGET=x86_64-w64-mingw32
+HOST=$BUILD_ARCHITECTURE-w64-mingw32
+BUILD=$BUILD_ARCHITECTURE-w64-mingw32
+TARGET=$BUILD_ARCHITECTURE-w64-mingw32
 
 readonly CROSS_BUILDS=no
 # **************************************************************************

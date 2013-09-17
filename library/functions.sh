@@ -607,13 +607,10 @@ function func_test {
 	local src_it=
 
 	[[ $USE_MULTILIB == no ]] && {
-		[[ $BUILD_ARCHITECTURE == i686 ]] && {
-			local -a _archs=(32)
-		} || {
-			local -a _archs=(64)
-		}
+		local -a _archs=($BUILD_ARCHITECTURE)
 	} || {
-		local -a _archs=(32 64)
+		local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
+		local -a _archs=($BUILD_ARCHITECTURE $_reverse_arch)
 	}
 
 	for arch_it in ${_archs[@]}; do
