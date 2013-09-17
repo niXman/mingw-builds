@@ -35,26 +35,21 @@
 
 # **************************************************************************
 
-export PATH=$PREFIX/bin:$ORIGINAL_PATH
-
-TESTS_ROOT_DIR=$BUILDS_DIR/tests
-
-[[ $USE_MULTILIB == yes ]] && {
-	mkdir -p $TESTS_ROOT_DIR/{32,64}
-	[[ $BUILD_ARCHITECTURE == x32 ]] && {
-		cp -f $( find $PREFIX/$TARGET/lib64 -type f \( -iname *.dll \) ) \
-			$TESTS_ROOT_DIR/64/
+function tests_prepare {
+	[[ $USE_MULTILIB == yes ]] && {
+		local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
+		mkdir -p $TESTS_ROOT_DIR/{32,64}
+		cp -f $( find $PREFIX/$TARGET/lib${_reverse_bits} -type f \( -iname *.dll \) ) \
+			$TESTS_ROOT_DIR/${_reverse_bits}/
 	} || {
-		cp -f $( find $PREFIX/$TARGET/lib32 -type f \( -iname *.dll \) ) \
-			$TESTS_ROOT_DIR/32/
-	}
-} || {
-	[[ $BUILD_ARCHITECTURE == x32 ]] && {
-		mkdir -p $TESTS_ROOT_DIR/32
-	} || {
-		mkdir -p $TESTS_ROOT_DIR/64
+		local _arch_bits=$(func_get_arch_bit $BUILD_ARCHITECTURE)
+		mkdir -p $TESTS_ROOT_DIR/${_arch_bits}
 	}
 }
+
+tests_prepare
+
+TESTS_ROOT_DIR=$BUILDS_DIR/tests
 
 # **************************************************************************
 # **************************************************************************

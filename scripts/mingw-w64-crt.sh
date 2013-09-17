@@ -61,7 +61,7 @@ PATCHES=()
 	CRTPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-multi
 } || {
 	CRTPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-nomulti
-	[[ $BUILD_ARCHITECTURE == x32 ]] && {
+	[[ $BUILD_ARCHITECTURE == i686 ]] && {
 		LIBCONF="--enable-lib32 --disable-lib64"
 	} || {
 		LIBCONF="--disable-lib32 --enable-lib64"

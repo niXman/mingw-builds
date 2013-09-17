@@ -35,52 +35,60 @@
 
 # **************************************************************************
 
-[[ ! -d $PREFIX/mingw ]] && mkdir -p $PREFIX/mingw
-[[ ! -d $PREFIX/$TARGET ]] && mkdir -p $PREFIX/$TARGET
+function runtime_post_install {
+	[[ ! -d $PREFIX/mingw ]] && mkdir -p $PREFIX/mingw
+	[[ ! -d $PREFIX/$TARGET ]] && mkdir -p $PREFIX/$TARGET
 
-[[ -f $BUILDS_DIR/mingw-w64-runtime-post.marker && ! -d $BUILDS_DIR/$GCC_NAME ]] && {
-	rm -f $BUILDS_DIR/mingw-w64-runtime-post.marker
+	[[ -f $BUILDS_DIR/mingw-w64-runtime-post.marker && ! -d $BUILDS_DIR/$GCC_NAME ]] && {
+		rm -f $BUILDS_DIR/mingw-w64-runtime-post.marker
+	}
+
+	local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
+	local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
+
+	[[ ! -f $BUILDS_DIR/mingw-w64-runtime-post.marker ]] && {
+		[[ $USE_MULTILIB == yes ]] && {
+			RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-multi
+		} || {
+			RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-nomulti
+		}
+
+		cp -rf $RUNTIMEPREFIX/* $PREFIX/$TARGET || exit 1
+		cp -rf $RUNTIMEPREFIX/* $PREFIX/mingw || exit 1
+
+		mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
+	
+		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
+
+		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/include/*.h $PREFIX/$TARGET/include/ || exit 1
+	
+		[[ $USE_MULTILIB == yes ]] && {
+			mkdir -p $PREFIX/$TARGET/lib${_reverse_bits}
+
+			cp -f $PREREQ_DIR/${_reverse_arch}-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+
+			mkdir -p $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3}
+			echo $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \
+				| xargs -n 1 cp $PREFIX/$TARGET/lib${_reverse_bits}/libwinpthread-1.dll || exit 1
+		}
+
+		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
+
+		[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
+			cp -f $PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
+			cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
+		}
+
+		touch $BUILDS_DIR/mingw-w64-runtime-post.marker || exit 1
+	}
 }
 
-[[ ! -f $BUILDS_DIR/mingw-w64-runtime-post.marker ]] && {
-	[[ $USE_MULTILIB == yes ]] && {
-		RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-multi
-	} || {
-		RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-nomulti
-	}
+runtime_post_install
 
-	cp -rf $RUNTIMEPREFIX/* $PREFIX/$TARGET || exit 1
-	cp -rf $RUNTIMEPREFIX/* $PREFIX/mingw || exit 1
-
-	mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
-	
-	cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-	cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
-
-	cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
-	cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
-	cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-	cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/include/*.h $PREFIX/$TARGET/include/ || exit 1
-	
-	[[ $USE_MULTILIB == yes ]] && {
-		mkdir -p $PREFIX/$TARGET/lib${REVERSE_ARCHITECTURE/x/}
-
-		cp -f $PREREQ_DIR/$REVERSE_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib${REVERSE_ARCHITECTURE/x/}/ || exit 1
-		cp -f $RUNTIME_DIR/$REVERSE_ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib${REVERSE_ARCHITECTURE/x/}/ || exit 1
-		cp -f $RUNTIME_DIR/$REVERSE_ARCHITECTURE-winpthreads/lib/*.a $PREFIX/$TARGET/lib${REVERSE_ARCHITECTURE/x/}/ || exit 1
-
-		mkdir -p $BUILDS_DIR/$GCC_NAME/$TARGET/${REVERSE_ARCHITECTURE/x/}/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3}
-		echo $BUILDS_DIR/$GCC_NAME/$TARGET/${REVERSE_ARCHITECTURE/x/}/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \
-			| xargs -n 1 cp $PREFIX/$TARGET/lib${REVERSE_ARCHITECTURE/x/}/libwinpthread-1.dll || exit 1
-	}
-
-	cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
-
-	[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
-		cp -f $PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
-		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
-	}
-
-	touch $BUILDS_DIR/mingw-w64-runtime-post.marker || exit 1
-}
 # **************************************************************************

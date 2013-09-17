@@ -67,7 +67,7 @@ readonly RUN_ARGS="$@"
 	echo "    --rev=N                    - specifies number of the build revision"
 	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++"
 	echo "                                 available: win32, posix"
-	echo "    --arch=<x32|x64>           - specifies the architecture"
+	echo "    --arch=<i686|x86_64>           - specifies the architecture"
 	echo "    --mode=<[clang|gcc|python]-version>  - specify building software with version"
 	echo "    --version                  - print the version of the MinGW-W64 builds scripts"
 	echo "    --mingw-compress           - compressing MinGW"
@@ -144,11 +144,11 @@ while [[ $# > 0 ]]; do
 			case $EXCEPTIONS_MODEL in
 			dwarf)
 				USE_MULTILIB=no
-				BUILD_ARCHITECTURE=x32
+				BUILD_ARCHITECTURE=i686
 			;;
 			seh)
 				USE_MULTILIB=no
-				BUILD_ARCHITECTURE=x64
+				BUILD_ARCHITECTURE=x86_64
 			;;
 			sjlj)
 				USE_MULTILIB=$USE_MULTILIB			
@@ -207,7 +207,7 @@ while [[ $# > 0 ]]; do
 		--arch=*)
 			BUILD_ARCHITECTURE=${1/--arch=/}
 			case $BUILD_ARCHITECTURE in
-				x32|x64)
+				i686|x86_64)
 				;;
 				*) die "Unsupported architecture: \"$BUILD_ARCHITECTURE\". terminate." 
 				;;
@@ -254,7 +254,7 @@ done
 
 [[ $BUILD_MODE == gcc ]] && {
 	[[ $IS_64BIT_HOST == no ]] && {
-		[[ $BUILD_ARCHITECTURE == x64 ]] && {
+		[[ $BUILD_ARCHITECTURE == x86_64 ]] && {
 			die "you can't build 64-bit toolchain using 32-bit OS. terminate."
 		}
 		[[ $USE_MULTILIB == yes ]] && {
@@ -263,12 +263,12 @@ done
 	}
 	case $EXCEPTIONS_MODEL in
 		dwarf)
-			[[ ${BUILD_ARCHITECTURE} == x64 ]] && {
+			[[ ${BUILD_ARCHITECTURE} == x86_64 ]] && {
 				die "DWARF exceptions not allowed on x86_64 architecture. terminate."
 			}
 		;;
 		seh)
-			[[ ${BUILD_ARCHITECTURE} == x32 ]] && {
+			[[ ${BUILD_ARCHITECTURE} == i686 ]] && {
 				die "SEH exceptions not allowed on i686 architecture. terminate."
 			}
 		;;	
@@ -320,8 +320,8 @@ readonly PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
 	GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
 	readonly GCC_PART_NAME=${GCC_PART_NAME//./}
 	readonly BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}
-	readonly PREFIX=$BASE_BUILD_DIR/mingw${BUILD_ARCHITECTURE/x/}
-	readonly MINGWPREFIX=/mingw${BUILD_ARCHITECTURE/x/}
+	readonly PREFIX=$BASE_BUILD_DIR/mingw$(func_get_arch_bit)
+	readonly MINGWPREFIX=/mingw$(func_get_arch_bit)
 	MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
 	readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)	
@@ -367,25 +367,28 @@ mkdir -p \
 
 # **************************************************************************
 
-[[ $BUILD_ARCHITECTURE == x32 ]] && {
-	HOST=$x32_HOST
-	BUILD=$x32_BUILD
-	TARGET=$x32_TARGET
+case $BUILD_ARCHITECTURE in
+	i686)
+		HOST=$x32_HOST
+		BUILD=$x32_BUILD
+		TARGET=$x32_TARGET
 
-	[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc ]] && {
-		die "gcc is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
-	}
-	export PATH="$x32_PATH"
-} || {
-	HOST=$x64_HOST
-	BUILD=$x64_BUILD
-	TARGET=$x64_TARGET
-	
-	[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc ]] && {
-		die "gcc is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
-	}
-	export PATH="$x64_PATH"
-}
+		[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc ]] && {
+			die "gcc is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
+		}
+	export PATH="$x32_PATH"	
+	;;
+	x86_64)
+		HOST=$x64_HOST
+		BUILD=$x64_BUILD
+		TARGET=$x64_TARGET
+
+		[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc ]] && {
+			die "gcc is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
+		}
+		export PATH="$x64_PATH"	
+	;;
+esac
 
 # **************************************************************************
 
@@ -394,7 +397,6 @@ mkdir -p \
 	readonly REVERSE_BUILD=$(func_get_reverse_triplet $BUILD)
 	readonly REVERSE_TARGET=$(func_get_reverse_triplet $TARGET)
 	readonly ENABLE_TARGETS=${TARGET},${REVERSE_TARGET}
-	readonly REVERSE_ARCHITECTURE=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
 } || {
 	readonly ENABLE_TARGETS=$TARGET
 }
@@ -412,10 +414,10 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 	echo -n "-> fetch sources for building ${BUILD_MODE_VERSION}-"
 	[[ $BUILD_MODE == gcc ]] && {
 		[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ]] && echo -n "multilib-"
-		[[ ${BUILD_ARCHITECTURE} == x32 ]] && echo -n "x32-" || echo -n "x64-"
+		echo -n "${BUILD_ARCHITECTURE}-"
 		echo "$EXCEPTIONS_MODEL"
 	} || {
-		[[ ${BUILD_ARCHITECTURE} == x32 ]] && echo -n "x32" || echo -n "x64"
+		echo -n "${BUILD_ARCHITECTURE}"
 	}
 } || {
 	[[ $BUILD_MODE == gcc ]] && {
