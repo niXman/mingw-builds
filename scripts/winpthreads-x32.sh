@@ -55,7 +55,7 @@ CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$RUNTIME_DIR/x32-winpthreads
+	--prefix=$RUNTIME_DIR/$NAME
 	#
 	$LINK_TYPE_BOTH
 	#
