@@ -239,10 +239,23 @@ done
 }
 
 # **************************************************************************
-
-[[ -z ${BUILD_ARCHITECTURE} ]] && {
-	die "Build architecture is not specified. terminate."
+# Create primary directories
+# **************************************************************************
+[[ ! -d $ROOT_DIR ]] && {
+	mkdir -p $ROOT_DIR
+	[[ $? == 0 ]] && {
+		rm -Rf $ROOT_DIR
+	} || {
+		die "bad build root directory. terminate."
+	}
 }
+
+readonly SRCS_DIR=$ROOT_DIR/src
+readonly MARKERS_DIR=$SRCS_DIR/MARKERS
+
+mkdir -p \
+	$SRCS_DIR \
+	$MARKERS_DIR
 
 # **************************************************************************
 # Determine operating system and load appropriate config
@@ -250,6 +263,10 @@ done
 . $TOP_DIR/library/os_detect.sh
 
 # **************************************************************************
+
+[[ -z ${BUILD_ARCHITECTURE} ]] && {
+	die "Build architecture is not specified. terminate."
+}
 
 [[ $BUILD_MODE == gcc ]] && {
 	[[ $IS_64BIT_HOST == no ]] && {
@@ -291,17 +308,6 @@ done
 # **************************************************************************
 # Creating necessary directories
 # **************************************************************************
-[[ ! -d $ROOT_DIR ]] && {
-	mkdir -p $ROOT_DIR
-	[[ $? == 0 ]] && {
-		rm -Rf $ROOT_DIR
-	} || {
-		die "bad build root directory. terminate."
-	}
-}
-
-readonly SRCS_DIR=$ROOT_DIR/src
-readonly MARKERS_DIR=$SRCS_DIR/MARKERS
 readonly PREREQ_DIR=$ROOT_DIR/mingw-prereq
 readonly RUNTIME_DIR=$ROOT_DIR/mingw-runtime
 readonly ARCHIVES_DIR=$ROOT_DIR/mingw-archives
@@ -334,8 +340,6 @@ readonly LIBS_DIR=$BASE_BUILD_DIR/libs
 readonly LOGS_DIR=$BASE_BUILD_DIR/logs
 
 mkdir -p \
-	$SRCS_DIR \
-	$MARKERS_DIR \
 	$ARCHIVES_DIR \
 	$BASE_BUILD_DIR \
 	$PREFIX \
