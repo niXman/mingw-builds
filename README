@@ -24,7 +24,7 @@ MSYS2:
 
 7. Options:
   '--mode=[gcc|python|clang]-version' option specifies building software with version.
-  '--arch=<x32|x64>' option specifies the architecture.
+  '--arch=<i686|x86_64>' option specifies the architecture.
   '--buildroot=<path>' option specifies to the script to use '<path>' as build directory.
     By default used MSYS user home directory.
   '--fetch-only' option specifies to the script only to download all the sources
@@ -43,23 +43,23 @@ MSYS2:
   For more options run: "./build --help"
 
 8. Run:
-  "./build --mode=gcc-4.8.1 --arch=x32" for building i686-MinGW
-  "./build --mode=gcc-4.8.1 --arch=x64" for building x86_64-MinGW
-  "./build --mode=gcc-4.8.1 --arch=x64 --preload" for preload sources and building x86_64-MinGW
-  "./build --mode=gcc-4.8.1 --arch=x32 --exceptions=dwarf" for building i686-MinGW with DWARF exception handling
+  "./build --mode=gcc-4.8.1 --arch=i686" for building i686-MinGW-w64
+  "./build --mode=gcc-4.8.1 --arch=x86_64" for building x86_64-MinGW-w64
+  "./build --mode=gcc-4.8.1 --arch=x86_64 --preload" for preload sources and building x86_64-MinGW-w64
+  "./build --mode=gcc-4.8.1 --arch=i686 --exceptions=dwarf" for building i686-MinGW-w64 with DWARF exception handling
 
 For example, during the process of building of the i686-gcc-4.7.2 will
   be created the following directories:
-  <buildroot>/x32-4.7.2-release-posix-sjlj-rev1/build
-  <buildroot>/x32-4.7.2-release-posix-sjlj-rev1/libs
-  <buildroot>/x32-4.7.2-release-posix-sjlj-rev1/logs
-  <buildroot>/x32-4.7.2-release-posix-sjlj-rev1/prefix
+  <buildroot>/i686-4.7.2-release-posix-sjlj-rev1/build
+  <buildroot>/i686-4.7.2-release-posix-sjlj-rev1/libs
+  <buildroot>/i686-4.7.2-release-posix-sjlj-rev1/logs
+  <buildroot>/i686-4.7.2-release-posix-sjlj-rev1/prefix
 
 For x86_64:
-  <buildroot>/x64-4.7.2-release-posix-sjlj-rev1/build
-  <buildroot>/x64-4.7.2-release-posix-sjlj-rev1/libs
-  <buildroot>/x64-4.7.2-release-posix-sjlj-rev1/logs
-  <buildroot>/x64-4.7.2-release-posix-sjlj-rev1/prefix
+  <buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/build
+  <buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/libs
+  <buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/logs
+  <buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/prefix
 
 And the sources directory:
   <buildroot>/mingw-sources

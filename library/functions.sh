@@ -54,12 +54,31 @@ function func_get_reverse_triplet {
 	esac
 }
 
+
+# **************************************************************************
+
+function func_get_arch_bit {
+	case $1 in
+		i686) echo "32" ;;
+		x86_64) echo "64" ;;
+	esac
+}
+
+# **************************************************************************
+
+function func_get_reverse_arch_bit {
+	case $1 in
+		i686) echo "64" ;;
+		x86_64) echo "32" ;;
+	esac
+}
+
 # **************************************************************************
 
 function func_get_reverse_arch {
 	case $1 in
-		x32) echo "x64" ;;
-		x64) echo "x32" ;;
+		i686) echo "x86_64" ;;
+		x86_64) echo "i686" ;;
 	esac
 }
 
@@ -588,7 +607,7 @@ function func_test {
 	local src_it=
 
 	[[ $USE_MULTILIB == no ]] && {
-		[[ $BUILD_ARCHITECTURE == x32 ]] && {
+		[[ $BUILD_ARCHITECTURE == i686 ]] && {
 			local -a _archs=(32)
 		} || {
 			local -a _archs=(64)

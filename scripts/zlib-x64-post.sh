@@ -36,7 +36,7 @@
 # **************************************************************************
 
 ZLIB_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/zlib.sh | sed 's|VERSION=||' )
-ZLIB_ARCH=x64
+ZLIB_ARCH=x86_64
 OLD_PATH=$PATH
 export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 
@@ -51,7 +51,7 @@ export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 	cd $PREREQ_BUILD_DIR/$ZLIB_ARCH-zlib-${ZLIB_VERSION}
 	
 	make -f win32/Makefile.gcc \
-		CC=x86_64-w64-mingw32-gcc \
+		CC=$ZLIB_ARCH-w64-mingw32-gcc \
 		AR=ar \
 		RC=windres \
 		DLLWRAP=dllwrap \
@@ -69,7 +69,7 @@ export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 
 [[ ! -f $BUILDS_DIR/$ZLIB_ARCH-zlib-post.marker ]] && {
 	mkdir -p $PREFIX/bin $PREFIX/mingw
-	[[ ($USE_MULTILIB == yes) && ($BUILD_ARCHITECTURE == x32) ]] && {
+	[[ ($USE_MULTILIB == yes) && ($BUILD_ARCHITECTURE == i686) ]] && {
 		mkdir -p $PREFIX/$TARGET/lib64
 
 		cp -f $PREREQ_DIR/$ZLIB_ARCH-zlib/lib/*.a $PREFIX/$TARGET/lib64/ || exit 1

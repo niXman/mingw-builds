@@ -79,7 +79,7 @@ CONFIGURE_FLAGS=(
 		|| echo "--disable-multilib"
 	)
 	#
-	$( [[ $ARCHITECTURE == x64 ]] \
+	$( [[ $ARCHITECTURE == x86_64 ]] \
 		&& echo "--enable-64-bit-bfd" \
 	)
 	#
@@ -94,7 +94,7 @@ CONFIGURE_FLAGS=(
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == x32 ]] && echo -Wl,--large-address-aware )\""
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
 )
 
 #
