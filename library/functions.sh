@@ -710,8 +710,8 @@ function func_abstract_toolchain {
 					die "you can't build MinGW without installed host toolchains. terminate."
 				}
 				[[ $_reply == y ]] && {
-					break
 					_do_install=yes
+					break
 				}
 			done
 		}
