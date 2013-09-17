@@ -44,6 +44,7 @@ BUILD=$BUILD_ARCHITECTURE-w64-mingw32
 TARGET=$BUILD_ARCHITECTURE-w64-mingw32
 
 readonly CROSS_BUILDS=no
+
 # **************************************************************************
 
 readonly REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-windows/repository.txt
@@ -73,6 +74,10 @@ readonly LOGVIEWERS=(
 ]] && {
 	die "remove from PATH any existing MinGW directory. terminate."
 }
+
+# **************************************************************************
+
+readonly TOOLCHAINS_DIR=$TOP_DIR/toolchains
 
 # **************************************************************************
 

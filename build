@@ -35,7 +35,6 @@
 #
 
 # **************************************************************************
-
 # Loading functions
 source library/functions.sh
 
@@ -372,13 +371,13 @@ case $BUILD_ARCHITECTURE in
 		[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc ]] && {
 			die "gcc is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
 		}
-	export PATH="$x32_PATH"	
+		export PATH="$x32_PATH"
 	;;
 	x86_64)
 		[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc ]] && {
 			die "gcc is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
 		}
-		export PATH="$x64_PATH"	
+		export PATH="$x64_PATH"
 	;;
 esac
 
@@ -450,7 +449,7 @@ for sub in ${SUBTARGETS[@]}; do
 		;;
 		*)
 			CURR_LOGS_DIR=$LOGS_DIR
-			CURR_BUILD_DIR=$BUILDS_DIR			
+			CURR_BUILD_DIR=$BUILDS_DIR
 		;;
 	esac
 	
