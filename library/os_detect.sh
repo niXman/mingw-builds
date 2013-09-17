@@ -36,6 +36,7 @@
 
 echo -n "Checking operating system... "
 readonly U_SYSTEM=`(uname -s) 2>/dev/null`  || U_SYSTEM=unknown
+echo "$U_SYSTEM"
 
 case "${U_SYSTEM}" in
 	Linux)
@@ -51,7 +52,6 @@ case "${U_SYSTEM}" in
 		die "Unsupported OS ($U_SYSTEM). terminate."
 	;;
 esac
-echo "$U_SYSTEM"
 
 echo -n "Checking OS bitness... "
 readonly U_MACHINE=`(uname -m) 2>/dev/null` || U_MACHINE=unknown

@@ -679,16 +679,47 @@ function func_abstract_toolchain {
 	# $4 - toolchain arch
 	local -a _url=( "$2|root:$1" )
 	local _filename=$(basename $2)
+	local _do_install=no
 
 	[[ ! -f $MARKERS_DIR/${_filename}-download.marker ]] && {
 		[[ -d $3 ]] && {
-			echo -n "---> Remove previous $4 toolchain..."
-			rm -rf $3
-			echo " done"
+			echo -n "Found previously installed $4 toolchain. Do you want to upgrade it (y/n)?"
+			local _reply=
+			while :
+			do
+				read -s -n 1 _reply
+				echo ": $_reply"
+				[[ $_reply != y && $_reply != n ]] && continue
+				[[ $_reply == y ]] && {
+					_do_install=yes
+					echo -n "---> Remove previous $4 toolchain..."
+					rm -rf $3
+					echo " done"
+				}
+				break
+			done
+		} || {
+			echo -n "$4 toolchain is not installed. You wish to install (y/n)?"
+			local _reply=
+			while :
+			do
+				read -s -n 1 _reply
+				echo ": $_reply"
+				[[ $_reply != y && $_reply != n ]] && continue
+				[[ $_reply == n ]] && {
+					die "you can't build MinGW without installed host toolchains. terminate."
+				}
+				[[ $_reply == y ]] && {
+					break
+					_do_install=yes
+				}
+			done
 		}
-		echo -e "-> \E[32;40m$4 toolchain\E[37;40m"
-		func_download _url[@]
-		func_uncompress _url[@]
+		[[ $_do_install == yes ]] && {
+			echo -e "-> \E[32;40m$4 toolchain\E[37;40m"
+			func_download _url[@]
+			func_uncompress _url[@]
+		}
 	}	
 }
 
