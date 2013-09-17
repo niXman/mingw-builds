@@ -36,7 +36,7 @@
 # **************************************************************************
 
 VERSION=1.14
-NAME=x64-libiconv-$LINK_TYPE_SUFFIX
+NAME=x86_64-libiconv-$LINK_TYPE_SUFFIX
 SRC_DIR_NAME=libiconv-${VERSION}
 TYPE=.tar.gz
 URL=(
