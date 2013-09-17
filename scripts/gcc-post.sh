@@ -37,68 +37,71 @@
 
 echo -n "--> Switching to new compiler..."
 export PATH=$PREFIX/bin:$PREFIX/opt/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
-echo "done"
-		
-[[ ! -f $BUILDS_DIR/gcc-post.marker ]] && {
-	# remove <prefix>/mingw directory
-	rm -rf $PREFIX/mingw >/dev/null 2>&1
+echo " done"
 
-	_gcc_version=$(func_map_gcc_name_to_gcc_version $GCC_NAME)
-	# libgcc_s.a
-	cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ \
-		|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib"
+function gcc_post_install {
+	[[ ! -f $BUILDS_DIR/gcc-post.marker ]] && {
+		# remove <prefix>/mingw directory
+		rm -rf $PREFIX/mingw >/dev/null 2>&1
 
-	func_has_lang objc
-	is_objc=$?
-	[[ $is_objc == 1 ]] && {
-		# libobjc
-		cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/libobjc/.libs/libobjc.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/ \
-			|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version"
-		cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/libobjc/.libs/libobjc.dll.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/ \
-			|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version"
-		# objc headers
-		cp -rf ${SRCS_DIR}/${GCC_NAME}/libobjc/objc $PREFIX/lib/gcc/$TARGET/$_gcc_version/include \
-			|| die "Cannot copy objc headers to $PREFIX/lib/gcc/$TARGET/$_gcc_version/include"
-	}
-
-	# builded architecture dlls
-	DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 \
-			-o -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 \
-			-o -path $BUILDS_DIR/$GCC_NAME/gcc/ada \
-			-o -path $BUILDS_DIR/$GCC_NAME/$TARGET/libada/adainclude \) -prune -o -type f -name *.dll) )
-	cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
-	cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/ >/dev/null 2>&1
-			
-	[[ $STRIP_ON_INSTALL == yes ]] && {
-		strip $PREFIX/bin/*.dll || die "Error stripping dlls from $PREFIX/bin"
-		strip $PREFIX/$TARGET/lib/*.dll || die "Error stripping dlls from $PREFIX/$TARGET/lib"
-	}
-
-	[[ $USE_MULTILIB == yes ]] && {
-		# Second architecture bit dlls
+		local _gcc_version=$(func_map_gcc_name_to_gcc_version $GCC_NAME)
+		local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
 		# libgcc_s.a
-		cp -f $PREFIX/lib/gcc/$TARGET/lib${REVERSE_ARCHITECTURE/x/}/libgcc_s.a $PREFIX/$TARGET/lib${REVERSE_ARCHITECTURE/x/}/ \
-			|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib${REVERSE_ARCHITECTURE/x/}/"
+		cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ \
+			|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib"
 
+		func_has_lang objc
+		local is_objc=$?
 		[[ $is_objc == 1 ]] && {
-			# libobjc libraries
-			cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/${REVERSE_ARCHITECTURE/x/}/libobjc/.libs/libobjc.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/${REVERSE_ARCHITECTURE/x/}/ \
-				|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/${REVERSE_ARCHITECTURE/x/}"
-			cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/${REVERSE_ARCHITECTURE/x/}/libobjc/.libs/libobjc.dll.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/${REVERSE_ARCHITECTURE/x/}/ \
-				|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/${REVERSE_ARCHITECTURE/x/}"
+			# libobjc
+			cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/libobjc/.libs/libobjc.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/ \
+				|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version"
+			cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/libobjc/.libs/libobjc.dll.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/ \
+				|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version"
+			# objc headers
+			cp -rf ${SRCS_DIR}/${GCC_NAME}/libobjc/objc $PREFIX/lib/gcc/$TARGET/$_gcc_version/include \
+				|| die "Cannot copy objc headers to $PREFIX/lib/gcc/$TARGET/$_gcc_version/include"
 		}
 
-		find $BUILDS_DIR/$GCC_NAME/$TARGET/${REVERSE_ARCHITECTURE/x/} -path $BUILDS_DIR/$GCC_NAME/$TARGET/${REVERSE_ARCHITECTURE/x/}/libada/adainclude \
-			-prune -o -type f -iname *.dll ! -iname *winpthread* -print0 \
-			| xargs -0 -I{} cp -f {} $PREFIX/$TARGET/lib${REVERSE_ARCHITECTURE/x/}/ || die "Error copying ${REVERSE_ARCHITECTURE/x/}-bit dlls"
-
+		# builded architecture dlls
+		DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 \
+				-o -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 \
+				-o -path $BUILDS_DIR/$GCC_NAME/gcc/ada \
+				-o -path $BUILDS_DIR/$GCC_NAME/$TARGET/libada/adainclude \) -prune -o -type f -name *.dll) )
+		cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
+		cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/ >/dev/null 2>&1
+			
 		[[ $STRIP_ON_INSTALL == yes ]] && {
-			strip $PREFIX/$TARGET/lib${REVERSE_ARCHITECTURE/x/}/*.dll || die "Error stripping ${REVERSE_ARCHITECTURE/x/}-bit dlls"
+			strip $PREFIX/bin/*.dll || die "Error stripping dlls from $PREFIX/bin"
+			strip $PREFIX/$TARGET/lib/*.dll || die "Error stripping dlls from $PREFIX/$TARGET/lib"
 		}
-	}
 
-	unset _gcc_version
-	touch $BUILDS_DIR/gcc-post.marker
+		[[ $USE_MULTILIB == yes ]] && {
+			# Second architecture bit dlls
+			# libgcc_s.a
+			cp -f $PREFIX/lib/gcc/$TARGET/lib${_reverse_bits}/libgcc_s.a $PREFIX/$TARGET/lib${_reverse_bits}/ \
+				|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib${_reverse_bits}/"
+
+			[[ $is_objc == 1 ]] && {
+				# libobjc libraries
+				cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/${_reverse_bits}/libobjc/.libs/libobjc.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}/ \
+					|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}"
+				cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/${_reverse_bits}/libobjc/.libs/libobjc.dll.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}/ \
+					|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}"
+			}
+
+			find $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits} -path $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/libada/adainclude \
+				-prune -o -type f -iname *.dll ! -iname *winpthread* -print0 \
+				| xargs -0 -I{} cp -f {} $PREFIX/$TARGET/lib${_reverse_bits}/ || die "Error copying ${_reverse_bits}-bit dlls"
+
+			[[ $STRIP_ON_INSTALL == yes ]] && {
+				strip $PREFIX/$TARGET/lib${_reverse_bits}/*.dll || die "Error stripping ${_reverse_bits}-bit dlls"
+			}
+		}
+
+		touch $BUILDS_DIR/gcc-post.marker
+	}
 }
 
+gcc_post_install
 # **************************************************************************

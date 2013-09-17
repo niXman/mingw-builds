@@ -61,7 +61,7 @@ CONFIGURE_FLAGS=(
 	#
 	--enable-shared
 	#
-	$( [[ $BUILD_ARCHITECTURE == x64 ]] \
+	$( [[ $BUILD_ARCHITECTURE == x86_64 ]] \
 		&& echo "--enable-64bit"
 	)
 	#

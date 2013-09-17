@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-[[ $BUILD_ARCHITECTURE == x32 ]] && {
+[[ $BUILD_ARCHITECTURE == i686 ]] && {
 	export PATH=$BEFORE_WINPTHREADS64_PRE_PATH
 
 	[[ $USE_MULTILIB == yes ]] && {
