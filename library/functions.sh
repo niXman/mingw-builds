@@ -615,6 +615,7 @@ function func_test {
 
 	for arch_it in ${_archs[@]}; do
 		[[ ! -f $3/$arch_it/$1.marker ]] && {
+			local _arch_bits=$(func_get_arch_bit $BUILD_ARCHITECTURE)
 			for src_it in "${_list[@]}"; do
 				local _first=$(echo $src_it | sed 's/\([^ ]*\).*/\1/' )
 				local _prev=$( echo $src_it | sed '$s/ *\([^ ]* *\)$//' )
@@ -625,20 +626,20 @@ function func_test {
 					c)
 						printf "%-50s" "--> GCC     $arch_it: \"$_first\" ... "
 						local _log_file=$3/$arch_it/$_first-compilation.log
-						echo "gcc -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
-						( cd $3/$arch_it && gcc -m${arch_it} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
+						echo "gcc -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
+						( cd $3/$arch_it && gcc -m${_arch_bits} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
 					;;
 					cpp)
 						printf "%-50s" "--> G++     $arch_it: \"$_first\" ... "
 						local _log_file=$3/$arch_it/$_first-compilation.log
-						echo "g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
-						( cd $3/$arch_it && g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
+						echo "g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
+						( cd $3/$arch_it && g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
 					;;
 					o)
 						printf "%-50s" "--> LD      $arch_it: \"$_last\" ... "
 						local _log_file=$3/$arch_it/$_first-link.log
-						echo "g++ -m${arch_it} $src_it" > $_log_file
-						( cd $3/$arch_it && g++ -m${arch_it} $src_it >> $_log_file 2>&1 )
+						echo "g++ -m${_arch_bits} $src_it" > $_log_file
+						( cd $3/$arch_it && g++ -m${_arch_bits} $src_it >> $_log_file 2>&1 )
 					;;
 				esac
 				_result=$?
