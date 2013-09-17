@@ -672,6 +672,25 @@ function func_test {
 }
 
 # **************************************************************************
+function func_abstract_toolchain {
+	# $1 - toolchains top directory
+	# $2 - toolchain URL
+	# $3 - install path
+	# $4 - toolchain arch
+	local -a _url=( "$2|root:$1" )
+	local _filename=$(basename $2)
+
+	[[ ! -f $MARKERS_DIR/${_filename}-download.marker ]] && {
+		[[ -d $3 ]] && {
+			echo -n "---> Remove previous $4 toolchain..."
+			rm -rf $3
+			echo " done"
+		}
+		echo -e "-> \E[32;40m$4 toolchain\E[37;40m"
+		func_download _url[@]
+		func_uncompress _url[@]
+	}	
+}
 
 function func_install_toolchain {
 	# $1 - toolchains path
@@ -680,24 +699,23 @@ function func_install_toolchain {
 	# $4 - i686-mingw URL
 	# $5 - x86_64-mingw URL
 
-	[[ ! -d $2 || ! $2/bin/gcc.exe ]] && {
-		# x32 download
-		echo -e "-> \E[32;40mx32 toolchain\E[37;40m"
-		local -a _url32=( "$4|root:$1" )
-		func_download _url32[@]
-		func_uncompress _url32[@]
-
+	[[ $USE_MULTILIB == yes ]] && {
+		local _arch_bit=both
+	} || {
+		local _arch_bit=$(func_get_arch_bit $BUILD_ARCHITECTURE)
 	}
-
-	[[ $EXCEPTIONS_MODEL == seh || $EXCEPTIONS_MODEL == sjlj ]] && {
-		[[ ! -d $3 || ! $3/bin/gcc.exe ]] && {
-			# x64 download
-			echo -e "-> \E[32;40mx64 toolchain\E[37;40m"
-			local -a _url64=( "$5|root:$1" )
-			func_download _url64[@]
-			func_uncompress _url64[@]
-		}
-	}
+	case $_arch_bit in
+		i686)
+			func_abstract_toolchain $1 $4 $2 $_arch_bit
+		;;
+		x86_64)
+			func_abstract_toolchain $1 $5 $3 $_arch_bit
+		;;
+		both)
+			func_abstract_toolchain $1 $4 $2 "i686"
+			func_abstract_toolchain $1 $5 $3 "x86_64"
+		;;
+	esac
 
 	return 0
 }
