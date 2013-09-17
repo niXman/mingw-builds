@@ -615,7 +615,7 @@ function func_test {
 
 	for arch_it in ${_archs[@]}; do
 		[[ ! -f $3/$arch_it/$1.marker ]] && {
-			local _arch_bits=$(func_get_arch_bit $BUILD_ARCHITECTURE)
+			local _arch_bits=$(func_get_arch_bit $arch_it)
 			for src_it in "${_list[@]}"; do
 				local _first=$(echo $src_it | sed 's/\([^ ]*\).*/\1/' )
 				local _prev=$( echo $src_it | sed '$s/ *\([^ ]* *\)$//' )
