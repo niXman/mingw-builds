@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-NAME=x32-winpthreads
+NAME=i686-winpthreads
 SRC_DIR_NAME=winpthreads
 TYPE=svn
 URL=(
