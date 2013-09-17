@@ -39,13 +39,9 @@ readonly x64_HOST_MINGW_PATH_URL=
 
 # **************************************************************************
 
-readonly x32_HOST=
-readonly x32_BUILD=
-readonly x32_TARGET=
-
-readonly x64_HOST=
-readonly x64_BUILD=
-readonly x64_TARGET=
+HOST=
+BUILD=
+TARGET=$BUILD_ARCHITECTURE-w64-mingw32
 
 readonly CROSS_BUILDS=yes
 # **************************************************************************

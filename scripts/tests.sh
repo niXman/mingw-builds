@@ -35,21 +35,20 @@
 
 # **************************************************************************
 
+TESTS_ROOT_DIR=$BUILDS_DIR/tests
+
 function tests_prepare {
+	mkdir -p $TESTS_ROOT_DIR/$BUILD_ARCHITECTURE
 	[[ $USE_MULTILIB == yes ]] && {
+		local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
 		local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
-		mkdir -p $TESTS_ROOT_DIR/{32,64}
+		mkdir -p $TESTS_ROOT_DIR/${_reverse_arch}
 		cp -f $( find $PREFIX/$TARGET/lib${_reverse_bits} -type f \( -iname *.dll \) ) \
 			$TESTS_ROOT_DIR/${_reverse_bits}/
-	} || {
-		local _arch_bits=$(func_get_arch_bit $BUILD_ARCHITECTURE)
-		mkdir -p $TESTS_ROOT_DIR/${_arch_bits}
 	}
 }
 
 tests_prepare
-
-TESTS_ROOT_DIR=$BUILDS_DIR/tests
 
 # **************************************************************************
 # **************************************************************************
