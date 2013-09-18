@@ -78,11 +78,10 @@ function func_build_info() {
 	for subtargets_it in ${SUBTARGETS[@]}; do
 		[[ $subtargets_it == build-info ]] && continue
 		[[ -z $(grep 'CONFIGURE_FLAGS=' $TOP_DIR/scripts/$subtargets_it.sh) ]] && continue
-		. $TOP_DIR/scripts/$subtargets_it.sh
+		source $TOP_DIR/scripts/$subtargets_it.sh
 		echo "name         : $NAME" >> $INFO_FILE
 		echo "type         : $TYPE" >> $INFO_FILE
-		local prev_dir=$PWD
-		cd $SRCS_DIR/$SRC_DIR_NAME
+		pushd $SRCS_DIR/$SRC_DIR_NAME > /dev/null
 		case $TYPE in
 			cvs) echo "revision     : $REV" >> $INFO_FILE ;;
 			svn) echo "revision     : $( svn info | grep 'Revision: ' | sed 's|Revision: ||' )" >> $INFO_FILE ;;
@@ -90,19 +89,23 @@ function func_build_info() {
 			git) echo "SHA          : $( export TERM=cygwin && git log -1 --pretty=format:%H )" >> $INFO_FILE ;;
 			*)   echo "version      : $VERSION" >> $INFO_FILE ;;
 		esac
-		cd $prev_dir
+		popd > /dev/null
 		
 		[[ ${#URL[@]} > 1 ]] && {
 			local urls_it=
 			local urls=
 			
 			for urls_it in ${URL[@]}; do
-				urls="$urls $(echo $urls_it | sed -n 's/\([^|]*\)|.*/\1/p')"
+				local _params=( ${urls_it//|/ } )
+				local _real_url=${_params[0]}
+				urls="$urls $(echo $_real_url | sed -n 's/\([^|]*\)|.*/\1/p')"
 			done
 			
 			echo "urls         : $(echo $urls | sed 's| |, |g')" >> $INFO_FILE
 		} || {
-			echo "url          : $URL" >> $INFO_FILE
+			local _params=( ${URL//|/ } )
+			local _real_url=${_params[0]}
+			echo "url          : $_real_url" >> $INFO_FILE
 		}
 		echo "patches      : $(echo ${PATCHES[@]} | sed 's| |, |g')" >> $INFO_FILE
 		echo "configuration: ${CONFIGURE_FLAGS[@]}" >> $INFO_FILE
