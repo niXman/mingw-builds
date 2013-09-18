@@ -34,6 +34,25 @@
 
 # **************************************************************************
 
+function func_clear_env {
+	unset NAME
+	unset SRC_DIR_NAME
+	unset EXECUTE_AFTER_DOWNLOAD
+	unset EXECUTE_AFTER_UNCOMPRESS
+	unset EXECUTE_AFTER_PATCH
+	unset EXECUTE_AFTER_INSTALL
+	unset PRIORITY
+	unset TYPE
+	unset REV
+	unset URL
+	unset PATCHES
+	unset CONFIGURE_FLAGS
+	unset MAKE_FLAGS
+	unset INSTALL_FLAGS
+}
+
+# **************************************************************************
+
 function die {
 	echo $@
 	exit 1
