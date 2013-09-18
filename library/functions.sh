@@ -423,8 +423,8 @@ function func_uncompress {
 		_log_name=$MARKERS_DIR/${_filename}-unpack.log
 		_marker_name=$MARKERS_DIR/${_filename}-unpack.marker
 		_ext=$(func_get_filename_extension $_filename)
-		[[ $_ext == .tar.gz || $_ext == .tar.bz2 || $_ext == .tar.lzma \
-		|| $_ext == .tar.xz || $_ext == .tar.7z || $_ext == .7z || $_ext == .tgz ]] && {
+		[[ $_ext == .tar.gz || $_ext == .tar.bz2 || $_ext == .tar.lzma || $_ext == .tar.xz \
+		|| $_ext == .tar.7z || $_ext == .7z || $_ext == .tgz || $_ext == .zip ]] && {
 			[[ ! -f $_marker_name ]] && {
 				echo -n "--> unpack $_filename..."
 				case $_ext in
@@ -433,6 +433,7 @@ function func_uncompress {
 					.tar.lzma|.tar.xz) _unpack_cmd="tar xvJf $SRCS_DIR/$_filename -C $_lib_name > $_log_name 2>&1" ;;
 					.tar.7z) die "unimplemented. terminate." ;;
 					.7z) _unpack_cmd="7za x $SRCS_DIR/$_filename -o$_lib_name > $_log_name 2>&1" ;;
+					.zip) _unpack_cmd="unzip $SRCS_DIR/$_filename -d $_lib_name > $_log_name 2>&1" ;;
 					*) die " error. bad archive type: $_ext" ;;
 				esac
 				eval ${_unpack_cmd}
