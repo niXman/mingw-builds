@@ -432,7 +432,7 @@ for sub in ${SUBTARGETS[@]}; do
 	}
 	echo -e "-> \E[32;40m$sub\E[37;40m"
 
-	. $TOP_DIR/scripts/$sub.sh
+	source $TOP_DIR/scripts/$sub.sh
 
 	[[ -z $NAME ]] && continue
 
