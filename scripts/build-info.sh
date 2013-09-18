@@ -112,6 +112,8 @@ function func_build_info() {
 		echo >> $INFO_FILE
 		echo "# **************************************************************************" >> $INFO_FILE
 		echo >> $INFO_FILE
+
+		func_clear_env
 	done
 }
 
