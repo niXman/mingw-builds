@@ -422,6 +422,7 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 	}
 }
 
+func_clear_env
 for sub in ${SUBTARGETS[@]}; do
 	[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
 		die "script for subtarget \"$sub\" is not exists. terminate."
@@ -431,14 +432,7 @@ for sub in ${SUBTARGETS[@]}; do
 	}
 	echo -e "-> \E[32;40m$sub\E[37;40m"
 
-	NAME=""
-	PRIORITY=""
-	EXECUTE_AFTER_DOWNLOAD=()
-	EXECUTE_AFTER_UNCOMPRESS=()
-	EXECUTE_AFTER_PATCH=()
-	EXECUTE_AFTER_INSTALL=()
-
-	. $TOP_DIR/scripts/$sub.sh
+	source $TOP_DIR/scripts/$sub.sh
 
 	[[ -z $NAME ]] && continue
 
@@ -578,6 +572,8 @@ for sub in ${SUBTARGETS[@]}; do
 			}
 		}
 	}
+
+	func_clear_env
 done
 
 [[ $FETCH_MODE == yes ]] && {
