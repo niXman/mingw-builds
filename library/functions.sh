@@ -36,19 +36,20 @@
 
 function func_clear_env {
 	unset NAME
+	unset VERSION
 	unset SRC_DIR_NAME
-	unset EXECUTE_AFTER_DOWNLOAD
-	unset EXECUTE_AFTER_UNCOMPRESS
-	unset EXECUTE_AFTER_PATCH
-	unset EXECUTE_AFTER_INSTALL
 	unset PRIORITY
 	unset TYPE
 	unset REV
 	unset URL
+	unset EXECUTE_AFTER_DOWNLOAD
+	unset EXECUTE_AFTER_UNCOMPRESS
 	unset PATCHES
+	unset EXECUTE_AFTER_PATCH
 	unset CONFIGURE_FLAGS
 	unset MAKE_FLAGS
 	unset INSTALL_FLAGS
+	unset EXECUTE_AFTER_INSTALL
 }
 
 # **************************************************************************
