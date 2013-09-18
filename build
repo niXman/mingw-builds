@@ -422,8 +422,8 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 	}
 }
 
-func_clear_env
 for sub in ${SUBTARGETS[@]}; do
+	func_clear_env
 	[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
 		die "script for subtarget \"$sub\" is not exists. terminate."
 	}
@@ -572,9 +572,9 @@ for sub in ${SUBTARGETS[@]}; do
 			}
 		}
 	}
-
-	func_clear_env
 done
+
+func_clear_env
 
 [[ $FETCH_MODE == yes ]] && {
 	echo "Sources downloaded successfully."
