@@ -64,12 +64,13 @@ function gcc_post_install {
 		}
 
 		# builded architecture dlls
-		DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 \
+		local _dlls=
+		_dlls=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 \
 				-o -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 \
 				-o -path $BUILDS_DIR/$GCC_NAME/gcc/ada \
 				-o -path $BUILDS_DIR/$GCC_NAME/$TARGET/libada/adainclude \) -prune -o -type f -name *.dll) )
-		cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
-		cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/ >/dev/null 2>&1
+		cp -f ${_dlls[@]} $PREFIX/bin/ > /dev/null 2>&1 || die "Cannot copy architecture dlls to $PREFIX/bin/"
+		cp -f ${_dlls[@]} $PREFIX/$TARGET/lib/ > /dev/null 2>&1 || die "Cannot copy architecture dlls to $PREFIX/lib/"
 			
 		[[ $STRIP_ON_INSTALL == yes ]] && {
 			strip $PREFIX/bin/*.dll || die "Error stripping dlls from $PREFIX/bin"
