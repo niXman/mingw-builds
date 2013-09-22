@@ -63,6 +63,7 @@ readonly RUN_ARGS="$@"
 	echo "    --no-strip                 - don't strip dll's & executables on install"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
 	echo "    --jobs=N                   - specifies number of parallel make threads"
+	echo "    --rt-version=<v3|trunk>    - specifies mingw-w64 runtime version to build"
 	echo "    --rev=N                    - specifies number of the build revision"
 	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++"
 	echo "                                 available: win32, posix"
@@ -141,20 +142,20 @@ while [[ $# > 0 ]]; do
 		--exceptions=*)
 			EXCEPTIONS_MODEL=${1/--exceptions=/}
 			case $EXCEPTIONS_MODEL in
-			dwarf)
-				USE_MULTILIB=no
-				BUILD_ARCHITECTURE=i686
-			;;
-			seh)
-				USE_MULTILIB=no
-				BUILD_ARCHITECTURE=x86_64
-			;;
-			sjlj)
-				USE_MULTILIB=$USE_MULTILIB			
-			;;
-			*)
-				die "\"$EXCEPTIONS_MODEL\" is not valid exception model. available models: dwarf, seh, sjlj. terminate."
-			;;
+				dwarf)
+					USE_MULTILIB=no
+					BUILD_ARCHITECTURE=i686
+				;;
+				seh)
+					USE_MULTILIB=no
+					BUILD_ARCHITECTURE=x86_64
+				;;
+				sjlj)
+					USE_MULTILIB=$USE_MULTILIB			
+				;;
+				*)
+					die "\"$EXCEPTIONS_MODEL\" is not valid exception model. available models: dwarf, seh, sjlj. terminate."
+				;;
 			esac	
 		;;
 		--use-lto)
@@ -174,14 +175,28 @@ while [[ $# > 0 ]]; do
 			}
 			JOBS=${1/--jobs=/}
 		;;
+		--rt-version=*)
+			RUNTIME_VERSION=${1/--rt-version=/}
+			case $RUNTIME_VERSION in
+				v3)
+					RUNTIME_BRANCH="trunk"
+				;;
+				trunk)
+					RUNTIME_BRANCH="stable/v3.x"
+				;;
+				*)
+					die "Unsupported runtime version $RUNTIME_VERSION."
+				;;
+			esac
+		;;
 		--threads=*) 
 			THREADS_MODEL=${1/--threads=/}
 			case $THREADS_MODEL in
-			win32 | posix)
-			;;
-			*)
-				die "\"$THREADS_MODEL\" is not valid threads model. available models: posix, win32. terminate"
-			;;
+				win32 | posix)
+				;;
+				*)
+					die "\"$THREADS_MODEL\" is not valid threads model. available models: posix, win32. terminate"
+				;;
 			esac
 		;;
 		--mode=*)

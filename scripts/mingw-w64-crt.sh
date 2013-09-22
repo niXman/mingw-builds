@@ -35,19 +35,18 @@
 
 # **************************************************************************
 
-NAME=mingw-w64-crt
+NAME=mingw-w64-crt-${RUNTIME_VERSION}
 [[ $USE_MULTILIB == yes ]] && {
 	NAME=$BUILD_ARCHITECTURE-$NAME-multi
 } || {
 	NAME=$BUILD_ARCHITECTURE-$NAME-nomulti
 }
-SRC_DIR_NAME=mingw-w64-crt
+SRC_DIR_NAME=mingw-w64-crt-${RUNTIME_VERSION}
 TYPE=svn
 URL=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-crt|repo:$TYPE"
+	"svn://svn.code.sf.net/p/mingw-w64/code/RUNTIME_BRANCH/mingw-w64-crt|repo:$TYPE|module:$SRC_DIR_NAME"
 )
 
-REV=
 PRIORITY=runtime
 
 #
@@ -58,9 +57,9 @@ PATCHES=()
 
 [[ $USE_MULTILIB == yes ]] && {
 	LIBCONF="--enable-lib32 --enable-lib64"
-	CRTPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-multi
+	CRTPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-${RUNTIME_VERSION}-multi
 } || {
-	CRTPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-nomulti
+	CRTPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-${RUNTIME_VERSION}-nomulti
 	[[ $BUILD_ARCHITECTURE == i686 ]] && {
 		LIBCONF="--enable-lib32 --disable-lib64"
 	} || {

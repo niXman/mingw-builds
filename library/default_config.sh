@@ -86,6 +86,8 @@ SHOW_LOG_ON_ERROR=yes
 
 JOBS=1
 
+RUNTIME_VERSION=trunk
+RUNTIME_BRANCH="trunk"
 # **************************************************************************
 
 FETCH_MODE=no

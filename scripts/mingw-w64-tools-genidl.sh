@@ -39,7 +39,7 @@ NAME=genidl
 SRC_DIR_NAME=genidl
 TYPE=svn
 URL=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-tools/genidl|repo:$TYPE"
+	"svn://svn.code.sf.net/p/mingw-w64/code/RUNTIME_BRANCH/mingw-w64-tools/genidl|repo:$TYPE"
 )
 
 PRIORITY=extra

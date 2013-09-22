@@ -35,16 +35,16 @@
 
 # **************************************************************************
 
-NAME=mingw-w64-headers
+NAME=mingw-w64-headers-${RUNTIME_VERSION}
 [[ $USE_MULTILIB == yes ]] && {
 	NAME=$BUILD_ARCHITECTURE-$NAME-multi
 } || {
 	NAME=$BUILD_ARCHITECTURE-$NAME-nomulti
 }
-SRC_DIR_NAME=mingw-w64-headers
+SRC_DIR_NAME=mingw-w64-headers-${RUNTIME_VERSION}
 TYPE=svn
 URL=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-headers|repo:$TYPE"
+	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-headers|repo:$TYPE|module:$SRC_DIR_NAME"
 )
 
 PRIORITY=runtime
@@ -56,9 +56,9 @@ PATCHES=()
 #
 
 [[ $USE_MULTILIB == yes ]] && {
-	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-multi
+	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-${RUNTIME_VERSION}-multi
 } || {
-	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-nomulti
+	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-${RUNTIME_VERSION}-nomulti
 }
 
 CONFIGURE_FLAGS=(

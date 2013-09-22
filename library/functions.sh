@@ -816,7 +816,7 @@ function func_create_mingw_archive_name {
 	)-$6-$5
 
 	[[ -n $7 ]] && {
-		_archive=$_archive-rev$7
+		_archive=$_archive-rt-${RUNTIME_VERSION}-rev$7
 	}
 
 	echo "$_archive.7z"
@@ -837,7 +837,7 @@ function func_create_sources_archive_name {
 	)
 
 	[[ -n $4 ]] && {
-		_archive=$_archive-rev$4
+		_archive=$_archive-rt_${RUNTIME_VERSION}-rev$4
 	}
 
 	echo "$_archive.tar.7z"
