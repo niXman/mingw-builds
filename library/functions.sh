@@ -468,7 +468,7 @@ function func_execute {
 	local -a _commands=( "${!6}" )
 	local it=
 	
-	_index=0
+	local _index=0
 	((_index=${#_commands[@]}-1))
 	local _cmd_marker_name=$1/$2/exec-$4-$_index.marker
 	[[ -f $_cmd_marker_name ]] && {
@@ -486,19 +486,25 @@ function func_execute {
 		local _cmd_log_name=$1/$2/exec-$4-$_index.log
 
 		[[ ! -f $_cmd_marker_name ]] && {
-			( cd $1/$2 && eval ${it} > $_cmd_log_name 2>&1 )
+			pushd $1/$2 > /dev/null
+			eval ${it} > $_cmd_log_name 2>&1
 			_result=$?
-			[[ $_result != 0 ]] && {
-				echo "error!"
-				return $_result
-			} || {
+			popd > /dev/null
+			[[ $_result == 0 ]] && {
 				touch $_cmd_marker_name
+			} || {
+				break
 			}
 		}
 		((_index++))
 	done
 
-	[[ $_index == ${#_commands[@]} ]] && echo " done"
+	[[ $_result == 0 ]] && {
+		echo " done"
+	} || {
+		[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_cmd_log_name &
+		die "Failed to execute \"${it}\""
+	}
 
 	return $_result
 }
@@ -515,7 +521,8 @@ function func_apply_patches {
 	
 	local _result=0
 	local it=
-	_index=0
+	local applevel=
+	local _index=0
 	local -a _list=( "${!5}" )
 	[[ ${#_list[@]} == 0 ]] && return 0
 
@@ -532,22 +539,40 @@ function func_apply_patches {
 
 	for it in ${_list[@]} ; do
 		local _patch_marker_name=$1/$2/_patch-$_index.marker
+		local _patch_log_name=$1/$2/patch-$_index.log
 
 		[[ ! -f $_patch_marker_name ]] && {
-			[[ -f $PATCHES_DIR/${it} ]] || die "Patch $PATCHES_DIR/${it} not found!"
-			( cd $1/$2 && patch -p1 < $4/${it} > $1/$2/patch-$_index.log 2>&1 )
-			_result=$?
-			[[ $_result == 0 ]] && {
+			[[ -f $PATCHES_DIR/${it} ]] || die "Patch $4/${it} not found!"
+			local level=
+			local found=no
+			pushd $1/$2 > /dev/null
+			for level in 0 1 2 3
+			do
+				applevel=$level
+				if patch -p$level --dry-run -i $4/${it} > $_patch_log_name 2>&1
+				then
+					found=yes
+					break
+				fi
+			done
+			[[ $found == "yes" ]] && {
+				patch -p$applevel -i $4/${it} > $_patch_log_name 2>&1
 				touch $_patch_marker_name
 			} || {
 				_result=1
 				break
 			}
+			popd > /dev/null
 		}
 		((_index++))
 	done
 
-	[[ $_result == 0 ]] && echo " done" || echo "error!"
+	[[ $_result == 0 ]] && {
+		echo " done"
+	} || {
+		[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_patch_log_name &
+		die "Failed to apply patch ${it} at level $applevel"
+	}
 
 	return $_result
 }

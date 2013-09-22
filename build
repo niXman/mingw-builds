@@ -490,11 +490,6 @@ for sub in ${SUBTARGETS[@]}; do
 				"after_unpack" \
 				$CURR_LOGS_DIR \
 				EXECUTE_AFTER_UNCOMPRESS[@]
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_unpack-$_index.log &
-				exit $func_res
-			}
 		}
 
 		func_apply_patches \
@@ -503,11 +498,6 @@ for sub in ${SUBTARGETS[@]}; do
 			$CURR_LOGS_DIR \
 			$PATCHES_DIR \
 			PATCHES[@]
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/patch-$_index.log &
-			exit $func_res
-		}
 
 		[[ ${#EXECUTE_AFTER_PATCH[@]} >0 ]] && {
 			func_execute \
@@ -517,11 +507,6 @@ for sub in ${SUBTARGETS[@]}; do
 				"after_patch" \
 				$CURR_LOGS_DIR \
 				EXECUTE_AFTER_PATCH[@]
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_patch-$_index.log &
-				exit $func_res
-			}
 		}
 
 		[[ ${#CONFIGURE_FLAGS[@]} >0 ]] && {
@@ -581,11 +566,6 @@ for sub in ${SUBTARGETS[@]}; do
 				"after_install" \
 				$CURR_LOGS_DIR \
 				EXECUTE_AFTER_INSTALL[@]
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CURR_BUILD_DIR/$NAME/exec-after_install-$_index.log &
-				exit $func_res
-			}
 		}
 	}
 done
