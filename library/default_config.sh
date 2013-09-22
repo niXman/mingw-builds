@@ -86,7 +86,7 @@ SHOW_LOG_ON_ERROR=yes
 
 JOBS=1
 
-RUNTIME_VERSION=trunk
+RUNTIME_VERSION=v4
 RUNTIME_BRANCH="trunk"
 # **************************************************************************
 
