@@ -62,14 +62,15 @@ function runtime_post_install {
 		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
 		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
-		#zlib
+		# zlib
 		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
 		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
-		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
-		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
-		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/include/*.h $PREFIX/$TARGET/include/ || exit 1
+		# winpthreads
+		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/include/*.h $PREFIX/$TARGET/include/ || exit 1
 	
 		[[ $USE_MULTILIB == yes ]] && {
 			mkdir -p $PREFIX/$TARGET/lib${_reverse_bits}
@@ -79,8 +80,9 @@ function runtime_post_install {
 			# zlib
 			cp -f $PREREQ_DIR/${_reverse_arch}-zlib/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
 
-			cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
-			cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			# winpthreads
+			cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads-${RUNTIME_VERSION}/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads-${RUNTIME_VERSION}/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
 
 			mkdir -p $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3}
 			echo $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \
