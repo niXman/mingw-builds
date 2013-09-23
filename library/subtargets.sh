@@ -35,37 +35,39 @@
 # **************************************************************************
 
 readonly LIBICONV_X32_SUBTARGETS=(
-	libiconv-x32-pre
+	fix-path-for-x32-pre
 	libiconv-x32
-	libiconv-x32-post
+	fix-path-for-x32-post
 )
 
 readonly LIBICONV_X64_SUBTARGETS=(
-	libiconv-x64-pre
+	fix-path-for-x64-pre
 	libiconv-x64
-	libiconv-x64-post
+	fix-path-for-x64-post
 )
 
 readonly WINPTHREADS_X32_SUBTARGETS=(
-	winpthreads-x32-pre
+	fix-path-for-x32-pre
 	winpthreads-x32
-	winpthreads-x32-post
+	fix-path-for-x32-post
 )
 
 readonly WINPTHREADS_X64_SUBTARGETS=(
-	winpthreads-x64-pre
+	fix-path-for-x64-pre
 	winpthreads-x64
-	winpthreads-x64-post
+	fix-path-for-x64-post
 )
 
 readonly ZLIB_X32_SUBTARGETS=(
-	zlib
-	zlib-x32-post
+	fix-path-for-x32-pre
+	zlib-x32
+	fix-path-for-x32-post
 )
 
 readonly ZLIB_X64_SUBTARGETS=(
-	zlib
-	zlib-x64-post
+	fix-path-for-x64-pre
+	zlib-x64
+	fix-path-for-x64-post
 )
 
 readonly SUBTARGETS_PART1=(

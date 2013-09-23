@@ -57,9 +57,14 @@ function runtime_post_install {
 		cp -rf $RUNTIMEPREFIX/* $PREFIX/mingw || exit 1
 
 		mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
-	
+
+		# iconv
 		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
 		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
+
+		#zlib
+		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
 		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
 		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
@@ -69,7 +74,11 @@ function runtime_post_install {
 		[[ $USE_MULTILIB == yes ]] && {
 			mkdir -p $PREFIX/$TARGET/lib${_reverse_bits}
 
+			# iconv
 			cp -f $PREREQ_DIR/${_reverse_arch}-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			# zlib
+			cp -f $PREREQ_DIR/${_reverse_arch}-zlib/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+
 			cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
 			cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
 
