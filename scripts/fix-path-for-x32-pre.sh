@@ -35,33 +35,18 @@
 
 # **************************************************************************
 
-VERSION=1.2.8
-NAME=zlib-${VERSION}
-SRC_DIR_NAME=zlib-${VERSION}
-TYPE=.tar.gz
-URL=(
-	"http://sourceforge.net/projects/libpng/files/zlib/${VERSION}/zlib-${VERSION}.tar.gz"
-)
+[[ $BUILD_ARCHITECTURE == x86_64 ]] && {
+	BEFORE_I686_PRE_PATH=$PATH
+	export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 
-PRIORITY=prereq
-
-#
-
-PATCHES=(
-	zlib/zlib-1.2.5-nostrip.patch
-	zlib/zlib-1.2.5-tml.patch
-)
-
-#
-
-CONFIGURE_FLAGS=()
-
-#
-
-MAKE_FLAGS=()
-
-#
-
-INSTALL_FLAGS=()
+	[[ $USE_MULTILIB == yes ]] && {
+		OLD_HOST=$HOST
+		OLD_BUILD=$BUILD
+		OLD_TARGET=$TARGET
+		HOST=$REVERSE_HOST
+		BUILD=$REVERSE_BUILD
+		TARGET=$REVERSE_TARGET
+	}
+}
 
 # **************************************************************************

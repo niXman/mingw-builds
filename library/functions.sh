@@ -739,19 +739,21 @@ function func_abstract_toolchain {
 	local _filename=$(basename $2)
 	local _do_install=no
 
+	echo -e "-> \E[32;40m$4 toolchain\E[37;40m"
 	[[ ! -f $MARKERS_DIR/${_filename}-unpack.marker ]] && {
 		[[ -d $3 ]] && {
-			echo -n "-> Found previously installed $4 toolchain."
+			echo "--> Found previously installed $4 toolchain."
 			echo -n "---> Remove previous $4 toolchain..."
 			rm -rf $3
 			echo " done"
 		} || {
-			echo -n "-> $4 toolchain is not installed."
+			echo -n "--> $4 toolchain is not installed."
 		}
-		echo -e "-> \E[32;40m$4 toolchain\E[37;40m"
 		func_download _url[@]
 		func_uncompress _url[@]
-	}	
+	} || {
+		echo "--> Toolchain installed."
+	}
 }
 
 function func_install_toolchain {

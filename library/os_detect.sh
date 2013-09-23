@@ -34,7 +34,7 @@
 
 # **************************************************************************
 
-echo -n "Checking operating system... "
+echo -n "-> Checking operating system... "
 readonly U_SYSTEM=`(uname -s) 2>/dev/null`  || U_SYSTEM=unknown
 echo "$U_SYSTEM"
 
@@ -53,7 +53,7 @@ case "${U_SYSTEM}" in
 	;;
 esac
 
-echo -n "Checking OS bitness... "
+echo -n "-> Checking OS bitness... "
 readonly U_MACHINE=`(uname -m) 2>/dev/null` || U_MACHINE=unknown
 case "${U_MACHINE}" in
 	i[34567]86)
