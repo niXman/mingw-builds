@@ -39,7 +39,7 @@ NAME=libmangle-${RUNTIME_VERSION}
 SRC_DIR_NAME=libmangle-${RUNTIME_VERSION}
 TYPE=svn
 URL=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/RUNTIME_BRANCH/mingw-w64-libraries/libmangle|repo:$TYPE|module:$SRC_DIR_NAME"
+	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-libraries/libmangle|repo:$TYPE|module:$SRC_DIR_NAME"
 )
 
 REV=
