@@ -39,7 +39,7 @@ NAME=pseh-${RUNTIME_VERSION}
 SRC_DIR_NAME=pseh-${RUNTIME_VERSION}
 TYPE=svn
 URL=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/RUNTIME_BRANCH/mingw-w64-libraries/pseh|repo:$TYPE|module:$SRC_DIR_NAME"
+	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-libraries/pseh|repo:$TYPE|module:$SRC_DIR_NAME"
 )
 
 PRIORITY=extra
