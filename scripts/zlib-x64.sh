@@ -35,18 +35,53 @@
 
 # **************************************************************************
 
-[[ $BUILD_ARCHITECTURE == x86_64 ]] && {
-	BEFORE_LIBICONV32_PRE_PATH=$PATH
-	export PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-	
-	[[ $USE_MULTILIB == yes ]] && {
-		OLD_HOST=$HOST
-		OLD_BUILD=$BUILD
-		OLD_TARGET=$TARGET
-		HOST=$REVERSE_HOST
-		BUILD=$REVERSE_BUILD
-		TARGET=$REVERSE_TARGET
-	}
-}
+VERSION=1.2.8
+NAME=x86_64-zlib-${VERSION}
+SRC_DIR_NAME=zlib-${VERSION}
+TYPE=.tar.gz
+URL=(
+	"http://sourceforge.net/projects/libpng/files/zlib/${VERSION}/zlib-${VERSION}.tar.gz"
+)
+
+PRIORITY=prereq
+
+#
+
+PATCHES=(
+	zlib/01-zlib-1.2.7-1-buildsys.mingw.patch
+	zlib/02-no-undefined.mingw.patch
+	zlib/03-dont-put-sodir-into-L.mingw.patch
+	zlib/04-wrong-w8-check.mingw.patch
+	zlib/05-fix-a-typo.mingw.patch
+)
+
+#
+
+EXECUTE_AFTER_PATCH=(
+	"cp -rf $SRCS_DIR/$SRC_DIR_NAME $PREREQ_BUILD_DIR/i686-$SRC_DIR_NAME"
+	"cp -rf $SRCS_DIR/$SRC_DIR_NAME $PREREQ_BUILD_DIR/x86_64-$SRC_DIR_NAME"
+)
+
+#
+
+CONFIGURE_FLAGS=(
+	--prefix=$PREREQ_DIR/x86_64-zlib
+	--static
+)
+
+#
+
+MAKE_FLAGS=(
+	-j$JOBS
+	STRIP=true
+	all
+)
+
+#
+
+INSTALL_FLAGS=(
+	STRIP=true
+	install
+)
 
 # **************************************************************************

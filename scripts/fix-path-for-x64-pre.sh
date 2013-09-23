@@ -35,19 +35,18 @@
 
 # **************************************************************************
 
-[[ $BUILD_ARCHITECTURE == x86_64 ]] && {
-	export PATH=$BEFORE_WINPTHREADS32_PRE_PATH
+[[ $BUILD_ARCHITECTURE == i686 ]] && {
+	BEFORE_X86_64_PRE_PATH=$PATH
+	export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 
 	[[ $USE_MULTILIB == yes ]] && {
-		HOST=$OLD_HOST
-		BUILD=$OLD_BUILD
-		TARGET=$OLD_TARGET
+		OLD_HOST=$HOST
+		OLD_BUILD=$BUILD
+		OLD_TARGET=$TARGET
+		HOST=$REVERSE_HOST
+		BUILD=$REVERSE_BUILD
+		TARGET=$REVERSE_TARGET
 	}
-
-	unset BEFORE_WINPTHREADS32_PRE_PATH
-	unset OLD_HOST
-	unset OLD_BUILD
-	unset OLD_TARGET
 }
 
 # **************************************************************************
