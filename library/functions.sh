@@ -55,10 +55,18 @@ function func_clear_env {
 # **************************************************************************
 
 function die {
-	echo $@
-	exit 1
+	# $1 - message on exit
+	# $2 - exit code
+	local _retcode=1
+	[[ -n $2 ]] && _retcode=$2
+	echo $1
+	exit $_retcode
 }
 
+function func_show_log {
+	# $1 - log file
+	[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $1 &
+}
 # **************************************************************************
 
 function func_check_program {
@@ -369,14 +377,13 @@ function func_download {
 				echo " done"
 				touch $_marker_name
 			} || {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_log_name &
-				die "Error $_result"
+				func_show_log $_log_name
+				die " error $_result" $_result
 			}
 		} || {
 			echo "---> $_filename downloaded"
 		}	
 	done
-	return $_result
 }
 
 # **************************************************************************
@@ -442,15 +449,14 @@ function func_uncompress {
 					echo " done"
 					touch $_marker_name
 				} || {
-					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_log_name &
-					die "Error $_result"
+					func_show_log $_log_name
+					die " error $_result" $_result
 				}
 			} || {
 				echo "---> $_filename unpacked"
 			}
 		}
 	done
-	return $_result
 }
 
 # **************************************************************************
@@ -502,11 +508,9 @@ function func_execute {
 	[[ $_result == 0 ]] && {
 		echo " done"
 	} || {
-		[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_cmd_log_name &
-		die "Failed to execute \"${it}\""
+		func_show_log $_cmd_log_name
+		die "Failed to execute \"${it}\"" $_result
 	}
-
-	return $_result
 }
 
 # **************************************************************************
@@ -570,11 +574,10 @@ function func_apply_patches {
 	[[ $_result == 0 ]] && {
 		echo " done"
 	} || {
-		[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_patch_log_name &
+		func_show_log $_patch_log_name
+		echo " error"
 		die "Failed to apply patch ${it} at level $applevel"
 	}
-
-	return $_result
 }
 
 # **************************************************************************
@@ -592,21 +595,20 @@ function func_configure {
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> configure..."
-		( cd $5/$1 && eval $( func_absolute_to_relative $5/$1 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1 )
+		pushd $5/$1 > /dev/null
+		eval $( func_absolute_to_relative $5/$1 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1
 		_result=$?
+		popd > /dev/null
 		[[ $_result == 0 ]] && {
 			echo " done"
 			touch $_marker
-			return $_result
 		} || {
-			echo " error!"
-			return $_result
+			func_show_log $4
+			die " error!" $_result
 		}
 	} || {
 		echo "---> configured"
 	}
-
-	return $_result
 }
 
 # **************************************************************************
@@ -626,13 +628,20 @@ function func_make {
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> $5"
-		( cd $7/$1 && eval ${3} > $4 2>&1 )
+		pushd $7/$1 > /dev/null
+		eval ${3} > $4 2>&1
 		_result=$?
-		[[ $_result == 0 ]] && { echo " done"; touch $_marker; } || { echo " error!"; }
+		popd > /dev/null
+		[[ $_result == 0 ]] && {
+			echo " done"
+			touch $_marker
+		} || {
+			func_show_log $4
+			die " error!" $_result
+		}
 	} || {
 		echo "---> $6"
 	}
-	return $_result
 }
 
 # **************************************************************************
@@ -667,46 +676,48 @@ function func_test {
 				local _prev=$( echo $src_it | sed '$s/ *\([^ ]* *\)$//' )
 				local _last=$( echo $src_it | sed 's/^.* //' )
 				local _ext=${_first##*.}
-				
+
+				pushd $3/$arch_it > /dev/null
 				case $_ext in
 					c)
 						printf "%-50s" "--> GCC     $arch_it: \"$_first\" ... "
 						local _log_file=$3/$arch_it/$_first-compilation.log
 						echo "gcc -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
-						( cd $3/$arch_it && gcc -m${_arch_bits} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
+						gcc -m${_arch_bits} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1
 					;;
 					cpp)
 						printf "%-50s" "--> G++     $arch_it: \"$_first\" ... "
 						local _log_file=$3/$arch_it/$_first-compilation.log
 						echo "g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
-						( cd $3/$arch_it && g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
+						g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1
 					;;
 					o)
 						printf "%-50s" "--> LD      $arch_it: \"$_last\" ... "
 						local _log_file=$3/$arch_it/$_first-link.log
 						echo "g++ -m${_arch_bits} $src_it" > $_log_file
-						( cd $3/$arch_it && g++ -m${_arch_bits} $src_it >> $_log_file 2>&1 )
+						g++ -m${_arch_bits} $src_it >> $_log_file 2>&1
 					;;
 				esac
 				_result=$?
+				popd > /dev/null
 				[[ $_result == 0 ]] && {
 					echo "-> $_result -> done"
 				} || {
-					echo "-> $_result -> error. terminate."
-					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_log_file &
-					exit $_result
+					func_show_log $_log_file
+					die "-> $_result -> error. terminate." $_result
 				}
 				[[ $_last =~ .exe ]] && {
 					printf "%-50s" "--> execute $arch_it: \"$_last\" ... "
 					local _run_log=$3/$arch_it/$_first-execution.log
-					( cd $3/$arch_it && ./$_last > $_run_log 2>&1 )
+					pushd $3/$arch_it > /dev/null
+					./$_last > $_run_log 2>&1
 					_result=$?
+					popd > /dev/null
 					[[ $_result == 0 ]] && {
 						echo "-> $_result -> done"
 					} || {
-						echo "-> $_result -> error. terminate."
-						[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_run_log &
-						exit $_result
+						func_show_log $_run_log
+						die "-> $_result -> error. terminate." $_result
 					}
 				}
 			done

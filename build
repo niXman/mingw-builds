@@ -63,7 +63,7 @@ readonly RUN_ARGS="$@"
 	echo "    --no-strip                 - don't strip dll's & executables on install"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
 	echo "    --jobs=N                   - specifies number of parallel make threads"
-	echo "    --rt-version=<v3|trunk>    - specifies mingw-w64 runtime version to build"
+	echo "    --rt-version=<v3|v4|trunk>    - specifies mingw-w64 runtime version to build"
 	echo "    --rev=N                    - specifies number of the build revision"
 	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++"
 	echo "                                 available: win32, posix"
@@ -181,7 +181,7 @@ while [[ $# > 0 ]]; do
 				v3)
 					RUNTIME_BRANCH="stable/v3.x"
 				;;
-				trunk)
+				v4|trunk)
 					RUNTIME_VERSION=v4
 					RUNTIME_BRANCH="trunk"
 				;;
@@ -276,7 +276,7 @@ mkdir -p \
 # **************************************************************************
 # Determine operating system and load appropriate config
 # **************************************************************************
-. $TOP_DIR/library/os_detect.sh
+source $TOP_DIR/library/os_detect.sh
 
 # **************************************************************************
 
@@ -372,7 +372,7 @@ mkdir -p \
 }
 # **************************************************************************
 
-. ./library/subtargets.sh
+source $TOP_DIR/library/subtargets.sh
 
 # **************************************************************************
 
@@ -517,11 +517,6 @@ for sub in ${SUBTARGETS[@]}; do
 				"$configure_flags" \
 				$CONFIGURE_LOG \
 				$CURR_BUILD_DIR
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG &
-				exit $func_res
-			}
 		}
 
 		[[ ${#MAKE_FLAGS[@]} >0 ]] && {
@@ -534,11 +529,6 @@ for sub in ${SUBTARGETS[@]}; do
 				"building..." \
 				"built" \
 				$CURR_BUILD_DIR
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG &
-				exit $func_res
-			}
 		}
 
 		[[ ${#INSTALL_FLAGS[@]} >0 ]] && {
@@ -551,11 +541,6 @@ for sub in ${SUBTARGETS[@]}; do
 				"installing..." \
 				"installed" \
 				$CURR_BUILD_DIR
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG &
-				exit $func_res
-			}
 		}
 	
 		[[ ${#EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
@@ -581,7 +566,7 @@ func_clear_env
 
 [[ $COMPRESSING_SRCS == yes ]] && {
 	echo -e "-> \E[32;40mcompress mingw sources\E[37;40m"
-	. $TOP_DIR/scripts/srcs-compress.sh
+	source $TOP_DIR/scripts/srcs-compress.sh
 }
 
 # ***************************************************************************
@@ -618,9 +603,11 @@ func_clear_env
 		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-mingw-upload.log 2>&1"
 		func_res=$?
 		[[ $func_res != 0 ]] && {
-			die "upload finished with error($func_res). terminate."
+			echo " error!"
+			func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-mingw-upload.log
+			die "upload finished with error($func_res). terminate." $func_res
 		} || {
-			echo "done"
+			echo " done"
 		}
 	}
 	[[ $(func_map_gcc_name_to_gcc_type $GCC_NAME) == release ]] && {
@@ -628,13 +615,14 @@ func_clear_env
 		[[ $DEBUG_UPLOAD == yes ]] && {
 			func_res=0
 		} || {
-			wget $REPOSITORY_FILE -O $TMP/$(basename $REPOSITORY_FILE) > /dev/null 2>&1
+			wget $REPOSITORY_FILE -O $TMP/$(basename $REPOSITORY_FILE) > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-download.log 2>&1
 			func_res=$?
 		}
 		[[ $func_res != 0 ]] && {
-			die "error($func_res) when downloading repository file. terminate."
+			func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-download.log
+			die " error($func_res) when downloading repository file. terminate." $func_res
 		} || {
-			echo "done"
+			echo " done"
 		}
 	
 		echo -e -n "--> \E[32;40mupdate repository file...\E[37;40m"
@@ -655,7 +643,7 @@ func_clear_env
 				) \
 				$(basename $mingw_archive_name)
 		}
-		echo "done"
+		echo " done"
 		
 		upload_cmd=$( \
 			func_create_repository_file_upload_cmd \
@@ -670,9 +658,10 @@ func_clear_env
 			eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-upload.log 2>&1"
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				die "error($func_res) when uploading repository file. terminate."
+				func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-upload.log
+				die " error($func_res) when uploading repository file. terminate." $func_res
 			} || {
-				echo "done"
+				echo " done"
 			}
 		}
 	}
@@ -704,9 +693,10 @@ func_clear_env
 	
 	func_res=$?
 	[[ $func_res != 0 ]] && {
-		die "upload finished with error($func_res). terminate."
+		func_show_log $LOGS_DIR/$GCC_NAME/sources-upload.log
+		die " upload finished with error($func_res). terminate." $func_res
 	} || {
-		echo "done"
+		echo " done"
 	}
 }
 
