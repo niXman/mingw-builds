@@ -36,6 +36,7 @@ MSYS2:
   '--no-strip' option specifies to the script to install without striping.
   '--no-multilib' option specifies to the script to build without multilib support.
   '--dyn-deps' option specifies to the script to build GCC with dynamically dependencies.
+  '--rt-version' option specifies what version of mingw-w64 runtime to build.
   '--rev=N' option specifies to the script the number of the build revision.
   '--threads=model' option specifies to the script the used threads model.
   '--enable-languages=<langs>' option specifies a comma separated list(without spaces)
