@@ -99,7 +99,7 @@
  
  install-libs: $(LIBS)
  	-@if [ ! -d $(DESTDIR)$(exec_prefix)  ]; then mkdir -p $(DESTDIR)$(exec_prefix); fi
-@@ -190,18 +194,31 @@ install-libs: $(LIBS)
+@@ -190,18 +194,33 @@ install-libs: $(LIBS)
  	-@if [ ! -d $(DESTDIR)$(sharedlibdir) ]; then mkdir -p $(DESTDIR)$(sharedlibdir); fi
  	-@if [ ! -d $(DESTDIR)$(man3dir)      ]; then mkdir -p $(DESTDIR)$(man3dir); fi
  	-@if [ ! -d $(DESTDIR)$(pkgconfigdir) ]; then mkdir -p $(DESTDIR)$(pkgconfigdir); fi
@@ -115,10 +115,12 @@
 -	  ln -s $(SHAREDLIBV) $(DESTDIR)$(sharedlibdir)/$(SHAREDLIB); \
 -	  ln -s $(SHAREDLIBV) $(DESTDIR)$(sharedlibdir)/$(SHAREDLIBM); \
 -	  ($(LDCONFIG) || true)  >/dev/null 2>&1; \
-+	cp $(STATICLIB) $(IMPORTLIB) $(DESTDIR)$(libdir)
-+	-@(cd $(DESTDIR)$(libdir); chmod 644 $(STATICLIB) $(IMPORTLIB))
++	cp $(STATICLIB) $(DESTDIR)$(libdir)
++	-@(cd $(DESTDIR)$(libdir); chmod 644 $(STATICLIB))
 +	-@($(RANLIB) $(DESTDIR)$(libdir)/$(STATICLIB) || true) >/dev/null 2>&1
 +	-@if test -z "$(IMPORTLIB)" ; then \
++		cp $(IMPORTLIB) $(DESTDIR)$(libdir) \
++		chmod 644 $(DESTDIR)$(libdir)/$(IMPORTLIB); \
 +		if test -n "$(SHAREDTARGET)" ; then \
 +			if test -f "$(SHAREDTARGET)" ; then \
 +				cp $(SHAREDTARGET) $(DESTDIR)$(sharedlibdir); \
