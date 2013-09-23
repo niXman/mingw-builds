@@ -92,8 +92,9 @@ function gcc_post_install {
 					|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}"
 			}
 
-			find $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits} -path $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/libada/adainclude \
-				-prune -o -type f -iname *.dll ! -iname *winpthread* -print0 \
+			find $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits} \
+				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/libada/adainclude -prune \) \
+				-type f -name *.dll ! -name *winpthread* -print0 \
 				| xargs -0 -I{} cp -f {} $PREFIX/$TARGET/lib${_reverse_bits}/ || die "Error copying ${_reverse_bits}-bit dlls"
 
 			[[ $STRIP_ON_INSTALL == yes ]] && {
