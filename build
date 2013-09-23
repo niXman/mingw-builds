@@ -63,6 +63,7 @@ readonly RUN_ARGS="$@"
 	echo "    --no-strip                 - don't strip dll's & executables on install"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
 	echo "    --jobs=N                   - specifies number of parallel make threads"
+	echo "    --rt-version=<v3|v4|trunk>    - specifies mingw-w64 runtime version to build"
 	echo "    --rev=N                    - specifies number of the build revision"
 	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++"
 	echo "                                 available: win32, posix"
@@ -141,20 +142,20 @@ while [[ $# > 0 ]]; do
 		--exceptions=*)
 			EXCEPTIONS_MODEL=${1/--exceptions=/}
 			case $EXCEPTIONS_MODEL in
-			dwarf)
-				USE_MULTILIB=no
-				BUILD_ARCHITECTURE=i686
-			;;
-			seh)
-				USE_MULTILIB=no
-				BUILD_ARCHITECTURE=x86_64
-			;;
-			sjlj)
-				USE_MULTILIB=$USE_MULTILIB			
-			;;
-			*)
-				die "\"$EXCEPTIONS_MODEL\" is not valid exception model. available models: dwarf, seh, sjlj. terminate."
-			;;
+				dwarf)
+					USE_MULTILIB=no
+					BUILD_ARCHITECTURE=i686
+				;;
+				seh)
+					USE_MULTILIB=no
+					BUILD_ARCHITECTURE=x86_64
+				;;
+				sjlj)
+					USE_MULTILIB=$USE_MULTILIB			
+				;;
+				*)
+					die "\"$EXCEPTIONS_MODEL\" is not valid exception model. available models: dwarf, seh, sjlj. terminate."
+				;;
 			esac	
 		;;
 		--use-lto)
@@ -174,14 +175,29 @@ while [[ $# > 0 ]]; do
 			}
 			JOBS=${1/--jobs=/}
 		;;
+		--rt-version=*)
+			RUNTIME_VERSION=${1/--rt-version=/}
+			case $RUNTIME_VERSION in
+				v3)
+					RUNTIME_BRANCH="stable/v3.x"
+				;;
+				v4|trunk)
+					RUNTIME_VERSION=v4
+					RUNTIME_BRANCH="trunk"
+				;;
+				*)
+					die "Unsupported runtime version $RUNTIME_VERSION."
+				;;
+			esac
+		;;
 		--threads=*) 
 			THREADS_MODEL=${1/--threads=/}
 			case $THREADS_MODEL in
-			win32 | posix)
-			;;
-			*)
-				die "\"$THREADS_MODEL\" is not valid threads model. available models: posix, win32. terminate"
-			;;
+				win32 | posix)
+				;;
+				*)
+					die "\"$THREADS_MODEL\" is not valid threads model. available models: posix, win32. terminate"
+				;;
 			esac
 		;;
 		--mode=*)
@@ -260,7 +276,7 @@ mkdir -p \
 # **************************************************************************
 # Determine operating system and load appropriate config
 # **************************************************************************
-. $TOP_DIR/library/os_detect.sh
+source $TOP_DIR/library/os_detect.sh
 
 # **************************************************************************
 
@@ -356,7 +372,7 @@ mkdir -p \
 }
 # **************************************************************************
 
-. ./library/subtargets.sh
+source $TOP_DIR/library/subtargets.sh
 
 # **************************************************************************
 
@@ -474,11 +490,6 @@ for sub in ${SUBTARGETS[@]}; do
 				"after_unpack" \
 				$CURR_LOGS_DIR \
 				EXECUTE_AFTER_UNCOMPRESS[@]
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_unpack-$_index.log &
-				exit $func_res
-			}
 		}
 
 		func_apply_patches \
@@ -487,11 +498,6 @@ for sub in ${SUBTARGETS[@]}; do
 			$CURR_LOGS_DIR \
 			$PATCHES_DIR \
 			PATCHES[@]
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/patch-$_index.log &
-			exit $func_res
-		}
 
 		[[ ${#EXECUTE_AFTER_PATCH[@]} >0 ]] && {
 			func_execute \
@@ -501,11 +507,6 @@ for sub in ${SUBTARGETS[@]}; do
 				"after_patch" \
 				$CURR_LOGS_DIR \
 				EXECUTE_AFTER_PATCH[@]
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_patch-$_index.log &
-				exit $func_res
-			}
 		}
 
 		[[ ${#CONFIGURE_FLAGS[@]} >0 ]] && {
@@ -516,11 +517,6 @@ for sub in ${SUBTARGETS[@]}; do
 				"$configure_flags" \
 				$CONFIGURE_LOG \
 				$CURR_BUILD_DIR
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG &
-				exit $func_res
-			}
 		}
 
 		[[ ${#MAKE_FLAGS[@]} >0 ]] && {
@@ -533,11 +529,6 @@ for sub in ${SUBTARGETS[@]}; do
 				"building..." \
 				"built" \
 				$CURR_BUILD_DIR
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG &
-				exit $func_res
-			}
 		}
 
 		[[ ${#INSTALL_FLAGS[@]} >0 ]] && {
@@ -550,11 +541,6 @@ for sub in ${SUBTARGETS[@]}; do
 				"installing..." \
 				"installed" \
 				$CURR_BUILD_DIR
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG &
-				exit $func_res
-			}
 		}
 	
 		[[ ${#EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
@@ -565,11 +551,6 @@ for sub in ${SUBTARGETS[@]}; do
 				"after_install" \
 				$CURR_LOGS_DIR \
 				EXECUTE_AFTER_INSTALL[@]
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CURR_BUILD_DIR/$NAME/exec-after_install-$_index.log &
-				exit $func_res
-			}
 		}
 	}
 done
@@ -585,7 +566,7 @@ func_clear_env
 
 [[ $COMPRESSING_SRCS == yes ]] && {
 	echo -e "-> \E[32;40mcompress mingw sources\E[37;40m"
-	. $TOP_DIR/scripts/srcs-compress.sh
+	source $TOP_DIR/scripts/srcs-compress.sh
 }
 
 # ***************************************************************************
@@ -622,9 +603,11 @@ func_clear_env
 		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-mingw-upload.log 2>&1"
 		func_res=$?
 		[[ $func_res != 0 ]] && {
-			die "upload finished with error($func_res). terminate."
+			echo " error!"
+			func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-mingw-upload.log
+			die "upload finished with error($func_res). terminate." $func_res
 		} || {
-			echo "done"
+			echo " done"
 		}
 	}
 	[[ $(func_map_gcc_name_to_gcc_type $GCC_NAME) == release ]] && {
@@ -632,13 +615,14 @@ func_clear_env
 		[[ $DEBUG_UPLOAD == yes ]] && {
 			func_res=0
 		} || {
-			wget $REPOSITORY_FILE -O $TMP/$(basename $REPOSITORY_FILE) > /dev/null 2>&1
+			wget $REPOSITORY_FILE -O $TMP/$(basename $REPOSITORY_FILE) > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-download.log 2>&1
 			func_res=$?
 		}
 		[[ $func_res != 0 ]] && {
-			die "error($func_res) when downloading repository file. terminate."
+			func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-download.log
+			die " error($func_res) when downloading repository file. terminate." $func_res
 		} || {
-			echo "done"
+			echo " done"
 		}
 	
 		echo -e -n "--> \E[32;40mupdate repository file...\E[37;40m"
@@ -659,7 +643,7 @@ func_clear_env
 				) \
 				$(basename $mingw_archive_name)
 		}
-		echo "done"
+		echo " done"
 		
 		upload_cmd=$( \
 			func_create_repository_file_upload_cmd \
@@ -674,9 +658,10 @@ func_clear_env
 			eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-upload.log 2>&1"
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				die "error($func_res) when uploading repository file. terminate."
+				func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-upload.log
+				die " error($func_res) when uploading repository file. terminate." $func_res
 			} || {
-				echo "done"
+				echo " done"
 			}
 		}
 	}
@@ -708,9 +693,10 @@ func_clear_env
 	
 	func_res=$?
 	[[ $func_res != 0 ]] && {
-		die "upload finished with error($func_res). terminate."
+		func_show_log $LOGS_DIR/$GCC_NAME/sources-upload.log
+		die " upload finished with error($func_res). terminate." $func_res
 	} || {
-		echo "done"
+		echo " done"
 	}
 }
 

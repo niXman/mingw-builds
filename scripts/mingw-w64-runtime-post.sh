@@ -48,9 +48,9 @@ function runtime_post_install {
 
 	[[ ! -f $BUILDS_DIR/mingw-w64-runtime-post.marker ]] && {
 		[[ $USE_MULTILIB == yes ]] && {
-			RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-multi
+			RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-${RUNTIME_VERSION}-multi
 		} || {
-			RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-nomulti
+			RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-${RUNTIME_VERSION}-nomulti
 		}
 
 		cp -rf $RUNTIMEPREFIX/* $PREFIX/$TARGET || exit 1

@@ -55,10 +55,18 @@ function func_clear_env {
 # **************************************************************************
 
 function die {
-	echo $@
-	exit 1
+	# $1 - message on exit
+	# $2 - exit code
+	local _retcode=1
+	[[ -n $2 ]] && _retcode=$2
+	echo $1
+	exit $_retcode
 }
 
+function func_show_log {
+	# $1 - log file
+	[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $1 &
+}
 # **************************************************************************
 
 function func_check_program {
@@ -369,14 +377,13 @@ function func_download {
 				echo " done"
 				touch $_marker_name
 			} || {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_log_name &
-				die "Error $_result"
+				func_show_log $_log_name
+				die " error $_result" $_result
 			}
 		} || {
 			echo "---> $_filename downloaded"
 		}	
 	done
-	return $_result
 }
 
 # **************************************************************************
@@ -442,15 +449,14 @@ function func_uncompress {
 					echo " done"
 					touch $_marker_name
 				} || {
-					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_log_name &
-					die "Error $_result"
+					func_show_log $_log_name
+					die " error $_result" $_result
 				}
 			} || {
 				echo "---> $_filename unpacked"
 			}
 		}
 	done
-	return $_result
 }
 
 # **************************************************************************
@@ -468,7 +474,7 @@ function func_execute {
 	local -a _commands=( "${!6}" )
 	local it=
 	
-	_index=0
+	local _index=0
 	((_index=${#_commands[@]}-1))
 	local _cmd_marker_name=$1/$2/exec-$4-$_index.marker
 	[[ -f $_cmd_marker_name ]] && {
@@ -486,21 +492,25 @@ function func_execute {
 		local _cmd_log_name=$1/$2/exec-$4-$_index.log
 
 		[[ ! -f $_cmd_marker_name ]] && {
-			( cd $1/$2 && eval ${it} > $_cmd_log_name 2>&1 )
+			pushd $1/$2 > /dev/null
+			eval ${it} > $_cmd_log_name 2>&1
 			_result=$?
-			[[ $_result != 0 ]] && {
-				echo "error!"
-				return $_result
-			} || {
+			popd > /dev/null
+			[[ $_result == 0 ]] && {
 				touch $_cmd_marker_name
+			} || {
+				break
 			}
 		}
 		((_index++))
 	done
 
-	[[ $_index == ${#_commands[@]} ]] && echo " done"
-
-	return $_result
+	[[ $_result == 0 ]] && {
+		echo " done"
+	} || {
+		func_show_log $_cmd_log_name
+		die "Failed to execute \"${it}\"" $_result
+	}
 }
 
 # **************************************************************************
@@ -515,7 +525,8 @@ function func_apply_patches {
 	
 	local _result=0
 	local it=
-	_index=0
+	local applevel=
+	local _index=0
 	local -a _list=( "${!5}" )
 	[[ ${#_list[@]} == 0 ]] && return 0
 
@@ -532,24 +543,41 @@ function func_apply_patches {
 
 	for it in ${_list[@]} ; do
 		local _patch_marker_name=$1/$2/_patch-$_index.marker
+		local _patch_log_name=$1/$2/patch-$_index.log
 
 		[[ ! -f $_patch_marker_name ]] && {
-			[[ -f $PATCHES_DIR/${it} ]] || die "Patch $PATCHES_DIR/${it} not found!"
-			( cd $1/$2 && patch -p1 < $4/${it} > $1/$2/patch-$_index.log 2>&1 )
-			_result=$?
-			[[ $_result == 0 ]] && {
+			[[ -f $PATCHES_DIR/${it} ]] || die "Patch $4/${it} not found!"
+			local level=
+			local found=no
+			pushd $1/$2 > /dev/null
+			for level in 0 1 2 3
+			do
+				applevel=$level
+				if patch -p$level --dry-run -i $4/${it} > $_patch_log_name 2>&1
+				then
+					found=yes
+					break
+				fi
+			done
+			[[ $found == "yes" ]] && {
+				patch -p$applevel -i $4/${it} > $_patch_log_name 2>&1
 				touch $_patch_marker_name
 			} || {
 				_result=1
 				break
 			}
+			popd > /dev/null
 		}
 		((_index++))
 	done
 
-	[[ $_result == 0 ]] && echo " done" || echo "error!"
-
-	return $_result
+	[[ $_result == 0 ]] && {
+		echo " done"
+	} || {
+		func_show_log $_patch_log_name
+		echo " error"
+		die "Failed to apply patch ${it} at level $applevel"
+	}
 }
 
 # **************************************************************************
@@ -567,21 +595,20 @@ function func_configure {
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> configure..."
-		( cd $5/$1 && eval $( func_absolute_to_relative $5/$1 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1 )
+		pushd $5/$1 > /dev/null
+		eval $( func_absolute_to_relative $5/$1 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1
 		_result=$?
+		popd > /dev/null
 		[[ $_result == 0 ]] && {
 			echo " done"
 			touch $_marker
-			return $_result
 		} || {
-			echo " error!"
-			return $_result
+			func_show_log $4
+			die " error!" $_result
 		}
 	} || {
 		echo "---> configured"
 	}
-
-	return $_result
 }
 
 # **************************************************************************
@@ -601,13 +628,20 @@ function func_make {
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> $5"
-		( cd $7/$1 && eval ${3} > $4 2>&1 )
+		pushd $7/$1 > /dev/null
+		eval ${3} > $4 2>&1
 		_result=$?
-		[[ $_result == 0 ]] && { echo " done"; touch $_marker; } || { echo " error!"; }
+		popd > /dev/null
+		[[ $_result == 0 ]] && {
+			echo " done"
+			touch $_marker
+		} || {
+			func_show_log $4
+			die " error!" $_result
+		}
 	} || {
 		echo "---> $6"
 	}
-	return $_result
 }
 
 # **************************************************************************
@@ -642,46 +676,48 @@ function func_test {
 				local _prev=$( echo $src_it | sed '$s/ *\([^ ]* *\)$//' )
 				local _last=$( echo $src_it | sed 's/^.* //' )
 				local _ext=${_first##*.}
-				
+
+				pushd $3/$arch_it > /dev/null
 				case $_ext in
 					c)
 						printf "%-50s" "--> GCC     $arch_it: \"$_first\" ... "
 						local _log_file=$3/$arch_it/$_first-compilation.log
 						echo "gcc -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
-						( cd $3/$arch_it && gcc -m${_arch_bits} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
+						gcc -m${_arch_bits} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1
 					;;
 					cpp)
 						printf "%-50s" "--> G++     $arch_it: \"$_first\" ... "
 						local _log_file=$3/$arch_it/$_first-compilation.log
 						echo "g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
-						( cd $3/$arch_it && g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
+						g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1
 					;;
 					o)
 						printf "%-50s" "--> LD      $arch_it: \"$_last\" ... "
 						local _log_file=$3/$arch_it/$_first-link.log
 						echo "g++ -m${_arch_bits} $src_it" > $_log_file
-						( cd $3/$arch_it && g++ -m${_arch_bits} $src_it >> $_log_file 2>&1 )
+						g++ -m${_arch_bits} $src_it >> $_log_file 2>&1
 					;;
 				esac
 				_result=$?
+				popd > /dev/null
 				[[ $_result == 0 ]] && {
 					echo "-> $_result -> done"
 				} || {
-					echo "-> $_result -> error. terminate."
-					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_log_file &
-					exit $_result
+					func_show_log $_log_file
+					die "-> $_result -> error. terminate." $_result
 				}
 				[[ $_last =~ .exe ]] && {
 					printf "%-50s" "--> execute $arch_it: \"$_last\" ... "
 					local _run_log=$3/$arch_it/$_first-execution.log
-					( cd $3/$arch_it && ./$_last > $_run_log 2>&1 )
+					pushd $3/$arch_it > /dev/null
+					./$_last > $_run_log 2>&1
 					_result=$?
+					popd > /dev/null
 					[[ $_result == 0 ]] && {
 						echo "-> $_result -> done"
 					} || {
-						echo "-> $_result -> error. terminate."
-						[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_run_log &
-						exit $_result
+						func_show_log $_run_log
+						die "-> $_result -> error. terminate." $_result
 					}
 				}
 			done
@@ -816,7 +852,7 @@ function func_create_mingw_archive_name {
 	)-$6-$5
 
 	[[ -n $7 ]] && {
-		_archive=$_archive-rev$7
+		_archive=$_archive-rt-${RUNTIME_VERSION}-rev$7
 	}
 
 	echo "$_archive.7z"
@@ -837,7 +873,7 @@ function func_create_sources_archive_name {
 	)
 
 	[[ -n $4 ]] && {
-		_archive=$_archive-rev$4
+		_archive=$_archive-rt_${RUNTIME_VERSION}-rev$4
 	}
 
 	echo "$_archive.tar.7z"

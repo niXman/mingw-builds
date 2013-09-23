@@ -35,11 +35,11 @@
 
 # **************************************************************************
 
-NAME=i686-winpthreads
-SRC_DIR_NAME=winpthreads
+NAME=i686-winpthreads-${RUNTIME_VERSION}
+SRC_DIR_NAME=winpthreads-${RUNTIME_VERSION}
 TYPE=svn
 URL=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-libraries/winpthreads|repo:$TYPE"
+	"svn://svn.code.sf.net/p/mingw-w64/code/RUNTIME_BRANCH/mingw-w64-libraries/winpthreads|repo:$TYPE|module:$SRC_DIR_NAME"
 )
 
 PRIORITY=runtime
