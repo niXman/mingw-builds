@@ -44,7 +44,7 @@ NAME=mingw-w64-crt-${RUNTIME_VERSION}
 SRC_DIR_NAME=mingw-w64-crt-${RUNTIME_VERSION}
 TYPE=svn
 URL=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/RUNTIME_BRANCH/mingw-w64-crt|repo:$TYPE|module:$SRC_DIR_NAME"
+	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-crt|repo:$TYPE|module:$SRC_DIR_NAME"
 )
 
 PRIORITY=runtime
