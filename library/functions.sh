@@ -854,7 +854,7 @@ function func_create_mingw_archive_name {
 	)-$6-$5
 
 	[[ -n $7 ]] && {
-		_archive=$_archive-rt-${RUNTIME_VERSION}-rev$7
+		_archive=$_archive-rt_${RUNTIME_VERSION}-rev$7
 	}
 
 	echo "$_archive.7z"
