@@ -64,11 +64,12 @@ function gcc_post_install {
 		}
 
 		# builded architecture dlls
-		local _dlls=
-		_dlls=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 \
-				-o -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 \
-				-o -path $BUILDS_DIR/$GCC_NAME/gcc/ada \
-				-o -path $BUILDS_DIR/$GCC_NAME/$TARGET/libada/adainclude \) -prune -o -type f -name *.dll) )
+		local _dlls=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \
+				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune \) \
+				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune \) \
+				-not \( -path $BUILDS_DIR/$GCC_NAME/gcc/ada -prune \) \
+				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/libada/adainclude -prune \) \
+				-type f -name *.dll) )
 		cp -f ${_dlls[@]} $PREFIX/bin/ > /dev/null 2>&1 || die "Cannot copy architecture dlls to $PREFIX/bin/"
 		cp -f ${_dlls[@]} $PREFIX/$TARGET/lib/ > /dev/null 2>&1 || die "Cannot copy architecture dlls to $PREFIX/lib/"
 			
@@ -91,8 +92,9 @@ function gcc_post_install {
 					|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}"
 			}
 
-			find $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits} -path $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/libada/adainclude \
-				-prune -o -type f -iname *.dll ! -iname *winpthread* -print0 \
+			find $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits} \
+				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/libada/adainclude -prune \) \
+				-type f -name *.dll ! -name *winpthread* -print0 \
 				| xargs -0 -I{} cp -f {} $PREFIX/$TARGET/lib${_reverse_bits}/ || die "Error copying ${_reverse_bits}-bit dlls"
 
 			[[ $STRIP_ON_INSTALL == yes ]] && {
