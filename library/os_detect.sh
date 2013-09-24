@@ -75,7 +75,7 @@ case "${U_SYSTEM}" in
 esac
 
 readonly COMMON_TOOLS="$HOST_TOOLS 7za autoconf aclocal gettext git libtool lndir m4 make svn tar wget"
-func_check_tools $COMMON_TOOLS
+func_check_tools "$COMMON_TOOLS"
 
 # **************************************************************************
 
