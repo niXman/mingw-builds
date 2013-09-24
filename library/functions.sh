@@ -73,6 +73,27 @@ function func_check_program {
 	command -v "$@" > /dev/null 2>&1 || { die "command \"$@\" not found. terminate."; }
 }
 
+function func_check_tools {
+	# $1 - list of programs
+	local _list=( $1 )
+	local _it=
+	local _err=
+	
+	for _it in ${_list[@]}; do
+		echo -n "Checking for $_it... "
+		command -v "$_it" > /dev/null 2>&1
+		[[ $? == 0 ]] && {
+			echo "yes"
+		} || {
+			echo "no"
+			_err="$_err $_it"
+		}
+	done
+	[[ -n $_err ]] && {
+		die "Some of necessary tools not found: $_err"
+	}
+}
+
 # **************************************************************************
 
 function func_get_reverse_triplet {
@@ -81,7 +102,6 @@ function func_get_reverse_triplet {
 		amd64|x86_64) echo "i686-${1#*-}" ;;
 	esac
 }
-
 
 # **************************************************************************
 
@@ -780,8 +800,6 @@ function func_install_toolchain {
 			func_abstract_toolchain $1 $5 $3 "x86_64"
 		;;
 	esac
-
-	return 0
 }
 
 # **************************************************************************

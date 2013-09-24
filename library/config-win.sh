@@ -43,6 +43,7 @@ HOST=$BUILD_ARCHITECTURE-w64-mingw32
 BUILD=$BUILD_ARCHITECTURE-w64-mingw32
 TARGET=$BUILD_ARCHITECTURE-w64-mingw32
 
+readonly HOST_TOOLS=""
 readonly CROSS_BUILDS=no
 
 # **************************************************************************
@@ -89,9 +90,5 @@ func_install_toolchain \
 	$x64_HOST_MINGW_PATH \
 	$x32_HOST_MINGW_PATH_URL \
 	$x64_HOST_MINGW_PATH_URL
-func_res=$?
-[[ $func_res != 0 ]] && {
-	die "toolchain install error($func_res). see log-files in \"$TOOLCHAINS_DIR\" directory. terminate."
-}
 
 # **************************************************************************
