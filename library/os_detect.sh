@@ -34,25 +34,6 @@
 
 # **************************************************************************
 
-echo -n "-> Checking operating system... "
-readonly U_SYSTEM=`(uname -s) 2>/dev/null`  || U_SYSTEM=unknown
-echo "$U_SYSTEM"
-
-case "${U_SYSTEM}" in
-	Linux)
-		source $TOP_DIR/library/config-nix.sh
-	;;
-	MSYS*|MINGW*)
-		source $TOP_DIR/library/config-win.sh
-	;;
-	Darwin)
-		source $TOP_DIR/library/config-osx.sh
-	;;
-	*)
-		die "Unsupported OS ($U_SYSTEM). terminate."
-	;;
-esac
-
 echo -n "-> Checking OS bitness... "
 readonly U_MACHINE=`(uname -m) 2>/dev/null` || U_MACHINE=unknown
 case "${U_MACHINE}" in
@@ -73,6 +54,28 @@ case "${U_MACHINE}" in
 		die "Unsupported bitness ($U_MACHINE). terminate."
 	;;
 esac
+
+echo -n "-> Checking OS type... "
+readonly U_SYSTEM=`(uname -s) 2>/dev/null` || U_SYSTEM=unknown
+echo "$U_SYSTEM"
+
+case "${U_SYSTEM}" in
+	Linux)
+		source $TOP_DIR/library/config-nix.sh
+	;;
+	MSYS*|MINGW*)
+		source $TOP_DIR/library/config-win.sh
+	;;
+	Darwin)
+		source $TOP_DIR/library/config-osx.sh
+	;;
+	*)
+		die "Unsupported OS ($U_SYSTEM). terminate."
+	;;
+esac
+
+readonly COMMON_TOOLS="$HOST_TOOLS 7za autoconf aclocal gettext git libtool lndir m4 make svn tar wget"
+func_check_tools $COMMON_TOOLS
 
 # **************************************************************************
 

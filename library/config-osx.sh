@@ -39,12 +39,13 @@ readonly x64_HOST_MINGW_PATH_URL=
 
 # **************************************************************************
 
-HOST=
-BUILD=
+HOST=$(gcc -dumpmachine)
+BUILD=$(gcc -dumpmachine)
 TARGET=$BUILD_ARCHITECTURE-w64-mingw32
 
-
+readonly HOST_TOOLS="gcc ld"
 readonly CROSS_BUILDS=yes
+
 # **************************************************************************
 
 readonly REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-osx/repository.txt
