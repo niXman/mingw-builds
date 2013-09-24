@@ -116,7 +116,7 @@ readonly SUBTARGETS_PART2=(
 	gdbinit
 	gdb
 	gdb-wrapper
-	make_git
+	make_git_bat
 	cleanup
 	licenses
 	build-info
