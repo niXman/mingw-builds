@@ -49,6 +49,7 @@ PRIORITY=extra
 PATCHES=(
 	make/make-linebuf-mingw.patch
 	make/make-getopt.patch
+	make/make-no-output-sync.patch
 )
 
 #
