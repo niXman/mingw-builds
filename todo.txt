@@ -22,12 +22,3 @@
    just use the: arr=( $str )
 	if items in string separated by any char other than whitespace -
 	just use the: arr=( $(echo $str | sed 's|<separator>| |g') )
-
-5. creating a list of subtargets rewrite as a function that
-   will be used as follows:
-	function get_subtargets_list() {
-	   # $1 - mode (gcc, clang, python)
-		# $2 - version
-		...
-	}
-	subtargets=( $(get_subtargets_list $mode $version) )
