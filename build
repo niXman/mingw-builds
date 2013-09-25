@@ -317,11 +317,11 @@ source $TOP_DIR/library/os_detect.sh
 # **************************************************************************
 # Creating necessary directories
 # **************************************************************************
-readonly PREREQ_DIR=$ROOT_DIR/mingw-prereq
-readonly RUNTIME_DIR=$ROOT_DIR/mingw-runtime
-readonly ARCHIVES_DIR=$ROOT_DIR/mingw-archives
-readonly PREREQ_BUILD_DIR=$ROOT_DIR/prereq-build
-readonly PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
+readonly PREREQ_DIR=$ROOT_DIR/prerequisites
+readonly RUNTIME_DIR=$ROOT_DIR/runtime
+readonly ARCHIVES_DIR=$ROOT_DIR/archives
+readonly PREREQ_BUILD_DIR=$ROOT_DIR/prerequisites-build
+readonly PREREQ_LOGS_DIR=$ROOT_DIR/prerequisites-logs
 
 [[ -n $REV_NUM ]] && {
 	readonly REV_STRING="-r$REV_NUM"
