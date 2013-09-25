@@ -16,3 +16,5 @@
 
 3. install only required licenses for each mode.
    (gcc, python, clang)
+
+4. when Python is built, its '<prefix>/lib/python[x.y]' directory contains 'test' directory. it is necessary to decide whether it is needed in the python distribution archive. if no - in the 'scripts/cleanup.sh' script add the code in order to remove it.
