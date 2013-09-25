@@ -314,10 +314,7 @@ function func_download {
 		local _is_repo=no
 		[[ $_repo == cvs || $_repo == svn || $_repo == hg || $_repo == git ]] && {
 			_is_repo=yes
-			if [[ $UPDATE_SOURCES == yes ]]
-			then
-				_repo_update=yes
-			fi
+			[[ $UPDATE_SOURCES == yes ]] && { _repo_update=yes; }
 		}
 		[[ ! -f $_marker_name || $_repo_update == yes ]] && {
 			[[ $_is_repo == yes ]] && {
