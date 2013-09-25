@@ -79,6 +79,7 @@ readonly LOGVIEWERS=(
 # **************************************************************************
 # Install host toolchains
 # **************************************************************************
+
 mkdir -p $TOOLCHAINS_DIR
 [[ $? != 0 ]] && {
 	die "can't create toolchains directory. terminate."

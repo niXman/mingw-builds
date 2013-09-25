@@ -204,23 +204,16 @@ while [[ $# > 0 ]]; do
 			[[ ! -f $TOP_DIR/scripts/${1/--mode=/}.sh ]] && {
 				die "bad mode. Script ${1/--mode=/}.sh not found. terminate."
 			}
-			BUILD_MODE_VERSION=${1/--mode=/}
-			BUILD_MODE=${BUILD_MODE_VERSION%%-*}
-			case $BUILD_MODE in
-				clang)
-					CLANG_VERSION=${BUILD_MODE_VERSION#*-}
-				;;
-				gcc)
-					GCC_NAME=$BUILD_MODE_VERSION
-				;;
-				python)
-					PYTHON_VERSION=${BUILD_MODE_VERSION#*-}
-				;;
-				*) die "Unsupported mode: \"$BUILD_MODE.\" terminate."
-			esac
+			readonly BUILD_MODE_VERSION=${1/--mode=/}
+			readonly BUILD_VERSION=${BUILD_MODE_VERSION#*-}
+			readonly BUILD_MODE=${BUILD_MODE_VERSION%%-*}
+			readonly GCC_NAME=$BUILD_MODE_VERSION
+			[[ $BUILD_MODE != gcc && $BUILD_MODE != clang && $BUILD_MODE != python ]] && {
+				die "Unsupported mode: \"$BUILD_MODE.\" terminate."
+			}
 		;;
 		--arch=*)
-			BUILD_ARCHITECTURE=${1/--arch=/}
+			readonly BUILD_ARCHITECTURE=${1/--arch=/}
 			case $BUILD_ARCHITECTURE in
 				i686|x86_64)
 				;;
@@ -346,6 +339,19 @@ readonly PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
 	MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
 	readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)	
+
+	[[ $USE_MULTILIB == yes ]] && {
+			readonly PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
+			readonly PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
+	} || {
+		[[ $BUILD_ARCHITECTURE == i686 ]] && {
+			readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
+			readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
+		} || {
+			readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
+			readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
+		}
+	}
 } || {
 	readonly BASE_BUILD_DIR=$ROOT_DIR/$BUILD_MODE-${BUILD_ARCHITECTURE}$REV_STRING
 	readonly PREFIX=$BASE_BUILD_DIR/${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}
@@ -370,9 +376,6 @@ mkdir -p \
 		$PREREQ_BUILD_DIR \
 		$PREREQ_LOGS_DIR
 }
-# **************************************************************************
-
-source $TOP_DIR/library/subtargets.sh
 
 # **************************************************************************
 
@@ -437,6 +440,17 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 		echo "-> start building ${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}"
 	}
 }
+
+# **************************************************************************
+
+source $TOP_DIR/library/subtargets.sh
+
+readonly SUBTARGETS=( \
+	$(fun_get_subtargets \
+		$BUILD_MODE \
+		$BUILD_VERSION \
+	) \
+)
 
 for sub in ${SUBTARGETS[@]}; do
 	func_clear_env

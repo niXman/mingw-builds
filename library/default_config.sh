@@ -88,6 +88,7 @@ JOBS=1
 
 RUNTIME_VERSION=v4
 RUNTIME_BRANCH="trunk"
+
 # **************************************************************************
 
 FETCH_MODE=no
@@ -110,8 +111,9 @@ LINK_TYPE_SUFFIX=static
 
 BUILD_MODE=
 BUILD_MODE_VERSION=
+BUILD_VERSION=
 GCC_NAME=
-PYTHON_VERSION=2.7.5
-CLANG_VERSION=
+
+DEFAULT_PYTHON_VERSION=2.7.5
 
 # **************************************************************************

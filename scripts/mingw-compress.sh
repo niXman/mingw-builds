@@ -38,7 +38,7 @@
 function func_compress_mingw() {
 	case $BUILD_MODE in
 		clang)
-			local ARCHIVE_NAME=$ARCHIVES_DIR/clang-$CLANG_VERSION-$BUILD_ARCHITECTURE.7z
+			local ARCHIVE_NAME=$ARCHIVES_DIR/clang-$BUILD_VERSION-$BUILD_ARCHITECTURE.7z
 		;;
 		gcc)
 			local ARCHIVE_NAME=$( \
@@ -53,7 +53,7 @@ function func_compress_mingw() {
 			)
 		;;
 		python)
-			local ARCHIVE_NAME=$ARCHIVES_DIR/python-$PYTHON_VERSION-$BUILD_ARCHITECTURE.7z
+			local ARCHIVE_NAME=$ARCHIVES_DIR/python-$BUILD_VERSION-$BUILD_ARCHITECTURE.7z
 		;;
 	esac
 

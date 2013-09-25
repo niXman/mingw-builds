@@ -34,153 +34,160 @@
 
 # **************************************************************************
 
-readonly LIBICONV_X32_SUBTARGETS=(
-	fix-path-for-x32-pre
-	libiconv-x32
-	fix-path-for-x32-post
-)
+function fun_get_subtargets {
+   # $1 - mode (gcc, clang, python)
+	# $2 - version
 
-readonly LIBICONV_X64_SUBTARGETS=(
-	fix-path-for-x64-pre
-	libiconv-x64
-	fix-path-for-x64-post
-)
+	local readonly LIBICONV_X32_SUBTARGETS=(
+		fix-path-for-x32-pre
+		libiconv-x32
+		fix-path-for-x32-post
+	)
 
-readonly WINPTHREADS_X32_SUBTARGETS=(
-	fix-path-for-x32-pre
-	winpthreads-x32
-	fix-path-for-x32-post
-)
+	local readonly LIBICONV_X64_SUBTARGETS=(
+		fix-path-for-x64-pre
+		libiconv-x64
+		fix-path-for-x64-post
+	)
 
-readonly WINPTHREADS_X64_SUBTARGETS=(
-	fix-path-for-x64-pre
-	winpthreads-x64
-	fix-path-for-x64-post
-)
+	local readonly WINPTHREADS_X32_SUBTARGETS=(
+		fix-path-for-x32-pre
+		winpthreads-x32
+		fix-path-for-x32-post
+	)
 
-readonly ZLIB_X32_SUBTARGETS=(
-	fix-path-for-x32-pre
-	zlib-x32
-	fix-path-for-x32-post
-)
+	local readonly WINPTHREADS_X64_SUBTARGETS=(
+		fix-path-for-x64-pre
+		winpthreads-x64
+		fix-path-for-x64-post
+	)
 
-readonly ZLIB_X64_SUBTARGETS=(
-	fix-path-for-x64-pre
-	zlib-x64
-	fix-path-for-x64-post
-)
+	local readonly ZLIB_X32_SUBTARGETS=(
+		fix-path-for-x32-pre
+		zlib-x32
+		fix-path-for-x32-post
+	)
 
-readonly SUBTARGETS_PART1=(
-	gmp
-	mpfr
-	mpc
-	ppl
-	isl
-	cloog
-	mingw-w64-api
-	mingw-w64-crt
-)
+	local readonly ZLIB_X64_SUBTARGETS=(
+		fix-path-for-x64-pre
+		zlib-x64
+		fix-path-for-x64-post
+	)
 
-readonly PYTHON_SUBTARGETS=(
-	libgnurx
-	bzip2
-	libffi
-	expat
-	#tcl
-	#tk
-	$([[ $PYTHON_VERSION == 3.3.0 ]] && echo xz-utils)
-	sqlite
-	ncurses
-	readline
-	python-$PYTHON_VERSION
-)
+	local readonly SUBTARGETS_PART1=(
+		gmp
+		mpfr
+		mpc
+		$( [[ $2 == 4.6.? || $2 == 4.7.? ]] && echo ppl )
+		isl
+		cloog
+		mingw-w64-api
+		mingw-w64-crt
+	)
 
-readonly CLANG_SUBTARGETS=(
-	clang-$CLANG_VERSION
-)
+	[[ $1 == gcc ]] && {
+		local readonly python_version=$DEFAULT_PYTHON_VERSION
+	} || {
+		local readonly python_version=$2
+	}
 
-readonly SUBTARGETS_PART2=(
-	mingw-w64-runtime-post
-	binutils
-	binutils-post
-	$GCC_NAME
-	gcc-post
-	mingw-w64-libraries-libmangle
-	#mingw-w64-libraries-pseh
-	mingw-w64-tools-gendef
-	mingw-w64-tools-genidl
-	mingw-w64-tools-genpeimg
-	mingw-w64-tools-widl
-	${PYTHON_SUBTARGETS[@]}
-	3rdparty-post
-	gdbinit
-	gdb
-	gdb-wrapper
-	make_git_bat
-	cleanup
-	licenses
-	build-info
-	tests
-	$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
-)
+	local readonly PYTHON_SUBTARGETS=(
+		libgnurx
+		bzip2
+		libffi
+		expat
+		#tcl
+		#tk
+		$([[ $python_version == 3.3.0 ]] && echo xz-utils)
+		sqlite
+		ncurses
+		readline
+		python-$python_version
+	)
 
-case $BUILD_MODE in
-	clang)
-		readonly SUBTARGETS=(
-			${CLANG_SUBTARGETS[@]}
-			cleanup
-			licenses
-			build-info
-			$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
-		)
-	;;
-	gcc)
-		[[ $USE_MULTILIB == yes ]] && {
-			readonly SUBTARGETS=(
-				${LIBICONV_X32_SUBTARGETS[@]}
-				${LIBICONV_X64_SUBTARGETS[@]}
-				${ZLIB_X32_SUBTARGETS[@]}
-				${ZLIB_X64_SUBTARGETS[@]}	
-				${SUBTARGETS_PART1[@]}
-				${WINPTHREADS_X32_SUBTARGETS[@]}
-				${WINPTHREADS_X64_SUBTARGETS[@]}
-				${SUBTARGETS_PART2[@]}
+	local readonly CLANG_SUBTARGETS=(
+		clang-$2
+	)
+
+	local readonly SUBTARGETS_PART2=(
+		mingw-w64-runtime-post
+		binutils
+		binutils-post
+		$GCC_NAME
+		gcc-post
+		mingw-w64-libraries-libmangle
+		#mingw-w64-libraries-pseh
+		mingw-w64-tools-gendef
+		mingw-w64-tools-genidl
+		mingw-w64-tools-genpeimg
+		mingw-w64-tools-widl
+		${PYTHON_SUBTARGETS[@]}
+		3rdparty-post
+		gdbinit
+		gdb
+		gdb-wrapper
+		make_git_bat
+		cleanup
+		licenses
+		build-info
+		tests
+		$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
+	)
+
+	case $1 in
+		clang)
+			local readonly SUBTARGETS=(
+				${CLANG_SUBTARGETS[@]}
+				cleanup
+				licenses
+				build-info
+				$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
 			)
-			readonly PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
-			readonly PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
-		} || {
-			[[ $BUILD_ARCHITECTURE == i686 ]] && {
-				readonly SUBTARGETS=(
+		;;
+		gcc)
+			[[ $USE_MULTILIB == yes ]] && {
+				local readonly SUBTARGETS=(
 					${LIBICONV_X32_SUBTARGETS[@]}
+					${LIBICONV_X64_SUBTARGETS[@]}
 					${ZLIB_X32_SUBTARGETS[@]}
+					${ZLIB_X64_SUBTARGETS[@]}	
 					${SUBTARGETS_PART1[@]}
 					${WINPTHREADS_X32_SUBTARGETS[@]}
-					${SUBTARGETS_PART2[@]}
-				)
-				readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
-				readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
-			} || {
-				readonly SUBTARGETS=(
-					${LIBICONV_X64_SUBTARGETS[@]}
-					${ZLIB_X64_SUBTARGETS[@]}
-					${SUBTARGETS_PART1[@]}
 					${WINPTHREADS_X64_SUBTARGETS[@]}
 					${SUBTARGETS_PART2[@]}
 				)
-				readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
-				readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
+			} || {
+				[[ $BUILD_ARCHITECTURE == i686 ]] && {
+					local readonly SUBTARGETS=(
+						${LIBICONV_X32_SUBTARGETS[@]}
+						${ZLIB_X32_SUBTARGETS[@]}
+						${SUBTARGETS_PART1[@]}
+						${WINPTHREADS_X32_SUBTARGETS[@]}
+						${SUBTARGETS_PART2[@]}
+					)
+				} || {
+					local readonly SUBTARGETS=(
+						${LIBICONV_X64_SUBTARGETS[@]}
+						${ZLIB_X64_SUBTARGETS[@]}
+						${SUBTARGETS_PART1[@]}
+						${WINPTHREADS_X64_SUBTARGETS[@]}
+						${SUBTARGETS_PART2[@]}
+					)
+				}
 			}
-		}
-	;;
-	python)
-		readonly SUBTARGETS=(
-			${PYTHON_SUBTARGETS[@]}
-			cleanup
-			licenses
-			build-info
-			$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
-		)
-	;;
-esac
+		;;
+		python)
+			local readonly SUBTARGETS=(
+				${PYTHON_SUBTARGETS[@]}
+				cleanup
+				licenses
+				build-info
+				$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
+			)
+		;;
+	esac
+	
+	echo ${SUBTARGETS[@]}
+}
 
 # **************************************************************************
