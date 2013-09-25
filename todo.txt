@@ -1,4 +1,3 @@
-
 1. rewrite usage docs in README for win/nix/osx platforms.
    or, maybe, create separate files for each OS.
    (usage-win.txt, usage-nix.txt, usage-osx.txt)
@@ -17,8 +16,3 @@
 
 3. install only required licenses for each mode.
    (gcc, python, clang)
-
-4. there is no need to change the IFS when converting a string to the list.
-   just use the: arr=( $str )
-	if items in string separated by any char other than whitespace -
-	just use the: arr=( $(echo $str | sed 's|<separator>| |g') )
