@@ -103,7 +103,7 @@ function func_get_licenses {
 		readonly licenses_cmd="cp -rf $TOP_DIR/licenses/${LICENSES[@]} $PREFIX/licenses/"
 	}
 	
-	echo "licenses_cmd: ${licenses_cmd}"
+	#echo "licenses_cmd: ${licenses_cmd}"
 	eval ${licenses_cmd} || die "can't copy licenses. terminate."
 
 	touch $BUILDS_DIR/licenses.marker
