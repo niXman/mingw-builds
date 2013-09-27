@@ -17,4 +17,6 @@
    EXECUTE_AFTER_PATCH      -> PKG_EXECUTE_AFTER_PATCH
    EXECUTE_AFTER_INSTALL    -> PKG_EXECUTE_AFTER_INSTALL
 
-3. when Python is built, its '<prefix>/lib/python[x.y]' directory contains 'test' directory. it is necessary to decide whether it is needed in the python distribution archive. if no - in the 'scripts/cleanup.sh' script add the code in order to remove it.
+3. when Python is built, its '<prefix>/lib/python[x.y]' directory contains 'test' directory.
+   it is necessary to decide whether it is needed in the python distribution archive.
+   if no - in the 'scripts/cleanup.sh' script add the code in order to remove it.
