@@ -35,27 +35,27 @@
 
 # **************************************************************************
 
-VERSION=3080002
-NAME=sqlite-${VERSION}
-SRC_DIR_NAME=sqlite-autoconf-${VERSION}
-TYPE=.tar.gz
-URL=(
-	"http://www.sqlite.org/2013/sqlite-autoconf-${VERSION}.tar.gz"
+PKG_VERSION=3080002
+PKG_NAME=sqlite-${PKG_VERSION}
+PKG_DIR_NAME=sqlite-autoconf-${PKG_VERSION}
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"http://www.sqlite.org/2013/sqlite-autoconf-${PKG_VERSION}.tar.gz"
 )
-PRIORITY=extra
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-EXECUTE_AFTER_PATCH=(
+PKG_EXECUTE_AFTER_PATCH=(
 	"perl -pi -e 's#archive_cmds_need_lc=yes#archive_cmds_need_lc=no#g' configure"
 )
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -72,14 +72,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
 )

@@ -35,23 +35,23 @@
 
 # **************************************************************************
 
-VERSION=5.1.2
-NAME=$BUILD_ARCHITECTURE-gmp-${VERSION}-$LINK_TYPE_SUFFIX
-SRC_DIR_NAME=gmp-${VERSION}
-TYPE=.tar.bz2
-URL=(
-	"ftp://ftp.gmplib.org/pub/gmp-${VERSION}/gmp-${VERSION}.tar.bz2"
+PKG_VERSION=5.1.2
+PKG_NAME=$BUILD_ARCHITECTURE-gmp-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_DIR_NAME=gmp-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
+PKG_URLS=(
+	"ftp://ftp.gmplib.org/pub/gmp-${PKG_VERSION}/gmp-${PKG_VERSION}.tar.bz2"
 )
 
-PRIORITY=prereq
+PKG_PRIORITY=prereq
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -70,14 +70,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

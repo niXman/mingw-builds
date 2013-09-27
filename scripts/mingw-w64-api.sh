@@ -35,23 +35,23 @@
 
 # **************************************************************************
 
-NAME=mingw-w64-headers-${RUNTIME_VERSION}
+PKG_NAME=mingw-w64-headers-${RUNTIME_VERSION}
 [[ $USE_MULTILIB == yes ]] && {
-	NAME=$BUILD_ARCHITECTURE-$NAME-multi
+	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
 } || {
-	NAME=$BUILD_ARCHITECTURE-$NAME-nomulti
+	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-nomulti
 }
-SRC_DIR_NAME=mingw-w64-headers-${RUNTIME_VERSION}
-TYPE=svn
-URL=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-headers|repo:$TYPE|module:$SRC_DIR_NAME"
+PKG_DIR_NAME=mingw-w64-headers-${RUNTIME_VERSION}
+PKG_TYPE=svn
+PKG_URLS=(
+	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-headers|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
 )
 
-PRIORITY=runtime
+PKG_PRIORITY=runtime
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
@@ -61,7 +61,7 @@ PATCHES=()
 	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-${RUNTIME_VERSION}-nomulti
 }
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -79,14 +79,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

@@ -35,23 +35,23 @@
 
 # **************************************************************************
 
-VERSION=7.6.1
-NAME=gdb-${VERSION}
-SRC_DIR_NAME=gdb-${VERSION}
-TYPE=.tar.bz2
-URL=(
-	"ftp://ftp.gnu.org/gnu/gdb/gdb-${VERSION}.tar.bz2"
+PKG_VERSION=7.6.1
+PKG_NAME=gdb-${PKG_VERSION}
+PKG_DIR_NAME=gdb-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
+PKG_URLS=(
+	"ftp://ftp.gnu.org/gnu/gdb/gdb-${PKG_VERSION}.tar.bz2"
 )
 
-PRIORITY=main
+PKG_PRIORITY=main
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$TARGET
 	--prefix=$PREFIX
@@ -80,14 +80,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
 )

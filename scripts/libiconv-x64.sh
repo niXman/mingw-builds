@@ -35,28 +35,28 @@
 
 # **************************************************************************
 
-VERSION=1.14
-NAME=x86_64-libiconv-$LINK_TYPE_SUFFIX
-SRC_DIR_NAME=libiconv-${VERSION}
-TYPE=.tar.gz
-URL=(
-	"http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${VERSION}.tar.gz"
+PKG_VERSION=1.14
+PKG_NAME=x86_64-libiconv-$LINK_TYPE_SUFFIX
+PKG_DIR_NAME=libiconv-${PKG_VERSION}
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PKG_VERSION}.tar.gz"
 )
 
-PRIORITY=prereq
+PKG_PRIORITY=prereq
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREREQ_DIR/$NAME
+	--prefix=$PREREQ_DIR/$PKG_NAME
 	#
 	$GCC_DEPS_LINK_TYPE
 	#
@@ -68,14 +68,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
