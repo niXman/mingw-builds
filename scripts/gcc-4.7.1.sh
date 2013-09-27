@@ -112,7 +112,7 @@ PKG_CONFIGURE_FLAGS=(
 	--with-libiconv
 	--with-system-zlib
 	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
-	--with-pkgversion="\"$PKG_VERSION\""
+	--with-pkgversion="\"$MINGW_W64_PKG_STRING\""
 	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""

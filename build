@@ -223,7 +223,7 @@ while [[ $# > 0 ]]; do
 		;;
 		--rev=*)
 			REV_NUM=${1/--rev=/}
-			PKG_VERSION="rev$REV_NUM, $PKG_VERSION"
+			MINGW_W64_PKG_STRING="rev$REV_NUM, $MINGW_W64_PKG_STRING"
 		;;
 		--version) echo $MINGW_W64_BUILDS_VERSION; exit 0 ;;
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
