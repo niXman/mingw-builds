@@ -77,25 +77,25 @@ function func_build_info() {
 	local subtargets_it=
 	for subtargets_it in ${SUBTARGETS[@]}; do
 		[[ $subtargets_it == build-info ]] && continue
-		[[ -z $(grep 'CONFIGURE_FLAGS=' $TOP_DIR/scripts/$subtargets_it.sh) ]] && continue
+		[[ -z $(grep 'PKG_CONFIGURE_FLAGS=' $TOP_DIR/scripts/$subtargets_it.sh) ]] && continue
 		source $TOP_DIR/scripts/$subtargets_it.sh
-		echo "name         : $NAME" >> $INFO_FILE
-		echo "type         : $TYPE" >> $INFO_FILE
-		pushd $SRCS_DIR/$SRC_DIR_NAME > /dev/null
-		case $TYPE in
-			cvs) echo "revision     : $REV" >> $INFO_FILE ;;
+		echo "name         : $PKG_NAME" >> $INFO_FILE
+		echo "type         : $PKG_TYPE" >> $INFO_FILE
+		pushd $SRCS_DIR/$PKG_DIR_NAME > /dev/null
+		case $PKG_TYPE in
+			cvs) echo "revision     : $PKG_REVISION" >> $INFO_FILE ;;
 			svn) echo "revision     : $( svn info | grep 'Revision: ' | sed 's|Revision: ||' )" >> $INFO_FILE ;;
 			hg)  echo "revision     : unimplemented" >> $INFO_FILE ;;
 			git) echo "SHA          : $( export TERM=cygwin && git log -1 --pretty=format:%H )" >> $INFO_FILE ;;
-			*)   echo "version      : $VERSION" >> $INFO_FILE ;;
+			*)   echo "version      : $PKG_VERSION" >> $INFO_FILE ;;
 		esac
 		popd > /dev/null
 		
-		[[ ${#URL[@]} > 1 ]] && {
+		[[ ${#PKG_URLS[@]} > 1 ]] && {
 			local urls_it=
 			local urls=
 			
-			for urls_it in ${URL[@]}; do
+			for urls_it in ${PKG_URLS[@]}; do
 				local _params=( ${urls_it//|/ } )
 				local _real_url=${_params[0]}
 				urls="$urls $(echo $_real_url | sed -n 's/\([^|]*\)|.*/\1/p')"
@@ -103,12 +103,12 @@ function func_build_info() {
 			
 			echo "urls         : $(echo $urls | sed 's| |, |g')" >> $INFO_FILE
 		} || {
-			local _params=( ${URL//|/ } )
+			local _params=( ${PKG_URLS//|/ } )
 			local _real_url=${_params[0]}
 			echo "url          : $_real_url" >> $INFO_FILE
 		}
-		echo "patches      : $(echo ${PATCHES[@]} | sed 's| |, |g')" >> $INFO_FILE
-		echo "configuration: ${CONFIGURE_FLAGS[@]}" >> $INFO_FILE
+		echo "patches      : $(echo ${PKG_PATCHES[@]} | sed 's| |, |g')" >> $INFO_FILE
+		echo "configuration: ${PKG_CONFIGURE_FLAGS[@]}" >> $INFO_FILE
 		echo >> $INFO_FILE
 		echo "# **************************************************************************" >> $INFO_FILE
 		echo >> $INFO_FILE

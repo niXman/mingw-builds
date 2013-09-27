@@ -35,25 +35,25 @@
 
 # **************************************************************************
 
-VERSION=1.0
-NAME=$BUILD_ARCHITECTURE-ppl-${VERSION}-$LINK_TYPE_SUFFIX
-SRC_DIR_NAME=ppl-${VERSION}
-TYPE=.tar.bz2
-URL=(
-	"http://bugseng.com/products/ppl/download/ftp/releases/${VERSION}/ppl-${VERSION}.tar.bz2"
+PKG_VERSION=1.0
+PKG_NAME=$BUILD_ARCHITECTURE-ppl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_DIR_NAME=ppl-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
+PKG_URLS=(
+	"http://bugseng.com/products/ppl/download/ftp/releases/${PKG_VERSION}/ppl-${PKG_VERSION}.tar.bz2"
 )
 
-PRIORITY=prereq
+PKG_PRIORITY=prereq
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	ppl/ppl-resolve-conflicts-with-gmp-5.1.0.patch
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -77,14 +77,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

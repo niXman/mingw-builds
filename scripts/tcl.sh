@@ -35,23 +35,23 @@
 
 # **************************************************************************
 
-VERSION=8.6.0
-NAME=tcl${VERSION}
-SRC_DIR_NAME=tcl${VERSION}/win
-TYPE=.tar.gz
-URL=(
-	"http://prdownloads.sourceforge.net/tcl/tcl${VERSION}-src.tar.gz"
+PKG_VERSION=8.6.0
+PKG_NAME=tcl${PKG_VERSION}
+PKG_DIR_NAME=tcl${PKG_VERSION}/win
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"http://prdownloads.sourceforge.net/tcl/tcl${PKG_VERSION}-src.tar.gz"
 )
 
-PRIORITY=extra
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -73,14 +73,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
 )

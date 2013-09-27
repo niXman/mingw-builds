@@ -35,34 +35,34 @@
 
 # **************************************************************************
 
-VERSION=3.3
-NAME=llvm-${VERSION}.src
-SRC_DIR_NAME=llvm-${VERSION}.src
-TYPE=.tar.gz
-URL=(
-	"http://llvm.org/releases/${VERSION}/llvm-3.3.src.tar.gz"
-	"http://llvm.org/releases/${VERSION}/cfe-3.3.src.tar.gz|dir:$NAME/tools"
-	"http://llvm.org/releases/${VERSION}/compiler-rt-3.3.src.tar.gz|dir:$NAME/projects"
-	"http://llvm.org/releases/${VERSION}/test-suite-3.3.src.tar.gz|dir:$NAME/projects"
+PKG_VERSION=3.3
+PKG_NAME=llvm-${PKG_VERSION}.src
+PKG_DIR_NAME=llvm-${PKG_VERSION}.src
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"http://llvm.org/releases/${PKG_VERSION}/llvm-3.3.src.tar.gz"
+	"http://llvm.org/releases/${PKG_VERSION}/cfe-3.3.src.tar.gz|dir:$PKG_NAME/tools"
+	"http://llvm.org/releases/${PKG_VERSION}/compiler-rt-3.3.src.tar.gz|dir:$PKG_NAME/projects"
+	"http://llvm.org/releases/${PKG_VERSION}/test-suite-3.3.src.tar.gz|dir:$PKG_NAME/projects"
 )
 
-PRIORITY=main
+PKG_PRIORITY=main
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-EXECUTE_AFTER_PATCH=(
-	"mv $SRCS_DIR/$NAME/tools/cfe-${VERSION}.src $SRCS_DIR/$NAME/tools/clang"
-	"mv $SRCS_DIR/$NAME/projects/compiler-rt-${VERSION}.src $SRCS_DIR/$NAME/projects/compiler-rt"
-	"mv $SRCS_DIR/$NAME/projects/test-suite-${VERSION}.src $SRCS_DIR/$NAME/projects/test-suite"
+PKG_EXECUTE_AFTER_PATCH=(
+	"mv $SRCS_DIR/$PKG_NAME/tools/cfe-${PKG_VERSION}.src $SRCS_DIR/$PKG_NAME/tools/clang"
+	"mv $SRCS_DIR/$PKG_NAME/projects/compiler-rt-${PKG_VERSION}.src $SRCS_DIR/$PKG_NAME/projects/compiler-rt"
+	"mv $SRCS_DIR/$PKG_NAME/projects/test-suite-${PKG_VERSION}.src $SRCS_DIR/$PKG_NAME/projects/test-suite"
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -94,14 +94,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
 )

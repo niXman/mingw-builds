@@ -35,24 +35,24 @@
 
 # **************************************************************************
 
-VERSION=2.23.2
-NAME=binutils-${VERSION}
+PKG_VERSION=2.23.2
+PKG_NAME=binutils-${PKG_VERSION}
 [[ $USE_MULTILIB == yes ]] && {
-	NAME=$BUILD_ARCHITECTURE-$NAME-multi
+	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
 } || {
-	NAME=$BUILD_ARCHITECTURE-$NAME-nomulti
+	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-nomulti
 }
-SRC_DIR_NAME=binutils-${VERSION}
-TYPE=.tar.bz2
-URL=(
-	"ftp://mirrors.kernel.org/sources.redhat.com/binutils/releases/binutils-${VERSION}.tar.bz2"
+PKG_DIR_NAME=binutils-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
+PKG_URLS=(
+	"ftp://mirrors.kernel.org/sources.redhat.com/binutils/releases/binutils-${PKG_VERSION}.tar.bz2"
 )
 
-PRIORITY=prereq
+PKG_PRIORITY=prereq
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	binutils/binutils-2.23.2-fix-docs.patch
 )
 
@@ -66,7 +66,7 @@ PATCHES=(
 	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-nomulti
 }
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -99,14 +99,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

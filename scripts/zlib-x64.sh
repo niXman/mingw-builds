@@ -35,19 +35,19 @@
 
 # **************************************************************************
 
-VERSION=1.2.8
-NAME=x86_64-zlib-${VERSION}
-SRC_DIR_NAME=zlib-${VERSION}
-TYPE=.tar.gz
-URL=(
-	"http://sourceforge.net/projects/libpng/files/zlib/${VERSION}/zlib-${VERSION}.tar.gz"
+PKG_VERSION=1.2.8
+PKG_NAME=x86_64-zlib-${PKG_VERSION}
+PKG_DIR_NAME=zlib-${PKG_VERSION}
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"http://sourceforge.net/projects/libpng/files/zlib/${PKG_VERSION}/zlib-${PKG_VERSION}.tar.gz"
 )
 
-PRIORITY=prereq
+PKG_PRIORITY=prereq
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	zlib/01-zlib-1.2.7-1-buildsys.mingw.patch
 	zlib/02-no-undefined.mingw.patch
 	zlib/03-dont-put-sodir-into-L.mingw.patch
@@ -57,23 +57,23 @@ PATCHES=(
 
 #
 
-EXECUTE_AFTER_PATCH=(
-	"mkdir -p $PREREQ_BUILD_DIR/i686-$SRC_DIR_NAME"
-	"mkdir -p $PREREQ_BUILD_DIR/x86_64-$SRC_DIR_NAME"
-	"lndir $SRCS_DIR/$SRC_DIR_NAME $PREREQ_BUILD_DIR/i686-$SRC_DIR_NAME"
-	"lndir $SRCS_DIR/$SRC_DIR_NAME $PREREQ_BUILD_DIR/x86_64-$SRC_DIR_NAME"
+PKG_EXECUTE_AFTER_PATCH=(
+	"mkdir -p $PREREQ_BUILD_DIR/i686-$PKG_DIR_NAME"
+	"mkdir -p $PREREQ_BUILD_DIR/x86_64-$PKG_DIR_NAME"
+	"lndir $SRCS_DIR/$PKG_DIR_NAME $PREREQ_BUILD_DIR/i686-$PKG_DIR_NAME"
+	"lndir $SRCS_DIR/$PKG_DIR_NAME $PREREQ_BUILD_DIR/x86_64-$PKG_DIR_NAME"
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--prefix=$PREREQ_DIR/x86_64-zlib
 	--static
 )
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	STRIP=true
 	all
@@ -81,7 +81,7 @@ MAKE_FLAGS=(
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	STRIP=true
 	install
 )

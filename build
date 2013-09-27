@@ -223,7 +223,7 @@ while [[ $# > 0 ]]; do
 		;;
 		--rev=*)
 			REV_NUM=${1/--rev=/}
-			PKG_VERSION="rev$REV_NUM, $PKG_VERSION"
+			MINGW_W64_PKG_STRING="rev$REV_NUM, $MINGW_W64_PKG_STRING"
 		;;
 		--version) echo $MINGW_W64_BUILDS_VERSION; exit 0 ;;
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
@@ -458,15 +458,15 @@ for sub in ${SUBTARGETS[@]}; do
 		die "script for subtarget \"$sub\" is not exists. terminate."
 	}
 	[[ $FETCH_MODE == yes ]] && {
-		[[ -z $( grep 'URL=' $TOP_DIR/scripts/${sub}.sh ) ]] && continue
+		[[ -z $( grep 'PKG_URLS=' $TOP_DIR/scripts/${sub}.sh ) ]] && continue
 	}
 	echo -e "-> \E[32;40m$sub\E[37;40m"
 
 	source $TOP_DIR/scripts/$sub.sh
 
-	[[ -z $NAME ]] && continue
+	[[ -z $PKG_NAME ]] && continue
 
-	case $PRIORITY in
+	case $PKG_PRIORITY in
 		prereq | runtime)
 			CURR_LOGS_DIR=$PREREQ_LOGS_DIR
 			CURR_BUILD_DIR=$PREREQ_BUILD_DIR
@@ -481,63 +481,63 @@ for sub in ${SUBTARGETS[@]}; do
 		;;
 	esac
 	
-	CONFIGURE_LOG=$CURR_LOGS_DIR/$NAME/configure.log
-	MAKE_LOG=$CURR_LOGS_DIR/$NAME/make.log
-	INSTALL_LOG=$CURR_LOGS_DIR/$NAME/install.log
+	CONFIGURE_LOG=$CURR_LOGS_DIR/$PKG_NAME/configure.log
+	MAKE_LOG=$CURR_LOGS_DIR/$PKG_NAME/make.log
+	INSTALL_LOG=$CURR_LOGS_DIR/$PKG_NAME/install.log
 
-	mkdir -p $SRCS_DIR/$SRC_DIR_NAME
-	mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$NAME
-	#[[ $NAME != $SRC_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$NAME
+	mkdir -p $SRCS_DIR/$PKG_DIR_NAME
+	mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$PKG_NAME
+	#[[ $PKG_NAME != $PKG_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$PKG_NAME
 
 	func_download \
-		URL[@]
+		PKG_URLS[@]
 
 	func_uncompress \
-		URL[@]
+		PKG_URLS[@]
 
 	[[ $FETCH_MODE == no ]] && {
-		[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
+		[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
 			func_execute \
 				$SRCS_DIR \
-				$SRC_DIR_NAME \
+				$PKG_DIR_NAME \
 				"execute commands..." \
 				"after_unpack" \
 				$CURR_LOGS_DIR \
-				EXECUTE_AFTER_UNCOMPRESS[@]
+				PKG_EXECUTE_AFTER_UNCOMPRESS[@]
 		}
 
 		func_apply_patches \
 			$SRCS_DIR \
-			$SRC_DIR_NAME \
+			$PKG_DIR_NAME \
 			$CURR_LOGS_DIR \
 			$PATCHES_DIR \
-			PATCHES[@]
+			PKG_PATCHES[@]
 
-		[[ ${#EXECUTE_AFTER_PATCH[@]} >0 ]] && {
+		[[ ${#PKG_EXECUTE_AFTER_PATCH[@]} >0 ]] && {
 			func_execute \
 				$SRCS_DIR \
-				$SRC_DIR_NAME \
+				$PKG_DIR_NAME \
 				"execute commands..." \
 				"after_patch" \
 				$CURR_LOGS_DIR \
-				EXECUTE_AFTER_PATCH[@]
+				PKG_EXECUTE_AFTER_PATCH[@]
 		}
 
-		[[ ${#CONFIGURE_FLAGS[@]} >0 ]] && {
-			configure_flags="${CONFIGURE_FLAGS[@]}"
+		[[ ${#PKG_CONFIGURE_FLAGS[@]} >0 ]] && {
+			configure_flags="${PKG_CONFIGURE_FLAGS[@]}"
 			func_configure \
-				$NAME \
-				$SRC_DIR_NAME \
+				$PKG_NAME \
+				$PKG_DIR_NAME \
 				"$configure_flags" \
 				$CONFIGURE_LOG \
 				$CURR_BUILD_DIR
 		}
 
-		[[ ${#MAKE_FLAGS[@]} >0 ]] && {
-			make_flags="/bin/make ${MAKE_FLAGS[@]}"
+		[[ ${#PKG_MAKE_FLAGS[@]} >0 ]] && {
+			make_flags="/bin/make ${PKG_MAKE_FLAGS[@]}"
 			func_make \
-				$NAME \
-				$SRC_DIR_NAME \
+				$PKG_NAME \
+				$PKG_DIR_NAME \
 				"$make_flags" \
 				$MAKE_LOG \
 				"building..." \
@@ -545,11 +545,11 @@ for sub in ${SUBTARGETS[@]}; do
 				$CURR_BUILD_DIR
 		}
 
-		[[ ${#INSTALL_FLAGS[@]} >0 ]] && {
-			install_flags="/bin/make ${INSTALL_FLAGS[@]}"
+		[[ ${#PKG_INSTALL_FLAGS[@]} >0 ]] && {
+			install_flags="/bin/make ${PKG_INSTALL_FLAGS[@]}"
 			func_make \
-				$NAME \
-				$SRC_DIR_NAME \
+				$PKG_NAME \
+				$PKG_DIR_NAME \
 				"$install_flags" \
 				$INSTALL_LOG \
 				"installing..." \
@@ -557,14 +557,14 @@ for sub in ${SUBTARGETS[@]}; do
 				$CURR_BUILD_DIR
 		}
 	
-		[[ ${#EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
+		[[ ${#PKG_EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
 			func_execute \
 				$CURR_BUILD_DIR \
-				$NAME \
+				$PKG_NAME \
 				"execute commands..." \
 				"after_install" \
 				$CURR_LOGS_DIR \
-				EXECUTE_AFTER_INSTALL[@]
+				PKG_EXECUTE_AFTER_INSTALL[@]
 		}
 	}
 done

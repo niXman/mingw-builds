@@ -35,23 +35,23 @@
 
 # **************************************************************************
 
-VERSION=1.0.1
-NAME=$BUILD_ARCHITECTURE-mpc-${VERSION}-$LINK_TYPE_SUFFIX
-SRC_DIR_NAME=mpc-${VERSION}
-TYPE=.tar.gz
-URL=(
-	"http://www.multiprecision.org/mpc/download/mpc-${VERSION}.tar.gz"
+PKG_VERSION=1.0.1
+PKG_NAME=$BUILD_ARCHITECTURE-mpc-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_DIR_NAME=mpc-${PKG_VERSION}
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"http://www.multiprecision.org/mpc/download/mpc-${PKG_VERSION}.tar.gz"
 )
 
-PRIORITY=prereq
+PKG_PRIORITY=prereq
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -71,14 +71,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

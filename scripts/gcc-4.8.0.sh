@@ -35,19 +35,19 @@
 
 # **************************************************************************
 
-VERSION=4.8.0
-NAME=gcc-${VERSION}
-SRC_DIR_NAME=gcc-${VERSION}
-TYPE=.tar.bz2
-URL=(
-	"ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2"
+PKG_VERSION=4.8.0
+PKG_NAME=gcc-${PKG_VERSION}
+PKG_DIR_NAME=gcc-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
+PKG_URLS=(
+	"ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}.tar.bz2"
 )
 
-PRIORITY=main
+PKG_PRIORITY=main
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-4.8-iconv.patch
 	gcc/gcc-4.8-intrin.patch
@@ -58,7 +58,7 @@ PATCHES=(
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -112,7 +112,7 @@ CONFIGURE_FLAGS=(
 	--with-system-zlib
 	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	--enable-cloog-backend=isl
-	--with-pkgversion="\"$PKG_VERSION\""
+	--with-pkgversion="\"$MINGW_W64_PKG_STRING\""
 	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
@@ -123,14 +123,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j1
 	DESTDIR=$BASE_BUILD_DIR
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )

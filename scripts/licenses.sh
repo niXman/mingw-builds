@@ -39,7 +39,7 @@ function func_get_licenses {
 	# $1 - mode (gcc/python/clang)
 	
 	local readonly python_part=(
-		libgnurx
+		mingw-libgnurx
 		bzip2
 		libffi
 		expat
@@ -64,7 +64,6 @@ function func_get_licenses {
 		winpthreads
 		binutils
 		gcc
-		${python_part[@]}
 		gdb
 		make
 	)

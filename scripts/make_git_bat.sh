@@ -35,18 +35,18 @@
 
 # **************************************************************************
 
-NAME=make_git
-SRC_DIR_NAME=make_git
-TYPE=git
-URL=(
-	"http://git.savannah.gnu.org/cgit/make.git|repo:$TYPE|module:$NAME"
+PKG_NAME=make_git
+PKG_DIR_NAME=make_git
+PKG_TYPE=git
+PKG_URLS=(
+	"http://git.savannah.gnu.org/cgit/make.git|repo:$PKG_TYPE|module:$PKG_NAME"
 )
 
-PRIORITY=extra
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	make/make-linebuf-mingw.patch
 	make/make-getopt.patch
 	make/make-no-output-sync.patch
@@ -54,26 +54,26 @@ PATCHES=(
 
 #
 
-EXECUTE_AFTER_PATCH=(
+PKG_EXECUTE_AFTER_PATCH=(
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 )
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 )
 
-EXECUTE_AFTER_INSTALL=(
-	"cp -rf $SRCS_DIR/$NAME $CURR_BUILD_DIR/"
+PKG_EXECUTE_AFTER_INSTALL=(
+	"cp -rf $SRCS_DIR/$PKG_NAME $CURR_BUILD_DIR/"
 	"cmd /c 'build_w32.bat gcc'"
 	"strip -s gnumake.exe -o mingw32-make.exe"
 	"cp -f mingw32-make.exe $PREFIX/bin/"

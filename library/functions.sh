@@ -35,21 +35,21 @@
 # **************************************************************************
 
 function func_clear_env {
-	unset NAME
-	unset VERSION
-	unset SRC_DIR_NAME
-	unset PRIORITY
-	unset TYPE
-	unset REV
-	unset URL
-	unset EXECUTE_AFTER_DOWNLOAD
-	unset EXECUTE_AFTER_UNCOMPRESS
-	unset PATCHES
-	unset EXECUTE_AFTER_PATCH
-	unset CONFIGURE_FLAGS
-	unset MAKE_FLAGS
-	unset INSTALL_FLAGS
-	unset EXECUTE_AFTER_INSTALL
+	unset PKG_NAME
+	unset PKG_VERSION
+	unset PKG_DIR_NAME
+	unset PKG_PRIORITY
+	unset PKG_TYPE
+	unset PKG_REVISION
+	unset PKG_URLS
+	unset PKG_EXECUTE_AFTER_DOWNLOAD
+	unset PKG_EXECUTE_AFTER_UNCOMPRESS
+	unset PKG_PATCHES
+	unset PKG_EXECUTE_AFTER_PATCH
+	unset PKG_CONFIGURE_FLAGS
+	unset PKG_MAKE_FLAGS
+	unset PKG_INSTALL_FLAGS
+	unset PKG_EXECUTE_AFTER_INSTALL
 }
 
 # **************************************************************************

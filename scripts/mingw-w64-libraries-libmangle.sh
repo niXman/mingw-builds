@@ -35,29 +35,29 @@
 
 # **************************************************************************
 
-NAME=libmangle-${RUNTIME_VERSION}
-SRC_DIR_NAME=libmangle-${RUNTIME_VERSION}
-TYPE=svn
-URL=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-libraries/libmangle|repo:$TYPE|module:$SRC_DIR_NAME"
+PKG_NAME=libmangle-${RUNTIME_VERSION}
+PKG_DIR_NAME=libmangle-${RUNTIME_VERSION}
+PKG_TYPE=svn
+PKG_URLS=(
+	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-libraries/libmangle|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
 )
 
-REV=
-PRIORITY=extra
+PKG_REVISION=
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-EXECUTE_AFTER_PATCH=(
+PKG_EXECUTE_AFTER_PATCH=(
 	"autoreconf -i"
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -72,14 +72,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

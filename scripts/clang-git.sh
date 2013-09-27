@@ -35,26 +35,26 @@
 
 # **************************************************************************
 
-NAME=llvm-git
-SRC_DIR_NAME=llvm-git
-TYPE=git
+PKG_NAME=llvm-git
+PKG_DIR_NAME=llvm-git
+PKG_TYPE=git
 
-URL=(
-	"http://llvm.org/git/llvm.git|repo:$TYPE|module:$NAME"
-	"http://llvm.org/git/clang.git|repo:$TYPE|dir:$NAME/tools|module:clang"
-	"http://llvm.org/git/compiler-rt.git|repo:$TYPE|dir:$NAME/projects|module:compiler-rt"
-	"http://llvm.org/git/test-suite.git|repo:$TYPE|dir:$NAME/projects|module:test-suite"
+PKG_URLS=(
+	"http://llvm.org/git/llvm.git|repo:$PKG_TYPE|module:$PKG_NAME"
+	"http://llvm.org/git/clang.git|repo:$PKG_TYPE|dir:$PKG_NAME/tools|module:clang"
+	"http://llvm.org/git/compiler-rt.git|repo:$PKG_TYPE|dir:$PKG_NAME/projects|module:compiler-rt"
+	"http://llvm.org/git/test-suite.git|repo:$PKG_TYPE|dir:$PKG_NAME/projects|module:test-suite"
 )
 
-PRIORITY=main
+PKG_PRIORITY=main
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -86,14 +86,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
 )
