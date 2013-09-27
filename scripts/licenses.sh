@@ -64,7 +64,6 @@ function func_get_licenses {
 		winpthreads
 		binutils
 		gcc
-		${python_part[@]}
 		gdb
 		make
 	)
