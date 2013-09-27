@@ -35,19 +35,19 @@
 
 # **************************************************************************
 
-VERSION=1.0.6
-NAME=bzip2-${VERSION}
-SRC_DIR_NAME=bzip2-${VERSION}
-TYPE=.tar.gz
-URL=(
-	"http://www.bzip.org/${VERSION}/${SRC_DIR_NAME}.tar.gz"
+PKG_VERSION=1.0.6
+PKG_NAME=bzip2-${PKG_VERSION}
+PKG_DIR_NAME=bzip2-${PKG_VERSION}
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"http://www.bzip.org/${PKG_VERSION}/${PKG_DIR_NAME}.tar.gz"
 )
 
-PRIORITY=extra
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	bzip2/bzip2-1.0.4-bzip2recover.patch
 	bzip2/bzip2-1.0.6-autoconfiscated.patch
 	bzip2/bzip2-use-cdecl-calling-convention.patch
@@ -56,13 +56,13 @@ PATCHES=(
 
 #
 
-EXECUTE_AFTER_PATCH=(
+PKG_EXECUTE_AFTER_PATCH=(
 	"./autogen.sh"
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -79,14 +79,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
 )

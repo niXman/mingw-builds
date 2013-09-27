@@ -35,25 +35,25 @@
 
 # **************************************************************************
 
-VERSION=3.82
-NAME=make-${VERSION}
-SRC_DIR_NAME=make-${VERSION}
-TYPE=.tar.bz2
-URL=(
-	"ftp://ftp.gnu.org/gnu/make/make-${VERSION}.tar.bz2"
+PKG_VERSION=3.82
+PKG_NAME=make-${PKG_VERSION}
+PKG_DIR_NAME=make-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
+PKG_URLS=(
+	"ftp://ftp.gnu.org/gnu/make/make-${PKG_VERSION}.tar.bz2"
 )
 
-PRIORITY=extra
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	make/make-Windows-Add-move-to-sh_cmds_dos.patch
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$TARGET
 	--prefix=$PREFIX
@@ -65,14 +65,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

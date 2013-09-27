@@ -35,19 +35,19 @@
 
 # **************************************************************************
 
-VERSION=4.7.3
-NAME=gcc-${VERSION}
-SRC_DIR_NAME=gcc-${VERSION}
-TYPE=.tar.bz2
-URL=(
-	"ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2"
+PKG_VERSION=4.7.3
+PKG_NAME=gcc-${PKG_VERSION}
+PKG_DIR_NAME=gcc-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
+PKG_URLS=(
+	"ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}.tar.bz2"
 )
 
-PRIORITY=main
+PKG_PRIORITY=main
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-4.7-iconv.patch
 	gcc/gcc-4.7-vswprintf.patch
@@ -56,7 +56,7 @@ PATCHES=(
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -124,14 +124,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j1
 	DESTDIR=$BASE_BUILD_DIR
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )

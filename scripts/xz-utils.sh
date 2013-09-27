@@ -35,23 +35,23 @@
 
 # **************************************************************************
 
-VERSION=5.0.5
-NAME=xz-${VERSION}
-SRC_DIR_NAME=xz-${VERSION}
-TYPE=.tar.xz
-URL=(
-	"http://tukaani.org/xz/xz-${VERSION}.tar.xz"
+PKG_VERSION=5.0.5
+PKG_NAME=xz-${PKG_VERSION}
+PKG_DIR_NAME=xz-${PKG_VERSION}
+PKG_TYPE=.tar.xz
+PKG_URLS=(
+	"http://tukaani.org/xz/xz-${PKG_VERSION}.tar.xz"
 )
 
-PRIORITY=extra
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -70,14 +70,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
 )

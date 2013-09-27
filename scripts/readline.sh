@@ -35,19 +35,19 @@
 
 # **************************************************************************
 
-VERSION=6.2
-NAME=readline-${VERSION}
-SRC_DIR_NAME=readline-${VERSION}
-TYPE=.tar.gz
-URL=(
-	"ftp://ftp.gnu.org/gnu/readline/readline-${VERSION}.tar.gz"
+PKG_VERSION=6.2
+PKG_NAME=readline-${PKG_VERSION}
+PKG_DIR_NAME=readline-${PKG_VERSION}
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"ftp://ftp.gnu.org/gnu/readline/readline-${PKG_VERSION}.tar.gz"
 )
 
-PRIORITY=extra
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	readline/readline62-001
 	readline/readline62-002
 	readline/readline62-003
@@ -56,7 +56,7 @@ PATCHES=(
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -73,14 +73,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
 )

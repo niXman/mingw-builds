@@ -35,28 +35,28 @@
 
 # **************************************************************************
 
-NAME=genpeimg-${RUNTIME_VERSION}
-SRC_DIR_NAME=genpeimg-${RUNTIME_VERSION}
-TYPE=svn
-URL=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-tools/genpeimg|repo:$TYPE|module:$SRC_DIR_NAME"
+PKG_NAME=genpeimg-${RUNTIME_VERSION}
+PKG_DIR_NAME=genpeimg-${RUNTIME_VERSION}
+PKG_TYPE=svn
+PKG_URLS=(
+	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-tools/genpeimg|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
 )
 
-PRIORITY=extra
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-EXECUTE_AFTER_PATCH=(
+PKG_EXECUTE_AFTER_PATCH=(
 	"autoreconf -i"
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -71,14 +71,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

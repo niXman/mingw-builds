@@ -35,24 +35,24 @@
 
 # **************************************************************************
 
-VERSION=3.1.2
-NAME=$BUILD_ARCHITECTURE-mpfr-${VERSION}-$LINK_TYPE_SUFFIX
-SRC_DIR_NAME=mpfr-${VERSION}
-TYPE=.tar.bz2
-URL=(
-	"ftp://ftp.gnu.org/gnu/mpfr/mpfr-${VERSION}.tar.bz2"
+PKG_VERSION=3.1.2
+PKG_NAME=$BUILD_ARCHITECTURE-mpfr-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_DIR_NAME=mpfr-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
+PKG_URLS=(
+	"ftp://ftp.gnu.org/gnu/mpfr/mpfr-${PKG_VERSION}.tar.bz2"
 )
 
-PRIORITY=prereq
+PKG_PRIORITY=prereq
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -71,14 +71,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

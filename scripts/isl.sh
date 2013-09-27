@@ -35,25 +35,25 @@
 
 # **************************************************************************
 
-VERSION=0.12.1
-NAME=$BUILD_ARCHITECTURE-isl-${VERSION}-$LINK_TYPE_SUFFIX
-SRC_DIR_NAME=isl-${VERSION}
-TYPE=.tar.lzma
-URL=(
-	"http://ftp.cross-lfs.org/pub/clfs/conglomeration/isl/isl-${VERSION}.tar.lzma"
+PKG_VERSION=0.12.1
+PKG_NAME=$BUILD_ARCHITECTURE-isl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_DIR_NAME=isl-${PKG_VERSION}
+PKG_TYPE=.tar.lzma
+PKG_URLS=(
+	"http://ftp.cross-lfs.org/pub/clfs/conglomeration/isl/isl-${PKG_VERSION}.tar.lzma"
 )
 
-PRIORITY=prereq
+PKG_PRIORITY=prereq
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	isl/isl-0.12-no-undefined.patch
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -72,14 +72,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

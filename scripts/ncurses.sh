@@ -35,23 +35,23 @@
 
 # **************************************************************************
 
-VERSION=5.9
-NAME=ncurses-${VERSION}
-SRC_DIR_NAME=ncurses-${VERSION}
-TYPE=.tar.gz
-URL=(
-	"ftp://invisible-island.net/ncurses/ncurses-${VERSION}.tar.gz"
+PKG_VERSION=5.9
+PKG_NAME=ncurses-${PKG_VERSION}
+PKG_DIR_NAME=ncurses-${PKG_VERSION}
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"ftp://invisible-island.net/ncurses/ncurses-${PKG_VERSION}.tar.gz"
 )
 
-PRIORITY=extra
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -83,14 +83,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
 )

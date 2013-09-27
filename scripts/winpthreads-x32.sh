@@ -35,27 +35,27 @@
 
 # **************************************************************************
 
-NAME=i686-winpthreads-${RUNTIME_VERSION}
-SRC_DIR_NAME=winpthreads-${RUNTIME_VERSION}
-TYPE=svn
-URL=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-libraries/winpthreads|repo:$TYPE|module:$SRC_DIR_NAME"
+PKG_NAME=i686-winpthreads-${RUNTIME_VERSION}
+PKG_DIR_NAME=winpthreads-${RUNTIME_VERSION}
+PKG_TYPE=svn
+PKG_URLS=(
+	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-libraries/winpthreads|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
 )
 
-PRIORITY=runtime
+PKG_PRIORITY=runtime
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$RUNTIME_DIR/$NAME
+	--prefix=$RUNTIME_DIR/$PKG_NAME
 	#
 	$LINK_TYPE_BOTH
 	#
@@ -67,14 +67,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

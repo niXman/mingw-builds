@@ -35,18 +35,18 @@
 
 # **************************************************************************
 
-NAME=gcc-4_7-branch
-SRC_DIR_NAME=gcc-4_7-branch
-TYPE=svn
-URL=(
-	"svn://gcc.gnu.org/svn/gcc/branches/gcc-4_7-branch|repo:$TYPE"
+PKG_NAME=gcc-4_7-branch
+PKG_DIR_NAME=gcc-4_7-branch
+PKG_TYPE=svn
+PKG_URLS=(
+	"svn://gcc.gnu.org/svn/gcc/branches/gcc-4_7-branch|repo:$PKG_TYPE"
 )
 
-PRIORITY=main
+PKG_PRIORITY=main
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-4.7-iconv.patch
 	gcc/gcc-4.7-vswprintf.patch
@@ -54,7 +54,7 @@ PATCHES=(
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -122,14 +122,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j1
 	DESTDIR=$BASE_BUILD_DIR
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
