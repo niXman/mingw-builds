@@ -35,14 +35,76 @@
 
 # **************************************************************************
 
+function func_get_licenses {
+	# $1 - mode (gcc/python/clang)
+	
+	local readonly python_part=(
+		libgnurx
+		bzip2
+		libffi
+		expat
+		tcl
+		tk
+		xz
+		sqlite
+		ncurses
+		readline
+		python
+	)
+
+	local readonly gcc_part=(
+		gmp
+		mpfr
+		mpc
+		ppl
+		cloog
+		libiconv
+		zlib
+		mingw-w64
+		winpthreads
+		binutils
+		gcc
+		${python_part[@]}
+		gdb
+		make
+	)
+	local readonly clang_part=(
+		clang
+	)
+	
+	case $1 in
+		gcc)
+			echo -n "${gcc_part[@]} ${python_part[@]}"
+		;;
+		python)
+			echo -n "${python_part[@]}"
+		;;
+		clang)
+			echo -n "${clang_part[@]}"
+		;;
+	esac
+}
+
+# **************************************************************************
+
 [[ ! -f $BUILDS_DIR/licenses.marker ]] && {
-	[[ $BUILD_MODE == gcc ]] && {
-		mkdir -p $PREFIX/licenses && \
-		cp -rf $TOP_DIR/licenses/{bzip2,libffi,mingw-libgnurx,python,readline,tcl,tk,xz} \
-			$PREFIX/licenses/ || exit 1
+	mkdir -p $PREFIX/licenses || die "can't create licenses directory. terminate."
+
+	readonly LICENSES=( \
+		$( \
+			func_get_licenses \
+				$BUILD_MODE \
+		) \
+	)
+	
+	[[ ${#LICENSES[@]} > 1 ]] && {
+		readonly licenses_cmd="cp -rf $TOP_DIR/licenses/{$(echo ${LICENSES[@]} | sed 's| |,|g')} $PREFIX/licenses/"
 	} || {
-		cp -rf $TOP_DIR/licenses $PREFIX/
+		readonly licenses_cmd="cp -rf $TOP_DIR/licenses/${LICENSES[@]} $PREFIX/licenses/"
 	}
+	
+	echo "licenses_cmd: ${licenses_cmd}"
+	eval ${licenses_cmd} || die "can't copy licenses. terminate."
 
 	touch $BUILDS_DIR/licenses.marker
 }
