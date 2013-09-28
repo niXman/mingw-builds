@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.6.0
+PKG_VERSION=8.6.1
 PKG_NAME=tk${PKG_VERSION}
-PKG_DIR_NAME=tk${PKG_VERSION}/win
+PKG_DIR_NAME=tk${PKG_VERSION}
+PKG_SUBDIR_NAME=win
 PKG_TYPE=.tar.gz
 PKG_URLS=(
 	"http://prdownloads.sourceforge.net/tcl/tk${PKG_VERSION}-src.tar.gz"
@@ -56,8 +57,8 @@ PKG_CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREFIX/opt
-	--with-tcl=$PREFIX/opt/lib
+	--prefix=$LIBS_DIR
+	--with-tcl=$LIBS_DIR/lib
 	#
 	--enable-shared
 	#
@@ -65,16 +66,24 @@ PKG_CONFIGURE_FLAGS=(
 		&& echo "--enable-64bit"
 	)
 	#
-	CFLAGS="\"$COMMON_CFLAGS\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
+)
+
+#
+
+PKG_EXECUTE_AFTER_CONFIGURE=(
+	"sed -i -e 's,mingw-tcl,tcl,g' win/Makefile"
+	"sed -i -e 's,/usr/include,$LIBS_DIR/include,g' win/Makefile"
+	"sed -i -e 's,libtclstub86.a,libtclstub86.dll.a,g' win/Makefile"
+	"sed -i -e 's,tcl8.5/libtclstub86,libtclstub86,g' win/Makefile"
+	"sed -i -e 's,libtcl86.a,libtcl86.dll.a,g' win/Makefile"
+	"sed -i -e 's,tcl8.6/libtcl86,libtcl86,g' win/Makefile"
 )
 
 #
 
 PKG_MAKE_FLAGS=(
-	-j$JOBS
+	-j1
+	TCL_LIBRARY=$LIBS_DIR/lib/tk8.6
 	all
 )
 
@@ -82,7 +91,20 @@ PKG_MAKE_FLAGS=(
 
 PKG_INSTALL_FLAGS=(
 	-j$JOBS
+	TK_LIBRARY=$LIBS_DIR/lib/tk8.6
 	install
+)
+
+#
+
+PKG_EXECUTE_AFTER_INSTALL=(
+	"ln -s $LIBS_DIR/bin/wish86.exe $LIBS_DIR/bin/wish.exe"
+	"mv $LIBS_DIR/lib/libtk86.a $LIBS_DIR/lib/libtk86.dll.a"
+	"mv $LIBS_DIR/lib/libtkstub86.a $LIBS_DIR/lib/libtkstub86.dll.a"
+	"ln -s $LIBS_DIR/lib/libtk86.dll.a $LIBS_DIR/lib/libtk.dll.a"
+	"ln -s $LIBS_DIR/lib/tkConfig.sh $LIBS_DIR/lib/tk8.6/tkConfig.sh"
+	"mkdir -p $LIBS_DIR/include/tk-private/{generic,win}"
+	"find $SRCS_DIR/$PKG_DIR_NAME/generic $SRCS_DIR/$PKG_DIR_NAME/win -name \"*.h\" -exec cp -p '{}' $LIBS_DIR/include/tcl-private/'{}' ';'"
 )
 
 # **************************************************************************

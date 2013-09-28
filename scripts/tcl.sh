@@ -35,9 +35,10 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.6.0
+PKG_VERSION=8.6.1
 PKG_NAME=tcl${PKG_VERSION}
-PKG_DIR_NAME=tcl${PKG_VERSION}/win
+PKG_DIR_NAME=tcl${PKG_VERSION}
+PKG_SUBDIR_NAME=win
 PKG_TYPE=.tar.gz
 PKG_URLS=(
 	"http://prdownloads.sourceforge.net/tcl/tcl${PKG_VERSION}-src.tar.gz"
@@ -47,7 +48,19 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	tcl/tcl-8.5.14-autopath.patch
+	tcl/tcl-8.5.14-conf.patch
+	tcl/tcl-8.5.14-hidden.patch
+	tcl/tcl-mingw-w64-compatibility.patch
+	tcl/tcl-8.6.1-mingwexcept.patch
+)
+
+#
+
+PKG_EXECUTE_AFTER_PATCH=(
+	"cd win && autoconf"
+)
 
 #
 
@@ -56,7 +69,7 @@ PKG_CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREFIX/opt
+	--prefix=$LIBS_DIR
 	--disable-threads
 	#
 	--enable-shared
@@ -65,16 +78,13 @@ PKG_CONFIGURE_FLAGS=(
 		&& echo "--enable-64bit"
 	)
 	#
-	CFLAGS="\"$COMMON_CFLAGS\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #
 
 PKG_MAKE_FLAGS=(
 	-j$JOBS
+	TCL_LIBRARY=$LIBS_DIR/lib/tcl8.6
 	all
 )
 
@@ -82,7 +92,20 @@ PKG_MAKE_FLAGS=(
 
 PKG_INSTALL_FLAGS=(
 	-j$JOBS
+	TCL_LIBRARY=$LIBS_DIR/lib/tcl8.6
 	install
+)
+
+#
+
+PKG_EXECUTE_AFTER_INSTALL=(
+	"ln -s $LIBS_DIR/bin/tclsh86.exe $LIBS_DIR/bin/tclsh.exe"
+	"mv $LIBS_DIR/lib/libtcl86.a $LIBS_DIR/lib/libtcl86.dll.a"
+	"mv $LIBS_DIR/lib/libtclstub86.a $LIBS_DIR/lib/libtclstub86.dll.a"
+	"ln -s $LIBS_DIR/lib/libtcl86.dll.a $LIBS_DIR/lib/libtcl.dll.a"
+	"ln -s $LIBS_DIR/lib/tclConfig.sh $LIBS_DIR/lib/tcl8.6/tclConfig.sh"
+	"mkdir -p $LIBS_DIR/include/tcl-private/{generic,win}"
+	"find $SRCS_DIR/$PKG_DIR_NAME/generic $SRCS_DIR/$PKG_DIR_NAME/win -name \"*.h\" -exec cp -p '{}' $LIBS_DIR/include/tcl-private/'{}' ';'"
 )
 
 # **************************************************************************
