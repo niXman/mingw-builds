@@ -380,11 +380,11 @@ mkdir -p \
 # **************************************************************************
 
 [[ $LINK_TYPE_SUFFIX == shared ]] && {
-	readonly x32_PATH=$PREREQ_DIR/$x32_HOST-$LINK_TYPE_SUFFIX/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-	readonly x64_PATH=$PREREQ_DIR/$x64_HOST-$LINK_TYPE_SUFFIX/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+	readonly x32_PATH=$PREREQ_DIR/$x32_HOST-$LINK_TYPE_SUFFIX/bin:$LIBS_DIR/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+	readonly x64_PATH=$PREREQ_DIR/$x64_HOST-$LINK_TYPE_SUFFIX/bin:$LIBS_DIR/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 } || {
-	readonly x32_PATH=$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-	readonly x64_PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+	readonly x32_PATH=$x32_HOST_MINGW_PATH/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+	readonly x64_PATH=$x64_HOST_MINGW_PATH/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
 }
 
 # **************************************************************************
@@ -487,6 +487,7 @@ for sub in ${SUBTARGETS[@]}; do
 
 	mkdir -p $SRCS_DIR/$PKG_DIR_NAME
 	mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$PKG_NAME
+	[[ -n $PKG_SUBDIR_NAME ]] && { mkdir -p $CURR_BUILD_DIR/$PKG_NAME/$PKG_SUBDIR_NAME; }
 	#[[ $PKG_NAME != $PKG_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$PKG_NAME
 
 	func_download \
@@ -530,7 +531,18 @@ for sub in ${SUBTARGETS[@]}; do
 				$PKG_DIR_NAME \
 				"$configure_flags" \
 				$CONFIGURE_LOG \
-				$CURR_BUILD_DIR
+				$CURR_BUILD_DIR \
+				$PKG_SUBDIR_NAME
+		}
+
+		[[ ${#PKG_EXECUTE_AFTER_CONFIGURE[@]} >0 ]] && {
+			func_execute \
+				$CURR_BUILD_DIR \
+				$PKG_NAME \
+				"execute commands..." \
+				"after_configure" \
+				$CURR_LOGS_DIR \
+				PKG_EXECUTE_AFTER_CONFIGURE[@]
 		}
 
 		[[ ${#PKG_MAKE_FLAGS[@]} >0 ]] && {
@@ -542,7 +554,8 @@ for sub in ${SUBTARGETS[@]}; do
 				$MAKE_LOG \
 				"building..." \
 				"built" \
-				$CURR_BUILD_DIR
+				$CURR_BUILD_DIR \
+				$PKG_SUBDIR_NAME
 		}
 
 		[[ ${#PKG_INSTALL_FLAGS[@]} >0 ]] && {
@@ -554,7 +567,8 @@ for sub in ${SUBTARGETS[@]}; do
 				$INSTALL_LOG \
 				"installing..." \
 				"installed" \
-				$CURR_BUILD_DIR
+				$CURR_BUILD_DIR \
+				$PKG_SUBDIR_NAME
 		}
 	
 		[[ ${#PKG_EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
