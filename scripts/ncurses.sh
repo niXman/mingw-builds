@@ -58,22 +58,24 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$LIBS_DIR
 	#
-	--without-ada \
-	--with-cxx \
-	--without-pthread \
-	--enable-pc-files \
-	--disable-rpath \
-	--enable-colorfgbg \
-	--disable-symlinks \
-	--enable-warnings \
-	--enable-assertions \
-	--disable-home-terminfo \
-	--enable-database \
-	--enable-sp-funcs \
-	--enable-term-driver \
-	--enable-interop \
-	--disable-widec \
-	--without-trace \
+	--without-ada
+	--with-cxx
+	--without-pthread
+	--enable-pc-files
+	--with-pkg-config
+	--with-pkg-config-libdir=$LIBS_DIR/lib/pkgconfig
+	--disable-rpath
+	--enable-colorfgbg
+	--disable-symlinks
+	--enable-warnings
+	--enable-assertions
+	--disable-home-terminfo
+	--enable-database
+	--enable-sp-funcs
+	--enable-term-driver
+	--enable-interop
+	--disable-widec
+	--without-trace
 	#
 	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""

@@ -38,6 +38,7 @@ function func_clear_env {
 	unset PKG_NAME
 	unset PKG_VERSION
 	unset PKG_DIR_NAME
+	unset PKG_SUBDIR_NAME
 	unset PKG_PRIORITY
 	unset PKG_TYPE
 	unset PKG_REVISION
@@ -47,6 +48,7 @@ function func_clear_env {
 	unset PKG_PATCHES
 	unset PKG_EXECUTE_AFTER_PATCH
 	unset PKG_CONFIGURE_FLAGS
+	unset PKG_EXECUTE_AFTER_CONFIGURE
 	unset PKG_MAKE_FLAGS
 	unset PKG_INSTALL_FLAGS
 	unset PKG_EXECUTE_AFTER_INSTALL
@@ -606,14 +608,21 @@ function func_configure {
 	# $3 - flags
 	# $4 - log file name
 	# $5 - build dir
+	# $6 - build subdir
 
 	local _marker=$5/$1/_configure.marker
 	local _result=0
+	local _subbuilddir=$2
+	local _subsrcdir=$1
+	[[ -n $6 ]] && {
+		_subbuilddir=$_subbuilddir/$6
+		_subsrcdir=$_subsrcdir/$6
+	}
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> configure..."
-		pushd $5/$1 > /dev/null
-		eval $( func_absolute_to_relative $5/$1 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1
+		pushd $5/$_subsrcdir > /dev/null
+		eval $( func_absolute_to_relative $5/$_subsrcdir $SRCS_DIR/$_subbuilddir )/configure "${3}" > $4 2>&1
 		_result=$?
 		popd > /dev/null
 		[[ $_result == 0 ]] && {
@@ -639,13 +648,18 @@ function func_make {
 	# $5 - text
 	# $6 - text if completed
 	# $7 - build dir
+	# $8 - build subdir
 
 	local _marker=$7/$1/_$6.marker
 	local _result=0
+	local _subdir=$1
+	[[ -n $8 ]] && {
+		_subdir=$_subdir/$8
+	}
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> $5"
-		pushd $7/$1 > /dev/null
+		pushd $7/$_subdir > /dev/null
 		eval ${3} > $4 2>&1
 		_result=$?
 		popd > /dev/null
