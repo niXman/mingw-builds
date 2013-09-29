@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,28 +35,28 @@
 
 # **************************************************************************
 
-NAME=genidl
-SRC_DIR_NAME=genidl
-TYPE=svn
-URL=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-tools/genidl|repo:$TYPE"
+PKG_NAME=genidl-${RUNTIME_VERSION}
+PKG_DIR_NAME=genidl-${RUNTIME_VERSION}
+PKG_TYPE=svn
+PKG_URLS=(
+	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-tools/genidl|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
 )
 
-PRIORITY=extra
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-EXECUTE_AFTER_PATCH=(
+PKG_EXECUTE_AFTER_PATCH=(
 	"autoreconf -i"
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -71,14 +71,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

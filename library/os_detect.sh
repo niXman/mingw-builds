@@ -1,13 +1,12 @@
-#!/bin/bash
-
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +15,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,33 +34,65 @@
 
 # **************************************************************************
 
-VERSION=1.2.8
-NAME=zlib-${VERSION}
-SRC_DIR_NAME=zlib-${VERSION}
-TYPE=.tar.gz
-URL=(
-	"http://sourceforge.net/projects/libpng/files/zlib/${VERSION}/zlib-${VERSION}.tar.gz"
-)
+echo -n "-> Checking OS bitness... "
+readonly U_MACHINE=`(uname -m) 2>/dev/null` || U_MACHINE=unknown
+case "${U_MACHINE}" in
+	i[34567]86)
+		[[ $(env | grep PROCESSOR_ARCHITEW6432) =~ AMD64 || $(env | grep PROCESSOR_ARCHITECTURE) =~ AMD64 ]] && {
+			IS_64BIT_HOST=yes
+			echo "64-bit"
+		} || {
+			IS_64BIT_HOST=no
+			echo "32-bit"
+		}
+	;;
+	x86_64|amd64)
+		IS_64BIT_HOST=yes
+		echo "64-bit"
+	;;
+	*)
+		die "Unsupported bitness ($U_MACHINE). terminate."
+	;;
+esac
 
-PRIORITY=prereq
+echo -n "-> Checking OS type... "
+readonly U_SYSTEM=`(uname -s) 2>/dev/null` || U_SYSTEM=unknown
+echo "$U_SYSTEM"
 
-#
+case "${U_SYSTEM}" in
+	Linux)
+		source $TOP_DIR/library/config-nix.sh
+	;;
+	MSYS*|MINGW*)
+		source $TOP_DIR/library/config-win.sh
+	;;
+	Darwin)
+		source $TOP_DIR/library/config-osx.sh
+	;;
+	*)
+		die "Unsupported OS ($U_SYSTEM). terminate."
+	;;
+esac
 
-PATCHES=(
-	zlib/zlib-1.2.5-nostrip.patch
-	zlib/zlib-1.2.5-tml.patch
-)
+readonly COMMON_TOOLS="$HOST_TOOLS 7za autoconf aclocal gettext git libtool lndir m4 make svn tar wget"
+func_check_tools "$COMMON_TOOLS"
 
-#
+# **************************************************************************
 
-CONFIGURE_FLAGS=()
+LOGVIEWER=
 
-#
+func_find_logviewer \
+	LOGVIEWERS[@] \
+	LOGVIEWER
+[[ $? != 0 || -z $LOGVIEWER ]] && {
+	die "logviewer not found. terminate."
+}
 
-MAKE_FLAGS=()
+# **************************************************************************
 
-#
-
-INSTALL_FLAGS=()
+func_test_vars_list_for_null \
+	"HOST \
+	BUILD \
+	TARGET"
 
 # **************************************************************************

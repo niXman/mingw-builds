@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,25 +35,25 @@
 
 # **************************************************************************
 
-VERSION=2.5.1
-NAME=libgnurx-${VERSION}
-SRC_DIR_NAME=mingw-libgnurx-${VERSION}
-TYPE=.tar.gz
-URL=(
-	"https://sourceforge.net/projects/mingw/files/Other/UserContributed/regex/mingw-regex-${VERSION}/mingw-libgnurx-${VERSION}-src.tar.gz"
+PKG_VERSION=2.5.1
+PKG_NAME=libgnurx-${PKG_VERSION}
+PKG_DIR_NAME=mingw-libgnurx-${PKG_VERSION}
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"https://sourceforge.net/projects/mingw/files/Other/UserContributed/regex/mingw-regex-${PKG_VERSION}/mingw-libgnurx-${PKG_VERSION}-src.tar.gz"
 )
 
-PRIORITY=extra
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	libgnurx/mingw32-libgnurx-honor-destdir.patch
 )
 
 #
 
-EXECUTE_AFTER_PATCH=(
+PKG_EXECUTE_AFTER_PATCH=(
 	"cp -rf $PATCHES_DIR/libgnurx/mingw32-libgnurx-configure.ac $SRCS_DIR/mingw-libgnurx-2.5.1/configure.ac"
 	"cp -rf $PATCHES_DIR/libgnurx/mingw32-libgnurx-Makefile.am $SRCS_DIR/mingw-libgnurx-2.5.1/Makefile.am"
 	"touch AUTHORS"
@@ -66,7 +66,7 @@ EXECUTE_AFTER_PATCH=(
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -83,18 +83,18 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	install
 )
 
-EXECUTE_AFTER_INSTALL=(
+PKG_EXECUTE_AFTER_INSTALL=(
 	"cp -f $LIBS_DIR/lib/libgnurx.a $LIBS_DIR/lib/libregex.a"
 )
 

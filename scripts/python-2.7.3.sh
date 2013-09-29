@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,45 +35,45 @@
 
 # **************************************************************************
 
-VERSION=2.7.3
-NAME=Python-${VERSION}
-SRC_DIR_NAME=Python-${VERSION}
-TYPE=.tar.bz2
-URL=(
-	"http://www.python.org/ftp/python/${VERSION}/Python-${VERSION}.tar.bz2"
+PKG_VERSION=2.7.3
+PKG_NAME=Python-${PKG_VERSION}
+PKG_DIR_NAME=Python-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
+PKG_URLS=(
+	"http://www.python.org/ftp/python/${PKG_VERSION}/Python-${PKG_VERSION}.tar.bz2"
 )
 
-PRIORITY=extra
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=(
-	Python/${VERSION}/0000-CROSS.patch
-	Python/${VERSION}/0005-MINGW.patch
-	Python/${VERSION}/0006-mingw-removal-of-libffi-patch.patch
-	Python/${VERSION}/0007-mingw-system-libffi.patch	
-	Python/${VERSION}/0010-mingw-use-posix-getpath.patch
-	Python/${VERSION}/0015-cross-darwin.patch
-	Python/${VERSION}/0020-mingw-sysconfig-like-posix.patch
-	Python/${VERSION}/0025-mingw-pdcurses_ISPAD.patch
-	Python/${VERSION}/0030-mingw-static-tcltk.patch
-	Python/${VERSION}/0035-mingw-x86_64-size_t-format-specifier-pid_t.patch
-	Python/${VERSION}/0040-python-disable-dbm.patch
-	Python/${VERSION}/0045-disable-grammar-dependency-on-pgen-executable.patch
-	Python/${VERSION}/0050-add-python-config-sh.patch
-	Python/${VERSION}/0055-mingw-nt-threads-vs-pthreads.patch
-	Python/${VERSION}/0060-cross-dont-add-multiarch-paths-if.patch
-	Python/${VERSION}/0065-mingw-reorder-bininstall-ln-symlink-creation.patch
-	Python/${VERSION}/0070-mingw-use-backslashes-in-compileall-py.patch
-	Python/${VERSION}/0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch
-	Python/${VERSION}/0100-upgrade-internal-libffi-to-3.0.11.patch
-	Python/${VERSION}/0105-mingw-MSYS-no-usr-lib-or-usr-include.patch
-	Python/${VERSION}/9999-re-configure-d.patch
+PKG_PATCHES=(
+	Python/${PKG_VERSION}/0000-CROSS.patch
+	Python/${PKG_VERSION}/0005-MINGW.patch
+	Python/${PKG_VERSION}/0006-mingw-removal-of-libffi-patch.patch
+	Python/${PKG_VERSION}/0007-mingw-system-libffi.patch	
+	Python/${PKG_VERSION}/0010-mingw-use-posix-getpath.patch
+	Python/${PKG_VERSION}/0015-cross-darwin.patch
+	Python/${PKG_VERSION}/0020-mingw-sysconfig-like-posix.patch
+	Python/${PKG_VERSION}/0025-mingw-pdcurses_ISPAD.patch
+	Python/${PKG_VERSION}/0030-mingw-static-tcltk.patch
+	Python/${PKG_VERSION}/0035-mingw-x86_64-size_t-format-specifier-pid_t.patch
+	Python/${PKG_VERSION}/0040-python-disable-dbm.patch
+	Python/${PKG_VERSION}/0045-disable-grammar-dependency-on-pgen-executable.patch
+	Python/${PKG_VERSION}/0050-add-python-config-sh.patch
+	Python/${PKG_VERSION}/0055-mingw-nt-threads-vs-pthreads.patch
+	Python/${PKG_VERSION}/0060-cross-dont-add-multiarch-paths-if.patch
+	Python/${PKG_VERSION}/0065-mingw-reorder-bininstall-ln-symlink-creation.patch
+	Python/${PKG_VERSION}/0070-mingw-use-backslashes-in-compileall-py.patch
+	Python/${PKG_VERSION}/0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch
+	Python/${PKG_VERSION}/0100-upgrade-internal-libffi-to-3.0.11.patch
+	Python/${PKG_VERSION}/0105-mingw-MSYS-no-usr-lib-or-usr-include.patch
+	Python/${PKG_VERSION}/9999-re-configure-d.patch
 )
 
 #
 
-EXECUTE_AFTER_PATCH=(
+PKG_EXECUTE_AFTER_PATCH=(
 	"rm -rf Modules/expat"
 	"rm -rf Modules/_ctypes/libffi*"
 	"rm -rf Modules/zlib"
@@ -110,14 +110,14 @@ EXECUTE_AFTER_PATCH=(
 	popd > /dev/null
 }
 
-LIBFFI_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/libffi.sh | sed 's|VERSION=||' )
+LIBFFI_VERSION=$( grep 'PKG_VERSION=' $TOP_DIR/scripts/libffi.sh | sed 's|PKG_VERSION=||' )
 MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib/include -I$PREFIXW/opt/include"
 
 # Workaround for conftest error on 64-bit builds
 export ac_cv_working_tzset=no
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	#
@@ -140,14 +140,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	install
 )
 
