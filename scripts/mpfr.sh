@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,24 +35,24 @@
 
 # **************************************************************************
 
-VERSION=3.1.2
-NAME=$BUILD_ARCHITECTURE-mpfr-${VERSION}-$LINK_TYPE_SUFFIX
-SRC_DIR_NAME=mpfr-${VERSION}
-TYPE=.tar.bz2
-URL=(
-	"ftp://ftp.gnu.org/gnu/mpfr/mpfr-${VERSION}.tar.bz2"
+PKG_VERSION=3.1.2
+PKG_NAME=$BUILD_ARCHITECTURE-mpfr-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_DIR_NAME=mpfr-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
+PKG_URLS=(
+	"ftp://ftp.gnu.org/gnu/mpfr/mpfr-${PKG_VERSION}.tar.bz2"
 )
 
-PRIORITY=prereq
+PKG_PRIORITY=prereq
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -71,14 +71,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

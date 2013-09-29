@@ -1,6 +1,6 @@
-diff -urN files/autogen.sh ./autogen.sh
---- bzip2-1.0.6.orig/autogen.sh	1970-01-01 01:00:00.000000000 +0100
-+++ bzip2-1.0.6.autoconfiscated/autogen.sh	2009-11-06 12:10:43.574602171 +0100
+diff -urN autogen.sh.orig autogen.sh
+--- autogen.orig	1970-01-01 01:00:00.000000000 +0100
++++ autogen.sh	2009-11-06 12:10:43.574602171 +0100
 @@ -0,0 +1,8 @@
 +mv LICENSE COPYING
 +mv CHANGES NEWS
@@ -10,9 +10,9 @@ diff -urN files/autogen.sh ./autogen.sh
 +aclocal
 +automake --add-missing --gnu
 +autoconf
-diff -urN bzip2-1.0.6.orig/README.autotools bzip2-1.0.6.autoconfiscated/README.autotools
---- bzip2-1.0.6.orig/README.autotools	1970-01-01 01:00:00.000000000 +0100
-+++ bzip2-1.0.6.autoconfiscated/README.autotools	2010-11-02 17:04:06.000000000 +0100
+diff -urN README.autotools.orig README.autotools
+--- README.autotools.orig	1970-01-01 01:00:00.000000000 +0100
++++ README.autotools	2010-11-02 17:04:06.000000000 +0100
 @@ -0,0 +1,39 @@
 +bzip2 autoconfiscated
 +=====================
@@ -54,8 +54,8 @@ diff -urN bzip2-1.0.6.orig/README.autotools bzip2-1.0.6.autoconfiscated/README.a
 +To be super-safe, I incremented minor number of the library file, so
 +both instances of the shared library can live together.
 diff -urN bzip2-1.0.6.orig/configure.ac bzip2-1.0.6.autoconfiscated/configure.ac
---- bzip2-1.0.6.orig/configure.ac	1970-01-01 01:00:00.000000000 +0100
-+++ bzip2-1.0.6.autoconfiscated/configure.ac	2009-11-06 17:04:04.000000000 +0100
+--- configure.ac.orig	1970-01-01 01:00:00.000000000 +0100
++++ configure.ac	2009-11-06 17:04:04.000000000 +0100
 @@ -0,0 +1,70 @@
 +#                                               -*- Autoconf -*-
 +# Process this file with autoconf to produce a configure script.
@@ -127,9 +127,9 @@ diff -urN bzip2-1.0.6.orig/configure.ac bzip2-1.0.6.autoconfiscated/configure.ac
 +AC_SUBST([BZIP2_LT_AGE])
 +AC_CONFIG_FILES([Makefile bzip2.pc])
 +AC_OUTPUT
-diff -urN bzip2-1.0.6.orig/Makefile.am bzip2-1.0.6.autoconfiscated/Makefile.am
---- bzip2-1.0.6.orig/Makefile.am	1970-01-01 01:00:00.000000000 +0100
-+++ bzip2-1.0.6.autoconfiscated/Makefile.am	2009-11-05 16:45:11.000000000 +0100
+diff -urN Makefile.am.orig Makefile.am
+--- Makefile.am.orig	1970-01-01 01:00:00.000000000 +0100
++++ Makefile.am	2009-11-05 16:45:11.000000000 +0100
 @@ -0,0 +1,138 @@
 +lib_LTLIBRARIES = libbz2.la
 +
@@ -269,9 +269,9 @@ diff -urN bzip2-1.0.6.orig/Makefile.am bzip2-1.0.6.autoconfiscated/Makefile.am
 +	xmlproc.sh
 +
 +ACLOCAL_AMFLAGS = -I m4
-diff -urN bzip2-1.0.6.orig/bzip2.pc.in bzip2-1.0.6.autoconfiscated/bzip2.pc.in
---- bzip2-1.0.6.orig/bzip2.pc.in	1970-01-01 01:00:00.000000000 +0100
-+++ bzip2-1.0.6.autoconfiscated/bzip2.pc.in	2009-11-03 18:48:28.000000000 +0100
+diff -urN bzip2.pc.in.orig bzip2.pc.in
+--- bzip2.pc.in.orig	1970-01-01 01:00:00.000000000 +0100
++++ bzip2.pc.in	2009-11-03 18:48:28.000000000 +0100
 @@ -0,0 +1,11 @@
 +prefix=@prefix@
 +exec_prefix=@exec_prefix@

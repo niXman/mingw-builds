@@ -1,13 +1,12 @@
-#!/bin/bash
-
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +15,7 @@
 # - Redistributions in binary form must reproduce the above copyright
 #     notice, this list of conditions and the following disclaimer in
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may
 #     be used to endorse or promote products derived from this software
 #     without specific prior written permission.
 #
@@ -35,15 +34,66 @@
 
 # **************************************************************************
 
-function die {
-	echo $@
-	exit 1
+function func_clear_env {
+	unset PKG_NAME
+	unset PKG_VERSION
+	unset PKG_DIR_NAME
+	unset PKG_SUBDIR_NAME
+	unset PKG_PRIORITY
+	unset PKG_TYPE
+	unset PKG_REVISION
+	unset PKG_URLS
+	unset PKG_EXECUTE_AFTER_DOWNLOAD
+	unset PKG_EXECUTE_AFTER_UNCOMPRESS
+	unset PKG_PATCHES
+	unset PKG_EXECUTE_AFTER_PATCH
+	unset PKG_CONFIGURE_FLAGS
+	unset PKG_EXECUTE_AFTER_CONFIGURE
+	unset PKG_MAKE_FLAGS
+	unset PKG_INSTALL_FLAGS
+	unset PKG_EXECUTE_AFTER_INSTALL
 }
 
 # **************************************************************************
 
+function die {
+	# $1 - message on exit
+	# $2 - exit code
+	local _retcode=1
+	[[ -n $2 ]] && _retcode=$2
+	echo $1
+	exit $_retcode
+}
+
+function func_show_log {
+	# $1 - log file
+	[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $1 &
+}
+# **************************************************************************
+
 function func_check_program {
-	command -v "$@" > /dev/null 2>&1 || { die "Command $@ not found. Terminate."; }
+	command -v "$@" > /dev/null 2>&1 || { die "command \"$@\" not found. terminate."; }
+}
+
+function func_check_tools {
+	# $1 - list of programs
+	local _list=( $1 )
+	local _it=
+	local _err=
+	
+	for _it in ${_list[@]}; do
+		echo -n "Checking for $_it... "
+		command -v "$_it" > /dev/null 2>&1
+		[[ $? == 0 ]] && {
+			echo "yes"
+		} || {
+			echo "no"
+			_err="$_err $_it"
+		}
+	done
+	[[ -n $_err ]] && {
+		die "Some of necessary tools not found: $_err"
+	}
 }
 
 # **************************************************************************
@@ -57,16 +107,36 @@ function func_get_reverse_triplet {
 
 # **************************************************************************
 
+function func_get_arch_bit {
+	case $1 in
+		i686) echo "32" ;;
+		x86_64) echo "64" ;;
+	esac
+}
+
+# **************************************************************************
+
+function func_get_reverse_arch_bit {
+	case $1 in
+		i686) echo "64" ;;
+		x86_64) echo "32" ;;
+	esac
+}
+
+# **************************************************************************
+
 function func_get_reverse_arch {
 	case $1 in
-		x32) echo "x64" ;;
-		x64) echo "x32" ;;
+		i686) echo "x86_64" ;;
+		x86_64) echo "i686" ;;
 	esac
 }
 
 # **************************************************************************
 
 function func_get_filename_extension {
+	# $1 - filename
+	
 	local _filename=$1
 	local _ext=
 	local _finish=0
@@ -91,7 +161,7 @@ function func_check_languages {
 	local lang=
 	
 	[[ ${#langs[@]} == 0 ]] && {
-		die "You must specify languages to build"
+		die "you must specify languages to build. terminate."
 	} || {
 		for lang in ${langs[@]}; do
 			case $lang in
@@ -100,6 +170,20 @@ function func_check_languages {
 			esac
 		done
 	}
+}
+
+# **************************************************************************
+
+function func_test_vars_list_for_null {
+	# $1 - array of vars
+	
+	local list=( $1 )
+	local it=
+	
+	for it in ${list[@]}; do
+		eval "test -z $it"
+		[[ $? == 0 ]] && { die "var \"$it\" is NULL. terminate."; }
+	done
 }
 
 # **************************************************************************
@@ -119,6 +203,26 @@ function func_has_lang {
 		done
 	}
 	return "0"
+}
+
+# **************************************************************************
+
+# find the first installed logviewer from the list
+function func_find_logviewer {
+	# $1 - list of viewers
+	# $2 - var name to pass viewer name
+
+	local -a _arr=( "${!1}" )
+	local it=
+	for it in ${_arr[@]}; do
+		command -v "$it" > /dev/null 2>&1
+		[[ $? == 0 ]] && {
+			eval "$2=\"$it\""
+			return 0;
+		}
+	done
+	
+	return 1
 }
 
 # **************************************************************************
@@ -207,9 +311,15 @@ function func_download {
 		}
 
 		_log_name=$MARKERS_DIR/${_filename}-download.log
-		_marker_name=$MARKERS_DIR/${_filename}-download.marker	
-		[[ ! -f $_marker_name ]] && {
-			[[ $_repo == cvs || $_repo == svn || $_repo == hg || $_repo == git ]] && {
+		_marker_name=$MARKERS_DIR/${_filename}-download.marker
+		local _repo_update=no
+		local _is_repo=no
+		[[ $_repo == cvs || $_repo == svn || $_repo == hg || $_repo == git ]] && {
+			_is_repo=yes
+			[[ $UPDATE_SOURCES == yes ]] && { _repo_update=yes; }
+		}
+		[[ ! -f $_marker_name || $_repo_update == yes ]] && {
+			[[ $_is_repo == yes ]] && {
 				echo -n "--> download $_filename..."
 
 				[[ -n $_dir ]] && {
@@ -230,10 +340,20 @@ function func_download {
 						_result=$?
 					;;
 					svn)
-						[[ -n $_rev ]] && {
-							svn co -r $_rev $_url $_lib_name > $_log_name 2>&1
+						[[ -d $_lib_name/.svn ]] && {
+							pushd $_lib_name > /dev/null
+							[[ -n $_rev ]] && {
+								svn up -r $_rev > $_log_name 2>&1
+							} || {
+								svn up > $_log_name 2>&1
+							}
+							popd > /dev/null
 						} || {
-							svn co $_url $_lib_name > $_log_name 2>&1
+							[[ -n $_rev ]] && {
+								svn co -r $_rev $_url $_lib_name > $_log_name 2>&1
+							} || {
+								svn co $_url $_lib_name > $_log_name 2>&1
+							}
 						}
 						_result=$?
 					;;
@@ -242,10 +362,16 @@ function func_download {
 						_result=$?
 					;;
 					git)
-						[[ -n $_branch ]] && {
-							git clone --branch $_branch $_url $_lib_name > $_log_name 2>&1
+						[[ -d $_lib_name/.git ]] && {
+							pushd $_lib_name > /dev/null
+							git pull > $_log_name 2>&1
+							popd > /dev/null
 						} || {
-							git clone $_url $_lib_name > $_log_name 2>&1
+							[[ -n $_branch ]] && {
+								git clone --branch $_branch $_url $_lib_name > $_log_name 2>&1
+							} || {
+								git clone $_url $_lib_name > $_log_name 2>&1
+							}
 						}
 						_result=$?
 					;;
@@ -270,14 +396,13 @@ function func_download {
 				echo " done"
 				touch $_marker_name
 			} || {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_log_name &
-				die "Error $_result"
+				func_show_log $_log_name
+				die " error $_result" $_result
 			}
 		} || {
 			echo "---> $_filename downloaded"
 		}	
 	done
-	return $_result
 }
 
 # **************************************************************************
@@ -324,8 +449,8 @@ function func_uncompress {
 		_log_name=$MARKERS_DIR/${_filename}-unpack.log
 		_marker_name=$MARKERS_DIR/${_filename}-unpack.marker
 		_ext=$(func_get_filename_extension $_filename)
-		[[ $_ext == .tar.gz || $_ext == .tar.bz2 || $_ext == .tar.lzma \
-		|| $_ext == .tar.xz || $_ext == .tar.7z || $_ext == .7z || $_ext == .tgz ]] && {
+		[[ $_ext == .tar.gz || $_ext == .tar.bz2 || $_ext == .tar.lzma || $_ext == .tar.xz \
+		|| $_ext == .tar.7z || $_ext == .7z || $_ext == .tgz || $_ext == .zip ]] && {
 			[[ ! -f $_marker_name ]] && {
 				echo -n "--> unpack $_filename..."
 				case $_ext in
@@ -334,6 +459,7 @@ function func_uncompress {
 					.tar.lzma|.tar.xz) _unpack_cmd="tar xvJf $SRCS_DIR/$_filename -C $_lib_name > $_log_name 2>&1" ;;
 					.tar.7z) die "unimplemented. terminate." ;;
 					.7z) _unpack_cmd="7za x $SRCS_DIR/$_filename -o$_lib_name > $_log_name 2>&1" ;;
+					.zip) _unpack_cmd="unzip $SRCS_DIR/$_filename -d $_lib_name > $_log_name 2>&1" ;;
 					*) die " error. bad archive type: $_ext" ;;
 				esac
 				eval ${_unpack_cmd}
@@ -342,15 +468,14 @@ function func_uncompress {
 					echo " done"
 					touch $_marker_name
 				} || {
-					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_log_name &
-					die "Error $_result"
+					func_show_log $_log_name
+					die " error $_result" $_result
 				}
 			} || {
 				echo "---> $_filename unpacked"
 			}
 		}
 	done
-	return $_result
 }
 
 # **************************************************************************
@@ -368,7 +493,7 @@ function func_execute {
 	local -a _commands=( "${!6}" )
 	local it=
 	
-	_index=0
+	local _index=0
 	((_index=${#_commands[@]}-1))
 	local _cmd_marker_name=$1/$2/exec-$4-$_index.marker
 	[[ -f $_cmd_marker_name ]] && {
@@ -386,21 +511,25 @@ function func_execute {
 		local _cmd_log_name=$1/$2/exec-$4-$_index.log
 
 		[[ ! -f $_cmd_marker_name ]] && {
-			( cd $1/$2 && eval ${it} > $_cmd_log_name 2>&1 )
+			pushd $1/$2 > /dev/null
+			eval ${it} > $_cmd_log_name 2>&1
 			_result=$?
-			[[ $_result != 0 ]] && {
-				echo "error!"
-				return $_result
-			} || {
+			popd > /dev/null
+			[[ $_result == 0 ]] && {
 				touch $_cmd_marker_name
+			} || {
+				break
 			}
 		}
 		((_index++))
 	done
 
-	[[ $_index == ${#_commands[@]} ]] && echo " done"
-
-	return $_result
+	[[ $_result == 0 ]] && {
+		echo " done"
+	} || {
+		func_show_log $_cmd_log_name
+		die "Failed to execute \"${it}\"" $_result
+	}
 }
 
 # **************************************************************************
@@ -415,7 +544,8 @@ function func_apply_patches {
 	
 	local _result=0
 	local it=
-	_index=0
+	local applevel=
+	local _index=0
 	local -a _list=( "${!5}" )
 	[[ ${#_list[@]} == 0 ]] && return 0
 
@@ -432,24 +562,41 @@ function func_apply_patches {
 
 	for it in ${_list[@]} ; do
 		local _patch_marker_name=$1/$2/_patch-$_index.marker
+		local _patch_log_name=$1/$2/patch-$_index.log
 
 		[[ ! -f $_patch_marker_name ]] && {
-			[[ -f $PATCHES_DIR/${it} ]] || die "Patch $PATCHES_DIR/${it} not found!"
-			( cd $1/$2 && patch -p1 < $4/${it} > $1/$2/patch-$_index.log 2>&1 )
-			_result=$?
-			[[ $_result == 0 ]] && {
+			[[ -f $PATCHES_DIR/${it} ]] || die "Patch $4/${it} not found!"
+			local level=
+			local found=no
+			pushd $1/$2 > /dev/null
+			for level in 0 1 2 3
+			do
+				applevel=$level
+				if patch -p$level --dry-run -i $4/${it} > $_patch_log_name 2>&1
+				then
+					found=yes
+					break
+				fi
+			done
+			[[ $found == "yes" ]] && {
+				patch -p$applevel -i $4/${it} > $_patch_log_name 2>&1
 				touch $_patch_marker_name
 			} || {
 				_result=1
 				break
 			}
+			popd > /dev/null
 		}
 		((_index++))
 	done
 
-	[[ $_result == 0 ]] && echo " done" || echo "error!"
-
-	return $_result
+	[[ $_result == 0 ]] && {
+		echo " done"
+	} || {
+		func_show_log $_patch_log_name
+		echo " error"
+		die "Failed to apply patch ${it} at level $applevel"
+	}
 }
 
 # **************************************************************************
@@ -461,27 +608,33 @@ function func_configure {
 	# $3 - flags
 	# $4 - log file name
 	# $5 - build dir
+	# $6 - build subdir
 
 	local _marker=$5/$1/_configure.marker
 	local _result=0
+	local _subbuilddir=$2
+	local _subsrcdir=$1
+	[[ -n $6 ]] && {
+		_subbuilddir=$_subbuilddir/$6
+		_subsrcdir=$_subsrcdir/$6
+	}
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> configure..."
-		( cd $5/$1 && eval $( func_absolute_to_relative $5/$1 $SRCS_DIR/$2 )/configure "${3}" > $4 2>&1 )
+		pushd $5/$_subsrcdir > /dev/null
+		eval $( func_absolute_to_relative $5/$_subsrcdir $SRCS_DIR/$_subbuilddir )/configure "${3}" > $4 2>&1
 		_result=$?
+		popd > /dev/null
 		[[ $_result == 0 ]] && {
 			echo " done"
 			touch $_marker
-			return $_result
 		} || {
-			echo " error!"
-			return $_result
+			func_show_log $4
+			die " error!" $_result
 		}
 	} || {
 		echo "---> configured"
 	}
-
-	return $_result
 }
 
 # **************************************************************************
@@ -495,19 +648,31 @@ function func_make {
 	# $5 - text
 	# $6 - text if completed
 	# $7 - build dir
+	# $8 - build subdir
 
 	local _marker=$7/$1/_$6.marker
 	local _result=0
+	local _subdir=$1
+	[[ -n $8 ]] && {
+		_subdir=$_subdir/$8
+	}
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> $5"
-		( cd $7/$1 && eval ${3} > $4 2>&1 )
+		pushd $7/$_subdir > /dev/null
+		eval ${3} > $4 2>&1
 		_result=$?
-		[[ $_result == 0 ]] && { echo " done"; touch $_marker; } || { echo " error!"; }
+		popd > /dev/null
+		[[ $_result == 0 ]] && {
+			echo " done"
+			touch $_marker
+		} || {
+			func_show_log $4
+			die " error!" $_result
+		}
 	} || {
 		echo "---> $6"
 	}
-	return $_result
 }
 
 # **************************************************************************
@@ -528,62 +693,62 @@ function func_test {
 	local src_it=
 
 	[[ $USE_MULTILIB == no ]] && {
-		[[ $BUILD_ARCHITECTURE == x32 ]] && {
-			local -a _archs=(32)
-		} || {
-			local -a _archs=(64)
-		}
+		local -a _archs=($BUILD_ARCHITECTURE)
 	} || {
-		local -a _archs=(32 64)
+		local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
+		local -a _archs=($BUILD_ARCHITECTURE $_reverse_arch)
 	}
 
 	for arch_it in ${_archs[@]}; do
 		[[ ! -f $3/$arch_it/$1.marker ]] && {
+			local _arch_bits=$(func_get_arch_bit $arch_it)
 			for src_it in "${_list[@]}"; do
 				local _first=$(echo $src_it | sed 's/\([^ ]*\).*/\1/' )
 				local _prev=$( echo $src_it | sed '$s/ *\([^ ]* *\)$//' )
 				local _last=$( echo $src_it | sed 's/^.* //' )
 				local _ext=${_first##*.}
-				local _run_log=$3/$arch_it/$_first-execution.log
 
+				pushd $3/$arch_it > /dev/null
 				case $_ext in
 					c)
 						printf "%-50s" "--> GCC     $arch_it: \"$_first\" ... "
-						local _log_file=$3/$arch_it/$_first-c-compilation.log
-						echo "gcc -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
-						( cd $3/$arch_it && gcc -m${arch_it} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
+						local _log_file=$3/$arch_it/$_first-compilation.log
+						echo "gcc -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
+						gcc -m${_arch_bits} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1
 					;;
 					cpp)
 						printf "%-50s" "--> G++     $arch_it: \"$_first\" ... "
-						local _log_file=$3/$arch_it/$_first-cpp-compilation.log
-						echo "g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
-						( cd $3/$arch_it && g++ -m${arch_it} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1 )
+						local _log_file=$3/$arch_it/$_first-compilation.log
+						echo "g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
+						g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1
 					;;
 					o)
 						printf "%-50s" "--> LD      $arch_it: \"$_last\" ... "
 						local _log_file=$3/$arch_it/$_first-link.log
-						echo "g++ -m${arch_it} $src_it" > $_log_file
-						( cd $3/$arch_it && g++ -m${arch_it} $src_it >> $_log_file 2>&1 )
+						echo "g++ -m${_arch_bits} $src_it" > $_log_file
+						g++ -m${_arch_bits} $src_it >> $_log_file 2>&1
 					;;
 				esac
 				_result=$?
+				popd > /dev/null
 				[[ $_result == 0 ]] && {
 					echo "-> $_result -> done"
 				} || {
-					echo "-> $_result -> error. terminate."
-					[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_log_file &
-					exit $_result
+					func_show_log $_log_file
+					die "-> $_result -> error. terminate." $_result
 				}
 				[[ $_last =~ .exe ]] && {
 					printf "%-50s" "--> execute $arch_it: \"$_last\" ... "
-					( cd $3/$arch_it && ./$_last > $_run_log 2>&1 )
+					local _run_log=$3/$arch_it/$_first-execution.log
+					pushd $3/$arch_it > /dev/null
+					./$_last > $_run_log 2>&1
 					_result=$?
+					popd > /dev/null
 					[[ $_result == 0 ]] && {
 						echo "-> $_result -> done"
 					} || {
-						echo "-> $_result -> error. terminate."
-						[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $_run_log &
-						exit $_result
+						func_show_log $_run_log
+						die "-> $_result -> error. terminate." $_result
 					}
 				}
 			done
@@ -596,6 +761,31 @@ function func_test {
 }
 
 # **************************************************************************
+function func_abstract_toolchain {
+	# $1 - toolchains top directory
+	# $2 - toolchain URL
+	# $3 - install path
+	# $4 - toolchain arch
+	local -a _url=( "$2|root:$1" )
+	local _filename=$(basename $2)
+	local _do_install=no
+
+	echo -e "-> \E[32;40m$4 toolchain\E[37;40m"
+	[[ ! -f $MARKERS_DIR/${_filename}-unpack.marker ]] && {
+		[[ -d $3 ]] && {
+			echo "--> Found previously installed $4 toolchain."
+			echo -n "---> Remove previous $4 toolchain..."
+			rm -rf $3
+			echo " done"
+		} || {
+			echo -n "--> $4 toolchain is not installed."
+		}
+		func_download _url[@]
+		func_uncompress _url[@]
+	} || {
+		echo "--> Toolchain installed."
+	}
+}
 
 function func_install_toolchain {
 	# $1 - toolchains path
@@ -604,26 +794,23 @@ function func_install_toolchain {
 	# $4 - i686-mingw URL
 	# $5 - x86_64-mingw URL
 
-	[[ ! -d $2 || ! $2/bin/gcc.exe ]] && {
-		# x32 download
-		echo -e "-> \E[32;40mx32 toolchain\E[37;40m"
-		local -a _url32=( "$4|root:$1" )
-		func_download _url32[@]
-		func_uncompress _url32[@]
-
+	[[ $USE_MULTILIB == yes ]] && {
+		local _arch_bit=both
+	} || {
+		local _arch_bit=$(func_get_arch_bit $BUILD_ARCHITECTURE)
 	}
-
-	[[ $EXCEPTIONS_MODEL == seh || $EXCEPTIONS_MODEL == sjlj ]] && {
-		[[ ! -d $3 || ! $3/bin/gcc.exe ]] && {
-			# x64 download
-			echo -e "-> \E[32;40mx64 toolchain\E[37;40m"
-			local -a _url64=( "$5|root:$1" )
-			func_download _url64[@]
-			func_uncompress _url64[@]
-		}
-	}
-
-	return 0
+	case $_arch_bit in
+		i686)
+			func_abstract_toolchain $1 $4 $2 $_arch_bit
+		;;
+		x86_64)
+			func_abstract_toolchain $1 $5 $3 $_arch_bit
+		;;
+		both)
+			func_abstract_toolchain $1 $4 $2 "i686"
+			func_abstract_toolchain $1 $5 $3 "x86_64"
+		;;
+	esac
 }
 
 # **************************************************************************
@@ -696,7 +883,7 @@ function func_create_mingw_archive_name {
 	)-$6-$5
 
 	[[ -n $7 ]] && {
-		_archive=$_archive-rev$7
+		_archive=$_archive-rt_${RUNTIME_VERSION}-rev$7
 	}
 
 	echo "$_archive.7z"
@@ -717,7 +904,7 @@ function func_create_sources_archive_name {
 	)
 
 	[[ -n $4 ]] && {
-		_archive=$_archive-rev$4
+		_archive=$_archive-rt_${RUNTIME_VERSION}-rev$4
 	}
 
 	echo "$_archive.tar.7z"
@@ -728,15 +915,16 @@ function func_create_sources_archive_name {
 function func_create_mingw_upload_cmd {
 	# $1 - build root dir
 	# $2 - sf user name
-	# $3 - gcc name
-	# $4 - archive name
-	# $5 - architecture
-	# $6 - threads model
-	# $7 - exceptions model
+	# $3 - sf password
+	# $4 - gcc name
+	# $5 - archive name
+	# $6 - architecture
+	# $7 - threads model
+	# $8 - exceptions model
 
-	local _upload_cmd="scp $4 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/host-windows"
-	local _gcc_type=$(func_map_gcc_name_to_gcc_type $3)
-	local _gcc_version=$(func_map_gcc_name_to_gcc_version $3)
+	local _upload_cmd="sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/host-windows"
+	local _gcc_type=$(func_map_gcc_name_to_gcc_type $4)
+	local _gcc_version=$(func_map_gcc_name_to_gcc_version $4)
 
 	[[ $_gcc_type == release ]] && {
 		_upload_cmd="$_upload_cmd/releases/$_gcc_version"
@@ -744,7 +932,7 @@ function func_create_mingw_upload_cmd {
 		_upload_cmd="$_upload_cmd/testing/$_gcc_version"
 	}
 
-	_upload_cmd="$_upload_cmd/$( [[ $5 == x32 ]] && echo 32-bit || echo 64-bit )/threads-$6/$7"
+	_upload_cmd="$_upload_cmd/$( [[ $6 == x32 ]] && echo 32-bit || echo 64-bit )/threads-$7/$8"
 
 	echo "$_upload_cmd"
 }
@@ -754,10 +942,11 @@ function func_create_mingw_upload_cmd {
 function func_create_sources_upload_cmd {
 	# $1 - build root dir
 	# $2 - sf user name
-	# $3 - gcc name
-	# $4 - archive name
+	# $3 - sf user password
+	# $4 - gcc name
+	# $5 - archive name
 
-	echo "scp $4 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/mingw-sources/$(func_map_gcc_name_to_gcc_version $3)"
+	echo "sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/mingw-sources/$(func_map_gcc_name_to_gcc_version $4)"
 }
 
 # **************************************************************************
@@ -782,14 +971,6 @@ function func_create_url_for_archive {
 	echo "$_upload_url/$( [[ $3 == x32 ]] && echo 32-bit || echo 64-bit )/threads-$4/$5"
 }
 
-function func_download_repository_file {
-	#1 - repository local file name
-	
-	wget $REPOSITORY_FILE -O "$1" > /dev/null 2>&1
-	local _result=$?
-	[[ $_result != 0 ]] && { die "error($_result) when downloading repository file. terminate."; }
-}
-
 function func_update_repository_file {
 	# $1 - repository file name
 	# $2 - version
@@ -805,14 +986,12 @@ function func_update_repository_file {
 	printf "%5s|%3s|%5s|%-5s|%-5s|%s\n" $2 $3 $4 $5 "rev$6" "$7/$8" >> $1
 }
 
-function func_upload_repository_file {
-	# $1 - file name
+function func_create_repository_file_upload_cmd {
+	# $1 - local file name
 	# $2 - sf user name
+	# $3 - sf user password
 
-	scp $1 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/host-windows
-	local _result=$?
-	
-	[[ $_result != 0 ]] && { die "error($_result) when uploading repository file. terminate."; }
+	echo "sshpass -p $3 scp $1 $2@frs.sourceforge.net:$$PROJECT_FS_ROOT_DIR/host-windows"
 }
 
 # **************************************************************************

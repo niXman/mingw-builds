@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,26 +35,20 @@
 
 # **************************************************************************
 
-export PATH=$PREFIX/bin:$ORIGINAL_PATH
-
 TESTS_ROOT_DIR=$BUILDS_DIR/tests
 
-[[ $USE_MULTILIB == yes ]] && {
-	mkdir -p $TESTS_ROOT_DIR/{32,64}
-	[[ $BUILD_ARCHITECTURE == x32 ]] && {
-		cp -f $( find $PREFIX/$TARGET/lib64 -type f \( -iname *.dll \) ) \
-			$TESTS_ROOT_DIR/64/
-	} || {
-		cp -f $( find $PREFIX/$TARGET/lib32 -type f \( -iname *.dll \) ) \
-			$TESTS_ROOT_DIR/32/
-	}
-} || {
-	[[ $BUILD_ARCHITECTURE == x32 ]] && {
-		mkdir -p $TESTS_ROOT_DIR/32
-	} || {
-		mkdir -p $TESTS_ROOT_DIR/64
+function tests_prepare {
+	mkdir -p $TESTS_ROOT_DIR/$BUILD_ARCHITECTURE
+	[[ $USE_MULTILIB == yes ]] && {
+		local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
+		local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
+		mkdir -p $TESTS_ROOT_DIR/${_reverse_arch}
+		cp -f $( find $PREFIX/$TARGET/lib${_reverse_bits} -type f \( -iname *.dll \) ) \
+			$TESTS_ROOT_DIR/${_reverse_arch}/
 	}
 }
+
+tests_prepare
 
 # **************************************************************************
 # **************************************************************************

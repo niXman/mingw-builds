@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,23 +35,23 @@
 
 # **************************************************************************
 
-VERSION=1.0.1
-NAME=$BUILD_ARCHITECTURE-mpc-${VERSION}-$LINK_TYPE_SUFFIX
-SRC_DIR_NAME=mpc-${VERSION}
-TYPE=.tar.gz
-URL=(
-	"http://www.multiprecision.org/mpc/download/mpc-${VERSION}.tar.gz"
+PKG_VERSION=1.0.1
+PKG_NAME=$BUILD_ARCHITECTURE-mpc-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_DIR_NAME=mpc-${PKG_VERSION}
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"http://www.multiprecision.org/mpc/download/mpc-${PKG_VERSION}.tar.gz"
 )
 
-PRIORITY=prereq
+PKG_PRIORITY=prereq
 
 #
 
-PATCHES=()
+PKG_PATCHES=()
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -71,14 +71,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
