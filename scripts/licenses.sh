@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,14 +35,75 @@
 
 # **************************************************************************
 
+function func_get_licenses {
+	# $1 - mode (gcc/python/clang)
+	
+	local readonly python_part=(
+		mingw-libgnurx
+		bzip2
+		libffi
+		expat
+		tcl
+		tk
+		xz
+		sqlite
+		ncurses
+		readline
+		python
+	)
+
+	local readonly gcc_part=(
+		gmp
+		mpfr
+		mpc
+		ppl
+		cloog
+		libiconv
+		zlib
+		mingw-w64
+		winpthreads
+		binutils
+		gcc
+		gdb
+		make
+	)
+	local readonly clang_part=(
+		clang
+	)
+	
+	case $1 in
+		gcc)
+			echo -n "${gcc_part[@]} ${python_part[@]}"
+		;;
+		python)
+			echo -n "${python_part[@]}"
+		;;
+		clang)
+			echo -n "${clang_part[@]}"
+		;;
+	esac
+}
+
+# **************************************************************************
+
 [[ ! -f $BUILDS_DIR/licenses.marker ]] && {
-	[[ $PYTHON_ONLY_MODE == no ]] && {
-		cp -rf $TOP_DIR/licenses $PREFIX/
+	mkdir -p $PREFIX/licenses || die "can't create licenses directory. terminate."
+
+	readonly LICENSES=( \
+		$( \
+			func_get_licenses \
+				$BUILD_MODE \
+		) \
+	)
+	
+	[[ ${#LICENSES[@]} > 1 ]] && {
+		readonly licenses_cmd="cp -rf $TOP_DIR/licenses/{$(echo ${LICENSES[@]} | sed 's| |,|g')} $PREFIX/licenses/"
 	} || {
-		mkdir -p $PREFIX/licenses && \
-			cp -rf $TOP_DIR/licenses/{bzip2,libffi,mingw-libgnurx,python,readline,tcl,tk,xz} \
-				$PREFIX/licenses/ || exit 1
+		readonly licenses_cmd="cp -rf $TOP_DIR/licenses/${LICENSES[@]} $PREFIX/licenses/"
 	}
+	
+	#echo "licenses_cmd: ${licenses_cmd}"
+	eval ${licenses_cmd} || die "can't copy licenses. terminate."
 
 	touch $BUILDS_DIR/licenses.marker
 }

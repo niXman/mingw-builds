@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,24 +35,31 @@
 
 # **************************************************************************
 
-VERSION=4.8.1
-NAME=gcc-${VERSION}
-SRC_DIR_NAME=gcc-${VERSION}
-URL=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
-TYPE=.tar.bz2
-PRIORITY=main
+PKG_VERSION=4.8.1
+PKG_NAME=gcc-${PKG_VERSION}
+PKG_DIR_NAME=gcc-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
+PKG_URLS=(
+	"ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}.tar.bz2"
+)
+
+PKG_PRIORITY=main
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-4.8-iconv.patch
+	gcc/gcc-4.8-intrin.patch
 	gcc/gcc-4.8-libstdc++export.patch
+	gcc/pr56742.patch
+	gcc/gcc-4.8.1-objc-exceptions.patch
+	gcc/gcc-4.8.1-fix-dw2.patch
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -102,33 +109,30 @@ CONFIGURE_FLAGS=(
 	$PROCESSOR_OPTIMIZATION
 	$PROCESSOR_TUNE
 	#
-	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
-		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
-	)
 	--with-libiconv
 	--with-system-zlib
 	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	--enable-cloog-backend=isl
-	--with-pkgversion="\"$PKG_VERSION\""
+	--with-pkgversion="\"$MINGW_W64_PKG_STRING\""
 	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
 )
 
 #
 
-MAKE_FLAGS=(
-	-j1
+PKG_MAKE_FLAGS=(
+	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
-	-j$JOBS
+PKG_INSTALL_FLAGS=(
+	-j1
 	DESTDIR=$BASE_BUILD_DIR
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )

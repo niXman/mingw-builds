@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,66 +35,76 @@
 
 # **************************************************************************
 
-[[ ! -f $BUILDS_DIR/gcc-post.marker ]] && {
-	# remove <prefix>/mingw directory
-	rm -rf $PREFIX/mingw >/dev/null 2>&1
-	
-	if [[ $ARCHITECTURE == x32 ]]; then
-		# libgcc_s.a
-		cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ || exit 1
+echo -n "--> Switching to new compiler..."
+export PATH=$PREFIX/bin:$PREFIX/opt/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+echo " done"
 
-		[[ $EXCEPTIONS_MODEL == sjlj ]] && {
-			# 64 bit dlls
-			DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune -o -type f -name *.dll) )
-			cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
-			cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/ >/dev/null 2>&1
+function gcc_post_install {
+	[[ ! -f $BUILDS_DIR/gcc-post.marker ]] && {
+		# remove <prefix>/mingw directory
+		rm -rf $PREFIX/mingw >/dev/null 2>&1
+
+		local _gcc_version=$(func_map_gcc_name_to_gcc_version $GCC_NAME)
+		local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
+		# libgcc_s.a
+		cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ \
+			|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib"
+
+		func_has_lang objc
+		local is_objc=$?
+		[[ $is_objc == 1 ]] && {
+			# libobjc
+			cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/libobjc/.libs/libobjc.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/ \
+				|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version"
+			cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/libobjc/.libs/libobjc.dll.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/ \
+				|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version"
+			# objc headers
+			cp -rf ${SRCS_DIR}/${GCC_NAME}/libobjc/objc $PREFIX/lib/gcc/$TARGET/$_gcc_version/include \
+				|| die "Cannot copy objc headers to $PREFIX/lib/gcc/$TARGET/$_gcc_version/include"
+		}
+
+		# builded architecture dlls
+		local _dlls=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \
+				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune \) \
+				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune \) \
+				-not \( -path $BUILDS_DIR/$GCC_NAME/gcc/ada -prune \) \
+				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/libada/adainclude -prune \) \
+				-type f -name *.dll) )
+		cp -f ${_dlls[@]} $PREFIX/bin/ > /dev/null 2>&1 || die "Cannot copy architecture dlls to $PREFIX/bin/"
+		cp -f ${_dlls[@]} $PREFIX/$TARGET/lib/ > /dev/null 2>&1 || die "Cannot copy architecture dlls to $PREFIX/lib/"
 			
-			[[ $STRIP_ON_INSTALL == yes ]] && {
-				strip $PREFIX/bin/*.dll || exit 1
-				strip $PREFIX/$TARGET/lib/*.dll || exit 1
+		[[ $STRIP_ON_INSTALL == yes ]] && {
+			strip $PREFIX/bin/*.dll || die "Error stripping dlls from $PREFIX/bin"
+			strip $PREFIX/$TARGET/lib/*.dll || die "Error stripping dlls from $PREFIX/$TARGET/lib"
+		}
+
+		[[ $USE_MULTILIB == yes ]] && {
+			# Second architecture bit dlls
+			# libgcc_s.a
+			cp -f $PREFIX/lib/gcc/$TARGET/lib${_reverse_bits}/libgcc_s.a $PREFIX/$TARGET/lib${_reverse_bits}/ \
+				|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib${_reverse_bits}/"
+
+			[[ $is_objc == 1 ]] && {
+				# libobjc libraries
+				cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/${_reverse_bits}/libobjc/.libs/libobjc.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}/ \
+					|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}"
+				cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/${_reverse_bits}/libobjc/.libs/libobjc.dll.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}/ \
+					|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}"
 			}
 
-			# 64 bit files
-			[[ $USE_MULTILIB == yes ]] && {
-				# libgcc_s.a
-				cp -f $PREFIX/lib/gcc/$TARGET/lib64/libgcc_s.a $PREFIX/$TARGET/lib64/ || exit 1
-				cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/64 -type f \( -iname *.dll ! -iname *winpthread* \)) \
-					$PREFIX/$TARGET/lib64/ >/dev/null 2>&1 || exit 1
-				
-				[[ $STRIP_ON_INSTALL == yes ]] && {
-					strip $PREFIX/$TARGET/lib64/*.dll || exit 1
-				}
+			find $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits} \
+				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/libada/adainclude -prune \) \
+				-type f -name *.dll ! -name *winpthread* -print0 \
+				| xargs -0 -I{} cp -f {} $PREFIX/$TARGET/lib${_reverse_bits}/ || die "Error copying ${_reverse_bits}-bit dlls"
+
+			[[ $STRIP_ON_INSTALL == yes ]] && {
+				strip $PREFIX/$TARGET/lib${_reverse_bits}/*.dll || die "Error stripping ${_reverse_bits}-bit dlls"
 			}
 		}
-	else
-		# libgcc_s.a
-		cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ || exit 1
-		
-		[[ $EXCEPTIONS_MODEL == sjlj ]] && {
-			# 32 bit dlls
-			DLLS=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune -o -type f -name *.dll) )
-			cp -f ${DLLS[@]} $PREFIX/bin/ >/dev/null 2>&1
-			cp -f ${DLLS[@]} $PREFIX/$TARGET/lib/ >/dev/null 2>&1
-		
-			[[ $STRIP_ON_INSTALL == yes ]] && {
-				strip $PREFIX/bin/*.dll || exit 1
-				strip $PREFIX/$TARGET/lib/*.dll || exit 1
-			}
-			
-			# 32 bit files
-			[[ $USE_MULTILIB == yes ]] && {
-				# libgcc_s.a
-				cp -f $PREFIX/lib/gcc/$TARGET/lib32/libgcc_s.a $PREFIX/$TARGET/lib32/ || exit 1
-				cp -f $(find $BUILDS_DIR/$GCC_NAME/$TARGET/32 -type f \( -iname *.dll ! -iname *winpthread* \)) $PREFIX/$TARGET/lib32/
-			
-				[[ $STRIP_ON_INSTALL == yes ]] && {
-					strip $PREFIX/$TARGET/lib32/*.dll || exit 1
-				}
-			}
-		}
-	fi
-	
-	touch $BUILDS_DIR/gcc-post.marker
+
+		touch $BUILDS_DIR/gcc-post.marker
+	}
 }
 
+gcc_post_install
 # **************************************************************************

@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,51 +35,77 @@
 
 # **************************************************************************
 
-VERSION=8.6.0
-NAME=tcl${VERSION}
-SRC_DIR_NAME=tcl${VERSION}/win
-URL=http://prdownloads.sourceforge.net/tcl/tcl${VERSION}-src.tar.gz
-TYPE=.tar.gz
-PRIORITY=extra
+PKG_VERSION=8.6.1
+PKG_NAME=tcl${PKG_VERSION}
+PKG_DIR_NAME=tcl${PKG_VERSION}
+PKG_SUBDIR_NAME=win
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"http://prdownloads.sourceforge.net/tcl/tcl${PKG_VERSION}-src.tar.gz"
+)
+
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=()
-
-#
-
-CONFIGURE_FLAGS=(
-	--host=$HOST
-	--build=$BUILD
-	--target=$TARGET
-	#
-	--prefix=$PREFIX/opt
-	--disable-threads
-	#
-	--enable-shared
-	#
-	$( [[ $ARCHITECTURE == x64 ]] \
-		&& echo "--enable-64bit"
-	)
-	#
-	CFLAGS="\"$COMMON_CFLAGS\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
+PKG_PATCHES=(
+	tcl/tcl-8.5.14-autopath.patch
+	tcl/tcl-8.5.14-conf.patch
+	tcl/tcl-8.5.14-hidden.patch
+	tcl/tcl-mingw-w64-compatibility.patch
+	tcl/tcl-8.6.1-mingwexcept.patch
 )
 
 #
 
-MAKE_FLAGS=(
+PKG_EXECUTE_AFTER_PATCH=(
+	"cd win && autoconf"
+)
+
+#
+
+PKG_CONFIGURE_FLAGS=(
+	--host=$HOST
+	--build=$BUILD
+	--target=$TARGET
+	#
+	--prefix=$LIBS_DIR
+	--disable-threads
+	#
+	--enable-shared
+	#
+	$( [[ $BUILD_ARCHITECTURE == x86_64 ]] \
+		&& echo "--enable-64bit"
+	)
+	#
+)
+
+#
+
+PKG_MAKE_FLAGS=(
 	-j$JOBS
+	TCL_LIBRARY=$LIBS_DIR/lib/tcl8.6
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
+	TCL_LIBRARY=$LIBS_DIR/lib/tcl8.6
 	install
+)
+
+#
+
+PKG_EXECUTE_AFTER_INSTALL=(
+	"ln -s $LIBS_DIR/bin/tclsh86.exe $LIBS_DIR/bin/tclsh.exe"
+	"mv $LIBS_DIR/lib/libtcl86.a $LIBS_DIR/lib/libtcl86.dll.a"
+	"mv $LIBS_DIR/lib/libtclstub86.a $LIBS_DIR/lib/libtclstub86.dll.a"
+	"ln -s $LIBS_DIR/lib/libtcl86.dll.a $LIBS_DIR/lib/libtcl.dll.a"
+	"ln -s $LIBS_DIR/lib/tclConfig.sh $LIBS_DIR/lib/tcl8.6/tclConfig.sh"
+	"mkdir -p $LIBS_DIR/include/tcl-private/{generic,win}"
+	"find $SRCS_DIR/$PKG_DIR_NAME/generic $SRCS_DIR/$PKG_DIR_NAME/win -name \"*.h\" -exec cp -p '{}' $LIBS_DIR/include/tcl-private/'{}' ';'"
 )
 
 # **************************************************************************

@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,14 +35,67 @@
 
 # **************************************************************************
 
-[[ $ARCHITECTURE == x32 ]] && {
-	export PATH=$BEFORE_LIBICONV64_PRE_PATH
-	
-	[[ $USE_MULTILIB == yes ]] && {
-		HOST=$OLD_HOST
-		BUILD=$OLD_BUILD
-		TARGET=$OLD_TARGET
-	}
-}
+PKG_NAME=llvm-git
+PKG_DIR_NAME=llvm-git
+PKG_TYPE=git
+
+PKG_URLS=(
+	"http://llvm.org/git/llvm.git|repo:$PKG_TYPE|module:$PKG_NAME"
+	"http://llvm.org/git/clang.git|repo:$PKG_TYPE|dir:$PKG_NAME/tools|module:clang"
+	"http://llvm.org/git/compiler-rt.git|repo:$PKG_TYPE|dir:$PKG_NAME/projects|module:compiler-rt"
+	"http://llvm.org/git/test-suite.git|repo:$PKG_TYPE|dir:$PKG_NAME/projects|module:test-suite"
+)
+
+PKG_PRIORITY=main
+
+#
+
+PKG_PATCHES=()
+
+#
+
+PKG_CONFIGURE_FLAGS=(
+	--host=$HOST
+	--build=$BUILD
+	--target=$TARGET
+	#
+	--prefix=${PREFIX}
+	--with-sysroot=$PREFIX
+	--enable-targets=x86,x86_64
+	#
+	--enable-optimized
+	--disable-assertions
+	--disable-pthreads
+	#--enable-shared
+	#--enable-embed-stdcxx
+	#--enable-libcpp
+	#--enable-cxx11
+	#
+	--enable-docs
+	#
+	#--enable-libffi
+	#--enable-ltdl-install
+	#
+	#--with-c-include-dir
+	#--with-gcc-toolchain
+	#--with-default-sysroot
+	#--with-binutils-include
+	#--with-bug-report-url
+	#
+)
+
+#
+
+PKG_MAKE_FLAGS=(
+	-j$JOBS
+	all
+)
+
+#
+
+PKG_INSTALL_FLAGS=(
+	-j$JOBS
+	install
+)
 
 # **************************************************************************
