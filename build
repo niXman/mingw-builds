@@ -346,6 +346,10 @@ readonly PREREQ_LOGS_DIR=$ROOT_DIR/prerequisites-logs
 	readonly PREFIX=$BASE_BUILD_DIR/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
 	readonly MINGWPREFIX=/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
 	MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
+	[[ $BUILD_SHARED_GCC == no ]] && {
+		BASE_BUILD_DIR=$BASE_BUILD_DIR-s
+		MINGW_BUILD_NAME=$MINGW_BUILD_NAME-static
+	}
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
 	readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)	
 
