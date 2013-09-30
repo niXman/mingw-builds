@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,25 +35,25 @@
 
 # **************************************************************************
 
-VERSION=0.12
-NAME=$BUILD_ARCHITECTURE-isl-${VERSION}-$LINK_TYPE_SUFFIX
-SRC_DIR_NAME=isl-${VERSION}
-TYPE=.tar.bz2
-URL=(
-	"ftp://ftp.linux.student.kuleuven.be/pub/people/skimo/isl//isl-${VERSION}.tar.bz2"
+PKG_VERSION=0.12.1
+PKG_NAME=$BUILD_ARCHITECTURE-isl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_DIR_NAME=isl-${PKG_VERSION}
+PKG_TYPE=.tar.lzma
+PKG_URLS=(
+	"http://ftp.cross-lfs.org/pub/clfs/conglomeration/isl/isl-${PKG_VERSION}.tar.lzma"
 )
 
-PRIORITY=prereq
+PKG_PRIORITY=prereq
 
 #
 
-PATCHES=(
+PKG_PATCHES=(
 	isl/isl-0.12-no-undefined.patch
 )
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
@@ -72,14 +72,14 @@ CONFIGURE_FLAGS=(
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
