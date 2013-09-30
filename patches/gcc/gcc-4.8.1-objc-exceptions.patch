@@ -1,0 +1,54 @@
+From 5228b6b859877e3dfb57dccc1d3d143f78136b9d Mon Sep 17 00:00:00 2001
+From: ktietz <ktietz@138bc75d-0d04-0410-961f-82ee72b054a4>
+Date: Thu, 4 Jul 2013 09:04:47 +0000
+Subject: [PATCH] 2013-07-04  Kai Tietz  <ktietz@redhat.com>
+
+	* exception.c: Add check for SjLj to SEH blocks.
+
+
+
+git-svn-id: svn+ssh://gcc.gnu.org/svn/gcc/branches/gcc-4_8-branch@200664 138bc75d-0d04-0410-961f-82ee72b054a4
+---
+ libobjc/exception.c | 8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/libobjc/exception.c b/libobjc/exception.c
+index 4b05611..505086f 100644
+--- a/libobjc/exception.c
++++ b/libobjc/exception.c
+@@ -202,7 +202,7 @@ get_ttype_entry (struct lsda_header_info *info, _Unwind_Word i)
+ #ifdef SJLJ_EXCEPTIONS
+ #define PERSONALITY_FUNCTION	__gnu_objc_personality_sj0
+ #define __builtin_eh_return_data_regno(x) x
+-#elif defined(__SEH__)
++#elif defined(__SEH__) && !defined (__USING_SJLJ_EXCEPTIONS__)
+ #define PERSONALITY_FUNCTION	__gnu_objc_personality_imp
+ #else
+ #define PERSONALITY_FUNCTION	__gnu_objc_personality_v0
+@@ -227,7 +227,7 @@ PERSONALITY_FUNCTION (_Unwind_State state,
+ 
+ #define CONTINUE_UNWINDING return _URC_CONTINUE_UNWIND
+ 
+-#ifdef __SEH__
++#if defined (__SEH__) && !defined (__USING_SJLJ_EXCEPTIONS__)
+ static
+ #endif
+ _Unwind_Reason_Code
+@@ -524,7 +524,7 @@ objc_exception_throw (id exception)
+   abort ();
+ }
+ 
+-#ifdef __SEH__
++#if defined (__SEH__) && !defined (__USING_SJLJ_EXCEPTIONS__)
+ EXCEPTION_DISPOSITION
+ __gnu_objc_personality_seh0 (PEXCEPTION_RECORD ms_exc, void *this_frame,
+ 			     PCONTEXT ms_orig_context,
+@@ -533,4 +533,4 @@ __gnu_objc_personality_seh0 (PEXCEPTION_RECORD ms_exc, void *this_frame,
+   return _GCC_specific_handler (ms_exc, this_frame, ms_orig_context,
+ 				ms_disp, __gnu_objc_personality_imp);
+ }
+-#endif /* SEH */
++#endif
+-- 
+1.8.3.2
+

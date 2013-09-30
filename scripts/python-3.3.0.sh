@@ -1,13 +1,13 @@
-#!/bin/bash
 
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +16,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,48 +35,51 @@
 
 # **************************************************************************
 
-VERSION=3.3.0
-NAME=Python-${VERSION}
-SRC_DIR_NAME=Python-${VERSION}
-URL=http://www.python.org/ftp/python/${VERSION}/Python-${VERSION}.tar.bz2
-TYPE=.tar.bz2
-PRIORITY=extra
+PKG_VERSION=3.3.0
+PKG_NAME=Python-${PKG_VERSION}
+PKG_DIR_NAME=Python-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
+PKG_URLS=(
+	"http://www.python.org/ftp/python/${PKG_VERSION}/Python-${PKG_VERSION}.tar.bz2"
+)
+
+PKG_PRIORITY=extra
 
 #
 
-PATCHES=(
-	Python/${VERSION}/0000-add-python-config-sh.patch
-	Python/${VERSION}/0005-cross-fixes.patch
-	Python/${VERSION}/0010-cross-darwin-feature.patch
-	Python/${VERSION}/0030-py3k-20121004-MINGW.patch
-	Python/${VERSION}/0031-py3k-20121004-MINGW-removal-of-pthread-patch.patch
-	Python/${VERSION}/0032-py3k-20121004-MINGW-ntthreads.patch
-	Python/${VERSION}/0033-py3k-mingw-ntthreads-vs-pthreads.patch
-	Python/${VERSION}/0034-py3k-20121004-MINGW-removal-of-libffi-patch.patch
-	Python/${VERSION}/0035-mingw-system-libffi.patch
-	Python/${VERSION}/0045-mingw-use-posix-getpath.patch
-	Python/${VERSION}/0050-mingw-sysconfig-like-posix.patch
-	Python/${VERSION}/0055-mingw-_winapi_as_builtin_for_Popen_in_cygwinccompiler.patch
-	Python/${VERSION}/0060-mingw-x86_64-size_t-format-specifier-pid_t.patch
-	Python/${VERSION}/0065-cross-dont-add-multiarch-paths-if-cross-compiling.patch
-	Python/${VERSION}/0070-mingw-use-backslashes-in-compileall-py.patch
-	Python/${VERSION}/0075-msys-convert_path-fix-and-root-hack.patch
-	Python/${VERSION}/0080-mingw-hack-around-double-copy-scripts-issue.patch
-	Python/${VERSION}/0085-allow-static-tcltk.patch
-	Python/${VERSION}/0090-CROSS-avoid-ncursesw-include-path-hack.patch
-	Python/${VERSION}/0091-CROSS-properly-detect-WINDOW-_flags-for-different-nc.patch
-	Python/${VERSION}/0092-mingw-pdcurses_ISPAD.patch
-	Python/${VERSION}/0095-no-xxmodule-for-PYDEBUG.patch
-	Python/${VERSION}/0100-grammar-fixes.patch
-	Python/${VERSION}/0105-builddir-fixes.patch
-	Python/${VERSION}/0110-msys-monkeypatch-os-system-via-sh-exe.patch
-	Python/${VERSION}/0115-msys-replace-slashes-used-in-io-redirection.patch
-	Python/${VERSION}/9999-re-configure-d.patch
+PKG_PATCHES=(
+	Python/${PKG_VERSION}/0000-add-python-config-sh.patch
+	Python/${PKG_VERSION}/0005-cross-fixes.patch
+	Python/${PKG_VERSION}/0010-cross-darwin-feature.patch
+	Python/${PKG_VERSION}/0030-py3k-20121004-MINGW.patch
+	Python/${PKG_VERSION}/0031-py3k-20121004-MINGW-removal-of-pthread-patch.patch
+	Python/${PKG_VERSION}/0032-py3k-20121004-MINGW-ntthreads.patch
+	Python/${PKG_VERSION}/0033-py3k-mingw-ntthreads-vs-pthreads.patch
+	Python/${PKG_VERSION}/0034-py3k-20121004-MINGW-removal-of-libffi-patch.patch
+	Python/${PKG_VERSION}/0035-mingw-system-libffi.patch
+	Python/${PKG_VERSION}/0045-mingw-use-posix-getpath.patch
+	Python/${PKG_VERSION}/0050-mingw-sysconfig-like-posix.patch
+	Python/${PKG_VERSION}/0055-mingw-_winapi_as_builtin_for_Popen_in_cygwinccompiler.patch
+	Python/${PKG_VERSION}/0060-mingw-x86_64-size_t-format-specifier-pid_t.patch
+	Python/${PKG_VERSION}/0065-cross-dont-add-multiarch-paths-if-cross-compiling.patch
+	Python/${PKG_VERSION}/0070-mingw-use-backslashes-in-compileall-py.patch
+	Python/${PKG_VERSION}/0075-msys-convert_path-fix-and-root-hack.patch
+	Python/${PKG_VERSION}/0080-mingw-hack-around-double-copy-scripts-issue.patch
+	Python/${PKG_VERSION}/0085-allow-static-tcltk.patch
+	Python/${PKG_VERSION}/0090-CROSS-avoid-ncursesw-include-path-hack.patch
+	Python/${PKG_VERSION}/0091-CROSS-properly-detect-WINDOW-_flags-for-different-nc.patch
+	Python/${PKG_VERSION}/0092-mingw-pdcurses_ISPAD.patch
+	Python/${PKG_VERSION}/0095-no-xxmodule-for-PYDEBUG.patch
+	Python/${PKG_VERSION}/0100-grammar-fixes.patch
+	Python/${PKG_VERSION}/0105-builddir-fixes.patch
+	Python/${PKG_VERSION}/0110-msys-monkeypatch-os-system-via-sh-exe.patch
+	Python/${PKG_VERSION}/0115-msys-replace-slashes-used-in-io-redirection.patch
+	Python/${PKG_VERSION}/9999-re-configure-d.patch
 )
 
 #
 
-EXECUTE_AFTER_PATCH=(
+PKG_EXECUTE_AFTER_PATCH=(
 	"rm -rf Modules/expat"
 	"rm -rf Modules/_ctypes/libffi*"
 	"rm -rf Modules/zlib"
@@ -113,19 +116,19 @@ EXECUTE_AFTER_PATCH=(
 	popd > /dev/null
 }
 
-LIBFFI_VERSION=$( grep 'VERSION=' $TOP_DIR/scripts/libffi.sh | sed 's|VERSION=||' )
-MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREREQW_DIR/$ARCHITECTURE-zlib/include -I$PREFIXW/opt/include"
+LIBFFI_VERSION=$( grep 'PKG_VERSION=' $TOP_DIR/scripts/libffi.sh | sed 's|PKG_VERSION=||' )
+MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib/include -I$PREFIXW/opt/include"
 
 # Workaround for conftest error on 64-bit builds
 export ac_cv_working_tzset=no
 
 #
 
-CONFIGURE_FLAGS=(
+PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	#
-	--prefix=$([[ $PYTHON_ONLY_MODE == no ]] && echo $PREFIX/opt || echo $PREFIX)
+	--prefix=$([[ $BUILD_MODE == gcc ]] && echo $PREFIX/opt || echo $PREFIX)
 	#
 	--enable-shared
 	--without-pydebug
@@ -138,19 +141,19 @@ CONFIGURE_FLAGS=(
 	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS -D__USE_MINGW_ANSI_STDIO=1 $MY_CPPFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS $MY_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREREQW_DIR/$ARCHITECTURE-zlib/lib -L$PREFIXW/opt/lib -L$LIBSW_DIR/lib\""
+	LDFLAGS="\"$COMMON_LDFLAGS -L$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib/lib -L$PREFIXW/opt/lib -L$LIBSW_DIR/lib\""
 )
 
 #
 
-MAKE_FLAGS=(
+PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
 )
 
 #
 
-INSTALL_FLAGS=(
+PKG_INSTALL_FLAGS=(
 	install
 )
 
