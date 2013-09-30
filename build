@@ -538,6 +538,8 @@ for sub in ${SUBTARGETS[@]}; do
 				PKG_EXECUTE_AFTER_PATCH[@]
 		}
 
+		[[ -z $PKG_LNDIR ]] && { PKG_LNDIR=no; }
+
 		[[ ${#PKG_CONFIGURE_FLAGS[@]} >0 ]] && {
 			configure_flags="${PKG_CONFIGURE_FLAGS[@]}"
 			func_configure \
@@ -546,6 +548,7 @@ for sub in ${SUBTARGETS[@]}; do
 				"$configure_flags" \
 				$CONFIGURE_LOG \
 				$CURR_BUILD_DIR \
+				$PKG_LNDIR \
 				$PKG_SUBDIR_NAME
 		}
 
