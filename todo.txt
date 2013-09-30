@@ -9,3 +9,5 @@
 3. Fix building Python with TCL/TK.
 
 4. Fix building Python with shared NCURSES.
+
+5. Fix building GNU Make with autotools.
