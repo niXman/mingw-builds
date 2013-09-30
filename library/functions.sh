@@ -613,8 +613,11 @@ function func_configure {
 	# $7 - build subdir
 
 	[[ $6 == yes ]] && {
-		mkdir -p $2
-		[[ ! -d $5/$1 ]] && { lndir $SRCS_DIR/$2 $5/$1 > /dev/null; }
+		mkdir -p $5/$1
+		[[ ! -f $5/$1/lndir/marker ]] && {
+			lndir $SRCS_DIR/$2 $5/$1 > /dev/null
+			touch $5/$1/lndir.marker
+		}
 	}
 	local _marker=$5/$1/_configure.marker
 	local _result=0
@@ -627,7 +630,7 @@ function func_configure {
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> configure..."
-		pushd $5/$_subsrcdir > /dev/null
+		pushd $5/$_subbuilddir > /dev/null
 		[[ $6 == yes ]] && {
 			local _rel_dir="."
 			[[ -n $7 ]] && { _rel_dir=${_rel_dir}/$7; }
