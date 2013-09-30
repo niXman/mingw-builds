@@ -68,7 +68,10 @@ PKG_EXECUTE_AFTER_PATCH=(
 
 PKG_CONFIGURE_FLAGS=(
 	--prefix=$PREREQ_DIR/i686-zlib
-	--static
+	$( [[ $GCC_DEPS_LINK_TYPE == $LINK_TYPE_SHARED ]] \
+		&& echo "--shared" \
+		|| echo "--static" \
+	)
 )
 
 #

@@ -67,7 +67,7 @@ PKG_CONFIGURE_FLAGS=(
 	--prefix=$MINGWPREFIX
 	--with-sysroot=$PREFIX
 	#
-	$LINK_TYPE_BOTH
+	$LINK_TYPE_GCC
 	#
 	$( [[ $USE_MULTILIB == yes ]] \
 		&& echo "--enable-targets=all --enable-multilib" \
