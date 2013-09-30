@@ -67,9 +67,14 @@ function runtime_post_install {
 		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
 		# winpthreads
-		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
-		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
-		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+		[[ $BUILD_SHARED_GCC == yes ]] && {
+			cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/bin/libwinpthread-1.dll $PREFIX/bin/ || exit 1
+			cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/lib/libwinpthread.dll.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/lib/libpthread.dll.a $PREFIX/$TARGET/lib/ || exit 1
+		}
+		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/lib/libwinpthread.a $PREFIX/$TARGET/lib/ || exit 1
+		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/lib/libpthread.a $PREFIX/$TARGET/lib/ || exit 1
 		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-${RUNTIME_VERSION}/include/*.h $PREFIX/$TARGET/include/ || exit 1
 	
 		[[ $USE_MULTILIB == yes ]] && {
@@ -81,12 +86,19 @@ function runtime_post_install {
 			cp -f $PREREQ_DIR/${_reverse_arch}-zlib/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
 
 			# winpthreads
-			cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads-${RUNTIME_VERSION}/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
-			cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads-${RUNTIME_VERSION}/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			[[ $BUILD_SHARED_GCC == yes ]] && {
+				cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads-${RUNTIME_VERSION}/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+				cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads-${RUNTIME_VERSION}/lib/libwinpthread.dll.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+				cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads-${RUNTIME_VERSION}/lib/libpthread.dll.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			}
+			cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads-${RUNTIME_VERSION}/lib/libwinpthread.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			cp -f $RUNTIME_DIR/${_reverse_arch}-winpthreads-${RUNTIME_VERSION}/lib/libpthread.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
 
 			mkdir -p $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3}
-			echo $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \
-				| xargs -n 1 cp $PREFIX/$TARGET/lib${_reverse_bits}/libwinpthread-1.dll || exit 1
+			[[ $BUILD_SHARED_GCC == yes ]] && {
+				echo $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \
+					| xargs -n 1 cp $PREFIX/$TARGET/lib${_reverse_bits}/libwinpthread-1.dll || exit 1
+			}
 		}
 
 		cp -rf $PREFIX/$TARGET/* $PREFIX/mingw/ || exit 1
