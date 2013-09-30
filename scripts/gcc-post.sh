@@ -84,9 +84,11 @@ function gcc_post_install {
 			}
 		}
 		[[ $USE_MULTILIB == yes ]] && {
-			# libgcc_s.a
-			cp -f $PREFIX/lib/gcc/$TARGET/lib${_reverse_bits}/libgcc_s.a $PREFIX/$TARGET/lib${_reverse_bits}/ \
-				|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib${_reverse_bits}/"
+			[[ $BUILD_SHARED_GCC == yes ]] & {
+				# libgcc_s.a
+				cp -f $PREFIX/lib/gcc/$TARGET/lib${_reverse_bits}/libgcc_s.a $PREFIX/$TARGET/lib${_reverse_bits}/ \
+					|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib${_reverse_bits}/"
+			}
 
 			[[ $is_objc == 1 ]] && {
 				# libobjc libraries
