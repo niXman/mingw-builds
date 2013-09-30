@@ -1,13 +1,12 @@
-#!/bin/bash
-
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +15,7 @@
 # - Redistributions in binary form must reproduce the above copyright 
 #     notice, this list of conditions and the following disclaimer in 
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may 
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may 
 #     be used to endorse or promote products derived from this software 
 #     without specific prior written permission.
 #
@@ -35,56 +34,29 @@
 
 # **************************************************************************
 
-NAME=make
-SRC_DIR_NAME=make
-URL=":pserver:anonymous:@cvs.sv.gnu.org:/sources/make"
-TYPE=cvs
-REV=09/21/2012
-PRIORITY=extra
+readonly x32_HOST_MINGW_PATH_URL=
+readonly x64_HOST_MINGW_PATH_URL=
 
-#
+# **************************************************************************
 
-PATCHES=(
-	make/make-remove-double-quote.patch
-	make/make-linebuf-mingw.patch
-	make/make-getopt.patch
-	make/make-Windows-Add-move-to-sh_cmds_dos.patch
-)
+HOST=$(gcc -dumpmachine)
+BUILD=$(gcc -dumpmachine)
+TARGET=$BUILD_ARCHITECTURE-w64-mingw32
 
-#
+readonly HOST_TOOLS="gcc ld"
+readonly CROSS_BUILDS=yes
 
-EXECUTE_AFTER_PATCH=(
-	"autoreconf -i"
-)
+# **************************************************************************
 
-#
+readonly REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-linux/repository.txt
 
-CONFIGURE_FLAGS=(
-	--host=$HOST
-	--build=$TARGET
-	--prefix=$PREFIX
-	--enable-case-insensitive-file-system
-	--program-prefix=mingw32-
-	--enable-job-server
-	--without-guile
-	CFLAGS="\"$COMMON_CFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
-)
+# **************************************************************************
 
-#
-
-MAKE_FLAGS=(
-	-j$JOBS
-	do-po-update
-	scm-update
-	all
-)
-
-#
-
-INSTALL_FLAGS=(
-	-j$JOBS
-	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
+readonly LOGVIEWERS=(
+	"kate"
+	"gedit"
+	"nano"
+	"mcview"
 )
 
 # **************************************************************************

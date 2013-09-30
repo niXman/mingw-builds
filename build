@@ -3,11 +3,12 @@
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'mingw-builds' project.
+# This file is part of 'MinGW-W64' project.
 # Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
-# Project: mingw-builds ( http://sourceforge.net/projects/mingwbuilds/ )
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -16,7 +17,7 @@
 # - Redistributions in binary form must reproduce the above copyright
 #     notice, this list of conditions and the following disclaimer in
 #     the documentation and/or other materials provided with the distribution.
-# - Neither the name of the 'mingw-builds' nor the names of its contributors may
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may
 #     be used to endorse or promote products derived from this software
 #     without specific prior written permission.
 #
@@ -34,91 +35,60 @@
 #
 
 # **************************************************************************
+# Loading functions
+source library/functions.sh
 
-. ./scripts/functions.sh
+readonly ORIGINAL_PATH=$PATH
+readonly TOP_DIR=$(func_simplify_path "$PWD")
 
-ENABLE_LANGUAGES='c,c++,fortran'
-
-BASE_CFLAGS="-O2 -pipe"
-BASE_CXXFLAGS="$BASE_CFLAGS"
-BASE_CPPFLAGS=""
-BASE_LDFLAGS="-pipe"
-
-LINK_TYPE_BOTH="--enable-shared --enable-static"
-LINK_TYPE_SHARED="--enable-shared --disable-static"
-LINK_TYPE_STATIC="--enable-static --disable-shared"
-GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
-LINK_TYPE_SUFFIX="static"
-
-SHOW_LOG_ON_ERROR=yes
-
-JOBS=1
-
-[[ $(env | grep PROCESSOR_ARCHITEW6432) =~ AMD64 ]] && {
-	IS_64BIT_HOST=yes
-	LOGVIEWER="c:/progra~2/notepad++/notepad++.exe"
-} || {
-	IS_64BIT_HOST=no
-	LOGVIEWER="c:/progra~1/notepad++/notepad++.exe"
-}
+# **************************************************************************
+# Loading default configuration
+source library/default_config.sh
 
 # **************************************************************************
 
-MINGW_BUILDS_VERSION="MinGW-builds-3.0.0"
-PKG_VERSION="Built by MinGW-builds project"
-BUG_URL=http://sourceforge.net/projects/mingwbuilds/
-
-x32_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.3/32-bit/threads-posix/sjlj/x32-4.7.3-release-posix-sjlj-rev0.7z
-x64_HOST_MINGW_PATH_URL=http://sourceforge.net/projects/mingwbuilds/files\
-/host-windows/releases/4.7.3/64-bit/threads-posix/sjlj/x64-4.7.3-release-posix-sjlj-rev0.7z
-
-ORIGINAL_PATH=$PATH
-TOP_DIR=$(func_simplify_path "$PWD")
-PATCHES_DIR=$TOP_DIR/patches
-SOURCES_DIR=$TOP_DIR/sources
-TESTS_DIR=$TOP_DIR/tests
-TOOLCHAINS_DIR=$TOP_DIR/toolchains
-
-x32_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
-x64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
-
-# **************************************************************************
-
-RUN_ARGS="$@"
+readonly RUN_ARGS="$@"
 [[ $# == 1 && $1 == --help	|| $[ $# == 0 ] == 1 ]] && {
 	echo "usage:"
-	echo "  ./${0##*/} <gcc version> <x32|x64> [OPTIONS]"
+	echo "  ./${0##*/} --mode=[clang|gcc|python]-version --arch=<x32|x64> [OPTIONS]"
 	echo "  help:"
-	echo "    --buildroot=<path>      - specifies the build root directory"
-	echo "    --preload               - firstly downloads then builds"
-	echo "    --download              - download only the sources"
-	echo "    --exceptions=<type>     - specifies exceptions model for GCC"
-	echo "                              available: dwarf, seh, sjlj"
-	echo "    --use-lto               - build with LTO using"
-	echo "    --bootstrap             - bootstraping GCC"
-	echo "    --no-multilib           - build GCC without multilib support"
-	echo "    --no-strip              - don't strip dll's & executables on install"
-	echo "    --dyn-deps              - build GCC with dynamically dependencies"
-	echo "    --jobs=N                - specifies number of parallel make threads"
-	echo "    --rev=N                 - specifies number of the build revision"
-	echo "    --threads=<model>       - specifies the threads model for GCC/libstdc++"
-	echo "                              available: win32, posix"
-	echo "    --python-only=<version> - only Python building mode"
-	echo "                              available versions: 2.7.3, 2.7.4, 2.7.5, 3.3.0"
-	echo "    --version               - pring the version of the MinGW-builds scripts"
-	echo "    --mingw-compress        - compressing MinGW"
-	echo "    --srcs-compress         - compressing sources"
-	echo "    --mingw-upload=<user>   - upload toolchain archives to sf-project"
-	echo "    --src-upload=<user>     - upload sources archive to sf-project"
-	echo "    --cflags='<flags>'      - additional CFLAGS"
-	echo "    --cxxflags='<flags>'    - additional CXXFLAGS"
-	echo "    --cppflags='<flags>'    - additional CPPFLAGS"
-	echo "    --ldflags='<flags>'     - additional LDFLAGS"
-	echo "    --march-x32='<arch>'    - arch for x32 target"
-	echo "    --mtume-x32='<arch>'    - tune for x32 target"
-	echo "    --march-x64='<arch>'    - arch for x64 target"
-	echo "    --mtume-x64='<arch>'    - tune for x64 target"
+	echo "    --buildroot=<path>         - specifies the build root directory"
+	echo "    --fetch-only               - download sources without building"
+	echo "    --update-sources           - try to update sources from repositories before build"
+	echo "    --exceptions=<type>        - specifies exceptions model for GCC"
+	echo "                                 available: dwarf, seh, sjlj"
+	echo "    --use-lto                  - build with LTO using"
+	echo "    --bootstrap                - bootstraping GCC"
+	echo "    --no-multilib              - build GCC without multilib support"
+	echo "    --no-strip                 - don't strip dll's & executables on install"
+	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
+	echo "    --jobs=N                   - specifies number of parallel make threads"
+	echo "    --rt-version=<v3|v4|trunk>    - specifies mingw-w64 runtime version to build"
+	echo "    --rev=N                    - specifies number of the build revision"
+	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++"
+	echo "                                 available: win32, posix"
+	echo "    --arch=<i686|x86_64>           - specifies the architecture"
+	echo "    --mode=<[clang|gcc|python]-version>  - specify building software with version"
+	echo "    --version                  - print the version of the MinGW-W64 builds scripts"
+	echo "    --mingw-compress           - compressing MinGW"
+	echo "    --src-compress             - compressing sources"
+	echo "    --mingw-upload             - upload toolchain archives to sf-project"
+	echo "    --src-upload               - upload sources archive to sf-project"
+	echo "    --sf-user=<username>       - username to upload to sf-project"
+	echo "    --sf-password=<user_pass>  - password to upload to sf-project"	
+	echo "    --cflags='<flags>'         - additional CFLAGS"
+	echo "    --cxxflags='<flags>'       - additional CXXFLAGS"
+	echo "    --cppflags='<flags>'       - additional CPPFLAGS"
+	echo "    --ldflags='<flags>'        - additional LDFLAGS"
+	echo "    --march-x32='<arch>'       - arch for x32 target"
+	echo "    --mtume-x32='<arch>'       - tune for x32 target"
+	echo "    --march-x64='<arch>'       - arch for x64 target"
+	echo "    --mtume-x64='<arch>'       - tune for x64 target"
+	echo "    --enable-languages=<langs> - comma separated list(without spaces) of gcc"
+	echo "                                 supported languages. available languages:"
+	echo "                                 ada,c,c++,fortran,objc,obj-c++"
+	echo "  available Python versions: 2.7.3, 2.7.4, 2.7.5"
+	echo "  available clang versions: 3.3, git"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -129,8 +99,10 @@ RUN_ARGS="$@"
 	echo "    gcc-4.7.1 (4.7.1 release)"
 	echo "    gcc-4.7.2 (4.7.2 release)"
 	echo "    gcc-4.7.3 (4.7.3 release)"
+	#echo "    gcc-4.7.4 (4.7.4 release)"
 	echo "    gcc-4.8.0 (4.8.0 release)"
 	echo "    gcc-4.8.1 (4.8.1 release)"
+	#echo "    gcc-4.8.2 (4.8.2 release)"
 	echo "    gcc-4_6-branch (currently 4.6.5-prerelease)"
 	echo "    gcc-4_7-branch (currently 4.7.4-prerelease)"
 	echo "    gcc-4_8-branch (currently 4.8.2-prerelease)"
@@ -139,49 +111,7 @@ RUN_ARGS="$@"
 	exit 0
 }
 
-[[ $SHOW_LOG_ON_ERROR == yes && ! -f $LOGVIEWER ]] && {
-	LOGVIEWER=/c/Windows/system32/notepad.exe
-}
-
-[[ -d /mingw ]] && {
-	die "please remove \"/mingw\" directory. terminate."
-}
-
-[[ -n $(which "gcc.exe" 2>/dev/null) || \
-	-n $(which "i686-pc-mingw32-gcc.exe" 2>/dev/null) || \
-	-n $(which "i686-w64-mingw32-gcc.exe" 2>/dev/null) || \
-	-n $(which "x86_64-w64-mingw32-gcc.exe" 2>/dev/null) \
-]] && {
-	die "remove from PATH any existing MinGW directory. terminate."
-}
-
 # **************************************************************************
-
-ROOT_DIR=$(func_simplify_path "$HOME")
-
-PRELOAD_MODE=no
-DOWNLOAD_MODE=no
-BUILD_ARCHITECTURES=()
-EXCEPTIONS_MODEL=sjlj
-USE_MULTILIB=yes
-STRIP_ON_INSTALL=yes
-BOOTSTRAPING=no
-THREADS_MODEL=posix
-REV_NUM=""
-GCC_NAME=""
-COMPRESSING_MINGW=no
-COMPRESSING_SRCS=no
-UPLOAD_BIN_TO_SF=no
-UPLOAD_SRC_TO_SF=no
-SF_USER=""
-DEBUG_UPLOAD=no
-PYTHON_ONLY_MODE=no
-PYTHON_VERSION="2.7.5"
-
-PROCESSOR_OPTIMIZATION_TUNE_32='generic'
-PROCESSOR_OPTIMIZATION_ARCH_32='i686'
-PROCESSOR_OPTIMIZATION_TUNE_64='core2'
-PROCESSOR_OPTIMIZATION_ARCH_64='nocona'
 
 while [[ $# > 0 ]]; do
 	case $1 in
@@ -197,33 +127,35 @@ while [[ $# > 0 ]]; do
 			ROOT_DIR=${1/--buildroot=/}
 			ROOT_DIR=${ROOT_DIR//:/:\/}
 			ROOT_DIR=${ROOT_DIR//\/\//\/}
-			mkdir -p ${ROOT_DIR} || die "Incorrect directory ${ROOT_DIR}"
+			mkdir -p ${ROOT_DIR} || die "incorrect buildroot directory: \"${ROOT_DIR}\". terminate."
 			pushd ${ROOT_DIR} > /dev/null
-			ROOT_DIR=`pwd`
+			ROOT_DIR=$PWD
 			popd > /dev/null
 		;;
 		--bootstrap) BOOTSTRAPING=yes ;;
-		--preload) PRELOAD_MODE=yes ;;
-		--download) DOWNLOAD_MODE=yes ;;
+		--fetch-only) FETCH_MODE=yes ;;
+		--update-sources) UPDATE_SOURCES=yes ;;
+		--enable-languages=*)
+			func_check_languages "${1/--enable-languages=/}"
+			ENABLE_LANGUAGES=${1/--enable-languages=/}
+		;;
 		--exceptions=*)
 			EXCEPTIONS_MODEL=${1/--exceptions=/}
 			case $EXCEPTIONS_MODEL in
-			dwarf)
-				USE_MULTILIB=no
-				[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
-				BUILD_ARCHITECTURES=( x32 )
-			;;
-			seh)
-				USE_MULTILIB=no
-				[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && { shift; continue; }
-				BUILD_ARCHITECTURES=( x64 )
-			;;
-			sjlj)
-				USE_MULTILIB=$USE_MULTILIB			
-			;;
-			*)
-				die "$EXCEPTIONS_MODEL is not valid exception model. Available models: dwarf, seh, sjlj"
-			;;
+				dwarf)
+					USE_MULTILIB=no
+					BUILD_ARCHITECTURE=i686
+				;;
+				seh)
+					USE_MULTILIB=no
+					BUILD_ARCHITECTURE=x86_64
+				;;
+				sjlj)
+					USE_MULTILIB=$USE_MULTILIB			
+				;;
+				*)
+					die "\"$EXCEPTIONS_MODEL\" is not valid exception model. available models: dwarf, seh, sjlj. terminate."
+				;;
 			esac	
 		;;
 		--use-lto)
@@ -235,7 +167,7 @@ while [[ $# > 0 ]]; do
 		--no-strip) STRIP_ON_INSTALL=no ;;
 		--dyn-deps)
 			GCC_DEPS_LINK_TYPE=$LINK_TYPE_SHARED
-			LINK_TYPE_SUFFIX="shared"
+			LINK_TYPE_SUFFIX=shared
 		;;
 		--jobs=*)
 			[[ ${1/--jobs=/} == 0 ]] && {
@@ -243,51 +175,66 @@ while [[ $# > 0 ]]; do
 			}
 			JOBS=${1/--jobs=/}
 		;;
+		--rt-version=*)
+			RUNTIME_VERSION=${1/--rt-version=/}
+			case $RUNTIME_VERSION in
+				v3)
+					RUNTIME_BRANCH="stable/v3.x"
+				;;
+				v4|trunk)
+					RUNTIME_VERSION=v4
+					RUNTIME_BRANCH="trunk"
+				;;
+				*)
+					die "Unsupported runtime version $RUNTIME_VERSION."
+				;;
+			esac
+		;;
 		--threads=*) 
 			THREADS_MODEL=${1/--threads=/}
 			case $THREADS_MODEL in
-			win32 | posix)
-			;;
-			*)
-				die "$THREADS_MODEL is not valid threads model. Available models: posix, win32"
-			;;
+				win32 | posix)
+				;;
+				*)
+					die "\"$THREADS_MODEL\" is not valid threads model. available models: posix, win32. terminate"
+				;;
 			esac
 		;;
-		--python-only=*)
-			PYTHON_ONLY_MODE=yes
-			PYTHON_VERSION=${1/--python-only=/}
-			[[ ! -f scripts/python-$PYTHON_VERSION.sh ]] && {
-				die "bad python version. terminate."
+		--mode=*)
+			[[ ! -f $TOP_DIR/scripts/${1/--mode=/}.sh ]] && {
+				die "bad mode. Script ${1/--mode=/}.sh not found. terminate."
 			}
+			readonly BUILD_MODE_VERSION=${1/--mode=/}
+			readonly BUILD_VERSION=${BUILD_MODE_VERSION#*-}
+			readonly BUILD_MODE=${BUILD_MODE_VERSION%%-*}
+			readonly GCC_NAME=$BUILD_MODE_VERSION
+			[[ $BUILD_MODE != gcc && $BUILD_MODE != clang && $BUILD_MODE != python ]] && {
+				die "Unsupported mode: \"$BUILD_MODE.\" terminate."
+			}
+		;;
+		--arch=*)
+			readonly BUILD_ARCHITECTURE=${1/--arch=/}
+			case $BUILD_ARCHITECTURE in
+				i686|x86_64)
+				;;
+				*) die "Unsupported architecture: \"$BUILD_ARCHITECTURE\". terminate." 
+				;;
+			esac
 		;;
 		--rev=*)
 			REV_NUM=${1/--rev=/}
-			PKG_VERSION="rev$REV_NUM, $PKG_VERSION"
+			MINGW_W64_PKG_STRING="rev$REV_NUM, $MINGW_W64_PKG_STRING"
 		;;
-		x32)
-			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
-			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x32 )
-		;;
-		x64)
-			[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && { shift; continue; }
-			BUILD_ARCHITECTURES=( ${BUILD_ARCHITECTURES[@]} x64 )
-		;;
-		gcc-*)
-			[[ ! -f scripts/$1.sh ]] && {
-				die "bad gcc version. terminate."
-			} || {
-				GCC_NAME=$1
-			}
-		;;
-		--version) echo $MINGW_BUILDS_VERSION; exit 0 ;;
+		--version) echo $MINGW_W64_BUILDS_VERSION; exit 0 ;;
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
-		--srcs-compress) COMPRESSING_SRCS=yes ;;
-		--mingw-upload=*) UPLOAD_BIN_TO_SF=yes; SF_USER=${1/--mingw-upload=/} ;;
-		--src-upload=*) UPLOAD_SRC_TO_SF=yes; SF_USER=${1/--src-upload=/} ;;
+		--src-compress) COMPRESSING_SRCS=yes ;;
+		--mingw-upload) UPLOAD_MINGW=yes ;;
+		--src-upload) UPLOAD_SOURCES=yes ;;
+		--sf-user=*) SF_USER=${1/--sf-user=/} ;;
+		--sf-password=*) SF_PASSWORD=${1/--sf-password=/} ;;
 		--debug-upload) DEBUG_UPLOAD=yes ;;
 		*)
-			echo "bad command line: \"$1\""
-			die "terminate."
+			die "bad command line: \"$1\". terminate."
 		;;
 	esac
 	shift
@@ -295,6 +242,14 @@ done
 
 # **************************************************************************
 
+[[ $UPLOAD_MINGW == yes || $UPLOAD_SOURCES == yes ]] && {
+	[[ -z $SF_USER ]]     && { die "please specify sourceforge user login with '--sf-user=<user>'. terminate."; }
+	[[ -z $SF_PASSWORD ]] && { die "please specify sourceforge user password with '--sf-password=<password>'. terminate."; }
+}
+
+# **************************************************************************
+# Create primary directories
+# **************************************************************************
 [[ ! -d $ROOT_DIR ]] && {
 	mkdir -p $ROOT_DIR
 	[[ $? == 0 ]] && {
@@ -304,706 +259,443 @@ done
 	}
 }
 
-SRCS_DIR=$ROOT_DIR/src
-MARKERS_DIR=$SRCS_DIR/MARKERS
-PREREQ_DIR=$ROOT_DIR/mingw-prereq
-RUNTIME_DIR=$ROOT_DIR/mingw-runtime
-ARCHIVES_DIR=$ROOT_DIR/mingw-archives
-mkdir -p $SRCS_DIR $MARKERS_DIR $ARCHIVES_DIR $PREREQ_DIR $RUNTIME_DIR
+readonly SRCS_DIR=$ROOT_DIR/src
+readonly MARKERS_DIR=$SRCS_DIR/MARKERS
+
+mkdir -p \
+	$SRCS_DIR \
+	$MARKERS_DIR
+
+# **************************************************************************
+# Determine operating system and load appropriate config
+# **************************************************************************
+source $TOP_DIR/library/os_detect.sh
 
 # **************************************************************************
 
-[[ $PYTHON_ONLY_MODE == yes && ! -z $GCC_NAME ]] && {
-	die "you can't specify 'gcc-x.y.z' and '--python-only' simultaneously. terminate."
+[[ -z ${BUILD_ARCHITECTURE} ]] && {
+	die "Build architecture is not specified. terminate."
 }
 
-[[ ${#BUILD_ARCHITECTURES[@]} == 0 ]] && {
-	die "build architecture is not specified. terminate."
-}
-
-[[ ${#BUILD_ARCHITECTURES[@]} > 2 ]] && {
-	die "too many build architectures specified(${BUILD_ARCHITECTURES[@]}). terminate."
-}
-
-[[ ${BUILD_ARCHITECTURES[0]} == ${BUILD_ARCHITECTURES[1]} ]] && {
-	die "may not specify twice \"${BUILD_ARCHITECTURES[0]}\" as build architecture. terminate."
-}
-
-[[ ${BUILD_ARCHITECTURES[@]} =~ x32 && ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-	build_for_both=1
-} || {
-	build_for_both=0
-}
-
-[[ $PYTHON_ONLY_MODE == no ]] && {
-	[[ -z $GCC_NAME ]] && {
-		die "please specify GCC version. terminate."
+[[ $BUILD_MODE == gcc ]] && {
+	[[ $IS_64BIT_HOST == no ]] && {
+		[[ $BUILD_ARCHITECTURE == x86_64 ]] && {
+			die "you can't build 64-bit toolchain using 32-bit OS. terminate."
+		}
+		[[ $USE_MULTILIB == yes ]] && {
+			die "you can't build multitarget MinGW using 32-bit OS. terminate."
+		}
 	}
-
-	[[ $THREADS_MODEL != win32 && $THREADS_MODEL != posix ]] && {
-		die "bad threads model($THREADS_MODEL). terminate."
-	}
-
+	case $EXCEPTIONS_MODEL in
+		dwarf)
+			[[ ${BUILD_ARCHITECTURE} == x86_64 ]] && {
+				die "DWARF exceptions not allowed on x86_64 architecture. terminate."
+			}
+		;;
+		seh)
+			[[ ${BUILD_ARCHITECTURE} == i686 ]] && {
+				die "SEH exceptions not allowed on i686 architecture. terminate."
+			}
+		;;	
+		sjlj)
+		
+		;;
+	esac
 	[[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
-		die "$EXCEPTIONS_MODEL exceptions not allowed on multilib architecture. terminate."
-	}
-	
-	[[ $EXCEPTIONS_MODEL == dwarf ]] && {
-		[[ ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-			die "DWARF exceptions not allowed on x86_64 architecture. terminate."
-		}
-		[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
-			die "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
-		}
-	}
-	
-	[[ $EXCEPTIONS_MODEL == seh ]] && {
-		[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
-			die "SEH exceptions not allowed on x86 architecture. terminate."
-		}
-		[[ ${#BUILD_ARCHITECTURES[@]} > 1 ]] && {
-			die "error in build architectures(${BUILD_ARCHITECTURES[@]}). terminate."
-		}
-	}
-
-	[[ $IS_64BIT_HOST == no && ${BUILD_ARCHITECTURES[@]} =~ x64 ]] && {
-		die "you can't build 64-bit MinGW using 32-bit OS. terminate."
-	}
-
-	[[ $IS_64BIT_HOST == no && $USE_MULTILIB == yes ]] && {
-		die "you can't build multitarget MinGW using 32-bit OS. terminate."
+		die "\"$EXCEPTIONS_MODEL\" exceptions not allowed on multilib architecture. terminate."
 	}
 }
 
-[[ $[ $COMPRESSING_MINGW == yes || $COMPRESSING_SRCS == yes ] == 1 && ! -f /bin/7za.exe ]] && {
-	die "7za.exe is not found in your /bin directory. terminate."
+[[ $[ $COMPRESSING_MINGW == yes || $COMPRESSING_SRCS == yes ] == 1 ]] && {
+	func_check_program "7za"
 }
 
-[[ $PYTHON_ONLY_MODE == yes && $COMPRESSING_SRCS == yes ]] && {
-	die "compressing sources in '--python-only' mode is currently unimplemented. terminate."
+[[ $BUILD_MODE != gcc && $COMPRESSING_SRCS == yes ]] && {
+	die "compressing sources for \"$BUILD_MODE\" mode is currently unimplemented. terminate."
 }
 
 # **************************************************************************
-
-[[ ! -d $x32_HOST_MINGW_PATH || ! -d $x64_HOST_MINGW_PATH ]] && {
-	[[ $EXCEPTIONS_MODEL == dwarf && ! -d $x32_HOST_MINGW_PATH ]] || \
-	[[ $EXCEPTIONS_MODEL == seh && ! -d $x64_HOST_MINGW_PATH ]] || \
-	[[ $EXCEPTIONS_MODEL == sjlj && ! -d $x64_HOST_MINGW_PATH ]] && {
-		echo -n "host toolchains is not installed. you wish to install (y/n)?"
-		while :
-		do
-			read -s -n1
-			echo ": $REPLY"
-			[[ $REPLY != y && $REPLY != n ]] && continue
-			[[ $REPLY == n ]] && {
-				die "you can't build MinGW without installed host toolchains. terminate."
-			}
-			[[ $REPLY == y ]] && break
-		done
-
-		mkdir -p $TOOLCHAINS_DIR
-		[[ $? != 0 ]] && {
-			die "can't create toolchains directory. terminate."
-		}
-
-		func_install_toolchain \
-			$TOOLCHAINS_DIR \
-			$x32_HOST_MINGW_PATH \
-			$x64_HOST_MINGW_PATH \
-			$x32_HOST_MINGW_PATH_URL \
-			$x64_HOST_MINGW_PATH_URL
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			echo "toolchain install error $func_res. terminate."
-			die "see log-files in \"$TOOLCHAINS_DIR\" directory."
-		}
-	}
-}
-
+# Creating necessary directories
 # **************************************************************************
+readonly PREREQ_DIR=$ROOT_DIR/prerequisites
+readonly RUNTIME_DIR=$ROOT_DIR/runtime
+readonly ARCHIVES_DIR=$ROOT_DIR/archives
+readonly PREREQ_BUILD_DIR=$ROOT_DIR/prerequisites-build
+readonly PREREQ_LOGS_DIR=$ROOT_DIR/prerequisites-logs
 
-LIBICONV_X32_SUBTARGETS=(
-	libiconv-x32-pre
-	libiconv-x32
-	libiconv-x32-post
-)
-
-LIBICONV_X64_SUBTARGETS=(
-	libiconv-x64-pre
-	libiconv-x64
-	libiconv-x64-post
-)
-
-WINPTHREADS_X32_SUBTARGETS=(
-	winpthreads-x32-pre
-	winpthreads-x32
-	winpthreads-x32-post
-)
-
-WINPTHREADS_X64_SUBTARGETS=(
-	winpthreads-x64-pre
-	winpthreads-x64
-	winpthreads-x64-post
-)
-
-ZLIB_X32_SUBTARGETS=(
-	zlib
-	zlib-x32-post
-)
-
-ZLIB_X64_SUBTARGETS=(
-	zlib
-	zlib-x64-post
-)
-
-SUBTARGETS_PART1=(
-	gmp
-	mpfr
-	mpc
-	ppl
-	isl
-	cloog
-	mingw-w64-api
-	mingw-w64-crt
-)
-
-PYTHON_SUBTARGETS=(
-	libgnurx
-	bzip2
-	libffi
-	expat
-	#tcl
-	#tk
-	$([[ $PYTHON_VERSION == 3.3.0 ]] && echo "xz-utils")
-	sqlite
-	ncurses
-	readline
-	python-$PYTHON_VERSION
-)
-
-SUBTARGETS_PART2=(
-	mingw-w64-runtime-post
-	binutils
-	binutils-post
-	$GCC_NAME
-	gcc-post
-	mingw-w64-libraries-libmangle
-	#mingw-w64-libraries-pseh
-	mingw-w64-tools-gendef
-	mingw-w64-tools-genidl
-	mingw-w64-tools-genpeimg
-	mingw-w64-tools-widl
-	${PYTHON_SUBTARGETS[@]}
-	3rdparty-post
-	gdbinit
-	gdb
-	gdb-wrapper
-	make_git_bat
-	cleanup
-	licenses
-	put-versions
-	put-info
-	tests
-	$([[ $COMPRESSING_MINGW == yes ]] && echo "mingw-compress")
-)
-
-[[ $PYTHON_ONLY_MODE == no ]] && {
-	[[ $USE_MULTILIB == yes || $build_for_both == 1 ]] && {
-		SUBTARGETS=(
-			${LIBICONV_X32_SUBTARGETS[@]}
-			${LIBICONV_X64_SUBTARGETS[@]}
-			${ZLIB_X32_SUBTARGETS[@]}
-			${ZLIB_X64_SUBTARGETS[@]}		
-			${SUBTARGETS_PART1[@]}
-			${WINPTHREADS_X32_SUBTARGETS[@]}
-			${WINPTHREADS_X64_SUBTARGETS[@]}
-			${SUBTARGETS_PART2[@]}
-		)
-	} || {
-		[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && {
-			SUBTARGETS=(
-				${LIBICONV_X32_SUBTARGETS[@]}
-				${ZLIB_X32_SUBTARGETS[@]}
-				${SUBTARGETS_PART1[@]}
-				${WINPTHREADS_X32_SUBTARGETS[@]}
-				${SUBTARGETS_PART2[@]}
-			)
-		} || {
-			SUBTARGETS=(
-				${LIBICONV_X64_SUBTARGETS[@]}
-				${ZLIB_X64_SUBTARGETS[@]}
-				${SUBTARGETS_PART1[@]}
-				${WINPTHREADS_X64_SUBTARGETS[@]}
-				${SUBTARGETS_PART2[@]}
-			)
-		}
-	}
+[[ -n $REV_NUM ]] && {
+	readonly REV_STRING="-r$REV_NUM"
 } || {
-	SUBTARGETS=( ${PYTHON_SUBTARGETS[@]} )
+	readonly REV_STRING=""
 }
 
-# **************************************************************************
-
-[[ $PRELOAD_MODE == yes || $DOWNLOAD_MODE == yes ]] && {
-	[[ $PRELOAD_MODE == yes ]] && {
-		[[ $PYTHON_ONLY_MODE == no ]] && {
-			echo -n "-> preload sources for building MinGW-${GCC_NAME}-"
-		} || {
-			echo -n "-> preload sources for building python-${PYTHON_VERSION}-"
-		}
-	} || {
-		[[ $DOWNLOAD_MODE == yes ]] && {
-			[[ $PYTHON_ONLY_MODE == no ]] && {
-				echo -n "-> download sources for MinGW-${GCC_NAME}-"
-			} || {
-				echo -n "-> download sources for python-${PYTHON_VERSION}-"
-			}
-		}
-	}
-	
-	[[ $PYTHON_ONLY_MODE == no ]] && {
-		[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ]] && echo -n "multilib-"
-		[[ $build_for_both == 1 ]] && {
-			echo -n "x32/x64-"
-		} || {
-			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && echo -n "x32-" || echo -n "x64-"
-		}
-		echo "$EXCEPTIONS_MODEL"
-	} || {
-		[[ $build_for_both == 1 ]] && {
-			echo -n "x32/x64"
-		} || {
-			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && echo -n "x32" || echo -n "x64"
-		}
-	}
-
-	for sub in ${SUBTARGETS[@]}; do
-		[[ $sub == put-versions || $sub == put-info ]] && continue
-		[[ -n $( grep 'URL=' $TOP_DIR/scripts/${sub}.sh ) ]] && {
-			echo -e "-> \E[32;40m$sub\E[37;40m"
-			[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
-				die "script for subtarget \"$sub\" is not exists. terminate."
-			}
-
-			NAME=""
-			cd $TOP_DIR && . ./scripts/$sub.sh
-
-			[[ -z $NAME ]] && continue
-
-			mkdir -p $SRCS_DIR/$SRC_DIR_NAME
-
-			func_download \
-				$SRCS_DIR \
-				$SRC_DIR_NAME \
-				$TYPE \
-				$URL \
-				$MARKERS_DIR/${SRC_DIR_NAME}_download.log \
-				$MARKERS_DIR/${SRC_DIR_NAME}_download.marker \
-				$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MARKERS_DIR/${SRC_DIR_NAME}_download.log &
-				die "Error $func_res"
-			}
-
-			func_uncompress \
-				$SRCS_DIR \
-				$SRC_DIR_NAME \
-				$TYPE \
-				$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.marker \
-				$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.log
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MARKERS_DIR/${SRC_DIR_NAME}_uncompress.log &
-				die "Error $func_res"
-			}
-		}
-	done
-}
-
-[[ $DOWNLOAD_MODE == yes ]] && {
-	echo "-> sources downloaded successfully."
-	exit 0
-}
-
-# **************************************************************************
-
-for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
-	[[ -n $REV_NUM ]] && REV_STRING="-r$REV_NUM" || REV_STRING=""
+[[ $BUILD_MODE == gcc ]] && {
 	GCC_PART_NAME=${GCC_NAME/gcc-/}
 	GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
-	GCC_PART_NAME=${GCC_PART_NAME//./}
-	GCC_TYPE_STRING=$(func_map_gcc_name_to_gcc_type $GCC_NAME)
-	PREREQ_BUILD_DIR=$ROOT_DIR/prereq-build
-	PREREQ_LOGS_DIR=$ROOT_DIR/prereq-logs
-	[[ $PYTHON_ONLY_MODE == no ]] && {
-		BASE_BUILD_DIR=$ROOT_DIR/$ARCHITECTURE-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}
-	} || {
-		BASE_BUILD_DIR=$ROOT_DIR/python-$PYTHON_VERSION-$ARCHITECTURE$REV_STRING
-	}
-	BUILDS_DIR=$BASE_BUILD_DIR/build
-	LIBS_DIR=$BASE_BUILD_DIR/libs
-	LOGS_DIR=$BASE_BUILD_DIR/logs
-	[[ $PYTHON_ONLY_MODE == no ]] && {
-		PREFIX=$BASE_BUILD_DIR/mingw${ARCHITECTURE/x/}
-	} || {
-		PREFIX=$BASE_BUILD_DIR/python-${PYTHON_VERSION}-${ARCHITECTURE}
-	}
-	MINGWPREFIX=/mingw${ARCHITECTURE/x/}
+	readonly GCC_PART_NAME=${GCC_PART_NAME//./}
+	readonly BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL-rt_${RUNTIME_VERSION}${REV_STRING}
+	readonly PREFIX=$BASE_BUILD_DIR/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
+	readonly MINGWPREFIX=/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
+	MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
+	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
+	readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)	
 
-	[[ $PYTHON_ONLY_MODE == no ]] && {
-		MINGW_BUILD_NAME=$ARCHITECTURE-${GCC_NAME/gcc-/}
-		MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
-		MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
+	[[ $USE_MULTILIB == yes ]] && {
+			readonly PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
+			readonly PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
+	} || {
+		[[ $BUILD_ARCHITECTURE == i686 ]] && {
+			readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
+			readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
+		} || {
+			readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
+			readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
+		}
+	}
+} || {
+	readonly BASE_BUILD_DIR=$ROOT_DIR/$BUILD_MODE-${BUILD_ARCHITECTURE}$REV_STRING
+	readonly PREFIX=$BASE_BUILD_DIR/${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}
+}
+
+readonly BUILDS_DIR=$BASE_BUILD_DIR/build
+readonly LIBS_DIR=$BASE_BUILD_DIR/libs
+readonly LOGS_DIR=$BASE_BUILD_DIR/logs
+
+mkdir -p \
+	$ARCHIVES_DIR \
+	$BASE_BUILD_DIR \
+	$PREFIX \
+	$BUILDS_DIR \
+	$LIBS_DIR \
+	$LOGS_DIR
+
+[[ $BUILD_MODE == gcc ]] && {
+	mkdir -p \
+		$PREREQ_DIR \
+		$RUNTIME_DIR \
+		$PREREQ_BUILD_DIR \
+		$PREREQ_LOGS_DIR
+}
+
+# **************************************************************************
+
+[[ $LINK_TYPE_SUFFIX == shared ]] && {
+	readonly x32_PATH=$PREREQ_DIR/$x32_HOST-$LINK_TYPE_SUFFIX/bin:$LIBS_DIR/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+	readonly x64_PATH=$PREREQ_DIR/$x64_HOST-$LINK_TYPE_SUFFIX/bin:$LIBS_DIR/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+} || {
+	readonly x32_PATH=$x32_HOST_MINGW_PATH/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+	readonly x64_PATH=$x64_HOST_MINGW_PATH/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+}
+
+# **************************************************************************
+
+case $BUILD_ARCHITECTURE in
+	i686)
+		[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc ]] && {
+			die "gcc is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
+		}
+		export PATH="$x32_PATH"
+	;;
+	x86_64)
+		[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc ]] && {
+			die "gcc is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
+		}
+		export PATH="$x64_PATH"
+	;;
+esac
+
+# **************************************************************************
+
+[[ $USE_MULTILIB == yes ]] && {
+	readonly REVERSE_HOST=$(func_get_reverse_triplet $HOST)
+	readonly REVERSE_BUILD=$(func_get_reverse_triplet $BUILD)
+	readonly REVERSE_TARGET=$(func_get_reverse_triplet $TARGET)
+	readonly ENABLE_TARGETS=${TARGET},${REVERSE_TARGET}
+} || {
+	readonly ENABLE_TARGETS=$TARGET
+}
+
+# **************************************************************************
+
+readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
+readonly COMMON_CXXFLAGS="$COMMON_CFLAGS"
+readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS"
+readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/opt/lib"
+
+# **************************************************************************
+
+[[ $FETCH_MODE == yes ]] && {
+	echo -n "-> fetch sources for building ${BUILD_MODE_VERSION}-"
+	[[ $BUILD_MODE == gcc ]] && {
+		[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ]] && echo -n "multilib-"
+		echo -n "${BUILD_ARCHITECTURE}-"
+		echo "$EXCEPTIONS_MODEL"
+	} || {
+		echo -n "${BUILD_ARCHITECTURE}"
+	}
+} || {
+	[[ $BUILD_MODE == gcc ]] && {
 		echo "-> start building $MINGW_BUILD_NAME"
 	} || {
-		echo "-> start building python-${PYTHON_VERSION}-${ARCHITECTURE}"
+		echo "-> start building ${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}"
 	}
+}
 
-	[[ $ARCHITECTURE == x32 ]] && {
-		HOST=i686-w64-mingw32
-		BUILD=i686-w64-mingw32
-		TARGET=i686-w64-mingw32
-		
-		[[ $USE_MULTILIB == yes ]] && {
-			TVIN_HOST=x86_64-w64-mingw32
-			TVIN_BUILD=x86_64-w64-mingw32
-			TVIN_TARGET=x86_64-w64-mingw32
-		}
-		
-		[[ $USE_MULTILIB == yes ]] && {
-			ENABLE_TARGETS=i686-w64-mingw32,x86_64-w64-mingw32
-		} || {
-			ENABLE_TARGETS=i686-w64-mingw32
-		}
-		[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc.exe ]] && {
-			die "gcc.exe is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
-		}
-		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREFIX/opt/bin:$x32_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
-	} || {
-		HOST=x86_64-w64-mingw32
-		BUILD=x86_64-w64-mingw32
-		TARGET=x86_64-w64-mingw32
-		
-		[[ $USE_MULTILIB == yes ]] && {
-			TVIN_HOST=i686-w64-mingw32
-			TVIN_BUILD=i686-w64-mingw32
-			TVIN_TARGET=i686-w64-mingw32
-		}
-		
-		[[ $USE_MULTILIB == yes ]] && {
-			ENABLE_TARGETS=x86_64-w64-mingw32,i686-w64-mingw32
-		} || {
-			ENABLE_TARGETS=x86_64-w64-mingw32
-		}
-		[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc.exe ]] && {
-			die "gcc.exe is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
-		}
-		export PATH=$LIBS_DIR/bin:$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREFIX/opt/bin:$x64_HOST_MINGW_PATH/bin:$PREFIX/bin:$ORIGINAL_PATH
+# **************************************************************************
+
+source $TOP_DIR/library/subtargets.sh
+
+readonly SUBTARGETS=( \
+	$(fun_get_subtargets \
+		$BUILD_MODE \
+		$BUILD_VERSION \
+	) \
+)
+
+for sub in ${SUBTARGETS[@]}; do
+	func_clear_env
+	[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
+		die "script for subtarget \"$sub\" is not exists. terminate."
 	}
-
-	mkdir -p $BASE_BUILD_DIR $BUILDS_DIR $LIBS_DIR $LOGS_DIR $PREFIX $PREREQ_BUILD_DIR $PREREQ_LOGS_DIR
-
-	COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/$ARCHITECTURE-zlib/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
-	COMMON_CXXFLAGS="$COMMON_CFLAGS"
-	COMMON_CPPFLAGS="$BASE_CPPFLAGS"
-	COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/$ARCHITECTURE-zlib/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/opt/lib"
-
-	[[ $PYTHON_ONLY_MODE == no ]] && {
-		[[ $USE_MULTILIB == yes ]] && {
-			SUBTARGETS=(
-				${LIBICONV_X32_SUBTARGETS[@]}
-				${LIBICONV_X64_SUBTARGETS[@]}
-				${ZLIB_X32_SUBTARGETS[@]}
-				${ZLIB_X64_SUBTARGETS[@]}	
-				${SUBTARGETS_PART1[@]}
-				${WINPTHREADS_X32_SUBTARGETS[@]}
-				${WINPTHREADS_X64_SUBTARGETS[@]}
-				${SUBTARGETS_PART2[@]}
-			)
-			PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
-			PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
-		} || {
-			[[ $ARCHITECTURE == x32 ]] && {
-				SUBTARGETS=(
-					${LIBICONV_X32_SUBTARGETS[@]}
-					${ZLIB_X32_SUBTARGETS[@]}
-					${SUBTARGETS_PART1[@]}
-					${WINPTHREADS_X32_SUBTARGETS[@]}
-					${SUBTARGETS_PART2[@]}
-				)
-				PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
-				PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
-			} || {
-				SUBTARGETS=(
-					${LIBICONV_X64_SUBTARGETS[@]}
-					${ZLIB_X64_SUBTARGETS[@]}
-					${SUBTARGETS_PART1[@]}
-					${WINPTHREADS_X64_SUBTARGETS[@]}
-					${SUBTARGETS_PART2[@]}
-				)
-				PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
-				PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
-			}
-		}
-	} || {
-		SUBTARGETS=(
-			${PYTHON_SUBTARGETS[@]}
-			cleanup
-			licenses
-			put-versions
-			put-info
-			$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
-		)
+	[[ $FETCH_MODE == yes ]] && {
+		[[ -z $( grep 'PKG_URLS=' $TOP_DIR/scripts/${sub}.sh ) ]] && continue
 	}
+	echo -e "-> \E[32;40m$sub\E[37;40m"
 
-	for sub in ${SUBTARGETS[@]}; do
-		echo -e "-> \E[32;40m$sub\E[37;40m"
-		[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
-			die "script for subtarget \"$sub\" is not exists. terminate."
-		}
+	source $TOP_DIR/scripts/$sub.sh
 
-		NAME=""
-		PRIORITY=""
-		EXECUTE_AFTER_DOWNLOAD=()
-		EXECUTE_AFTER_UNCOMPRESS=()
-		EXECUTE_AFTER_PATCH=()
-		EXECUTE_AFTER_INSTALL=()
+	[[ -z $PKG_NAME ]] && continue
 
-		cd $TOP_DIR && . ./scripts/$sub.sh
+	case $PKG_PRIORITY in
+		prereq | runtime)
+			CURR_LOGS_DIR=$PREREQ_LOGS_DIR
+			CURR_BUILD_DIR=$PREREQ_BUILD_DIR
+		;;
+		main | extra)
+			CURR_LOGS_DIR=$LOGS_DIR
+			CURR_BUILD_DIR=$BUILDS_DIR
+		;;
+		*)
+			CURR_LOGS_DIR=$LOGS_DIR
+			CURR_BUILD_DIR=$BUILDS_DIR
+		;;
+	esac
 	
-		[[ $sub == "gcc-post" ]] && {
-			echo -n "--> Switching to new compiler..."
-			export PATH=$PREFIX/bin:$PREFIX/opt/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
-			echo "done"
-		}
+	CONFIGURE_LOG=$CURR_LOGS_DIR/$PKG_NAME/configure.log
+	MAKE_LOG=$CURR_LOGS_DIR/$PKG_NAME/make.log
+	INSTALL_LOG=$CURR_LOGS_DIR/$PKG_NAME/install.log
 
-		[[ -z $NAME ]] && continue
+	mkdir -p $SRCS_DIR/$PKG_DIR_NAME
+	mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$PKG_NAME
+	[[ -n $PKG_SUBDIR_NAME ]] && { mkdir -p $CURR_BUILD_DIR/$PKG_NAME/$PKG_SUBDIR_NAME; }
+	#[[ $PKG_NAME != $PKG_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$PKG_NAME
 
-		case $PRIORITY in
-			prereq | runtime)
-				CURR_LOGS_DIR=$PREREQ_LOGS_DIR
-				CURR_BUILD_DIR=$PREREQ_BUILD_DIR
-			;;
-			main | extra)
-				CURR_LOGS_DIR=$LOGS_DIR
-				CURR_BUILD_DIR=$BUILDS_DIR
-			;;
-			*)
-				CURR_LOGS_DIR=$LOGS_DIR
-				CURR_BUILD_DIR=$BUILDS_DIR			
-			;;
-		esac
-		
-		DOWNLOAD_LOG=$MARKERS_DIR/${SRC_DIR_NAME}_download.log
-		DOWNLOAD_MARKER=$MARKERS_DIR/${SRC_DIR_NAME}_download.marker
-		UNCOMPRESS_LOG=$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.log
-		UNCOMPRESS_MARKER=$MARKERS_DIR/${SRC_DIR_NAME}_uncompress.marker
-		CONFIGURE_LOG=$CURR_LOGS_DIR/$NAME/configure.log
-		MAKE_LOG=$CURR_LOGS_DIR/$NAME/make.log
-		INSTALL_LOG=$CURR_LOGS_DIR/$NAME/install.log
+	func_download \
+		PKG_URLS[@]
 
-		mkdir -p $SRCS_DIR/$SRC_DIR_NAME
-		mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$NAME
-		#[[ $NAME != $SRC_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$NAME
+	func_uncompress \
+		PKG_URLS[@]
 
-		func_download \
-			$SRCS_DIR \
-			$SRC_DIR_NAME \
-			$TYPE \
-			$URL \
-			$DOWNLOAD_LOG \
-			$DOWNLOAD_MARKER \
-			$( grep 'REV=' $TOP_DIR/scripts/${sub}.sh | sed 's|REV=||' )
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $DOWNLOAD_LOG &
-			exit $func_res
-		}
-
-		func_uncompress \
-			$SRCS_DIR \
-			$SRC_DIR_NAME \
-			$TYPE \
-			$UNCOMPRESS_MARKER \
-			$UNCOMPRESS_LOG
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $UNCOMPRESS_LOG &
-			exit $func_res
-		}
-
-		[[ ${#EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
+	[[ $FETCH_MODE == no ]] && {
+		[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
 			func_execute \
 				$SRCS_DIR \
-				$SRC_DIR_NAME \
+				$PKG_DIR_NAME \
 				"execute commands..." \
 				"after_unpack" \
 				$CURR_LOGS_DIR \
-				EXECUTE_AFTER_UNCOMPRESS[@]
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_unpack-$_index.log &
-				exit $func_res
-			}
+				PKG_EXECUTE_AFTER_UNCOMPRESS[@]
 		}
 
 		func_apply_patches \
 			$SRCS_DIR \
-			$SRC_DIR_NAME \
+			$PKG_DIR_NAME \
 			$CURR_LOGS_DIR \
 			$PATCHES_DIR \
-			PATCHES[@]
-		func_res=$?
-		[[ $func_res != 0 ]] && {
-			[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/patch-$_index.log &
-			exit $func_res
-		}
+			PKG_PATCHES[@]
 
-		[[ ${#EXECUTE_AFTER_PATCH[@]} >0 ]] && {
+		[[ ${#PKG_EXECUTE_AFTER_PATCH[@]} >0 ]] && {
 			func_execute \
 				$SRCS_DIR \
-				$SRC_DIR_NAME \
+				$PKG_DIR_NAME \
 				"execute commands..." \
 				"after_patch" \
 				$CURR_LOGS_DIR \
-				EXECUTE_AFTER_PATCH[@]
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $SRCS_DIR/$SRC_DIR_NAME/exec-after_patch-$_index.log &
-				exit $func_res
-			}
+				PKG_EXECUTE_AFTER_PATCH[@]
 		}
 
-		[[ ${#CONFIGURE_FLAGS[@]} >0 ]] && {
-			configure_flags="${CONFIGURE_FLAGS[@]}"
+		[[ ${#PKG_CONFIGURE_FLAGS[@]} >0 ]] && {
+			configure_flags="${PKG_CONFIGURE_FLAGS[@]}"
 			func_configure \
-				$NAME \
-				$SRC_DIR_NAME \
+				$PKG_NAME \
+				$PKG_DIR_NAME \
 				"$configure_flags" \
 				$CONFIGURE_LOG \
-				$CURR_BUILD_DIR
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CONFIGURE_LOG &
-				exit $func_res
-			}
+				$CURR_BUILD_DIR \
+				$PKG_SUBDIR_NAME
 		}
 
-		[[ ${#MAKE_FLAGS[@]} >0 ]] && {
-			make_flags="/bin/make ${MAKE_FLAGS[@]}"
+		[[ ${#PKG_EXECUTE_AFTER_CONFIGURE[@]} >0 ]] && {
+			func_execute \
+				$CURR_BUILD_DIR \
+				$PKG_NAME \
+				"execute commands..." \
+				"after_configure" \
+				$CURR_LOGS_DIR \
+				PKG_EXECUTE_AFTER_CONFIGURE[@]
+		}
+
+		[[ ${#PKG_MAKE_FLAGS[@]} >0 ]] && {
+			make_flags="/bin/make ${PKG_MAKE_FLAGS[@]}"
 			func_make \
-				$NAME \
-				$SRC_DIR_NAME \
+				$PKG_NAME \
+				$PKG_DIR_NAME \
 				"$make_flags" \
 				$MAKE_LOG \
 				"building..." \
 				"built" \
-				$CURR_BUILD_DIR
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $MAKE_LOG &
-				exit $func_res
-			}
+				$CURR_BUILD_DIR \
+				$PKG_SUBDIR_NAME
 		}
 
-		[[ ${#INSTALL_FLAGS[@]} >0 ]] && {
-			install_flags="/bin/make ${INSTALL_FLAGS[@]}"
+		[[ ${#PKG_INSTALL_FLAGS[@]} >0 ]] && {
+			install_flags="/bin/make ${PKG_INSTALL_FLAGS[@]}"
 			func_make \
-				$NAME \
-				$SRC_DIR_NAME \
+				$PKG_NAME \
+				$PKG_DIR_NAME \
 				"$install_flags" \
 				$INSTALL_LOG \
 				"installing..." \
 				"installed" \
-				$CURR_BUILD_DIR
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $INSTALL_LOG &
-				exit $func_res
-			}
+				$CURR_BUILD_DIR \
+				$PKG_SUBDIR_NAME
 		}
-		
-		[[ ${#EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
+	
+		[[ ${#PKG_EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
 			func_execute \
 				$CURR_BUILD_DIR \
-				$NAME \
+				$PKG_NAME \
 				"execute commands..." \
 				"after_install" \
 				$CURR_LOGS_DIR \
-				EXECUTE_AFTER_INSTALL[@]
-			func_res=$?
-			[[ $func_res != 0 ]] && {
-				[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $CURR_BUILD_DIR/$NAME/exec-after_install-$_index.log &
-				exit $func_res
-			}
+				PKG_EXECUTE_AFTER_INSTALL[@]
 		}
-   done
+	}
 done
+
+func_clear_env
+
+[[ $FETCH_MODE == yes ]] && {
+	echo "Sources downloaded successfully."
+	exit 0
+}
 
 # ***************************************************************************
 
 [[ $COMPRESSING_SRCS == yes ]] && {
 	echo -e "-> \E[32;40mcompress mingw sources\E[37;40m"
-	cd $TOP_DIR && . ./scripts/srcs-compress.sh
+	source $TOP_DIR/scripts/srcs-compress.sh
 }
 
 # ***************************************************************************
 
-func_download_repository_file "$HOME/repository.txt"
+[[ $UPLOAD_MINGW == yes ]] && {
+	mingw_archive_name=$( \
+		func_create_mingw_archive_name \
+			$ARCHIVES_DIR \
+			$SRCS_DIR \
+			$GCC_NAME \
+			$BUILD_ARCHITECTURE \
+			$EXCEPTIONS_MODEL \
+			$THREADS_MODEL \
+			$REV_NUM \
+	)
 
-[[ $UPLOAD_BIN_TO_SF == yes ]] && {
-	cd $TOP_DIR; . ./scripts/upload.sh
-	[[ -z $SF_USER ]] && {
-		echo "user name is not specified. terminate."
-		exit 0
-	}
-
-	for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
-		mingw_archive_name=$( \
-			func_create_mingw_archive_name \
-				$ARCHIVES_DIR \
-				$SRCS_DIR \
-				$GCC_NAME \
-				$ARCHITECTURE \
-				$EXCEPTIONS_MODEL \
-				$THREADS_MODEL \
-				$REV_NUM \
-		)
-
-		upload_cmd=$( \
-			func_create_mingw_upload_cmd \
-				$ARCHIVES_DIR \
-				$SF_USER \
-				$GCC_NAME \
-				$mingw_archive_name \
-				$ARCHITECTURE \
-				$THREADS_MODEL \
-				$EXCEPTIONS_MODEL \
-		)
-		echo -e -n "-> \E[32;40mupload $ARCHITECTURE archive...\E[37;40m"
-		[[ $DEBUG_UPLOAD == yes ]] && {
-			echo "bin_cmd:${upload_cmd}"
-		} || {
-			eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/$ARCHITECTURE-upload.log 2>&1"
-		}
-
+	upload_cmd=$( \
+		func_create_mingw_upload_cmd \
+			$ARCHIVES_DIR \
+			$SF_USER \
+			$SF_PASSWORD \
+			$GCC_NAME \
+			$mingw_archive_name \
+			$BUILD_ARCHITECTURE \
+			$THREADS_MODEL \
+			$EXCEPTIONS_MODEL \
+	)
+	mingw_archive_size=$(du -h $mingw_archive_name | cut -f 1)
+	echo -e -n "-> \E[32;40mupload $(basename $mingw_archive_name) ($mingw_archive_size) ...\E[37;40m"
+	[[ $DEBUG_UPLOAD == yes ]] && {
+		echo
+		echo "bin_cmd:${upload_cmd}"
+	} || {
+		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-mingw-upload.log 2>&1"
 		func_res=$?
 		[[ $func_res != 0 ]] && {
-			die "upload finished with error($func_res). terminate."
+			echo " error!"
+			func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-mingw-upload.log
+			die "upload finished with error($func_res). terminate." $func_res
 		} || {
-			echo "done"
+			echo " done"
 		}
-	done
+	}
+	[[ $(func_map_gcc_name_to_gcc_type $GCC_NAME) == release ]] && {
+		echo -e -n "--> \E[32;40mdownload repository file...\E[37;40m"
+		[[ $DEBUG_UPLOAD == yes ]] && {
+			func_res=0
+		} || {
+			wget $REPOSITORY_FILE -O $TMP/$(basename $REPOSITORY_FILE) > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-download.log 2>&1
+			func_res=$?
+		}
+		[[ $func_res != 0 ]] && {
+			func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-download.log
+			die " error($func_res) when downloading repository file. terminate." $func_res
+		} || {
+			echo " done"
+		}
+	
+		echo -e -n "--> \E[32;40mupdate repository file...\E[37;40m"
+		[[ $DEBUG_UPLOAD == no ]] && {
+			func_update_repository_file \
+				$TMP/$(basename $REPOSITORY_FILE) \
+				$(func_map_gcc_name_to_gcc_version $GCC_NAME) \
+				$BUILD_ARCHITECTURE \
+				$THREADS_MODEL \
+				$EXCEPTIONS_MODEL \
+				$REV_NUM \
+				$(func_create_url_for_archive \
+					$PROJECT_ROOT_URL \
+					$GCC_NAME \
+					$BUILD_ARCHITECTURE \
+					$THREADS_MODEL \
+					$EXCEPTIONS_MODEL \
+				) \
+				$(basename $mingw_archive_name)
+		}
+		echo " done"
+		
+		upload_cmd=$( \
+			func_create_repository_file_upload_cmd \
+				$TMP/$(basename $REPOSITORY_FILE) \
+				$SF_USER \
+				$SF_PASSWORD \
+		)
+		echo -e -n "--> \E[32;40mupload repository file...\E[37;40m"
+		[[ $DEBUG_UPLOAD == yes ]] && {
+			echo "rep_cmd:${upload_cmd}"
+		} || {
+			eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-upload.log 2>&1"
+			func_res=$?
+			[[ $func_res != 0 ]] && {
+				func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-upload.log
+				die " error($func_res) when uploading repository file. terminate." $func_res
+			} || {
+				echo " done"
+			}
+		}
+	}
 }
 
-[[ $UPLOAD_SRC_TO_SF == yes ]] && {
-	cd $TOP_DIR; . ./scripts/upload.sh
-	[[ -z $SF_USER ]] && {
-		echo "user name is not specified. terminate."
-		exit 0
-	}
-	
+[[ $UPLOAD_SOURCES == yes ]] && {
 	sources_archive_name=$( \
 		func_create_sources_archive_name \
 			$ARCHIVES_DIR \
@@ -1015,9 +707,12 @@ func_download_repository_file "$HOME/repository.txt"
 		func_create_sources_upload_cmd \
 			$ARCHIVES_DIR \
 			$SF_USER \
+			$SF_PASSWORD \
 			$GCC_NAME \
 			$sources_archive_name \
 	)
+	sources_archive_size=$(du -h $sources_archive_name | cut -f 1)
+	echo -e -n "-> \E[32;40mupload $(basename $sources_archive_name) ($sources_archive_size) ...\E[37;40m"
 	[[ $DEBUG_UPLOAD == yes ]] && {
 		echo "src_cmd:${upload_cmd}"
 	} || {
@@ -1026,7 +721,10 @@ func_download_repository_file "$HOME/repository.txt"
 	
 	func_res=$?
 	[[ $func_res != 0 ]] && {
-		die "upload finished with error($func_res). terminate."
+		func_show_log $LOGS_DIR/$GCC_NAME/sources-upload.log
+		die " upload finished with error($func_res). terminate." $func_res
+	} || {
+		echo " done"
 	}
 }
 
