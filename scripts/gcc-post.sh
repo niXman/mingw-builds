@@ -46,9 +46,11 @@ function gcc_post_install {
 
 		local _gcc_version=$(func_map_gcc_name_to_gcc_version $GCC_NAME)
 		local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
-		# libgcc_s.a
-		cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ \
-			|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib"
+		[[ $BUILD_SHARED_GCC == yes ]] && {
+			# libgcc_s.a
+			cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ \
+				|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib"
+		}
 
 		func_has_lang objc
 		local is_objc=$?
@@ -65,7 +67,7 @@ function gcc_post_install {
 				|| die "Cannot copy objc headers to $PREFIX/lib/gcc/$TARGET/$_gcc_version/include"
 		}
 
-		[[ $BUILD_SHARED_GCC == yes ]] & {
+		[[ $BUILD_SHARED_GCC == yes ]] && {
 			# builded architecture dlls
 			local _dlls=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \
 					-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune \) \
@@ -82,9 +84,11 @@ function gcc_post_install {
 			}
 		}
 		[[ $USE_MULTILIB == yes ]] && {
-			# libgcc_s.a
-			cp -f $PREFIX/lib/gcc/$TARGET/lib${_reverse_bits}/libgcc_s.a $PREFIX/$TARGET/lib${_reverse_bits}/ \
-				|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib${_reverse_bits}/"
+			[[ $BUILD_SHARED_GCC == yes ]] && {
+				# libgcc_s.a
+				cp -f $PREFIX/lib/gcc/$TARGET/lib${_reverse_bits}/libgcc_s.a $PREFIX/$TARGET/lib${_reverse_bits}/ \
+					|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib${_reverse_bits}/"
+			}
 
 			[[ $is_objc == 1 ]] && {
 				# libobjc libraries
