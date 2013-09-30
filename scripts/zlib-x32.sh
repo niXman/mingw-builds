@@ -44,6 +44,7 @@ PKG_URLS=(
 )
 
 PKG_PRIORITY=prereq
+PKG_LNDIR=yes
 
 #
 
@@ -53,15 +54,6 @@ PKG_PATCHES=(
 	zlib/03-dont-put-sodir-into-L.mingw.patch
 	zlib/04-wrong-w8-check.mingw.patch
 	zlib/05-fix-a-typo.mingw.patch
-)
-
-#
-
-PKG_EXECUTE_AFTER_PATCH=(
-	"mkdir -p $PREREQ_BUILD_DIR/i686-$PKG_DIR_NAME"
-	"mkdir -p $PREREQ_BUILD_DIR/x86_64-$PKG_DIR_NAME"
-	"lndir $SRCS_DIR/$PKG_DIR_NAME $PREREQ_BUILD_DIR/i686-$PKG_DIR_NAME"
-	"lndir $SRCS_DIR/$PKG_DIR_NAME $PREREQ_BUILD_DIR/x86_64-$PKG_DIR_NAME"
 )
 
 #

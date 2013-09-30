@@ -43,6 +43,7 @@ function func_clear_env {
 	unset PKG_TYPE
 	unset PKG_REVISION
 	unset PKG_URLS
+	unset PKG_LNDIR
 	unset PKG_EXECUTE_AFTER_DOWNLOAD
 	unset PKG_EXECUTE_AFTER_UNCOMPRESS
 	unset PKG_PATCHES
@@ -608,21 +609,35 @@ function func_configure {
 	# $3 - flags
 	# $4 - log file name
 	# $5 - build dir
-	# $6 - build subdir
+	# $6 - lndir
+	# $7 - build subdir
 
+	[[ $6 == yes ]] && {
+		mkdir -p $5/$1
+		[[ ! -f $5/$1/lndir/marker ]] && {
+			lndir $SRCS_DIR/$2 $5/$1 > /dev/null
+			touch $5/$1/lndir.marker
+		}
+	}
 	local _marker=$5/$1/_configure.marker
 	local _result=0
-	local _subbuilddir=$2
-	local _subsrcdir=$1
-	[[ -n $6 ]] && {
-		_subbuilddir=$_subbuilddir/$6
-		_subsrcdir=$_subsrcdir/$6
+	local _subsrcdir=$2
+	local _subbuilddir=$1
+	[[ -n $7 ]] && {
+		_subbuilddir=$_subbuilddir/$7
+		_subsrcdir=$_subsrcdir/$7
 	}
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> configure..."
-		pushd $5/$_subsrcdir > /dev/null
-		eval $( func_absolute_to_relative $5/$_subsrcdir $SRCS_DIR/$_subbuilddir )/configure "${3}" > $4 2>&1
+		pushd $5/$_subbuilddir > /dev/null
+		[[ $6 == yes ]] && {
+			local _rel_dir="."
+			[[ -n $7 ]] && { _rel_dir=${_rel_dir}/$7; }
+		} || {
+			local _rel_dir=$( func_absolute_to_relative $5/$_subbuilddir $SRCS_DIR/$_subsrcdir )
+		}
+		eval $_rel_dir/configure "${3}" > $4 2>&1
 		_result=$?
 		popd > /dev/null
 		[[ $_result == 0 ]] && {
