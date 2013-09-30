@@ -633,7 +633,6 @@ function func_configure {
 		pushd $5/$_subbuilddir > /dev/null
 		[[ $6 == yes ]] && {
 			local _rel_dir="."
-			[[ -n $7 ]] && { _rel_dir=${_rel_dir}/$7; }
 		} || {
 			local _rel_dir=$( func_absolute_to_relative $5/$_subbuilddir $SRCS_DIR/$_subsrcdir )
 		}
