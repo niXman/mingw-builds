@@ -850,7 +850,11 @@ function func_map_gcc_name_to_gcc_build_name {
 
 	local _gcc_type=$(func_map_gcc_name_to_gcc_type $2)
 	local _gcc_version=$(func_map_gcc_name_to_gcc_version $2)
-	local _build_name=$_gcc_version-$_gcc_type
+	local _build_name=$_gcc_version
+	[[ $BUILD_SHARED_GCC == no ]] && {
+		_build_name=$_build_name-static
+	}
+	_build_name=$_build_name-$_gcc_type
 
 	[[ $_gcc_type != release ]] && {
 		case $2 in
