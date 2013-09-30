@@ -78,6 +78,7 @@ PROCESSOR_OPTIMIZATION_ARCH_64='nocona'
 LINK_TYPE_BOTH="--enable-shared --enable-static"
 LINK_TYPE_SHARED="--enable-shared --disable-static"
 LINK_TYPE_STATIC="--enable-static --disable-shared"
+LINK_TYPE_GCC=$LINK_TYPE_BOTH
 GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
 
 ENABLE_LANGUAGES='ada,c,c++,fortran,objc,obj-c++'
@@ -108,6 +109,7 @@ SF_USER=
 SF_PASSWORD=
 DEBUG_UPLOAD=no
 LINK_TYPE_SUFFIX=static
+BUILD_SHARED_GCC=yes
 
 BUILD_MODE=
 BUILD_MODE_VERSION=

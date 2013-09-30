@@ -61,9 +61,10 @@ readonly RUN_ARGS="$@"
 	echo "    --bootstrap                - bootstraping GCC"
 	echo "    --no-multilib              - build GCC without multilib support"
 	echo "    --no-strip                 - don't strip dll's & executables on install"
+	echo "    --static-gcc               - build static GCC"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
 	echo "    --jobs=N                   - specifies number of parallel make threads"
-	echo "    --rt-version=<v3|v4|trunk>    - specifies mingw-w64 runtime version to build"
+	echo "    --rt-version=<v3|v4|trunk> - specifies mingw-w64 runtime version to build"
 	echo "    --rev=N                    - specifies number of the build revision"
 	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++"
 	echo "                                 available: win32, posix"
@@ -165,9 +166,17 @@ while [[ $# > 0 ]]; do
 		;;
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-strip) STRIP_ON_INSTALL=no ;;
+		--static-gcc)
+			LINK_TYPE_GCC=$LINK_TYPE_STATIC
+			GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
+			BUILD_SHARED_GCC=no
+			LINK_TYPE_SUFFIX=static
+		;;
 		--dyn-deps)
-			GCC_DEPS_LINK_TYPE=$LINK_TYPE_SHARED
-			LINK_TYPE_SUFFIX=shared
+			[[ $BUILD_SHARED_GCC == yes ]] && {
+				GCC_DEPS_LINK_TYPE=$LINK_TYPE_SHARED
+				LINK_TYPE_SUFFIX=shared
+			}
 		;;
 		--jobs=*)
 			[[ ${1/--jobs=/} == 0 ]] && {
