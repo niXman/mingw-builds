@@ -63,8 +63,8 @@ function runtime_post_install {
 		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
 		# zlib
-		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
-		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib/include/*.h $PREFIX/$TARGET/include/ || exit 1
+		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
 
 		# winpthreads
 		[[ $BUILD_SHARED_GCC == yes ]] && {
@@ -83,7 +83,7 @@ function runtime_post_install {
 			# iconv
 			cp -f $PREREQ_DIR/${_reverse_arch}-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
 			# zlib
-			cp -f $PREREQ_DIR/${_reverse_arch}-zlib/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			cp -f $PREREQ_DIR/${_reverse_arch}-zlib-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
 
 			# winpthreads
 			[[ $BUILD_SHARED_GCC == yes ]] && {

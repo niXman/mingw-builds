@@ -36,7 +36,7 @@
 # **************************************************************************
 
 PKG_VERSION=1.2.8
-PKG_NAME=x86_64-zlib-${PKG_VERSION}
+PKG_NAME=x86_64-zlib-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=zlib-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
@@ -67,7 +67,7 @@ PKG_EXECUTE_AFTER_PATCH=(
 #
 
 PKG_CONFIGURE_FLAGS=(
-	--prefix=$PREREQ_DIR/x86_64-zlib
+	--prefix=$PREREQ_DIR/x86_64-zlib-$LINK_TYPE_SUFFIX
 	$( [[ $GCC_DEPS_LINK_TYPE == $LINK_TYPE_SHARED ]] \
 		&& echo "--shared" \
 		|| echo "--static" \
