@@ -614,7 +614,7 @@ function func_configure {
 
 	[[ $6 == yes ]] && {
 		mkdir -p $5/$1
-		[[ ! -f $5/$1/lndir/marker ]] && {
+		[[ ! -f $5/$1/lndir.marker ]] && {
 			lndir $SRCS_DIR/$2 $5/$1 > /dev/null
 			touch $5/$1/lndir.marker
 		}
