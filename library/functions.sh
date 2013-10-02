@@ -446,9 +446,13 @@ function func_uncompress {
 		done
 
 		_lib_name=${_root}/${_dir}
-		_filename=$(basename ${_params[0]})	
-		_log_name=$SRCS_DIR/$PKG_DIR_NAME/${_filename}-unpack.log
-		_marker_name=$SRCS_DIR/$PKG_DIR_NAME/${_filename}-unpack.marker
+		_filename=$(basename ${_params[0]})
+		local _log_dir=$SRCS_DIR/$PKG_DIR_NAME
+		[[ -n $2 ]] && {
+			_log_dir=$2
+		}
+		_log_name=$_log_dir/${_filename}-unpack.log
+		_marker_name=$_log_dir/${_filename}-unpack.marker
 		_ext=$(func_get_filename_extension $_filename)
 		[[ $_ext == .tar.gz || $_ext == .tar.bz2 || $_ext == .tar.lzma || $_ext == .tar.xz \
 		|| $_ext == .tar.7z || $_ext == .7z || $_ext == .tgz || $_ext == .zip ]] && {
@@ -785,7 +789,7 @@ function func_abstract_toolchain {
 	local _do_install=no
 
 	echo -e "-> \E[32;40m$4 toolchain\E[37;40m"
-	[[ ! -f $MARKERS_DIR/${_filename}-unpack.marker ]] && {
+	[[ ! -f $1/${_filename}-unpack.marker ]] && {
 		[[ -d $3 ]] && {
 			echo "--> Found previously installed $4 toolchain."
 			echo -n "---> Remove previous $4 toolchain..."
@@ -795,7 +799,7 @@ function func_abstract_toolchain {
 			echo -n "--> $4 toolchain is not installed."
 		}
 		func_download _url[@]
-		func_uncompress _url[@]
+		func_uncompress _url[@] $1
 	} || {
 		echo "--> Toolchain installed."
 	}
