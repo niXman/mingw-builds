@@ -1,6 +1,6 @@
 diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
---- a/Lib/distutils/command/install.py	2013-06-26 22:19:35.487603398 +0100
-+++ b/Lib/distutils/command/install.py	2013-06-26 22:24:15.000000000 +0100
+--- a/Lib/distutils/command/install.py	2013-09-12 20:04:41.300823583 +0100
++++ b/Lib/distutils/command/install.py	2013-09-12 20:04:41.604161589 +0100
 @@ -348,7 +348,8 @@
  
          # Convert directories from Unix /-separated syntax to the local
@@ -12,8 +12,8 @@ diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
                             'userbase', 'usersite')
  
 diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
---- a/Lib/distutils/util.py	2013-06-26 22:19:35.484270065 +0100
-+++ b/Lib/distutils/util.py	2013-06-26 22:25:38.000000000 +0100
+--- a/Lib/distutils/util.py	2013-09-12 20:04:41.300823583 +0100
++++ b/Lib/distutils/util.py	2013-09-12 20:04:41.604161589 +0100
 @@ -130,6 +130,13 @@
          paths.remove('.')
      if not paths:
@@ -52,11 +52,9 @@ diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
 -    elif os.name == 'os2':
 +    elif os.name == 'nt' or os.name == 'os2':
          (drive, path) = os.path.splitdrive(pathname)
--        if path[0] == os.sep:
--            path = path[1:]
+         if path[0] == os.sep:
+             path = path[1:]
 -        return os.path.join(new_root, path)
-+        if path[0] == os.sep:
-+            path = path[1:]
 +        (drive_r, path_r) = os.path.splitdrive(new_root)
 +        drive_used = ''
 +        if len(drive) == 2 and len(drive_r) == 2 and drive != drive_r:
@@ -71,14 +69,36 @@ diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
      else:
          raise DistutilsPlatformError, \
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-06-26 22:19:35.517603398 +0100
-+++ b/Makefile.pre.in	2013-06-26 22:20:01.047603789 +0100
-@@ -1147,7 +1147,7 @@
+--- a/Makefile.pre.in	2013-09-12 20:04:41.334157391 +0100
++++ b/Makefile.pre.in	2013-09-12 20:40:58.000000000 +0100
+@@ -1140,6 +1140,12 @@
+ 		;; \
+ 	esac
+ 
++ifeq ($(shell uname -o),Msys)
++DESTDIRFINAL=$(DESTDIR)
++else
++DESTDIRFINAL=$(DESTDIR)/
++endif
++
+ # Install the dynamically loadable modules
+ # This goes into $(exec_prefix)
+ sharedinstall: sharedmods
+@@ -1147,7 +1153,7 @@
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
 -		--root=$(DESTDIR)/
-+		--root=$(DESTDIR)
++		--root=$(DESTDIRFINAL)
  	-rm $(DESTDIR)$(DESTSHARED)/_sysconfigdata.py*
  
  # Here are a couple of targets for MacOSX again, to install a full
+@@ -1220,7 +1226,7 @@
+ 	$(PYTHON_FOR_BUILD) $(srcdir)/Tools/scripts/setup.py install \
+ 	--prefix=$(prefix) \
+ 	--install-scripts=$(BINDIR) \
+-	--root=$(DESTDIR)/
++	--root=$(DESTDIRFINAL)
+ 
+ # Build the toplevel Makefile
+ Makefile.pre: Makefile.pre.in config.status
