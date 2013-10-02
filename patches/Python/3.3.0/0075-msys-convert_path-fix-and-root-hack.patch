@@ -1,6 +1,6 @@
 diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
---- a/Lib/distutils/command/install.py	2013-06-27 23:29:39.235654844 +0100
-+++ b/Lib/distutils/command/install.py	2013-06-27 23:29:40.362321528 +0100
+--- a/Lib/distutils/command/install.py	2013-10-02 15:16:13.865639900 +0100
++++ b/Lib/distutils/command/install.py	2013-10-02 15:17:54.856416300 +0100
 @@ -370,7 +370,8 @@
  
          # Convert directories from Unix /-separated syntax to the local
@@ -12,8 +12,8 @@ diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
                             'userbase', 'usersite')
  
 diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
---- a/Lib/distutils/util.py	2013-06-27 23:29:39.225654843 +0100
-+++ b/Lib/distutils/util.py	2013-06-28 01:07:32.000000000 +0100
+--- a/Lib/distutils/util.py	2013-10-02 15:16:14.143655800 +0100
++++ b/Lib/distutils/util.py	2013-10-02 15:17:54.861416600 +0100
 @@ -131,6 +131,13 @@
          paths.remove('.')
      if not paths:
@@ -69,23 +69,36 @@ diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
      else:
          raise DistutilsPlatformError("nothing known about platform '%s'" % os.name)
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-06-27 23:29:39.362321513 +0100
-+++ b/Makefile.pre.in	2013-06-27 23:30:17.755655432 +0100
-@@ -1214,7 +1214,7 @@
+--- a/Makefile.pre.in	2013-10-02 15:16:16.765805800 +0100
++++ b/Makefile.pre.in	2013-10-02 15:18:48.402478900 +0100
+@@ -1207,6 +1207,12 @@
+ 	else true; \
+ 	fi
+ 
++ifeq ($(shell uname -o),Msys)
++DESTDIRFINAL=$(DESTDIR)
++else
++DESTDIRFINAL=$(DESTDIR)/
++endif
++
+ # Install the dynamically loadable modules
+ # This goes into $(exec_prefix)
+ sharedinstall: sharedmods
+@@ -1214,7 +1220,7 @@
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
 -		--root=$(DESTDIR)/
-+		--root=$(DESTDIR)
++		--root=$(DESTDIRFINAL)
  
  # Here are a couple of targets for MacOSX again, to install a full
  # framework-based Python. frameworkinstall installs everything, the
-@@ -1288,7 +1288,7 @@
+@@ -1288,7 +1294,7 @@
  	$(PYTHON_FOR_BUILD) $(srcdir)/Tools/scripts/setup.py install \
  	--prefix=$(prefix) \
  	--install-scripts=$(BINDIR) \
 -	--root=$(DESTDIR)/
-+	--root=$(DESTDIR)
++	--root=$(DESTDIRFINAL)
  
  # Build the toplevel Makefile
  Makefile.pre: $(srcdir)/Makefile.pre.in config.status
