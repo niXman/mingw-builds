@@ -48,7 +48,9 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	tk/tk-8.6.1-mingwexcept.patch
+)
 
 #
 
