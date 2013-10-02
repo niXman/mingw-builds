@@ -47,7 +47,9 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	#ncurses/ncurses-5.9-dev-20130921.patch
+)
 
 #
 
