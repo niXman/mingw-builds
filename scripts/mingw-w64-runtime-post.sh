@@ -59,12 +59,26 @@ function runtime_post_install {
 		mkdir -p $PREFIX/bin $PREFIX/$TARGET/{lib,include}
 
 		# iconv
-		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
 		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
+		[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
+			cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/lib/*.dll.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/ || exit 1
+			cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/$TARGET/lib/ || exit 1
+		}
+		[[ $GCC_DEPS_LINK_TYPE == *--enable-static* ]] && {
+			cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
+		}
 
 		# zlib
-		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || exit 1
 		cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || exit 1
+		[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
+			cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/lib/libz.dll.a $PREFIX/$TARGET/lib/ || exit 1
+			cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/ || exit 1
+			cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/$TARGET/lib/ || exit 1
+		}
+		[[ $GCC_DEPS_LINK_TYPE == *--enable-static* ]] && {
+			cp -f $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/lib/libz.a $PREFIX/$TARGET/lib/ || exit 1
+		}
 
 		# winpthreads
 		[[ $BUILD_SHARED_GCC == yes ]] && {
@@ -81,9 +95,22 @@ function runtime_post_install {
 			mkdir -p $PREFIX/$TARGET/lib${_reverse_bits}
 
 			# iconv
-			cp -f $PREREQ_DIR/${_reverse_arch}-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
+				cp -f $PREREQ_DIR/${_reverse_arch}-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+				cp -f $PREREQ_DIR/${_reverse_arch}-libiconv-$LINK_TYPE_SUFFIX/lib/*.dll.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			}
+			[[ $GCC_DEPS_LINK_TYPE == *--enable-static* ]] && {
+				cp -f $PREREQ_DIR/${_reverse_arch}-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			}
+
 			# zlib
-			cp -f $PREREQ_DIR/${_reverse_arch}-zlib-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
+				cp -f $PREREQ_DIR/${_reverse_arch}-zlib-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+				cp -f $PREREQ_DIR/${_reverse_arch}-zlib-$LINK_TYPE_SUFFIX/lib/*.dll.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			}
+			[[ $GCC_DEPS_LINK_TYPE == *--enable-static* ]] && {
+				cp -f $PREREQ_DIR/${_reverse_arch}-zlib-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib${_reverse_bits}/ || exit 1
+			}
 
 			# winpthreads
 			[[ $BUILD_SHARED_GCC == yes ]] && {
