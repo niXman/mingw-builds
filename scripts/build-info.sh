@@ -50,8 +50,6 @@ function func_build_info() {
 	}
 	echo "args    : $_RUN_ARGS" >> $INFO_FILE
 	echo "PATH    : $ORIGINAL_PATH" >> $INFO_FILE
-	echo "x32_PATH: $x32_PATH" >> $INFO_FILE
-	echo "x64_PATH: $x64_PATH" >> $INFO_FILE
 	echo >> $INFO_FILE
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE

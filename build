@@ -50,7 +50,7 @@ source library/default_config.sh
 readonly RUN_ARGS="$@"
 [[ $# == 1 && $1 == --help	|| $[ $# == 0 ] == 1 ]] && {
 	echo "usage:"
-	echo "  ./${0##*/} --mode=[clang|gcc|python]-version --arch=<x32|x64> [OPTIONS]"
+	echo "  ./${0##*/} --mode=[clang|gcc|python]-version --arch=<i686|x86_64> [OPTIONS]"
 	echo "  help:"
 	echo "    --buildroot=<path>         - specifies the build root directory"
 	echo "    --fetch-only               - download sources without building"
@@ -393,28 +393,24 @@ mkdir -p \
 
 # **************************************************************************
 
-[[ $LINK_TYPE_SUFFIX == shared ]] && {
-	readonly x32_PATH=$PREREQ_DIR/$x32_HOST-$LINK_TYPE_SUFFIX/bin:$LIBS_DIR/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-	readonly x64_PATH=$PREREQ_DIR/$x64_HOST-$LINK_TYPE_SUFFIX/bin:$LIBS_DIR/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-} || {
-	readonly x32_PATH=$x32_HOST_MINGW_PATH/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
-	readonly x64_PATH=$x64_HOST_MINGW_PATH/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
-}
-
-# **************************************************************************
-
 case $BUILD_ARCHITECTURE in
 	i686)
 		[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc ]] && {
 			die "gcc is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
 		}
-		export PATH="$x32_PATH"
+		export PATH=$LIBS_DIR/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+		[[ $LINK_TYPE_SUFFIX == shared ]] && {
+			export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PATH
+		}
 	;;
 	x86_64)
 		[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc ]] && {
 			die "gcc is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
 		}
-		export PATH="$x64_PATH"
+		export PATH=$LIBS_DIR/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+		[[ $LINK_TYPE_SUFFIX == shared ]] && {
+			export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PATH
+		}
 	;;
 esac
 
