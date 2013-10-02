@@ -447,8 +447,8 @@ function func_uncompress {
 
 		_lib_name=${_root}/${_dir}
 		_filename=$(basename ${_params[0]})	
-		_log_name=$MARKERS_DIR/${_filename}-unpack.log
-		_marker_name=$MARKERS_DIR/${_filename}-unpack.marker
+		_log_name=$SRCS_DIR/$PKG_DIR_NAME/${_filename}-unpack.log
+		_marker_name=$SRCS_DIR/$PKG_DIR_NAME/${_filename}-unpack.marker
 		_ext=$(func_get_filename_extension $_filename)
 		[[ $_ext == .tar.gz || $_ext == .tar.bz2 || $_ext == .tar.lzma || $_ext == .tar.xz \
 		|| $_ext == .tar.7z || $_ext == .7z || $_ext == .tgz || $_ext == .zip ]] && {

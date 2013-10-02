@@ -10,6 +10,15 @@
  LIBS=$(STATICLIB) $(SHAREDLIBV)
  
  AR=ar
+@@ -48,7 +51,7 @@
+ prefix = /usr/local
+ exec_prefix = ${prefix}
+ libdir = ${exec_prefix}/lib
+-sharedlibdir = ${libdir}
++sharedlibdir = ${exec_prefix}/bin
+ includedir = ${prefix}/include
+ mandir = ${prefix}/share/man
+ man3dir = ${mandir}/man3
 @@ -114,17 +117,17 @@ test64: all64
  	rm -f $$TMP64
  
@@ -99,7 +108,7 @@
  
  install-libs: $(LIBS)
  	-@if [ ! -d $(DESTDIR)$(exec_prefix)  ]; then mkdir -p $(DESTDIR)$(exec_prefix); fi
-@@ -190,18 +194,33 @@ install-libs: $(LIBS)
+@@ -190,18 +194,34 @@ install-libs: $(LIBS)
  	-@if [ ! -d $(DESTDIR)$(sharedlibdir) ]; then mkdir -p $(DESTDIR)$(sharedlibdir); fi
  	-@if [ ! -d $(DESTDIR)$(man3dir)      ]; then mkdir -p $(DESTDIR)$(man3dir); fi
  	-@if [ ! -d $(DESTDIR)$(pkgconfigdir) ]; then mkdir -p $(DESTDIR)$(pkgconfigdir); fi
@@ -116,10 +125,11 @@
 -	  ln -s $(SHAREDLIBV) $(DESTDIR)$(sharedlibdir)/$(SHAREDLIBM); \
 -	  ($(LDCONFIG) || true)  >/dev/null 2>&1; \
 +	cp $(STATICLIB) $(DESTDIR)$(libdir)
-+	-@(cd $(DESTDIR)$(libdir); chmod 644 $(STATICLIB))
++	-@(chmod 644 $(DESTDIR)$(libdir)/$(STATICLIB))
 +	-@($(RANLIB) $(DESTDIR)$(libdir)/$(STATICLIB) || true) >/dev/null 2>&1
-+	-@if test -z "$(IMPORTLIB)" ; then \
-+		cp $(IMPORTLIB) $(DESTDIR)$(libdir) \
++	-@if test -n "$(IMPORTLIB)" ; then \
++		cp $(IMPORTLIB) $(DESTDIR)$(libdir); \
++		echo "cp $(IMPORTLIB) $(DESTDIR)$(libdir)"; \
 +		chmod 644 $(DESTDIR)$(libdir)/$(IMPORTLIB); \
 +		if test -n "$(SHAREDTARGET)" ; then \
 +			if test -f "$(SHAREDTARGET)" ; then \
@@ -178,6 +188,15 @@
  
  # extract zlib version numbers from zlib.h
  VER=`sed -n -e '/VERSION "/s/.*"\(.*\)".*/\1/p' < zlib.h`
+@@ -63,7 +63,7 @@
+ prefix=${prefix-/usr/local}
+ exec_prefix=${exec_prefix-'${prefix}'}
+ libdir=${libdir-'${exec_prefix}/lib'}
+-sharedlibdir=${sharedlibdir-'${libdir}'}
++sharedlibdir=${sharedlibdir-'${exec_prefix}/bin'}
+ includedir=${includedir-'${prefix}/include'}
+ mandir=${mandir-'${prefix}/share/man'}
+ shared_ext='.so'
 @@ -74,6 +75,7 @@ build64=0
  gcc=0
  old_cc="$CC"
