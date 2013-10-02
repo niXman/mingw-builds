@@ -399,20 +399,18 @@ case $BUILD_ARCHITECTURE in
 			die "gcc is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
 		}
 		export PATH=$LIBS_DIR/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-		[[ $LINK_TYPE_SUFFIX == shared ]] && {
-			export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PATH
-		}
 	;;
 	x86_64)
 		[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc ]] && {
 			die "gcc is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
 		}
 		export PATH=$LIBS_DIR/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-		[[ $LINK_TYPE_SUFFIX == shared ]] && {
-			export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PATH
-		}
 	;;
 esac
+
+[[ $LINK_TYPE_SUFFIX == shared ]] && {
+	export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/bin:$PATH
+}
 
 # **************************************************************************
 
