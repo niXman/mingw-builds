@@ -87,9 +87,16 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--with-libiconv-prefix=$PREREQ_DIR/libiconv-$BUILD_ARCHITECTURE
 	#
+	--disable-rpath
 	--disable-nls
+	--disable-werror
+	--with-system-zlib
 	#
 	$LINK_TYPE_GCC
+	#
+	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--disable-isl-version-check
+	--disable-cloog-version-check
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
