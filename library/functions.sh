@@ -349,7 +349,7 @@ function func_download {
 		}
 		[[ ! -f $_marker_name || $_repo_update == yes ]] && {
 			[[ $_is_repo == yes ]] && {
-				echo -n "--> download $_filename..."
+				echo -n "--> checkout $_filename..."
 
 				[[ -n $_dir ]] && {
 					_lib_name=$_root/$_filename
@@ -371,10 +371,12 @@ function func_download {
 					svn)
 						[[ -d $_lib_name/.svn ]] && {
 							pushd $_lib_name > /dev/null
+							svn-clean -f > $_log_name 2>&1
+							svn revert -R ./ >> $_log_name 2>&1
 							[[ -n $_rev ]] && {
-								svn up -r $_rev > $_log_name 2>&1
+								svn up -r $_rev >> $_log_name 2>&1
 							} || {
-								svn up > $_log_name 2>&1
+								svn up >> $_log_name 2>&1
 							}
 							popd > /dev/null
 						} || {
@@ -393,7 +395,9 @@ function func_download {
 					git)
 						[[ -d $_lib_name/.git ]] && {
 							pushd $_lib_name > /dev/null
-							git pull > $_log_name 2>&1
+							git clean -f > $_log_name 2>&1
+							git reset --hard >> $_log_name 2>&1
+							git pull >> $_log_name 2>&1
 							popd > /dev/null
 						} || {
 							[[ -n $_branch ]] && {
