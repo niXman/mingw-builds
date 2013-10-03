@@ -34,8 +34,8 @@
 
 # **************************************************************************
 
-readonly x32_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.8.1/threads-posix/sjlj/i686-4.8.1-release-posix-sjlj-rt_v3-rev2.7z"
-readonly x64_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.8.1/threads-posix/sjlj/x86_64-4.8.1-release-posix-sjlj-rt_v3-rev2.7z"
+readonly i686_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.8.1/threads-posix/sjlj/i686-4.8.1-release-posix-sjlj-rt_v3-rev2.7z"
+readonly x86_64_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.8.1/threads-posix/sjlj/x86_64-4.8.1-release-posix-sjlj-rt_v3-rev2.7z"
 
 # **************************************************************************
 
@@ -60,8 +60,8 @@ readonly LOGVIEWERS=(
 
 # **************************************************************************
 
-[[ -z $x32_HOST_MINGW_PATH_URL || -z $x64_HOST_MINGW_PATH_URL ]] && {
-	die "x32_HOST_MINGW_PATH_URL or x64_HOST_MINGW_PATH_URL is empty. terminate."
+[[ -z $i686_HOST_MINGW_PATH_URL || -z $x86_64_HOST_MINGW_PATH_URL ]] && {
+	die "i686_HOST_MINGW_PATH_URL or x86_64_HOST_MINGW_PATH_URL is empty. terminate."
 }
 
 [[ -d /mingw ]] && {
@@ -87,9 +87,9 @@ mkdir -p $TOOLCHAINS_DIR
 
 func_install_toolchain \
 	$TOOLCHAINS_DIR \
-	$x32_HOST_MINGW_PATH \
-	$x64_HOST_MINGW_PATH \
-	$x32_HOST_MINGW_PATH_URL \
-	$x64_HOST_MINGW_PATH_URL
+	$i686_HOST_MINGW_PATH \
+	$x86_64_HOST_MINGW_PATH \
+	$i686_HOST_MINGW_PATH_URL \
+	$x86_64_HOST_MINGW_PATH_URL
 
 # **************************************************************************

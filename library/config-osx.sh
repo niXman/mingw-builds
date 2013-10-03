@@ -34,8 +34,8 @@
 
 # **************************************************************************
 
-readonly x32_HOST_MINGW_PATH_URL=
-readonly x64_HOST_MINGW_PATH_URL=
+readonly i686_HOST_MINGW_PATH_URL=
+readonly x86_64_HOST_MINGW_PATH_URL=
 
 # **************************************************************************
 
