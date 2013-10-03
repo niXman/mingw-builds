@@ -87,6 +87,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--with-libiconv-prefix=$PREREQ_DIR/libiconv-$BUILD_ARCHITECTURE
 	#
+	--disable-rpath
 	--disable-nls
 	#
 	$LINK_TYPE_GCC
