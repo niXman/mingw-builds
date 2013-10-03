@@ -74,9 +74,11 @@ function func_build_info() {
 
 	local subtargets_it=
 	for subtargets_it in ${SUBTARGETS[@]}; do
-		[[ $subtargets_it == build-info ]] && continue
-		[[ -z $(grep 'PKG_CONFIGURE_FLAGS=' $TOP_DIR/scripts/$subtargets_it.sh) ]] && continue
-		source $TOP_DIR/scripts/$subtargets_it.sh
+		local rule_arr=( ${subtargets_it//|/ } )
+		local sub_rule=${rule_arr[0]}
+		[[ ${sub_rule} == build-info ]] && continue
+		[[ -z $(grep 'PKG_CONFIGURE_FLAGS=' $TOP_DIR/scripts/${sub_rule}.sh) ]] && continue
+		source $TOP_DIR/scripts/${sub_rule}.sh
 		echo "name         : $PKG_NAME" >> $INFO_FILE
 		echo "type         : $PKG_TYPE" >> $INFO_FILE
 		pushd $SRCS_DIR/$PKG_DIR_NAME > /dev/null

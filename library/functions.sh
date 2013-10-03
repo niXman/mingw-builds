@@ -35,6 +35,7 @@
 # **************************************************************************
 
 function func_clear_env {
+	unset PKG_ARCHITECTURE
 	unset PKG_NAME
 	unset PKG_VERSION
 	unset PKG_DIR_NAME

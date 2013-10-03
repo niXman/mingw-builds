@@ -111,13 +111,13 @@ function fun_get_subtargets {
 		gcc)
 			[[ $USE_MULTILIB == yes ]] && {
 				local readonly SUBTARGETS=(
-					libiconv|$BUILD_ARCHITECTURE
-					libiconv|$REVERSE_ARCHITECTURE
-					zlib|$BUILD_ARCHITECTURE
-					zlib|$REVERSE_ARCHITECTURE	
+					"libiconv|$BUILD_ARCHITECTURE"
+					"libiconv|$REVERSE_ARCHITECTURE"
+					"zlib|$BUILD_ARCHITECTURE"
+					"zlib|$REVERSE_ARCHITECTURE"
 					${SUBTARGETS_PART1[@]}
-					winpthreads|$BUILD_ARCHITECTURE
-					winpthreads|$REVERSE_ARCHITECTURE
+					"winpthreads|$BUILD_ARCHITECTURE"
+					"winpthreads|$REVERSE_ARCHITECTURE"
 					${SUBTARGETS_PART2[@]}
 				)
 			} || {
