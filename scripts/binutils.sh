@@ -89,14 +89,8 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--disable-rpath
 	--disable-nls
-	--disable-werror
-	--with-system-zlib
 	#
 	$LINK_TYPE_GCC
-	#
-	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
-	--disable-isl-version-check
-	--disable-cloog-version-check
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
