@@ -35,50 +35,49 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.2.8
-PKG_NAME=i686-zlib-${PKG_VERSION}-$LINK_TYPE_SUFFIX
-PKG_DIR_NAME=zlib-${PKG_VERSION}
+PKG_VERSION=1.14
+PKG_NAME=$PKG_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX
+PKG_DIR_NAME=libiconv-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://sourceforge.net/projects/libpng/files/zlib/${PKG_VERSION}/zlib-${PKG_VERSION}.tar.gz"
+	"http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PKG_VERSION}.tar.gz"
 )
 
 PKG_PRIORITY=prereq
-PKG_LNDIR=yes
 
 #
 
-PKG_PATCHES=(
-	zlib/01-zlib-1.2.7-1-buildsys.mingw.patch
-	zlib/02-no-undefined.mingw.patch
-	zlib/03-dont-put-sodir-into-L.mingw.patch
-	zlib/04-wrong-w8-check.mingw.patch
-	zlib/05-fix-a-typo.mingw.patch
-)
+PKG_PATCHES=()
 
 #
 
 PKG_CONFIGURE_FLAGS=(
-	--prefix=$PREREQ_DIR/i686-zlib-$LINK_TYPE_SUFFIX
-	$( [[ $GCC_DEPS_LINK_TYPE == $LINK_TYPE_SHARED ]] \
-		&& echo "--shared" \
-		|| echo "--static" \
-	)
+	--host=$HOST
+	--build=$BUILD
+	--target=$TARGET
+	#
+	--prefix=$PREREQ_DIR/$PKG_NAME
+	#
+	$GCC_DEPS_LINK_TYPE
+	#
+	CFLAGS="\"$COMMON_CFLAGS\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
 #
 
 PKG_MAKE_FLAGS=(
 	-j$JOBS
-	STRIP=true
 	all
 )
 
 #
 
 PKG_INSTALL_FLAGS=(
-	STRIP=true
-	install
+	-j$JOBS
+	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
 # **************************************************************************

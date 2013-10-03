@@ -56,8 +56,8 @@ readonly SOURCES_DIR=$TOP_DIR/sources
 readonly TESTS_DIR=$TOP_DIR/tests
 readonly TOOLCHAINS_DIR=$TOP_DIR/toolchains
 
-readonly x32_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
-readonly x64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
+readonly i686_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
+readonly x86_64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
 
 ROOT_DIR=$(func_simplify_path "$HOME")
 

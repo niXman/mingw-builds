@@ -35,18 +35,50 @@
 
 # **************************************************************************
 
-[[ $BUILD_ARCHITECTURE == i686 ]] && {
-	BEFORE_X86_64_PRE_PATH=$PATH
-	export PATH=$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+PKG_VERSION=1.2.8
+PKG_NAME=$PKG_ARCHITECTURE-zlib-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_DIR_NAME=zlib-${PKG_VERSION}
+PKG_TYPE=.tar.gz
+PKG_URLS=(
+	"http://sourceforge.net/projects/libpng/files/zlib/${PKG_VERSION}/zlib-${PKG_VERSION}.tar.gz"
+)
 
-	[[ $USE_MULTILIB == yes ]] && {
-		OLD_HOST=$HOST
-		OLD_BUILD=$BUILD
-		OLD_TARGET=$TARGET
-		HOST=$REVERSE_HOST
-		BUILD=$REVERSE_BUILD
-		TARGET=$REVERSE_TARGET
-	}
-}
+PKG_PRIORITY=prereq
+PKG_LNDIR=yes
+
+#
+
+PKG_PATCHES=(
+	zlib/01-zlib-1.2.7-1-buildsys.mingw.patch
+	zlib/02-no-undefined.mingw.patch
+	zlib/03-dont-put-sodir-into-L.mingw.patch
+	zlib/04-wrong-w8-check.mingw.patch
+	zlib/05-fix-a-typo.mingw.patch
+)
+
+#
+
+PKG_CONFIGURE_FLAGS=(
+	--prefix=$PREREQ_DIR/$PKG_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX
+	$( [[ $GCC_DEPS_LINK_TYPE == $LINK_TYPE_SHARED ]] \
+		&& echo "--shared" \
+		|| echo "--static" \
+	)
+)
+
+#
+
+PKG_MAKE_FLAGS=(
+	-j$JOBS
+	STRIP=true
+	all
+)
+
+#
+
+PKG_INSTALL_FLAGS=(
+	STRIP=true
+	install
+)
 
 # **************************************************************************

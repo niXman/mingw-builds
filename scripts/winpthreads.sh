@@ -35,19 +35,48 @@
 
 # **************************************************************************
 
-[[ $BUILD_ARCHITECTURE == x86_64 ]] && {
-	export PATH=$BEFORE_I686_PRE_PATH
+PKG_NAME=${PKG_ARCHITECTURE}-winpthreads-${RUNTIME_VERSION}
+PKG_DIR_NAME=winpthreads-${RUNTIME_VERSION}
+PKG_TYPE=svn
+PKG_URLS=(
+	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-libraries/winpthreads|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
+)
 
-	[[ $USE_MULTILIB == yes ]] && {
-		HOST=$OLD_HOST
-		BUILD=$OLD_BUILD
-		TARGET=$OLD_TARGET
-	}
+PKG_PRIORITY=runtime
 
-	unset BEFORE_I686_PRE_PATH
-	unset OLD_HOST
-	unset OLD_BUILD
-	unset OLD_TARGET
-}
+#
+
+PKG_PATCHES=()
+
+#
+
+PKG_CONFIGURE_FLAGS=(
+	--host=$HOST
+	--build=$BUILD
+	--target=$TARGET
+	#
+	--prefix=$RUNTIME_DIR/$PKG_NAME
+	#
+	$LINK_TYPE_BOTH
+	#
+	CFLAGS="\"$COMMON_CFLAGS\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS\""
+)
+
+#
+
+PKG_MAKE_FLAGS=(
+	-j$JOBS
+	all
+)
+
+#
+
+PKG_INSTALL_FLAGS=(
+	-j$JOBS
+	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
+)
 
 # **************************************************************************

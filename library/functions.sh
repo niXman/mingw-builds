@@ -55,6 +55,33 @@ function func_clear_env {
 	unset PKG_EXECUTE_AFTER_INSTALL
 }
 
+function switch_to_reverse_arch {
+	# $1 - architecture to switch
+	ORIG_ARCH_PATH=$PATH
+	local _arch_gcc_path=$(eval "echo \${${1}_HOST_MINGW_PATH}")
+	export PATH=$_arch_gcc_path/bin:$ORIGINAL_PATH
+
+	OLD_HOST=$HOST
+	OLD_BUILD=$BUILD
+	OLD_TARGET=$TARGET
+	HOST=$REVERSE_HOST
+	BUILD=$REVERSE_BUILD
+	TARGET=$REVERSE_TARGET
+}
+
+function switch_back_to_arch {
+	export PATH=$ORIG_ARCH_PATH
+
+	HOST=$OLD_HOST
+	BUILD=$OLD_BUILD
+	TARGET=$OLD_TARGET
+
+	unset ORIG_ARCH_PATH
+	unset OLD_HOST
+	unset OLD_BUILD
+	unset OLD_TARGET
+}
+
 # **************************************************************************
 
 function die {
@@ -954,7 +981,7 @@ function func_create_mingw_upload_cmd {
 		_upload_cmd="$_upload_cmd/testing/$_gcc_version"
 	}
 
-	_upload_cmd="$_upload_cmd/$( [[ $6 == x32 ]] && echo 32-bit || echo 64-bit )/threads-$7/$8"
+	_upload_cmd="$_upload_cmd/$( [[ $6 == i686 ]] && echo 32-bit || echo 64-bit )/threads-$7/$8"
 
 	echo "$_upload_cmd"
 }
@@ -990,7 +1017,7 @@ function func_create_url_for_archive {
 		_upload_url="$_upload_url/testing/$_gcc_version"
 	}
 
-	echo "$_upload_url/$( [[ $3 == x32 ]] && echo 32-bit || echo 64-bit )/threads-$4/$5"
+	echo "$_upload_url/$( [[ $3 == i686 ]] && echo 32-bit || echo 64-bit )/threads-$4/$5"
 }
 
 function func_update_repository_file {
