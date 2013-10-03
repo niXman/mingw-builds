@@ -61,6 +61,8 @@ PKG_CONFIGURE_FLAGS=(
 	--prefix=$LIBS_DIR
 	#
 	--without-ada
+	#--with-shared
+	#--with-shared-cxx
 	--with-cxx
 	--without-pthread
 	--enable-pc-files
