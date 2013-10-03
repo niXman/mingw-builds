@@ -47,7 +47,9 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	#ncurses/ncurses-5.9-dev-20130921.patch
+)
 
 #
 
@@ -59,6 +61,8 @@ PKG_CONFIGURE_FLAGS=(
 	--prefix=$LIBS_DIR
 	#
 	--without-ada
+	#--with-shared
+	#--with-shared-cxx
 	--with-cxx
 	--without-pthread
 	--enable-pc-files

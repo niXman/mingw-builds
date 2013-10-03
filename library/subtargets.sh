@@ -38,42 +38,6 @@ function fun_get_subtargets {
 	# $1 - mode (gcc, clang, python)
 	# $2 - version
 
-	local readonly LIBICONV_I686_SUBTARGETS=(
-		fix-path-for-i686-pre
-		libiconv-i686
-		fix-path-for-i686-post
-	)
-
-	local readonly LIBICONV_X86_64_SUBTARGETS=(
-		fix-path-for-x86_64-pre
-		libiconv-x86_64
-		fix-path-for-x86_64-post
-	)
-
-	local readonly WINPTHREADS_I686_SUBTARGETS=(
-		fix-path-for-i686-pre
-		winpthreads-i686
-		fix-path-for-i686-post
-	)
-
-	local readonly WINPTHREADS_X86_64_SUBTARGETS=(
-		fix-path-for-x86_64-pre
-		winpthreads-x86_64
-		fix-path-for-x86_64-post
-	)
-
-	local readonly ZLIB_I686_SUBTARGETS=(
-		fix-path-for-i686-pre
-		zlib-i686
-		fix-path-for-i686-post
-	)
-
-	local readonly ZLIB_X86_64_SUBTARGETS=(
-		fix-path-for-x86_64-pre
-		zlib-x86_64
-		fix-path-for-x86_64-post
-	)
-
 	local readonly SUBTARGETS_PART1=(
 		gmp
 		mpfr
@@ -147,38 +111,28 @@ function fun_get_subtargets {
 		gcc)
 			[[ $USE_MULTILIB == yes ]] && {
 				local readonly SUBTARGETS=(
-					${LIBICONV_I686_SUBTARGETS[@]}
-					${LIBICONV_X86_64_SUBTARGETS[@]}
-					${ZLIB_I686_SUBTARGETS[@]}
-					${ZLIB_X86_64_SUBTARGETS[@]}	
+					"libiconv|$BUILD_ARCHITECTURE"
+					"libiconv|$REVERSE_ARCHITECTURE"
+					"zlib|$BUILD_ARCHITECTURE"
+					"zlib|$REVERSE_ARCHITECTURE"
 					${SUBTARGETS_PART1[@]}
-					${WINPTHREADS_I686_SUBTARGETS[@]}
-					${WINPTHREADS_X86_64_SUBTARGETS[@]}
+					"winpthreads|$BUILD_ARCHITECTURE"
+					"winpthreads|$REVERSE_ARCHITECTURE"
 					${SUBTARGETS_PART2[@]}
 				)
 			} || {
-				[[ $BUILD_ARCHITECTURE == i686 ]] && {
-					local readonly SUBTARGETS=(
-						${LIBICONV_I686_SUBTARGETS[@]}
-						${ZLIB_I686_SUBTARGETS[@]}
-						${SUBTARGETS_PART1[@]}
-						${WINPTHREADS_I686_SUBTARGETS[@]}
-						${SUBTARGETS_PART2[@]}
-					)
-				} || {
-					local readonly SUBTARGETS=(
-						${LIBICONV_X86_64_SUBTARGETS[@]}
-						${ZLIB_X86_64_SUBTARGETS[@]}
-						${SUBTARGETS_PART1[@]}
-						${WINPTHREADS_X86_64_SUBTARGETS[@]}
-						${SUBTARGETS_PART2[@]}
-					)
-				}
+				local readonly SUBTARGETS=(
+					libiconv
+					zlib
+					${SUBTARGETS_PART1[@]}
+					winpthreads
+					${SUBTARGETS_PART2[@]}
+				)
 			}
 		;;
 		python)
 			local readonly SUBTARGETS=(
-				zlib-$BUILD_ARCHITECTURE
+				zlib
 				${PYTHON_SUBTARGETS[@]}
 				cleanup
 				licenses

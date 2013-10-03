@@ -54,29 +54,31 @@ function func_build_info() {
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
 	echo "host gcc 32-bit:" >> $INFO_FILE
-	$x32_HOST_MINGW_PATH/bin/gcc -v >> $INFO_FILE 2>&1
+	$i686_HOST_MINGW_PATH/bin/gcc -v >> $INFO_FILE 2>&1
 	echo >> $INFO_FILE
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
-	[[ -f $x64_HOST_MINGW_PATH/bin/gcc.exe ]] && {
+	[[ -f $x86_64_HOST_MINGW_PATH/bin/gcc.exe ]] && {
 		echo "host gcc 64-bit:" >> $INFO_FILE
-		$x64_HOST_MINGW_PATH/bin/gcc -v >> $INFO_FILE 2>&1
+		$x86_64_HOST_MINGW_PATH/bin/gcc -v >> $INFO_FILE 2>&1
 		echo >> $INFO_FILE
 		echo "# **************************************************************************" >> $INFO_FILE
 		echo >> $INFO_FILE
 	}
 
 	echo "host ld:" >> $INFO_FILE
-	$x32_HOST_MINGW_PATH/bin/ld -V 2>&1 >> $INFO_FILE
+	$i686_HOST_MINGW_PATH/bin/ld -V 2>&1 >> $INFO_FILE
 	echo >> $INFO_FILE
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
 
 	local subtargets_it=
 	for subtargets_it in ${SUBTARGETS[@]}; do
-		[[ $subtargets_it == build-info ]] && continue
-		[[ -z $(grep 'PKG_CONFIGURE_FLAGS=' $TOP_DIR/scripts/$subtargets_it.sh) ]] && continue
-		source $TOP_DIR/scripts/$subtargets_it.sh
+		local rule_arr=( ${subtargets_it//|/ } )
+		local sub_rule=${rule_arr[0]}
+		[[ ${sub_rule} == build-info ]] && continue
+		[[ -z $(grep 'PKG_CONFIGURE_FLAGS=' $TOP_DIR/scripts/${sub_rule}.sh) ]] && continue
+		source $TOP_DIR/scripts/${sub_rule}.sh
 		echo "name         : $PKG_NAME" >> $INFO_FILE
 		echo "type         : $PKG_TYPE" >> $INFO_FILE
 		pushd $SRCS_DIR/$PKG_DIR_NAME > /dev/null

@@ -395,16 +395,16 @@ mkdir -p \
 
 case $BUILD_ARCHITECTURE in
 	i686)
-		[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc ]] && {
-			die "gcc is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
+		[[ ! -f $i686_HOST_MINGW_PATH/bin/gcc ]] && {
+			die "gcc is not exists in the \"$i686_HOST_MINGW_PATH/bin\" directory. terminate."
 		}
-		export PATH=$LIBS_DIR/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+		export PATH=$LIBS_DIR/bin:$i686_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 	;;
 	x86_64)
-		[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc ]] && {
-			die "gcc is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
+		[[ ! -f $x86_64_HOST_MINGW_PATH/bin/gcc ]] && {
+			die "gcc is not exists in the \"$x86_64_HOST_MINGW_PATH/bin\" directory. terminate."
 		}
-		export PATH=$LIBS_DIR/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+		export PATH=$LIBS_DIR/bin:$x86_64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
 	;;
 esac
 
@@ -414,10 +414,12 @@ esac
 
 # **************************************************************************
 
+readonly REVERSE_HOST=$(func_get_reverse_triplet $HOST)
+readonly REVERSE_BUILD=$(func_get_reverse_triplet $BUILD)
+readonly REVERSE_TARGET=$(func_get_reverse_triplet $TARGET)
+readonly REVERSE_ARCHITECTURE=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
+	
 [[ $USE_MULTILIB == yes ]] && {
-	readonly REVERSE_HOST=$(func_get_reverse_triplet $HOST)
-	readonly REVERSE_BUILD=$(func_get_reverse_triplet $BUILD)
-	readonly REVERSE_TARGET=$(func_get_reverse_triplet $TARGET)
 	readonly ENABLE_TARGETS=${TARGET},${REVERSE_TARGET}
 } || {
 	readonly ENABLE_TARGETS=$TARGET
@@ -425,10 +427,10 @@ esac
 
 # **************************************************************************
 
-readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
+readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
 readonly COMMON_CXXFLAGS="$COMMON_CFLAGS"
 readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS"
-readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/opt/lib"
+readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/opt/lib"
 
 # **************************************************************************
 
@@ -460,15 +462,28 @@ readonly SUBTARGETS=( \
 	) \
 )
 
-for sub in ${SUBTARGETS[@]}; do
+for rule in ${SUBTARGETS[@]}; do
 	func_clear_env
+	rule_arr=( ${rule//|/ } )
+	sub=${rule_arr[0]}
+	PKG_ARCHITECTURE=${rule_arr[1]}
+	[[ -z $PKG_ARCHITECTURE ]] && {
+		PKG_ARCHITECTURE=$BUILD_ARCHITECTURE
+		echo -e "-> \E[32;40m$sub\E[37;40m"
+	} || {
+		echo -e "-> \E[32;40m$sub-$PKG_ARCHITECTURE\E[37;40m"
+	}
+
 	[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
 		die "script for subtarget \"$sub\" is not exists. terminate."
 	}
 	[[ $FETCH_MODE == yes ]] && {
 		[[ -z $( grep 'PKG_URLS=' $TOP_DIR/scripts/${sub}.sh ) ]] && continue
 	}
-	echo -e "-> \E[32;40m$sub\E[37;40m"
+
+	[[ "$PKG_ARCHITECTURE" == "$REVERSE_ARCHITECTURE" ]] && {
+		switch_to_reverse_arch $PKG_ARCHITECTURE
+	}
 
 	source $TOP_DIR/scripts/$sub.sh
 
@@ -488,7 +503,7 @@ for sub in ${SUBTARGETS[@]}; do
 			CURR_BUILD_DIR=$BUILDS_DIR
 		;;
 	esac
-	
+
 	CONFIGURE_LOG=$CURR_LOGS_DIR/$PKG_NAME/configure.log
 	MAKE_LOG=$CURR_LOGS_DIR/$PKG_NAME/make.log
 	INSTALL_LOG=$CURR_LOGS_DIR/$PKG_NAME/install.log
@@ -591,6 +606,10 @@ for sub in ${SUBTARGETS[@]}; do
 				$CURR_LOGS_DIR \
 				PKG_EXECUTE_AFTER_INSTALL[@]
 		}
+	}
+
+	[[ "$PKG_ARCHITECTURE" == "$REVERSE_ARCHITECTURE" ]] && {
+		switch_back_to_arch
 	}
 done
 
