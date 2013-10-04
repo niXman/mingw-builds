@@ -35,12 +35,28 @@
 
 # **************************************************************************
 
-[[ ! -f $BUILDS_DIR/3rdparty-post.marker ]] && {
-	DLLS=( $(find $LIBS_DIR/bin -type f -name *.dll) )
-	[[ ${#DLLS[@]} >0 ]] && {
-		cp -f ${DLLS[@]} $PREFIX/opt/bin/ >/dev/null 2>&1
+function python_deps_post {
+	[[ ! -f $BUILDS_DIR/3rdparty-post.marker ]] && {
+		local _dlls=( $(find $LIBS_DIR/bin -type f -name *.dll) )
+		[[ ${#_dlls[@]} >0 ]] && {
+			[[ $BUILD_MODE == gcc ]] && {
+				cp -f ${_dlls[@]} $PREFIX/opt/bin/ >/dev/null 2>&1
+			} || {
+				cp -f ${_dlls[@]} $PREFIX/bin/ >/dev/null 2>&1
+				local _toolchain_path=$(eval "echo \${${BUILD_ARCHITECTURE}_HOST_MINGW_PATH}")
+				local _gcc_dll=( $(find $_toolchain_path/bin -type f \
+									-name libstdc++*.dll -o \
+									-name libgcc*.dll -o \
+									-name libwinpthread*.dll) )
+				[[ ${#_gcc_dll[@]} >0 ]] && {
+					cp -f ${_gcc_dll[@]} $PREFIX/bin/ >/dev/null 2>&1
+				}
+			}
+		}
+		touch $BUILDS_DIR/3rdparty-post.marker
 	}
-	touch $BUILDS_DIR/3rdparty-post.marker
 }
+
+python_deps_post
 
 # **************************************************************************
