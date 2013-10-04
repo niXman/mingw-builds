@@ -60,8 +60,8 @@ function fun_get_subtargets {
 		bzip2
 		libffi
 		expat
-		#tcl
-		#tk
+		tcl
+		tk
 		$([[ $python_version == 3.3.0 ]] && echo xz-utils)
 		sqlite
 		ncurses
@@ -134,6 +134,7 @@ function fun_get_subtargets {
 			local readonly SUBTARGETS=(
 				zlib
 				${PYTHON_SUBTARGETS[@]}
+				3rdparty-post
 				cleanup
 				licenses
 				build-info

@@ -50,6 +50,7 @@ PKG_PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-4.8-iconv.patch
 	gcc/gcc-4.8-libstdc++export.patch
+	gcc/gcc-4.8.1-fix-dw2.patch
 )
 
 #
