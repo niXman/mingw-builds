@@ -38,6 +38,7 @@ MSYS2:
   '--dyn-deps'                        - build GCC with dynamically dependencies.
   '--rt-version=<v3|v4>'              - version of mingw-w64 runtime to build.
   '--rev=N'                           - number of the build revision.
+  '--with-testsuite'                  - run testsuite for packages that contain flags for it.
   '--threads=<posix|win32>'           - used threads model.
   '--enable-languages=<langs>'        - comma separated list(without spaces) of gcc supported languages.
                                         available languages: ada,c,c++,fortran,objc,obj-c++
