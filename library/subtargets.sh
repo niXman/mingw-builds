@@ -134,6 +134,7 @@ function fun_get_subtargets {
 			local readonly SUBTARGETS=(
 				zlib
 				${PYTHON_SUBTARGETS[@]}
+				3rdparty-post
 				cleanup
 				licenses
 				build-info
