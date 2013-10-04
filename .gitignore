@@ -9,8 +9,6 @@
 *.lzma
 *.tmp
 *.bak
-*.diff
-*.patch
 *.orig
 *.rej
 *.old
