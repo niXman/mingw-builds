@@ -70,6 +70,7 @@ readonly RUN_ARGS="$@"
 	echo "                                 available: win32, posix"
 	echo "    --arch=<i686|x86_64>           - specifies the architecture"
 	echo "    --mode=<[clang|gcc|python]-version>  - specify building software with version"
+	echo "    --with-testsuite           - run testsuite for packages if possible"
 	echo "    --version                  - print the version of the MinGW-W64 builds scripts"
 	echo "    --mingw-compress           - compressing MinGW"
 	echo "    --src-compress             - compressing sources"
@@ -233,6 +234,9 @@ while [[ $# > 0 ]]; do
 		--rev=*)
 			REV_NUM=${1/--rev=/}
 			MINGW_W64_PKG_STRING="rev$REV_NUM, $MINGW_W64_PKG_STRING"
+		;;
+		--with-testsuite)
+			PKG_RUN_TESTSUITE=yes
 		;;
 		--version) echo $MINGW_W64_BUILDS_VERSION; exit 0 ;;
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
@@ -507,6 +511,7 @@ for rule in ${SUBTARGETS[@]}; do
 	CONFIGURE_LOG=$CURR_LOGS_DIR/$PKG_NAME/configure.log
 	MAKE_LOG=$CURR_LOGS_DIR/$PKG_NAME/make.log
 	INSTALL_LOG=$CURR_LOGS_DIR/$PKG_NAME/install.log
+	TESTSUITE_LOG=$CURR_LOGS_DIR/$PKG_NAME/testsuite.log
 
 	mkdir -p $SRCS_DIR/$PKG_DIR_NAME
 	mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$PKG_NAME
@@ -605,6 +610,21 @@ for rule in ${SUBTARGETS[@]}; do
 				"after_install" \
 				$CURR_LOGS_DIR \
 				PKG_EXECUTE_AFTER_INSTALL[@]
+		}
+
+		[[ $PKG_RUN_TESTSUITE == yes ]] && {
+			[[ ${#PKG_TESTSUITE_FLAGS[@]} >0 ]] && {
+				testsuite_flags="/bin/make ${PKG_TESTSUITE_FLAGS[@]}"
+				func_make \
+					$PKG_NAME \
+					$PKG_DIR_NAME \
+					"$testsuite_flags" \
+					$TESTSUITE_LOG \
+					"run testsuite..." \
+					"tested" \
+					$CURR_BUILD_DIR \
+					$PKG_SUBDIR_NAME
+			}
 		}
 	}
 

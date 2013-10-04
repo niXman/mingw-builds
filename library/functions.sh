@@ -54,6 +54,7 @@ function func_clear_env {
 	unset PKG_MAKE_FLAGS
 	unset PKG_INSTALL_FLAGS
 	unset PKG_EXECUTE_AFTER_INSTALL
+	unset PKG_TESTSUITE_FLAGS
 }
 
 function switch_to_reverse_arch {
