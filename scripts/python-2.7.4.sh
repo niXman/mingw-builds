@@ -107,12 +107,6 @@ PKG_EXECUTE_AFTER_PATCH=(
 	popd > /dev/null
 }
 
-[[ -d $PREFIX ]] && {
-	pushd $PREFIX > /dev/null
-	PREFIXW=`pwd -W`
-	popd > /dev/null
-}
-
 [[ -d $PREREQ_DIR ]] && {
 	pushd $PREREQ_DIR > /dev/null
 	PREREQW_DIR=`pwd -W`
@@ -120,7 +114,7 @@ PKG_EXECUTE_AFTER_PATCH=(
 }
 
 LIBFFI_VERSION=$( grep 'PKG_VERSION=' $TOP_DIR/scripts/libffi.sh | sed 's|PKG_VERSION=||' )
-MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/include -I$PREFIXW/opt/include"
+MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncurses -I$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/include"
 
 # Workaround for conftest error on 64-bit builds
 export ac_cv_working_tzset=no
@@ -130,7 +124,7 @@ PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	#
-	--prefix=$([[ $BUILD_MODE == gcc ]] && echo $PREFIX/opt || echo $PREFIX)
+	--prefix=$LIBS_DIR
 	#
 	--enable-shared
 	--disable-ipv6
@@ -144,7 +138,7 @@ PKG_CONFIGURE_FLAGS=(
 	CFLAGS="\"$COMMON_CFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1 $MY_CPPFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS $MY_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/lib -L$PREFIXW/opt/lib -L$LIBSW_DIR/lib\""
+	LDFLAGS="\"$COMMON_LDFLAGS -L$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/lib -L$LIBSW_DIR/lib\""
 )
 
 #

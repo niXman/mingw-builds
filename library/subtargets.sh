@@ -87,11 +87,11 @@ function fun_get_subtargets {
 		mingw-w64-tools-genpeimg
 		mingw-w64-tools-widl
 		${PYTHON_SUBTARGETS[@]}
-		3rdparty-post
 		gdbinit
 		gdb
 		gdb-wrapper
 		make_git_bat
+		3rdparty-post
 		cleanup
 		licenses
 		build-info
