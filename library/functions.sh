@@ -676,7 +676,7 @@ function func_configure {
 		} || {
 			local _rel_dir=$( func_absolute_to_relative $5/$_subbuilddir $SRCS_DIR/$_subsrcdir )
 		}
-		eval "$PKG_CONFIGURE_PROG $_rel_dir/$PKG_CONFIGURE_SCRIPT \"${3}\"" > $4 2>&1
+		eval $PKG_CONFIGURE_PROG $_rel_dir/$PKG_CONFIGURE_SCRIPT "${3}" > $4 2>&1
 		_result=$?
 		popd > /dev/null
 		[[ $_result == 0 ]] && {
