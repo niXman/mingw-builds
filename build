@@ -553,6 +553,9 @@ for rule in ${SUBTARGETS[@]}; do
 		}
 
 		[[ -z $PKG_LNDIR ]] && { PKG_LNDIR=no; }
+		[[ -z $PKG_CONFIGURE_SCRIPT ]] && { PKG_CONFIGURE_SCRIPT=configure; }
+		[[ -z $PKG_MAKE_PROG ]] && { PKG_MAKE_PROG=/bin/make; }
+		[[ -z $PKG_CONFIGURE_PROG ]] && { PKG_CONFIGURE_PROG=/bin/sh; }
 
 		[[ ${#PKG_CONFIGURE_FLAGS[@]} >0 ]] && {
 			configure_flags="${PKG_CONFIGURE_FLAGS[@]}"
@@ -577,7 +580,7 @@ for rule in ${SUBTARGETS[@]}; do
 		}
 
 		[[ ${#PKG_MAKE_FLAGS[@]} >0 ]] && {
-			make_flags="/bin/make ${PKG_MAKE_FLAGS[@]}"
+			make_flags="$PKG_MAKE_PROG ${PKG_MAKE_FLAGS[@]}"
 			func_make \
 				$PKG_NAME \
 				$PKG_DIR_NAME \
@@ -590,7 +593,7 @@ for rule in ${SUBTARGETS[@]}; do
 		}
 
 		[[ ${#PKG_INSTALL_FLAGS[@]} >0 ]] && {
-			install_flags="/bin/make ${PKG_INSTALL_FLAGS[@]}"
+			install_flags="$PKG_MAKE_PROG ${PKG_INSTALL_FLAGS[@]}"
 			func_make \
 				$PKG_NAME \
 				$PKG_DIR_NAME \
@@ -614,7 +617,7 @@ for rule in ${SUBTARGETS[@]}; do
 
 		[[ $PKG_RUN_TESTSUITE == yes ]] && {
 			[[ ${#PKG_TESTSUITE_FLAGS[@]} >0 ]] && {
-				testsuite_flags="/bin/make ${PKG_TESTSUITE_FLAGS[@]}"
+				testsuite_flags="$PKG_MAKE_PROG ${PKG_TESTSUITE_FLAGS[@]}"
 				func_make \
 					$PKG_NAME \
 					$PKG_DIR_NAME \
