@@ -62,6 +62,7 @@ function fun_get_subtargets {
 		expat
 		tcl
 		tk
+		openssl
 		$([[ $python_version == 3.3.0 ]] && echo xz-utils)
 		sqlite
 		ncurses
