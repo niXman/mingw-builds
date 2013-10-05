@@ -116,7 +116,7 @@ function gcc_post_install {
 gcc_post_install
 
 echo -n "--> Switching to new compiler..."
-export PATH=$PREFIX/bin:$PREFIX/opt/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+export PATH=$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
 echo " done"
 
 # **************************************************************************
