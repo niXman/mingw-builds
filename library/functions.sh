@@ -54,6 +54,10 @@ function func_clear_env {
 	unset PKG_MAKE_FLAGS
 	unset PKG_INSTALL_FLAGS
 	unset PKG_EXECUTE_AFTER_INSTALL
+	unset PKG_TESTSUITE_FLAGS
+	unset PKG_CONFIGURE_SCRIPT
+	unset PKG_MAKE_PROG
+	unset PKG_CONFIGURE_PROG
 }
 
 function switch_to_reverse_arch {
@@ -672,7 +676,7 @@ function func_configure {
 		} || {
 			local _rel_dir=$( func_absolute_to_relative $5/$_subbuilddir $SRCS_DIR/$_subsrcdir )
 		}
-		eval $_rel_dir/configure "${3}" > $4 2>&1
+		eval $PKG_CONFIGURE_PROG $_rel_dir/$PKG_CONFIGURE_SCRIPT "${3}" > $4 2>&1
 		_result=$?
 		popd > /dev/null
 		[[ $_result == 0 ]] && {

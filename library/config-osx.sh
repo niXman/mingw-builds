@@ -45,6 +45,7 @@ TARGET=$BUILD_ARCHITECTURE-w64-mingw32
 
 readonly HOST_TOOLS="gcc ld"
 readonly CROSS_BUILDS=yes
+readonly PKG_RUN_TESTSUITE=no
 
 # **************************************************************************
 
