@@ -48,7 +48,7 @@ source library/default_config.sh
 # **************************************************************************
 
 readonly RUN_ARGS="$@"
-[[ $# == 1 && $1 == --help	|| $[ $# == 0 ] == 1 ]] && {
+[[ $# == 1 && $1 == --help || $[ $# == 0 ] == 1 ]] && {
 	echo "usage:"
 	echo "  ./${0##*/} --mode=[clang|gcc|python]-version --arch=<i686|x86_64> [OPTIONS]"
 	echo "  help:"
