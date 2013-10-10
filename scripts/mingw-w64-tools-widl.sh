@@ -59,7 +59,7 @@ PKG_EXECUTE_AFTER_PATCH=(
 PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
-	--target=$TARGET
+	#--target=$TARGET
 	#
 	--prefix=$PREFIX
 	#
