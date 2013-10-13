@@ -9,3 +9,5 @@
 3. Fix building Python with shared NCURSES.
 
 4. Fix building GNU Make with autotools.
+
+5. Use separate archives for languages: 1)c,c++, 2)ada, 3)fortran, 4)obj-c,obj-c++
