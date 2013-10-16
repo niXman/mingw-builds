@@ -79,9 +79,10 @@ At the moment, successfully building the following versions:
   gcc-4.7.3
   gcc-4.8.0
   gcc-4.8.1
+  gcc-4.8.2
   gcc-4_6-branch (currently 4.6.5 prerelease)
   gcc-4_7-branch (currently 4.7.4 prerelease)
-  gcc-4_8-branch (currently 4.8.2 prerelease)
+  gcc-4_8-branch (currently 4.8.3 prerelease)
   gcc-trunk (currently 4.9.0 snapshot)
 
 Builds also contains patches for building Python 2.7.3, 2.7.4, 2.7.5 and 3.3.0 versions for support gdb pretty printers.
