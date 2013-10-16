@@ -47,7 +47,7 @@ PKG_PRIORITY=prereq
 #
 
 PKG_PATCHES=(
-	cloog/cloog-0.18.0-no-undefined.patch
+	cloog/cloog-0.18.1-no-undefined.patch
 )
 
 #
