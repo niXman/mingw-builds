@@ -56,7 +56,7 @@ PKG_PATCHES=(
 PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
-	--target=$TARGET
+	#--target=$TARGET
 	#
 	--prefix=$LIBS_DIR
 	#
