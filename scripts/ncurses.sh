@@ -78,7 +78,7 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-sp-funcs
 	--enable-term-driver
 	--enable-interop
-	--disable-widec
+	--enable-widec
 	--without-trace
 	#
 	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
@@ -99,6 +99,10 @@ PKG_MAKE_FLAGS=(
 PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
+)
+
+PKG_EXECUTE_AFTER_INSTALL=(
+	"cp -f $LIBS_DIR/lib/libncursesw.a $LIBS_DIR/lib/libncurses.a"
 )
 
 # **************************************************************************
