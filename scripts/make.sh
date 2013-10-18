@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=3.82
+PKG_VERSION=4.0
 PKG_NAME=make-${PKG_VERSION}
 PKG_DIR_NAME=make-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
@@ -48,7 +48,8 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
-	make/make-Windows-Add-move-to-sh_cmds_dos.patch
+	make/make-linebuf-mingw.patch
+	make/make-getopt.patch
 )
 
 #
@@ -57,8 +58,10 @@ PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$TARGET
 	--prefix=$PREFIX
-   --enable-case-insensitive-file-system
-   --program-prefix=mingw32-
+	--enable-case-insensitive-file-system
+	--program-prefix=mingw32-
+	--enable-job-server
+	--without-guile
 	CFLAGS="\"$COMMON_CFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
 )

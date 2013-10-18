@@ -35,6 +35,7 @@
 # **************************************************************************
 
 function func_clear_env {
+	unset PKG_ARCHITECTURE
 	unset PKG_NAME
 	unset PKG_VERSION
 	unset PKG_DIR_NAME
@@ -43,6 +44,7 @@ function func_clear_env {
 	unset PKG_TYPE
 	unset PKG_REVISION
 	unset PKG_URLS
+	unset PKG_LNDIR
 	unset PKG_EXECUTE_AFTER_DOWNLOAD
 	unset PKG_EXECUTE_AFTER_UNCOMPRESS
 	unset PKG_PATCHES
@@ -52,6 +54,37 @@ function func_clear_env {
 	unset PKG_MAKE_FLAGS
 	unset PKG_INSTALL_FLAGS
 	unset PKG_EXECUTE_AFTER_INSTALL
+	unset PKG_TESTSUITE_FLAGS
+	unset PKG_CONFIGURE_SCRIPT
+	unset PKG_MAKE_PROG
+	unset PKG_CONFIGURE_PROG
+}
+
+function switch_to_reverse_arch {
+	# $1 - architecture to switch
+	ORIG_ARCH_PATH=$PATH
+	local _arch_gcc_path=$(eval "echo \${${1}_HOST_MINGW_PATH}")
+	export PATH=$_arch_gcc_path/bin:$ORIGINAL_PATH
+
+	OLD_HOST=$HOST
+	OLD_BUILD=$BUILD
+	OLD_TARGET=$TARGET
+	HOST=$REVERSE_HOST
+	BUILD=$REVERSE_BUILD
+	TARGET=$REVERSE_TARGET
+}
+
+function switch_back_to_arch {
+	export PATH=$ORIG_ARCH_PATH
+
+	HOST=$OLD_HOST
+	BUILD=$OLD_BUILD
+	TARGET=$OLD_TARGET
+
+	unset ORIG_ARCH_PATH
+	unset OLD_HOST
+	unset OLD_BUILD
+	unset OLD_TARGET
 }
 
 # **************************************************************************
@@ -320,7 +353,7 @@ function func_download {
 		}
 		[[ ! -f $_marker_name || $_repo_update == yes ]] && {
 			[[ $_is_repo == yes ]] && {
-				echo -n "--> download $_filename..."
+				echo -n "--> checkout $_filename..."
 
 				[[ -n $_dir ]] && {
 					_lib_name=$_root/$_filename
@@ -342,10 +375,12 @@ function func_download {
 					svn)
 						[[ -d $_lib_name/.svn ]] && {
 							pushd $_lib_name > /dev/null
+							svn-clean -f > $_log_name 2>&1
+							svn revert -R ./ >> $_log_name 2>&1
 							[[ -n $_rev ]] && {
-								svn up -r $_rev > $_log_name 2>&1
+								svn up -r $_rev >> $_log_name 2>&1
 							} || {
-								svn up > $_log_name 2>&1
+								svn up >> $_log_name 2>&1
 							}
 							popd > /dev/null
 						} || {
@@ -364,7 +399,9 @@ function func_download {
 					git)
 						[[ -d $_lib_name/.git ]] && {
 							pushd $_lib_name > /dev/null
-							git pull > $_log_name 2>&1
+							git clean -f > $_log_name 2>&1
+							git reset --hard >> $_log_name 2>&1
+							git pull >> $_log_name 2>&1
 							popd > /dev/null
 						} || {
 							[[ -n $_branch ]] && {
@@ -445,9 +482,13 @@ function func_uncompress {
 		done
 
 		_lib_name=${_root}/${_dir}
-		_filename=$(basename ${_params[0]})	
-		_log_name=$MARKERS_DIR/${_filename}-unpack.log
-		_marker_name=$MARKERS_DIR/${_filename}-unpack.marker
+		_filename=$(basename ${_params[0]})
+		local _log_dir=$SRCS_DIR/$PKG_DIR_NAME
+		[[ -n $2 ]] && {
+			_log_dir=$2
+		}
+		_log_name=$_log_dir/${_filename}-unpack.log
+		_marker_name=$_log_dir/${_filename}-unpack.marker
 		_ext=$(func_get_filename_extension $_filename)
 		[[ $_ext == .tar.gz || $_ext == .tar.bz2 || $_ext == .tar.lzma || $_ext == .tar.xz \
 		|| $_ext == .tar.7z || $_ext == .7z || $_ext == .tgz || $_ext == .zip ]] && {
@@ -608,21 +649,34 @@ function func_configure {
 	# $3 - flags
 	# $4 - log file name
 	# $5 - build dir
-	# $6 - build subdir
+	# $6 - lndir
+	# $7 - build subdir
 
+	[[ $6 == yes ]] && {
+		mkdir -p $5/$1
+		[[ ! -f $5/$1/lndir.marker ]] && {
+			lndir $SRCS_DIR/$2 $5/$1 > /dev/null
+			touch $5/$1/lndir.marker
+		}
+	}
 	local _marker=$5/$1/_configure.marker
 	local _result=0
-	local _subbuilddir=$2
-	local _subsrcdir=$1
-	[[ -n $6 ]] && {
-		_subbuilddir=$_subbuilddir/$6
-		_subsrcdir=$_subsrcdir/$6
+	local _subsrcdir=$2
+	local _subbuilddir=$1
+	[[ -n $7 ]] && {
+		_subbuilddir=$_subbuilddir/$7
+		_subsrcdir=$_subsrcdir/$7
 	}
 
 	[[ ! -f $_marker ]] && {
 		echo -n "--> configure..."
-		pushd $5/$_subsrcdir > /dev/null
-		eval $( func_absolute_to_relative $5/$_subsrcdir $SRCS_DIR/$_subbuilddir )/configure "${3}" > $4 2>&1
+		pushd $5/$_subbuilddir > /dev/null
+		[[ $6 == yes ]] && {
+			local _rel_dir="."
+		} || {
+			local _rel_dir=$( func_absolute_to_relative $5/$_subbuilddir $SRCS_DIR/$_subsrcdir )
+		}
+		eval $PKG_CONFIGURE_PROG $_rel_dir/$PKG_CONFIGURE_SCRIPT "${3}" > $4 2>&1
 		_result=$?
 		popd > /dev/null
 		[[ $_result == 0 ]] && {
@@ -771,7 +825,7 @@ function func_abstract_toolchain {
 	local _do_install=no
 
 	echo -e "-> \E[32;40m$4 toolchain\E[37;40m"
-	[[ ! -f $MARKERS_DIR/${_filename}-unpack.marker ]] && {
+	[[ ! -f $1/${_filename}-unpack.marker ]] && {
 		[[ -d $3 ]] && {
 			echo "--> Found previously installed $4 toolchain."
 			echo -n "---> Remove previous $4 toolchain..."
@@ -781,7 +835,7 @@ function func_abstract_toolchain {
 			echo -n "--> $4 toolchain is not installed."
 		}
 		func_download _url[@]
-		func_uncompress _url[@]
+		func_uncompress _url[@] $1
 	} || {
 		echo "--> Toolchain installed."
 	}
@@ -835,7 +889,7 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-?.?.?)			echo "${1/gcc-/}" ;;
 		gcc-4_6-branch)	echo "4.6.5" ;;
 		gcc-4_7-branch)	echo "4.7.4" ;;
-		gcc-4_8-branch)	echo "4.8.2" ;;
+		gcc-4_8-branch)	echo "4.8.3" ;;
 		gcc-4_9-branch)	echo "4.9.1" ;;
 		gcc-trunk)			echo "4.9.0" ;;
 		*) die "gcc name error: $1. terminate." ;;
@@ -850,7 +904,11 @@ function func_map_gcc_name_to_gcc_build_name {
 
 	local _gcc_type=$(func_map_gcc_name_to_gcc_type $2)
 	local _gcc_version=$(func_map_gcc_name_to_gcc_version $2)
-	local _build_name=$_gcc_version-$_gcc_type
+	local _build_name=$_gcc_version
+	[[ $BUILD_SHARED_GCC == no ]] && {
+		_build_name=$_build_name-static
+	}
+	_build_name=$_build_name-$_gcc_type
 
 	[[ $_gcc_type != release ]] && {
 		case $2 in
@@ -882,8 +940,9 @@ function func_create_mingw_archive_name {
 			$3 \
 	)-$6-$5
 
+	_archive=$_archive-rt_${RUNTIME_VERSION}
 	[[ -n $7 ]] && {
-		_archive=$_archive-rt_${RUNTIME_VERSION}-rev$7
+		_archive=$_archive-rev$7
 	}
 
 	echo "$_archive.7z"
@@ -932,7 +991,7 @@ function func_create_mingw_upload_cmd {
 		_upload_cmd="$_upload_cmd/testing/$_gcc_version"
 	}
 
-	_upload_cmd="$_upload_cmd/$( [[ $6 == x32 ]] && echo 32-bit || echo 64-bit )/threads-$7/$8"
+	_upload_cmd="$_upload_cmd/$( [[ $6 == i686 ]] && echo 32-bit || echo 64-bit )/threads-$7/$8"
 
 	echo "$_upload_cmd"
 }
@@ -968,7 +1027,7 @@ function func_create_url_for_archive {
 		_upload_url="$_upload_url/testing/$_gcc_version"
 	}
 
-	echo "$_upload_url/$( [[ $3 == x32 ]] && echo 32-bit || echo 64-bit )/threads-$4/$5"
+	echo "$_upload_url/$( [[ $3 == i686 ]] && echo 32-bit || echo 64-bit )/threads-$4/$5"
 }
 
 function func_update_repository_file {

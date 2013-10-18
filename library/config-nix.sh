@@ -34,8 +34,8 @@
 
 # **************************************************************************
 
-readonly x32_HOST_MINGW_PATH_URL=
-readonly x64_HOST_MINGW_PATH_URL=
+readonly i686_HOST_MINGW_PATH_URL=
+readonly x86_64_HOST_MINGW_PATH_URL=
 
 # **************************************************************************
 
@@ -45,6 +45,7 @@ TARGET=$BUILD_ARCHITECTURE-w64-mingw32
 
 readonly HOST_TOOLS="gcc ld"
 readonly CROSS_BUILDS=yes
+readonly PKG_RUN_TESTSUITE=no
 
 # **************************************************************************
 

@@ -47,18 +47,22 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	#ncurses/ncurses-5.9-dev-20130921.patch
+)
 
 #
 
 PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
-	--target=$TARGET
+	#--target=$TARGET
 	#
 	--prefix=$LIBS_DIR
 	#
 	--without-ada
+	#--with-shared
+	#--with-shared-cxx
 	--with-cxx
 	--without-pthread
 	--enable-pc-files
@@ -74,7 +78,7 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-sp-funcs
 	--enable-term-driver
 	--enable-interop
-	--disable-widec
+	--enable-widec
 	--without-trace
 	#
 	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
@@ -95,6 +99,10 @@ PKG_MAKE_FLAGS=(
 PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
+)
+
+PKG_EXECUTE_AFTER_INSTALL=(
+	"cp -f $LIBS_DIR/lib/libncursesw.a $LIBS_DIR/lib/libncurses.a"
 )
 
 # **************************************************************************

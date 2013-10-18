@@ -1,0 +1,16 @@
+/toolchains
+*.exe
+*.bat
+*.7z
+*.zip
+*.bz2
+*.gz
+*.xz
+*.lzma
+*.tmp
+*.bak
+*.orig
+*.rej
+*.old
+*.log
+*.marker

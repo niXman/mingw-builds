@@ -48,9 +48,9 @@ source library/default_config.sh
 # **************************************************************************
 
 readonly RUN_ARGS="$@"
-[[ $# == 1 && $1 == --help	|| $[ $# == 0 ] == 1 ]] && {
+[[ $# == 1 && $1 == --help || $[ $# == 0 ] == 1 ]] && {
 	echo "usage:"
-	echo "  ./${0##*/} --mode=[clang|gcc|python]-version --arch=<x32|x64> [OPTIONS]"
+	echo "  ./${0##*/} --mode=[clang|gcc|python]-version --arch=<i686|x86_64> [OPTIONS]"
 	echo "  help:"
 	echo "    --buildroot=<path>         - specifies the build root directory"
 	echo "    --fetch-only               - download sources without building"
@@ -61,14 +61,16 @@ readonly RUN_ARGS="$@"
 	echo "    --bootstrap                - bootstraping GCC"
 	echo "    --no-multilib              - build GCC without multilib support"
 	echo "    --no-strip                 - don't strip dll's & executables on install"
+	echo "    --static-gcc               - build static GCC"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
 	echo "    --jobs=N                   - specifies number of parallel make threads"
-	echo "    --rt-version=<v3|v4|trunk>    - specifies mingw-w64 runtime version to build"
+	echo "    --rt-version=<v3|v4|trunk> - specifies mingw-w64 runtime version to build"
 	echo "    --rev=N                    - specifies number of the build revision"
 	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++"
 	echo "                                 available: win32, posix"
-	echo "    --arch=<i686|x86_64>           - specifies the architecture"
+	echo "    --arch=<i686|x86_64>       - specifies the architecture"
 	echo "    --mode=<[clang|gcc|python]-version>  - specify building software with version"
+	echo "    --with-testsuite           - run testsuite for packages if possible"
 	echo "    --version                  - print the version of the MinGW-W64 builds scripts"
 	echo "    --mingw-compress           - compressing MinGW"
 	echo "    --src-compress             - compressing sources"
@@ -102,10 +104,10 @@ readonly RUN_ARGS="$@"
 	#echo "    gcc-4.7.4 (4.7.4 release)"
 	echo "    gcc-4.8.0 (4.8.0 release)"
 	echo "    gcc-4.8.1 (4.8.1 release)"
-	#echo "    gcc-4.8.2 (4.8.2 release)"
+	echo "    gcc-4.8.2 (4.8.2 release)"
 	echo "    gcc-4_6-branch (currently 4.6.5-prerelease)"
 	echo "    gcc-4_7-branch (currently 4.7.4-prerelease)"
-	echo "    gcc-4_8-branch (currently 4.8.2-prerelease)"
+	echo "    gcc-4_8-branch (currently 4.8.3-prerelease)"
 	echo "    gcc-trunk (currently 4.9.0-snapshot)"
 
 	exit 0
@@ -165,9 +167,17 @@ while [[ $# > 0 ]]; do
 		;;
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-strip) STRIP_ON_INSTALL=no ;;
+		--static-gcc)
+			LINK_TYPE_GCC=$LINK_TYPE_STATIC
+			GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
+			BUILD_SHARED_GCC=no
+			LINK_TYPE_SUFFIX=static
+		;;
 		--dyn-deps)
-			GCC_DEPS_LINK_TYPE=$LINK_TYPE_SHARED
-			LINK_TYPE_SUFFIX=shared
+			[[ $BUILD_SHARED_GCC == yes ]] && {
+				GCC_DEPS_LINK_TYPE=$LINK_TYPE_SHARED
+				LINK_TYPE_SUFFIX=shared
+			}
 		;;
 		--jobs=*)
 			[[ ${1/--jobs=/} == 0 ]] && {
@@ -224,6 +234,9 @@ while [[ $# > 0 ]]; do
 		--rev=*)
 			REV_NUM=${1/--rev=/}
 			MINGW_W64_PKG_STRING="rev$REV_NUM, $MINGW_W64_PKG_STRING"
+		;;
+		--with-testsuite)
+			PKG_RUN_TESTSUITE=yes
 		;;
 		--version) echo $MINGW_W64_BUILDS_VERSION; exit 0 ;;
 		--mingw-compress) COMPRESSING_MINGW=yes ;;
@@ -333,12 +346,18 @@ readonly PREREQ_LOGS_DIR=$ROOT_DIR/prerequisites-logs
 	GCC_PART_NAME=${GCC_NAME/gcc-/}
 	GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
 	readonly GCC_PART_NAME=${GCC_PART_NAME//./}
-	readonly BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL-rt_${RUNTIME_VERSION}${REV_STRING}
-	readonly PREFIX=$BASE_BUILD_DIR/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
-	readonly MINGWPREFIX=/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
+	BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL-rt_${RUNTIME_VERSION}${REV_STRING}
 	MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
+	[[ $BUILD_SHARED_GCC == no ]] && {
+		BASE_BUILD_DIR=$BASE_BUILD_DIR-s
+		MINGW_BUILD_NAME=$MINGW_BUILD_NAME-static
+	}
 	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
 	readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)	
+
+	readonly MINGWPREFIX=/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
+	readonly PREFIX=${BASE_BUILD_DIR}${MINGWPREFIX}
+	readonly LIBS_DIR=$PREFIX/opt
 
 	[[ $USE_MULTILIB == yes ]] && {
 			readonly PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
@@ -355,10 +374,10 @@ readonly PREREQ_LOGS_DIR=$ROOT_DIR/prerequisites-logs
 } || {
 	readonly BASE_BUILD_DIR=$ROOT_DIR/$BUILD_MODE-${BUILD_ARCHITECTURE}$REV_STRING
 	readonly PREFIX=$BASE_BUILD_DIR/${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}
+	readonly LIBS_DIR=$PREFIX
 }
 
 readonly BUILDS_DIR=$BASE_BUILD_DIR/build
-readonly LIBS_DIR=$BASE_BUILD_DIR/libs
 readonly LOGS_DIR=$BASE_BUILD_DIR/logs
 
 mkdir -p \
@@ -379,37 +398,33 @@ mkdir -p \
 
 # **************************************************************************
 
+case $BUILD_ARCHITECTURE in
+	i686)
+		[[ ! -f $i686_HOST_MINGW_PATH/bin/gcc ]] && {
+			die "gcc is not exists in the \"$i686_HOST_MINGW_PATH/bin\" directory. terminate."
+		}
+		export PATH=$LIBS_DIR/bin:$i686_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+	;;
+	x86_64)
+		[[ ! -f $x86_64_HOST_MINGW_PATH/bin/gcc ]] && {
+			die "gcc is not exists in the \"$x86_64_HOST_MINGW_PATH/bin\" directory. terminate."
+		}
+		export PATH=$LIBS_DIR/bin:$x86_64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+	;;
+esac
+
 [[ $LINK_TYPE_SUFFIX == shared ]] && {
-	readonly x32_PATH=$PREREQ_DIR/$x32_HOST-$LINK_TYPE_SUFFIX/bin:$LIBS_DIR/bin:$x32_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-	readonly x64_PATH=$PREREQ_DIR/$x64_HOST-$LINK_TYPE_SUFFIX/bin:$LIBS_DIR/bin:$x64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-} || {
-	readonly x32_PATH=$x32_HOST_MINGW_PATH/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
-	readonly x64_PATH=$x64_HOST_MINGW_PATH/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+	export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/bin:$PATH
 }
 
 # **************************************************************************
 
-case $BUILD_ARCHITECTURE in
-	i686)
-		[[ ! -f $x32_HOST_MINGW_PATH/bin/gcc ]] && {
-			die "gcc is not exists in the \"$x32_HOST_MINGW_PATH/bin\" directory. terminate."
-		}
-		export PATH="$x32_PATH"
-	;;
-	x86_64)
-		[[ ! -f $x64_HOST_MINGW_PATH/bin/gcc ]] && {
-			die "gcc is not exists in the \"$x64_HOST_MINGW_PATH/bin\" directory. terminate."
-		}
-		export PATH="$x64_PATH"
-	;;
-esac
-
-# **************************************************************************
-
+readonly REVERSE_HOST=$(func_get_reverse_triplet $HOST)
+readonly REVERSE_BUILD=$(func_get_reverse_triplet $BUILD)
+readonly REVERSE_TARGET=$(func_get_reverse_triplet $TARGET)
+readonly REVERSE_ARCHITECTURE=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
+	
 [[ $USE_MULTILIB == yes ]] && {
-	readonly REVERSE_HOST=$(func_get_reverse_triplet $HOST)
-	readonly REVERSE_BUILD=$(func_get_reverse_triplet $BUILD)
-	readonly REVERSE_TARGET=$(func_get_reverse_triplet $TARGET)
 	readonly ENABLE_TARGETS=${TARGET},${REVERSE_TARGET}
 } || {
 	readonly ENABLE_TARGETS=$TARGET
@@ -417,10 +432,10 @@ esac
 
 # **************************************************************************
 
-readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
+readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
 readonly COMMON_CXXFLAGS="$COMMON_CFLAGS"
 readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS"
-readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib -L$PREFIX/opt/lib"
+readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib"
 
 # **************************************************************************
 
@@ -452,15 +467,28 @@ readonly SUBTARGETS=( \
 	) \
 )
 
-for sub in ${SUBTARGETS[@]}; do
+for rule in ${SUBTARGETS[@]}; do
 	func_clear_env
+	rule_arr=( ${rule//|/ } )
+	sub=${rule_arr[0]}
+	PKG_ARCHITECTURE=${rule_arr[1]}
+	[[ -z $PKG_ARCHITECTURE ]] && {
+		PKG_ARCHITECTURE=$BUILD_ARCHITECTURE
+		echo -e "-> \E[32;40m$sub\E[37;40m"
+	} || {
+		echo -e "-> \E[32;40m$sub-$PKG_ARCHITECTURE\E[37;40m"
+	}
+
 	[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
 		die "script for subtarget \"$sub\" is not exists. terminate."
 	}
 	[[ $FETCH_MODE == yes ]] && {
 		[[ -z $( grep 'PKG_URLS=' $TOP_DIR/scripts/${sub}.sh ) ]] && continue
 	}
-	echo -e "-> \E[32;40m$sub\E[37;40m"
+
+	[[ "$PKG_ARCHITECTURE" == "$REVERSE_ARCHITECTURE" ]] && {
+		switch_to_reverse_arch $PKG_ARCHITECTURE
+	}
 
 	source $TOP_DIR/scripts/$sub.sh
 
@@ -480,10 +508,11 @@ for sub in ${SUBTARGETS[@]}; do
 			CURR_BUILD_DIR=$BUILDS_DIR
 		;;
 	esac
-	
+
 	CONFIGURE_LOG=$CURR_LOGS_DIR/$PKG_NAME/configure.log
 	MAKE_LOG=$CURR_LOGS_DIR/$PKG_NAME/make.log
 	INSTALL_LOG=$CURR_LOGS_DIR/$PKG_NAME/install.log
+	TESTSUITE_LOG=$CURR_LOGS_DIR/$PKG_NAME/testsuite.log
 
 	mkdir -p $SRCS_DIR/$PKG_DIR_NAME
 	mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$PKG_NAME
@@ -524,6 +553,11 @@ for sub in ${SUBTARGETS[@]}; do
 				PKG_EXECUTE_AFTER_PATCH[@]
 		}
 
+		[[ -z $PKG_LNDIR ]] && { PKG_LNDIR=no; }
+		[[ -z $PKG_CONFIGURE_SCRIPT ]] && { PKG_CONFIGURE_SCRIPT=configure; }
+		[[ -z $PKG_MAKE_PROG ]] && { PKG_MAKE_PROG=/bin/make; }
+		[[ -z $PKG_CONFIGURE_PROG ]] && { PKG_CONFIGURE_PROG=/bin/sh; }
+
 		[[ ${#PKG_CONFIGURE_FLAGS[@]} >0 ]] && {
 			configure_flags="${PKG_CONFIGURE_FLAGS[@]}"
 			func_configure \
@@ -532,6 +566,7 @@ for sub in ${SUBTARGETS[@]}; do
 				"$configure_flags" \
 				$CONFIGURE_LOG \
 				$CURR_BUILD_DIR \
+				$PKG_LNDIR \
 				$PKG_SUBDIR_NAME
 		}
 
@@ -546,7 +581,7 @@ for sub in ${SUBTARGETS[@]}; do
 		}
 
 		[[ ${#PKG_MAKE_FLAGS[@]} >0 ]] && {
-			make_flags="/bin/make ${PKG_MAKE_FLAGS[@]}"
+			make_flags="$PKG_MAKE_PROG ${PKG_MAKE_FLAGS[@]}"
 			func_make \
 				$PKG_NAME \
 				$PKG_DIR_NAME \
@@ -559,7 +594,7 @@ for sub in ${SUBTARGETS[@]}; do
 		}
 
 		[[ ${#PKG_INSTALL_FLAGS[@]} >0 ]] && {
-			install_flags="/bin/make ${PKG_INSTALL_FLAGS[@]}"
+			install_flags="$PKG_MAKE_PROG ${PKG_INSTALL_FLAGS[@]}"
 			func_make \
 				$PKG_NAME \
 				$PKG_DIR_NAME \
@@ -580,6 +615,25 @@ for sub in ${SUBTARGETS[@]}; do
 				$CURR_LOGS_DIR \
 				PKG_EXECUTE_AFTER_INSTALL[@]
 		}
+
+		[[ $PKG_RUN_TESTSUITE == yes ]] && {
+			[[ ${#PKG_TESTSUITE_FLAGS[@]} >0 ]] && {
+				testsuite_flags="$PKG_MAKE_PROG ${PKG_TESTSUITE_FLAGS[@]}"
+				func_make \
+					$PKG_NAME \
+					$PKG_DIR_NAME \
+					"$testsuite_flags" \
+					$TESTSUITE_LOG \
+					"run testsuite..." \
+					"tested" \
+					$CURR_BUILD_DIR \
+					$PKG_SUBDIR_NAME
+			}
+		}
+	}
+
+	[[ "$PKG_ARCHITECTURE" == "$REVERSE_ARCHITECTURE" ]] && {
+		switch_back_to_arch
 	}
 done
 

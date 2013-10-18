@@ -35,44 +35,8 @@
 # **************************************************************************
 
 function fun_get_subtargets {
-   # $1 - mode (gcc, clang, python)
+	# $1 - mode (gcc, clang, python)
 	# $2 - version
-
-	local readonly LIBICONV_X32_SUBTARGETS=(
-		fix-path-for-x32-pre
-		libiconv-x32
-		fix-path-for-x32-post
-	)
-
-	local readonly LIBICONV_X64_SUBTARGETS=(
-		fix-path-for-x64-pre
-		libiconv-x64
-		fix-path-for-x64-post
-	)
-
-	local readonly WINPTHREADS_X32_SUBTARGETS=(
-		fix-path-for-x32-pre
-		winpthreads-x32
-		fix-path-for-x32-post
-	)
-
-	local readonly WINPTHREADS_X64_SUBTARGETS=(
-		fix-path-for-x64-pre
-		winpthreads-x64
-		fix-path-for-x64-post
-	)
-
-	local readonly ZLIB_X32_SUBTARGETS=(
-		fix-path-for-x32-pre
-		zlib-x32
-		fix-path-for-x32-post
-	)
-
-	local readonly ZLIB_X64_SUBTARGETS=(
-		fix-path-for-x64-pre
-		zlib-x64
-		fix-path-for-x64-post
-	)
 
 	local readonly SUBTARGETS_PART1=(
 		gmp
@@ -96,8 +60,9 @@ function fun_get_subtargets {
 		bzip2
 		libffi
 		expat
-		#tcl
-		#tk
+		tcl
+		tk
+		openssl
 		$([[ $python_version == 3.3.0 ]] && echo xz-utils)
 		sqlite
 		ncurses
@@ -122,11 +87,11 @@ function fun_get_subtargets {
 		mingw-w64-tools-genpeimg
 		mingw-w64-tools-widl
 		${PYTHON_SUBTARGETS[@]}
-		3rdparty-post
 		gdbinit
 		gdb
 		gdb-wrapper
 		make_git_bat
+		3rdparty-post
 		cleanup
 		licenses
 		build-info
@@ -147,38 +112,30 @@ function fun_get_subtargets {
 		gcc)
 			[[ $USE_MULTILIB == yes ]] && {
 				local readonly SUBTARGETS=(
-					${LIBICONV_X32_SUBTARGETS[@]}
-					${LIBICONV_X64_SUBTARGETS[@]}
-					${ZLIB_X32_SUBTARGETS[@]}
-					${ZLIB_X64_SUBTARGETS[@]}	
+					"libiconv|$BUILD_ARCHITECTURE"
+					"libiconv|$REVERSE_ARCHITECTURE"
+					"zlib|$BUILD_ARCHITECTURE"
+					"zlib|$REVERSE_ARCHITECTURE"
 					${SUBTARGETS_PART1[@]}
-					${WINPTHREADS_X32_SUBTARGETS[@]}
-					${WINPTHREADS_X64_SUBTARGETS[@]}
+					"winpthreads|$BUILD_ARCHITECTURE"
+					"winpthreads|$REVERSE_ARCHITECTURE"
 					${SUBTARGETS_PART2[@]}
 				)
 			} || {
-				[[ $BUILD_ARCHITECTURE == i686 ]] && {
-					local readonly SUBTARGETS=(
-						${LIBICONV_X32_SUBTARGETS[@]}
-						${ZLIB_X32_SUBTARGETS[@]}
-						${SUBTARGETS_PART1[@]}
-						${WINPTHREADS_X32_SUBTARGETS[@]}
-						${SUBTARGETS_PART2[@]}
-					)
-				} || {
-					local readonly SUBTARGETS=(
-						${LIBICONV_X64_SUBTARGETS[@]}
-						${ZLIB_X64_SUBTARGETS[@]}
-						${SUBTARGETS_PART1[@]}
-						${WINPTHREADS_X64_SUBTARGETS[@]}
-						${SUBTARGETS_PART2[@]}
-					)
-				}
+				local readonly SUBTARGETS=(
+					libiconv
+					zlib
+					${SUBTARGETS_PART1[@]}
+					winpthreads
+					${SUBTARGETS_PART2[@]}
+				)
 			}
 		;;
 		python)
 			local readonly SUBTARGETS=(
+				zlib
 				${PYTHON_SUBTARGETS[@]}
+				3rdparty-post
 				cleanup
 				licenses
 				build-info
