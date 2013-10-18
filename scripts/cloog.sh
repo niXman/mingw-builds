@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=0.18.0
+PKG_VERSION=0.18.1
 PKG_NAME=$BUILD_ARCHITECTURE-cloog-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=cloog-${PKG_VERSION}
 PKG_TYPE=.tar.gz
@@ -47,7 +47,7 @@ PKG_PRIORITY=prereq
 #
 
 PKG_PATCHES=(
-	cloog/cloog-0.18.0-no-undefined.patch
+	cloog/cloog-0.18.1-no-undefined.patch
 )
 
 #

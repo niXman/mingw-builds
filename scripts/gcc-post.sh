@@ -35,10 +35,6 @@
 
 # **************************************************************************
 
-echo -n "--> Switching to new compiler..."
-export PATH=$PREFIX/bin:$PREFIX/opt/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
-echo " done"
-
 function gcc_post_install {
 	[[ ! -f $BUILDS_DIR/gcc-post.marker ]] && {
 		# remove <prefix>/mingw directory
@@ -46,9 +42,11 @@ function gcc_post_install {
 
 		local _gcc_version=$(func_map_gcc_name_to_gcc_version $GCC_NAME)
 		local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
-		# libgcc_s.a
-		cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ \
-			|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib"
+		[[ $BUILD_SHARED_GCC == yes ]] && {
+			# libgcc_s.a
+			cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ \
+				|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib"
+		}
 
 		func_has_lang objc
 		local is_objc=$?
@@ -56,49 +54,58 @@ function gcc_post_install {
 			# libobjc
 			cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/libobjc/.libs/libobjc.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/ \
 				|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version"
-			cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/libobjc/.libs/libobjc.dll.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/ \
-				|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version"
+			[[ $BUILD_SHARED_GCC == yes ]] && {
+				cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/libobjc/.libs/libobjc.dll.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/ \
+					|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version"
+			}
 			# objc headers
 			cp -rf ${SRCS_DIR}/${GCC_NAME}/libobjc/objc $PREFIX/lib/gcc/$TARGET/$_gcc_version/include \
 				|| die "Cannot copy objc headers to $PREFIX/lib/gcc/$TARGET/$_gcc_version/include"
 		}
 
-		# builded architecture dlls
-		local _dlls=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \
-				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune \) \
-				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune \) \
-				-not \( -path $BUILDS_DIR/$GCC_NAME/gcc/ada -prune \) \
-				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/libada/adainclude -prune \) \
-				-type f -name *.dll) )
-		cp -f ${_dlls[@]} $PREFIX/bin/ > /dev/null 2>&1 || die "Cannot copy architecture dlls to $PREFIX/bin/"
-		cp -f ${_dlls[@]} $PREFIX/$TARGET/lib/ > /dev/null 2>&1 || die "Cannot copy architecture dlls to $PREFIX/lib/"
+		[[ $BUILD_SHARED_GCC == yes ]] && {
+			# builded architecture dlls
+			local _dlls=( $(find $BUILDS_DIR/$GCC_NAME/$TARGET \
+					-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/32 -prune \) \
+					-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/64 -prune \) \
+					-not \( -path $BUILDS_DIR/$GCC_NAME/gcc/ada -prune \) \
+					-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/libada/adainclude -prune \) \
+					-type f -name *.dll) )
+			cp -f ${_dlls[@]} $PREFIX/bin/ > /dev/null 2>&1 || die "Cannot copy architecture dlls to $PREFIX/bin/"
+			cp -f ${_dlls[@]} $PREFIX/$TARGET/lib/ > /dev/null 2>&1 || die "Cannot copy architecture dlls to $PREFIX/lib/"
 			
-		[[ $STRIP_ON_INSTALL == yes ]] && {
-			strip $PREFIX/bin/*.dll || die "Error stripping dlls from $PREFIX/bin"
-			strip $PREFIX/$TARGET/lib/*.dll || die "Error stripping dlls from $PREFIX/$TARGET/lib"
+			[[ $STRIP_ON_INSTALL == yes ]] && {
+				strip $PREFIX/bin/*.dll || die "Error stripping dlls from $PREFIX/bin"
+				strip $PREFIX/$TARGET/lib/*.dll || die "Error stripping dlls from $PREFIX/$TARGET/lib"
+			}
 		}
-
 		[[ $USE_MULTILIB == yes ]] && {
-			# Second architecture bit dlls
-			# libgcc_s.a
-			cp -f $PREFIX/lib/gcc/$TARGET/lib${_reverse_bits}/libgcc_s.a $PREFIX/$TARGET/lib${_reverse_bits}/ \
-				|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib${_reverse_bits}/"
+			[[ $BUILD_SHARED_GCC == yes ]] && {
+				# libgcc_s.a
+				cp -f $PREFIX/lib/gcc/$TARGET/lib${_reverse_bits}/libgcc_s.a $PREFIX/$TARGET/lib${_reverse_bits}/ \
+					|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib${_reverse_bits}/"
+			}
 
 			[[ $is_objc == 1 ]] && {
 				# libobjc libraries
 				cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/${_reverse_bits}/libobjc/.libs/libobjc.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}/ \
 					|| die "Cannot copy libobjc.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}"
-				cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/${_reverse_bits}/libobjc/.libs/libobjc.dll.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}/ \
-					|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}"
+				[[ $BUILD_SHARED_GCC == yes ]] && {
+					cp -f $BUILDS_DIR/${GCC_NAME}/${TARGET}/${_reverse_bits}/libobjc/.libs/libobjc.dll.a $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}/ \
+						|| die "Cannot copy libobjc.dll.a to $PREFIX/lib/gcc/$TARGET/$_gcc_version/${_reverse_bits}"
+				}
 			}
 
-			find $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits} \
-				-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/libada/adainclude -prune \) \
-				-type f -name *.dll ! -name *winpthread* -print0 \
-				| xargs -0 -I{} cp -f {} $PREFIX/$TARGET/lib${_reverse_bits}/ || die "Error copying ${_reverse_bits}-bit dlls"
+			[[ $BUILD_SHARED_GCC == yes ]] && {
+				# Second architecture bit dlls
+				find $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits} \
+					-not \( -path $BUILDS_DIR/$GCC_NAME/$TARGET/${_reverse_bits}/libada/adainclude -prune \) \
+					-type f -name *.dll ! -name *winpthread* -print0 \
+					| xargs -0 -I{} cp -f {} $PREFIX/$TARGET/lib${_reverse_bits}/ || die "Error copying ${_reverse_bits}-bit dlls"
 
-			[[ $STRIP_ON_INSTALL == yes ]] && {
-				strip $PREFIX/$TARGET/lib${_reverse_bits}/*.dll || die "Error stripping ${_reverse_bits}-bit dlls"
+				[[ $STRIP_ON_INSTALL == yes ]] && {
+					strip $PREFIX/$TARGET/lib${_reverse_bits}/*.dll || die "Error stripping ${_reverse_bits}-bit dlls"
+				}
 			}
 		}
 
@@ -107,4 +114,9 @@ function gcc_post_install {
 }
 
 gcc_post_install
+
+echo -n "--> Switching to new compiler..."
+export PATH=$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+echo " done"
+
 # **************************************************************************

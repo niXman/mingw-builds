@@ -49,7 +49,6 @@ PKG_PRIORITY=extra
 PKG_PATCHES=(
 	make/make-linebuf-mingw.patch
 	make/make-getopt.patch
-	make/make-no-output-sync.patch
 )
 
 #

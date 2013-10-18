@@ -23,24 +23,25 @@ MSYS2:
   "cd && cd mingw-w64-builds"
 
 7. Options:
-  '--mode=[gcc|python|clang]-version' option specifies building software with version.
-  '--arch=<i686|x86_64>' option specifies the architecture.
-  '--buildroot=<path>' option specifies to the script to use '<path>' as build directory.
-    By default used MSYS user home directory.
-  '--fetch-only' option specifies to the script only to download all the sources
-    without start building.
-  '--update-sources' - try to update sources from repositories before build.
-  '--exceptions=model' option specifies to the script using exceptions handling
-    model. Available models are: dwarf, seh(for gcc>=4.8.0 only), sjlj.
-  '--use-lto' option specifies to the script to build with using LTO.
-  '--no-strip' option specifies to the script to install without striping.
-  '--no-multilib' option specifies to the script to build without multilib support.
-  '--dyn-deps' option specifies to the script to build GCC with dynamically dependencies.
-  '--rt-version' option specifies what version of mingw-w64 runtime to build.
-  '--rev=N' option specifies to the script the number of the build revision.
-  '--threads=model' option specifies to the script the used threads model.
-  '--enable-languages=<langs>' option specifies a comma separated list(without spaces)
-    of gcc supported languages. available languages: ada,c,c++,fortran,obj-c,obj-c++
+  '--mode=[gcc|python|clang]-version' - what package to build with version.
+  '--arch=<i686|x86_64>'              - build architecture.
+  '--buildroot=<path>'                - using '<path>' as build directory.
+                                        By default used MSYS user home directory.
+  '--fetch-only'                      - only download all the sources without start building.
+  '--update-sources'                  - try to update sources from repositories before build.
+  '--exceptions=<model>'              - exceptions handling model.
+                                        Available: dwarf, seh(gcc>=4.8.0 only), sjlj.
+  '--use-lto'                         - building with using LTO.
+  '--no-strip'                        - don't strip executables during install.
+  '--no-multilib'                     - build GCC without multilib support (default for DWARF and SEH exception models).
+  '--static-gcc'                      - build static GCC.
+  '--dyn-deps'                        - build GCC with dynamically dependencies.
+  '--rt-version=<v3|v4>'              - version of mingw-w64 runtime to build.
+  '--rev=N'                           - number of the build revision.
+  '--with-testsuite'                  - run testsuite for packages that contain flags for it.
+  '--threads=<posix|win32>'           - used threads model.
+  '--enable-languages=<langs>'        - comma separated list(without spaces) of gcc supported languages.
+                                        available languages: ada,c,c++,fortran,objc,obj-c++
   For more options run: "./build --help"
 
 8. Run:
@@ -78,9 +79,10 @@ At the moment, successfully building the following versions:
   gcc-4.7.3
   gcc-4.8.0
   gcc-4.8.1
+  gcc-4.8.2
   gcc-4_6-branch (currently 4.6.5 prerelease)
   gcc-4_7-branch (currently 4.7.4 prerelease)
-  gcc-4_8-branch (currently 4.8.2 prerelease)
+  gcc-4_8-branch (currently 4.8.3 prerelease)
   gcc-trunk (currently 4.9.0 snapshot)
 
 Builds also contains patches for building Python 2.7.3, 2.7.4, 2.7.5 and 3.3.0 versions for support gdb pretty printers.

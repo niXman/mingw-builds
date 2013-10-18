@@ -87,9 +87,10 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--with-libiconv-prefix=$PREREQ_DIR/libiconv-$BUILD_ARCHITECTURE
 	#
+	--disable-rpath
 	--disable-nls
 	#
-	$LINK_TYPE_BOTH
+	$LINK_TYPE_GCC
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
