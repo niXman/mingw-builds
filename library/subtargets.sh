@@ -96,7 +96,7 @@ function fun_get_subtargets {
 		licenses
 		build-info
 		tests
-		$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
+		$([[ $COMPRESSING_BINS == yes ]] && echo mingw-compress)
 	)
 
 	case $1 in
@@ -106,7 +106,7 @@ function fun_get_subtargets {
 				cleanup
 				licenses
 				build-info
-				$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
+				$([[ $COMPRESSING_BINS == yes ]] && echo mingw-compress)
 			)
 		;;
 		gcc)
@@ -139,7 +139,7 @@ function fun_get_subtargets {
 				cleanup
 				licenses
 				build-info
-				$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
+				$([[ $COMPRESSING_BINS == yes ]] && echo mingw-compress)
 			)
 		;;
 	esac

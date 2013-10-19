@@ -72,7 +72,7 @@ readonly RUN_ARGS="$@"
 	echo "    --mode=<[clang|gcc|python]-version>  - specify building software with version"
 	echo "    --with-testsuite           - run testsuite for packages if possible"
 	echo "    --version                  - print the version of the MinGW-W64 builds scripts"
-	echo "    --mingw-compress           - compressing MinGW"
+	echo "    --bin-compress             - compressing binaries"
 	echo "    --src-compress             - compressing sources"
 	echo "    --mingw-upload             - upload toolchain archives to sf-project"
 	echo "    --src-upload               - upload sources archive to sf-project"
@@ -239,7 +239,7 @@ while [[ $# > 0 ]]; do
 			PKG_RUN_TESTSUITE=yes
 		;;
 		--version) echo $MINGW_W64_BUILDS_VERSION; exit 0 ;;
-		--mingw-compress) COMPRESSING_MINGW=yes ;;
+		--bin-compress) COMPRESSING_BINS=yes ;;
 		--src-compress) COMPRESSING_SRCS=yes ;;
 		--mingw-upload) UPLOAD_MINGW=yes ;;
 		--src-upload) UPLOAD_SOURCES=yes ;;
@@ -319,7 +319,7 @@ source $TOP_DIR/library/os_detect.sh
 	}
 }
 
-[[ $[ $COMPRESSING_MINGW == yes || $COMPRESSING_SRCS == yes ] == 1 ]] && {
+[[ $[ $COMPRESSING_BINS == yes || $COMPRESSING_SRCS == yes ] == 1 ]] && {
 	func_check_program "7za"
 }
 
