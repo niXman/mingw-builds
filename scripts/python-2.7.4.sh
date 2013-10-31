@@ -1,4 +1,3 @@
-
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
@@ -151,6 +150,20 @@ PKG_MAKE_FLAGS=(
 
 PKG_INSTALL_FLAGS=(
 	install
+)
+
+#
+
+[[ $BUILD_MODE == gcc || $BUILD_MODE == python ]] && {
+	[[ $BUILD_MODE == gcc ]] && {
+		RM_PYTHON_TEST_DIR_CMD="rm -rf $LIBS_DIR/opt/lib/python?.?/test"
+	} || {
+		RM_PYTHON_TEST_DIR_CMD="rm -rf $PREFIX/lib/python?.?/test"
+	}
+}
+
+PKG_EXECUTE_AFTER_INSTALL=(
+	"$RM_PYTHON_TEST_DIR_CMD"
 )
 
 # **************************************************************************
