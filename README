@@ -7,14 +7,13 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
 
 1. Windows-64bit or Linux + Wine-64bit
 
-2. Install MSYS:
-MSYS2:
+2. Install MSYS2 from:
   https://sourceforge.net/projects/msys2/files/Alpha-versions/
 
 3. Get the scripts into '<msys root>/home/<user>/mingw-w64-builds':
   "cd && git clone <paste correct url>"
 
-4. In the MSYS file structure delete the '/MinGW' directory.
+4. In the MSYS2 file structure delete the '/MinGW' directory.
 
 5. Delete the paths pointing to any preinstalled MinGW from the 'PATH'
   environment variable.
