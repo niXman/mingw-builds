@@ -1,4 +1,3 @@
-
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
@@ -40,7 +39,6 @@ function python_deps_post {
 
 		local _toolchain_path=$(eval "echo \${${BUILD_ARCHITECTURE}_HOST_MINGW_PATH}")
 		local _gcc_dll=( $(find $_toolchain_path/bin -type f \
-							-name libstdc++*.dll -o \
 							-name libgcc*.dll -o \
 							-name libwinpthread*.dll) )
 		[[ ${#_gcc_dll[@]} >0 ]] && {
