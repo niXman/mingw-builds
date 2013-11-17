@@ -832,7 +832,7 @@ function func_abstract_toolchain {
 			rm -rf $3
 			echo " done"
 		} || {
-			echo -n "--> $4 toolchain is not installed."
+			echo -n "--> $4 toolchain is not installed "
 		}
 		func_download _url[@]
 		func_uncompress _url[@] $1
@@ -861,8 +861,8 @@ function func_install_toolchain {
 			func_abstract_toolchain $1 $5 $3 $_arch_bit
 		;;
 		both)
-			func_abstract_toolchain $1 $4 $2 "i686"
-			func_abstract_toolchain $1 $5 $3 "x86_64"
+			func_abstract_toolchain $1 $4 $2 i686
+			func_abstract_toolchain $1 $5 $3 x86_64
 		;;
 	esac
 }
