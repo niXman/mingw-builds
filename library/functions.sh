@@ -548,11 +548,13 @@ function func_execute {
 	}
 
 	for it in "${_commands[@]}"; do
-		_cmd_marker_name=$1/$2/exec-$4-$_index.marker
+		local _cmd_marker_name=$1/$2/exec-$4-$_index.marker
 		local _cmd_log_name=$1/$2/exec-$4-$_index.log
+		local _cmd_command_cmd=$1/$2/exec-$4-$_index.cmd
 
 		[[ ! -f $_cmd_marker_name ]] && {
 			pushd $1/$2 > /dev/null
+			echo "${it}" > $_cmd_command_cmd 2>&1
 			eval ${it} > $_cmd_log_name 2>&1
 			_result=$?
 			popd > /dev/null

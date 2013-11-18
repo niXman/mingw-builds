@@ -119,6 +119,7 @@ MY_CPPFLAGS="-I$LIBSW_DIR/include -I$LIBSW_DIR/include/ncursesw -I$PREREQW_DIR/$
 
 # Workaround for conftest error on 64-bit builds
 export ac_cv_working_tzset=no
+
 #
 
 PKG_CONFIGURE_FLAGS=(
@@ -158,7 +159,7 @@ PKG_INSTALL_FLAGS=(
 
 [[ $BUILD_MODE == gcc || $BUILD_MODE == python ]] && {
 	[[ $BUILD_MODE == gcc ]] && {
-		RM_PYTHON_TEST_DIR_CMD="rm -rf $LIBS_DIR/opt/lib/python?.?/test"
+		RM_PYTHON_TEST_DIR_CMD="rm -rf $LIBS_DIR/lib/python?.?/test"
 	} || {
 		RM_PYTHON_TEST_DIR_CMD="rm -rf $PREFIX/lib/python?.?/test"
 	}
