@@ -2,12 +2,8 @@
    or, maybe, create separate files for each OS.
    (usage-win.txt, usage-nix.txt, usage-osx.txt)
 
-2. when Python is built, its '<prefix>/lib/python[x.y]' directory contains 'test' directory.
-   it is necessary to decide whether it is needed in the python distribution archive, or no.
-   if no - in the 'scripts/cleanup.sh' script add the code in order to remove it.
+2. Fix building Python with shared NCURSES.
 
-3. Fix building Python with shared NCURSES.
+3. Fix building GNU Make with autotools.
 
-4. Fix building GNU Make with autotools.
-
-5. Use separate archives for languages: 1)c,c++, 2)ada, 3)fortran, 4)obj-c,obj-c++
+4. Use separate archives for languages: 1)c,c++, 2)ada, 3)fortran, 4)obj-c,obj-c++
