@@ -129,7 +129,6 @@ PKG_CONFIGURE_FLAGS=(
 	--prefix=$LIBS_DIR
 	#
 	--enable-shared
-	--disable-ipv6
 	--without-pydebug
 	--with-system-expat
 	--with-system-ffi

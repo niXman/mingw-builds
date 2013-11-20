@@ -263,22 +263,6 @@ readonly SRCS_DIR=$ROOT_DIR/src
 readonly MARKERS_DIR=$SRCS_DIR/MARKERS
 
 # **************************************************************************
-# create MINGW_W64_PKG_STRING
-
-readonly MINGW_W64_PKG_STRING="$( \
-	func_create_mingw_archive_name \
-		$ARCHIVES_DIR \
-		$SRCS_DIR \
-		$GCC_NAME \
-		$BUILD_ARCHITECTURE \
-		$EXCEPTIONS_MODEL \
-		$THREADS_MODEL \
-		$REV_NUM \
-	\
-	| sed "s|$ARCHIVES_DIR/||;s|\.7z||"
-), $MINGW_W64_PKG_STRING"
-
-# **************************************************************************
 
 [[ $UPLOAD_MINGW == yes || $UPLOAD_SOURCES == yes ]] && {
 	[[ -z $SF_USER ]]     && { die "please specify sourceforge user login with '--sf-user=<user>'. terminate."; }
@@ -533,13 +517,27 @@ for rule in ${SUBTARGETS[@]}; do
 	mkdir -p $SRCS_DIR/$PKG_DIR_NAME
 	mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$PKG_NAME
 	[[ -n $PKG_SUBDIR_NAME ]] && { mkdir -p $CURR_BUILD_DIR/$PKG_NAME/$PKG_SUBDIR_NAME; }
-	#[[ $PKG_NAME != $PKG_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$PKG_NAME
 
 	func_download \
 		PKG_URLS[@]
 
 	func_uncompress \
 		PKG_URLS[@]
+
+	[[ ${sub} =~ ^gcc- ]] && {
+		readonly MINGW_W64_PKG_STRING="$( \
+			func_create_mingw_archive_name \
+				$ARCHIVES_DIR \
+				$SRCS_DIR \
+				$GCC_NAME \
+				$BUILD_ARCHITECTURE \
+				$EXCEPTIONS_MODEL \
+				$THREADS_MODEL \
+				$REV_NUM \
+			\
+			| sed "s|$ARCHIVES_DIR/||;s|\.7z||"
+		), $MINGW_W64_PKG_STRING"
+	}
 
 	[[ $FETCH_MODE == no ]] && {
 		[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
