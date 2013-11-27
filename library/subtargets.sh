@@ -41,10 +41,10 @@ function fun_get_subtargets {
 	local readonly SUBTARGETS_PART1=(
 		$( \
 			[[ $USE_MULTILIB == yes ]] && { \
-				echo libiconv|$BUILD_ARCHITECTURE; \
-				echo libiconv|$REVERSE_ARCHITECTURE; \
-				echo zlib|$BUILD_ARCHITECTURE; \
-				echo zlib|$REVERSE_ARCHITECTURE; \
+				echo "libiconv|$BUILD_ARCHITECTURE"; \
+				echo "libiconv|$REVERSE_ARCHITECTURE"; \
+				echo "zlib|$BUILD_ARCHITECTURE"; \
+				echo "zlib|$REVERSE_ARCHITECTURE"; \
 			} || { \
 				echo libiconv; \
 				echo zlib; \
@@ -60,8 +60,8 @@ function fun_get_subtargets {
 		mingw-w64-crt
 		$( \
 			[[ $USE_MULTILIB == yes ]] && { \
-				echo winpthreads|$BUILD_ARCHITECTURE; \
-				echo winpthreads|$REVERSE_ARCHITECTURE; \
+				echo "winpthreads|$BUILD_ARCHITECTURE"; \
+				echo "winpthreads|$REVERSE_ARCHITECTURE"; \
 			} || { \
 				echo winpthreads; \
 			} \
