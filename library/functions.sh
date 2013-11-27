@@ -355,7 +355,7 @@ function func_download {
 			[[ $_is_repo == yes ]] && {
 				echo -n "--> checkout $_filename..."
 
-				[[ -n $_dir ]] && {
+				[[ -z $_dir ]] && {
 					_lib_name=$_root/$_filename
 				} || {
 					_lib_name=$_root/$_dir/$_filename
