@@ -39,6 +39,17 @@ function fun_get_subtargets {
 	# $2 - version
 
 	local readonly SUBTARGETS_PART1=(
+		$( \
+			[[ $USE_MULTILIB == yes ]] && { \
+				echo libiconv|$BUILD_ARCHITECTURE; \
+				echo libiconv|$REVERSE_ARCHITECTURE; \
+				echo zlib|$BUILD_ARCHITECTURE; \
+				echo zlib|$REVERSE_ARCHITECTURE; \
+			} || { \
+				echo libiconv; \
+				echo zlib; \
+			} \
+		)
 		gmp
 		mpfr
 		mpc
@@ -47,6 +58,14 @@ function fun_get_subtargets {
 		cloog
 		mingw-w64-api
 		mingw-w64-crt
+		$( \
+			[[ $USE_MULTILIB == yes ]] && { \
+				echo winpthreads|$BUILD_ARCHITECTURE; \
+				echo winpthreads|$REVERSE_ARCHITECTURE; \
+			} || { \
+				echo winpthreads; \
+			} \
+		)
 	)
 
 	[[ $1 == gcc ]] && {
@@ -112,21 +131,12 @@ function fun_get_subtargets {
 		gcc)
 			[[ $USE_MULTILIB == yes ]] && {
 				local readonly SUBTARGETS=(
-					"libiconv|$BUILD_ARCHITECTURE"
-					"libiconv|$REVERSE_ARCHITECTURE"
-					"zlib|$BUILD_ARCHITECTURE"
-					"zlib|$REVERSE_ARCHITECTURE"
 					${SUBTARGETS_PART1[@]}
-					"winpthreads|$BUILD_ARCHITECTURE"
-					"winpthreads|$REVERSE_ARCHITECTURE"
 					${SUBTARGETS_PART2[@]}
 				)
 			} || {
 				local readonly SUBTARGETS=(
-					libiconv
-					zlib
 					${SUBTARGETS_PART1[@]}
-					winpthreads
 					${SUBTARGETS_PART2[@]}
 				)
 			}
