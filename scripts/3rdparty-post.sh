@@ -37,7 +37,14 @@
 function python_deps_post {
 	[[ ! -f $BUILDS_DIR/3rdparty-post.marker ]] && {
 
-		local _toolchain_path=$(eval "echo \${${BUILD_ARCHITECTURE}_HOST_MINGW_PATH}")
+		case $BUILD_MODE in
+			gcc)
+				local _toolchain_path=$PREFIX
+			;;
+			*)
+				local _toolchain_path=$(eval "echo \${${BUILD_ARCHITECTURE}_HOST_MINGW_PATH}")
+			;;
+		esac
 		local _gcc_dll=( \
 			$(find $_toolchain_path/bin -type f \
 							-name libgcc*.dll -o \
