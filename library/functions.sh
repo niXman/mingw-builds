@@ -199,7 +199,7 @@ function func_check_languages {
 		for lang in ${langs[@]}; do
 			case $lang in
 				ada|c|c++|fortran|objc|obj-c++) ;;
-				*) die "the following language not supported: $lang" ;;
+				*) die "the following language not supported: $lang. terminate." ;;
 			esac
 		done
 	}
