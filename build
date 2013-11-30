@@ -138,8 +138,8 @@ while [[ $# > 0 ]]; do
 		--fetch-only) FETCH_MODE=yes ;;
 		--update-sources) UPDATE_SOURCES=yes ;;
 		--enable-languages=*)
-			func_check_languages "${1/--enable-languages=/}"
 			ENABLE_LANGUAGES=${1/--enable-languages=/}
+			func_check_languages "${ENABLE_LANGUAGES}"
 		;;
 		--exceptions=*)
 			EXCEPTIONS_MODEL=${1/--exceptions=/}
