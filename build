@@ -458,9 +458,9 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 	}
 } || {
 	[[ $BUILD_MODE == gcc ]] && {
-		echo "-> start building $MINGW_BUILD_NAME"
+		echo "-> start building $MINGW_BUILD_NAME with \"$ENABLE_LANGUAGES\" languages supported"
 	} || {
-		echo "-> start building ${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}"
+		echo "-> start building ${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE} with \"$ENABLE_LANGUAGES\" languages supported"
 	}
 }
 
@@ -531,23 +531,6 @@ for rule in ${SUBTARGETS[@]}; do
 
 	func_uncompress \
 		PKG_URLS[@]
-
-	[[ ${sub} =~ ^gcc- ]] && {
-		readonly MINGW_W64_PKG_STRING="$( \
-			func_create_mingw_archive_name \
-				$ARCHIVES_DIR \
-				$SRCS_DIR \
-				$GCC_NAME \
-				$BUILD_ARCHITECTURE \
-				$EXCEPTIONS_MODEL \
-				$THREADS_MODEL \
-				$REV_NUM \
-			\
-			| sed "s|$ARCHIVES_DIR/||;s|\.7z||"
-		), $MINGW_W64_PKG_STRING"
-		
-		echo "MINGW_W64_PKG_STRING=$MINGW_W64_PKG_STRING"
-	}
 
 	[[ $FETCH_MODE == no ]] && {
 		[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
