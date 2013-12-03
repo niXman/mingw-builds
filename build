@@ -545,6 +545,8 @@ for rule in ${SUBTARGETS[@]}; do
 			\
 			| sed "s|$ARCHIVES_DIR/||;s|\.7z||"
 		), $MINGW_W64_PKG_STRING"
+		
+		echo "MINGW_W64_PKG_STRING=$MINGW_W64_PKG_STRING"
 	}
 
 	[[ $FETCH_MODE == no ]] && {
