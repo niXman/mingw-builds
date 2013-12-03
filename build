@@ -144,17 +144,9 @@ while [[ $# > 0 ]]; do
 		--exceptions=*)
 			EXCEPTIONS_MODEL=${1/--exceptions=/}
 			case $EXCEPTIONS_MODEL in
-				dwarf)
-					USE_MULTILIB=no
-					BUILD_ARCHITECTURE=i686
-				;;
-				seh)
-					USE_MULTILIB=no
-					BUILD_ARCHITECTURE=x86_64
-				;;
-				sjlj)
-					USE_MULTILIB=$USE_MULTILIB			
-				;;
+				dwarf) USE_MULTILIB=no ;;
+				seh) USE_MULTILIB=no ;;
+				sjlj) USE_MULTILIB=$USE_MULTILIB ;;
 				*)
 					die "\"$EXCEPTIONS_MODEL\" is not valid exception model. available models: dwarf, seh, sjlj. terminate."
 				;;
@@ -223,7 +215,7 @@ while [[ $# > 0 ]]; do
 			}
 		;;
 		--arch=*)
-			BUILD_ARCHITECTURE=${1/--arch=/}
+			readonly BUILD_ARCHITECTURE=${1/--arch=/}
 			case $BUILD_ARCHITECTURE in
 				i686)
 					case $EXCEPTIONS_MODEL in
