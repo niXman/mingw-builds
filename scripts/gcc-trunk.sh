@@ -108,7 +108,7 @@ PKG_CONFIGURE_FLAGS=(
 	--with-system-zlib
 	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	--enable-cloog-backend=isl
-	--with-pkgversion="\"$MINGW_W64_PKG_STRING\""
+	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL, $MINGW_W64_PKG_STRING\""
 	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
