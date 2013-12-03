@@ -192,6 +192,7 @@ function func_get_filename_extension {
 function func_check_languages {
 	local langs=( ${1//,/ } )
 	local lang=
+	local _lang_err=
 	
 	[[ ${#langs[@]} == 0 ]] && {
 		die "you must specify languages to build. terminate."
@@ -199,9 +200,12 @@ function func_check_languages {
 		for lang in ${langs[@]}; do
 			case $lang in
 				ada|c|c++|fortran|objc|obj-c++) ;;
-				*) die "the following language not supported: $lang. terminate." ;;
+				*)
+					_lang_err+=" $lang"
+				;;
 			esac
 		done
+		[[ -n "$_lang_err" ]] && { die "the following languages not supported: $_lang_err. terminate."; }
 	}
 }
 
