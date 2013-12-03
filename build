@@ -223,9 +223,25 @@ while [[ $# > 0 ]]; do
 			}
 		;;
 		--arch=*)
-			readonly BUILD_ARCHITECTURE=${1/--arch=/}
+			BUILD_ARCHITECTURE=${1/--arch=/}
 			case $BUILD_ARCHITECTURE in
-				i686|x86_64)
+				i686)
+					case $EXCEPTIONS_MODEL in
+						dwarf|sjlj)
+						;;
+						*)
+							die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate."
+						;;
+					esac
+				;;
+				x86_64)
+					case $EXCEPTIONS_MODEL in
+						seh|sjlj)
+						;;
+						*)
+							die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate."
+						;;
+					esac
 				;;
 				*) die "Unsupported architecture: \"$BUILD_ARCHITECTURE\". terminate." 
 				;;
