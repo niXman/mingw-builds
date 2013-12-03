@@ -83,9 +83,9 @@ readonly RUN_ARGS="$@"
 	echo "    --cppflags='<flags>'       - additional CPPFLAGS"
 	echo "    --ldflags='<flags>'        - additional LDFLAGS"
 	echo "    --march-x32='<arch>'       - arch for x32 target"
-	echo "    --mtume-x32='<arch>'       - tune for x32 target"
+	echo "    --mtune-x32='<arch>'       - tune for x32 target"
 	echo "    --march-x64='<arch>'       - arch for x64 target"
-	echo "    --mtume-x64='<arch>'       - tune for x64 target"
+	echo "    --mtune-x64='<arch>'       - tune for x64 target"
 	echo "    --enable-languages=<langs> - comma separated list(without spaces) of gcc"
 	echo "                                 supported languages. available languages:"
 	echo "                                 ada,c,c++,fortran,objc,obj-c++"
@@ -118,9 +118,9 @@ readonly RUN_ARGS="$@"
 while [[ $# > 0 ]]; do
 	case $1 in
 		--march-x32=*) PROCESSOR_OPTIMIZATION_ARCH_32=${1/--march-x32=/} ;;
-		--mtume-x32=*) PROCESSOR_OPTIMIZATION_TUNE_32=${1/--mtume-x32=/} ;;
+		--mtune-x32=*) PROCESSOR_OPTIMIZATION_TUNE_32=${1/--mtune-x32=/} ;;
 		--march-x64=*) PROCESSOR_OPTIMIZATION_ARCH_64=${1/--march-x64=/} ;;
-		--mtume-x64=*) PROCESSOR_OPTIMIZATION_TUNE_64=${1/--mtume-x64=/} ;;
+		--mtune-x64=*) PROCESSOR_OPTIMIZATION_TUNE_64=${1/--mtune-x64=/} ;;
 		--cflags=*) BASE_CFLAGS="$BASE_CFLAGS ${1/--cflags=/}" ;;
 		--cxxflags=*) BASE_CXXFLAGS="$BASE_CXXFLAGS ${1/--cxxflags=/}" ;;
 		--cppflags=*) BASE_CPPFLAGS="$BASE_CPPFLAGS ${1/--cppflags=/}" ;;
