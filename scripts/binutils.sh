@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.23.2
+PKG_VERSION=2.24
 PKG_NAME=binutils-${PKG_VERSION}
 [[ $USE_MULTILIB == yes ]] && {
 	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
@@ -52,9 +52,7 @@ PKG_PRIORITY=prereq
 
 #
 
-PKG_PATCHES=(
-	binutils/binutils-2.23.2-fix-docs.patch
-)
+PKG_PATCHES=()
 
 #
 
