@@ -116,6 +116,6 @@ BUILD_MODE_VERSION=
 BUILD_VERSION=
 GCC_NAME=
 
-DEFAULT_PYTHON_VERSION=2.7.5
+DEFAULT_PYTHON_VERSION=2.7.6
 
 # **************************************************************************

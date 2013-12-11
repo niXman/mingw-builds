@@ -48,6 +48,7 @@ PKG_PRIORITY=prereq
 #
 
 PKG_PATCHES=(
+	mpfr/mpfr-3.1.2-p5.patch
 )
 
 #

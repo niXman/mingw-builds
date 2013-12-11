@@ -47,7 +47,16 @@ PKG_PRIORITY=main
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	# https://sourceware.org/ml/gdb-patches/2013-11/msg00224.html
+	gdb/gdb-fix-display-tabs-on-mingw.patch
+	# https://sourceware.org/bugzilla/show_bug.cgi?id=15559
+	gdb/gdb-mingw-gcc-4.7.patch
+	# http://sourceware.org/bugzilla/show_bug.cgi?id=15412
+	gdb/gdb-perfomance.patch
+	# https://sourceware.org/bugzilla/show_bug.cgi?id=12127
+	gdb/gdb-python-fix-crash.patch
+)
 
 #
 
