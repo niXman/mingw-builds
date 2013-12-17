@@ -1,4 +1,3 @@
-
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
@@ -57,7 +56,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$RUNTIME_DIR/$PKG_NAME
 	#
-	$LINK_TYPE_BOTH
+	$LINK_TYPE_GCC
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
