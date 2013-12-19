@@ -37,9 +37,9 @@
 PKG_VERSION=2.7.6
 PKG_NAME=Python-${PKG_VERSION}
 PKG_DIR_NAME=Python-${PKG_VERSION}
-PKG_TYPE=.tar.bz2
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"http://www.python.org/ftp/python/${PKG_VERSION}/Python-${PKG_VERSION}.tar.bz2"
+	"http://www.python.org/ftp/python/${PKG_VERSION}/Python-${PKG_VERSION}.tar.xz"
 )
 
 PKG_PRIORITY=extra
