@@ -853,20 +853,23 @@ function func_install_toolchain {
 	# $5 - x86_64-mingw URL
 
 	[[ $USE_MULTILIB == yes ]] && {
-		local _arch_bit=both
+		local _arch=both
 	} || {
-		local _arch_bit=$(func_get_arch_bit $BUILD_ARCHITECTURE)
+		local _arch=$BUILD_ARCHITECTURE
 	}
-	case $_arch_bit in
+	case $_arch in
 		i686)
-			func_abstract_toolchain $1 $4 $2 $_arch_bit
+			func_abstract_toolchain $1 $4 $2 $_arch
 		;;
 		x86_64)
-			func_abstract_toolchain $1 $5 $3 $_arch_bit
+			func_abstract_toolchain $1 $5 $3 $_arch
 		;;
 		both)
 			func_abstract_toolchain $1 $4 $2 i686
 			func_abstract_toolchain $1 $5 $3 x86_64
+		;;
+		*)
+			die "Can't install toolchain for architecture $_arch."
 		;;
 	esac
 }
