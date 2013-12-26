@@ -51,6 +51,13 @@ PKG_PRIORITY=extra
 PKG_PATCHES=(
 	tk/tk-8.6.1-mingwexcept.patch
 	tk/tk-8.6.1-prevent-tclStubsPtr-segfault.patch
+	tk/implib-name.mingw.patch
+)
+
+#
+
+PKG_EXECUTE_AFTER_PATCH=(
+	"cd win && autoreconf -fi"
 )
 
 #
