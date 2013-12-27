@@ -299,6 +299,22 @@ mkdir -p \
 source $TOP_DIR/library/os_detect.sh
 
 # **************************************************************************
+# Install host toolchains
+# **************************************************************************
+
+mkdir -p $TOOLCHAINS_DIR
+[[ $? != 0 ]] && {
+	die "can't create toolchains directory. terminate."
+}
+
+func_install_toolchain \
+	$TOOLCHAINS_DIR \
+	$i686_HOST_MINGW_PATH \
+	$x86_64_HOST_MINGW_PATH \
+	$( echo $i686_HOST_MINGW_PATH_URL | sed "s|{exceptions}|$EXCEPTIONS_MODEL|g" ) \
+	$( echo $x86_64_HOST_MINGW_PATH_URL | sed "s|{exceptions}|$EXCEPTIONS_MODEL|g" )
+
+# **************************************************************************
 
 [[ -z ${BUILD_ARCHITECTURE} ]] && {
 	die "Build architecture is not specified. terminate."

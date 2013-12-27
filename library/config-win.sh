@@ -34,8 +34,8 @@
 
 # **************************************************************************
 
-readonly i686_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.8.2/threads-posix/sjlj/i686-4.8.2-release-posix-sjlj-rt_v3-rev0.7z"
-readonly x86_64_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.8.2/threads-posix/sjlj/x86_64-4.8.2-release-posix-sjlj-rt_v3-rev0.7z"
+readonly i686_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.8.2/threads-posix/{exceptions}/i686-4.8.2-release-posix-{exceptions}-rt_v3-rev0.7z"
+readonly x86_64_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.8.2/threads-posix/{exceptions}/x86_64-4.8.2-release-posix-{exceptions}-rt_v3-rev0.7z"
 
 # **************************************************************************
 
@@ -75,21 +75,5 @@ readonly LOGVIEWERS=(
 ]] && {
 	die "remove from PATH any existing MinGW directory. terminate."
 }
-
-# **************************************************************************
-# Install host toolchains
-# **************************************************************************
-
-mkdir -p $TOOLCHAINS_DIR
-[[ $? != 0 ]] && {
-	die "can't create toolchains directory. terminate."
-}
-
-func_install_toolchain \
-	$TOOLCHAINS_DIR \
-	$i686_HOST_MINGW_PATH \
-	$x86_64_HOST_MINGW_PATH \
-	$i686_HOST_MINGW_PATH_URL \
-	$x86_64_HOST_MINGW_PATH_URL
 
 # **************************************************************************
