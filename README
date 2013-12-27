@@ -84,10 +84,10 @@ At the moment, successfully building the following versions:
   gcc-4_8-branch (currently 4.8.3 prerelease)
   gcc-trunk (currently 4.9.0 snapshot)
 
-Builds also contains patches for building Python 2.7.3, 2.7.4, 2.7.5, 2.7.6 and 3.3.0 versions for support gdb pretty printers.
+Builds also contains patches for building Python 2.7.3, 2.7.4, 2.7.5, 2.7.6, 3.3.0 and 3.3.3 versions for support gdb pretty printers.
 Big thanks for these patches to:
-  2010-2012 Roumen Petrov, Руслан Ижбулатов
-  2012 Ray Donnelly
+  2010-2013 Roumen Petrov, Руслан Ижбулатов
+  2012-2013 Ray Donnelly
  
 [1] http://sourceforge.net/projects/mingw-w64/
 [2] http://www.opensource.org/licenses/BSD-3-Clause
