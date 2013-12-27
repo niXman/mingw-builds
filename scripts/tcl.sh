@@ -54,12 +54,15 @@ PKG_PATCHES=(
 	tcl/tcl-8.5.14-hidden.patch
 	tcl/tcl-mingw-w64-compatibility.patch
 	tcl/tcl-8.6.1-mingwexcept.patch
+	tcl/no-xc.mingw.patch
+	tcl/use-system-zlib.mingw.patch
+	tcl/proper-implib-name.mingw.patch
 )
 
 #
 
 PKG_EXECUTE_AFTER_PATCH=(
-	"cd win && autoconf"
+	"cd win && autoreconf -fi"
 )
 
 #
@@ -84,7 +87,7 @@ PKG_CONFIGURE_FLAGS=(
 
 PKG_MAKE_FLAGS=(
 	-j$JOBS
-	TCL_LIBRARY=$LIBS_DIR/lib/tcl8.6
+	#TCL_LIBRARY=$LIBS_DIR/lib/tcl8.6
 	all
 )
 
@@ -92,7 +95,7 @@ PKG_MAKE_FLAGS=(
 
 PKG_INSTALL_FLAGS=(
 	-j$JOBS
-	TCL_LIBRARY=$LIBS_DIR/lib/tcl8.6
+	#TCL_LIBRARY=$LIBS_DIR/lib/tcl8.6
 	install
 )
 
