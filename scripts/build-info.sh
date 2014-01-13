@@ -53,11 +53,13 @@ function func_build_info() {
 	echo >> $INFO_FILE
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
-	echo "host gcc 32-bit:" >> $INFO_FILE
-	$i686_HOST_MINGW_PATH/bin/gcc -v >> $INFO_FILE 2>&1
-	echo >> $INFO_FILE
-	echo "# **************************************************************************" >> $INFO_FILE
-	echo >> $INFO_FILE
+	[[ -f $i686_HOST_MINGW_PATH/bin/gcc.exe ]] && {
+		echo "host gcc 32-bit:" >> $INFO_FILE
+		$i686_HOST_MINGW_PATH/bin/gcc -v >> $INFO_FILE 2>&1
+		echo >> $INFO_FILE
+		echo "# **************************************************************************" >> $INFO_FILE
+		echo >> $INFO_FILE
+	}
 	[[ -f $x86_64_HOST_MINGW_PATH/bin/gcc.exe ]] && {
 		echo "host gcc 64-bit:" >> $INFO_FILE
 		$x86_64_HOST_MINGW_PATH/bin/gcc -v >> $INFO_FILE 2>&1
@@ -66,11 +68,20 @@ function func_build_info() {
 		echo >> $INFO_FILE
 	}
 
-	echo "host ld:" >> $INFO_FILE
-	$i686_HOST_MINGW_PATH/bin/ld -V 2>&1 >> $INFO_FILE
-	echo >> $INFO_FILE
-	echo "# **************************************************************************" >> $INFO_FILE
-	echo >> $INFO_FILE
+	[[ -f $i686_HOST_MINGW_PATH/bin/ld.exe ]] && {
+		echo "host ld 32-bit:" >> $INFO_FILE
+		$i686_HOST_MINGW_PATH/bin/ld -V 2>&1 >> $INFO_FILE
+		echo >> $INFO_FILE
+		echo "# **************************************************************************" >> $INFO_FILE
+		echo >> $INFO_FILE
+	}
+	[[ -f $x86_64_HOST_MINGW_PATH/bin/ld.exe ]] && {
+		echo "host ld 64-bit:" >> $INFO_FILE
+		$x86_64_HOST_MINGW_PATH/bin/ld -V 2>&1 >> $INFO_FILE
+		echo >> $INFO_FILE
+		echo "# **************************************************************************" >> $INFO_FILE
+		echo >> $INFO_FILE
+	}
 
 	local subtargets_it=
 	for subtargets_it in ${SUBTARGETS[@]}; do

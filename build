@@ -117,6 +117,37 @@ readonly RUN_ARGS="$@"
 
 while [[ $# > 0 ]]; do
 	case $1 in
+		--mode=*)
+			[[ ! -f $TOP_DIR/scripts/${1/--mode=/}.sh ]] && {
+				die "bad mode. Script ${1/--mode=/}.sh not found. terminate."
+			}
+			readonly BUILD_MODE_VERSION=${1/--mode=/}
+			readonly BUILD_VERSION=${BUILD_MODE_VERSION#*-}
+			readonly BUILD_MODE=${BUILD_MODE_VERSION%%-*}
+			readonly GCC_NAME=$BUILD_MODE_VERSION
+			[[ $BUILD_MODE != gcc && $BUILD_MODE != clang && $BUILD_MODE != python ]] && {
+				die "Unsupported mode: \"$BUILD_MODE.\" terminate."
+			}
+			[[ $BUILD_MODE == clang ]] && USE_MULTILIB=no
+		;;
+		--arch=*)
+			readonly BUILD_ARCHITECTURE=${1/--arch=/}
+			case $BUILD_ARCHITECTURE in
+				i686)
+					case $EXCEPTIONS_MODEL in
+						dwarf|sjlj) ;;
+						*) die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate." ;;
+					esac
+				;;
+				x86_64)
+					case $EXCEPTIONS_MODEL in
+						seh|sjlj) ;;
+						*) die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate." ;;
+					esac
+				;;
+				*) die "Unsupported architecture: \"$BUILD_ARCHITECTURE\". terminate."  ;;
+			esac
+		;;
 		--march-x32=*) PROCESSOR_OPTIMIZATION_ARCH_32=${1/--march-x32=/} ;;
 		--mtune-x32=*) PROCESSOR_OPTIMIZATION_TUNE_32=${1/--mtune-x32=/} ;;
 		--march-x64=*) PROCESSOR_OPTIMIZATION_ARCH_64=${1/--march-x64=/} ;;
@@ -202,43 +233,6 @@ while [[ $# > 0 ]]; do
 				;;
 			esac
 		;;
-		--mode=*)
-			[[ ! -f $TOP_DIR/scripts/${1/--mode=/}.sh ]] && {
-				die "bad mode. Script ${1/--mode=/}.sh not found. terminate."
-			}
-			readonly BUILD_MODE_VERSION=${1/--mode=/}
-			readonly BUILD_VERSION=${BUILD_MODE_VERSION#*-}
-			readonly BUILD_MODE=${BUILD_MODE_VERSION%%-*}
-			readonly GCC_NAME=$BUILD_MODE_VERSION
-			[[ $BUILD_MODE != gcc && $BUILD_MODE != clang && $BUILD_MODE != python ]] && {
-				die "Unsupported mode: \"$BUILD_MODE.\" terminate."
-			}
-		;;
-		--arch=*)
-			readonly BUILD_ARCHITECTURE=${1/--arch=/}
-			case $BUILD_ARCHITECTURE in
-				i686)
-					case $EXCEPTIONS_MODEL in
-						dwarf|sjlj)
-						;;
-						*)
-							die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate."
-						;;
-					esac
-				;;
-				x86_64)
-					case $EXCEPTIONS_MODEL in
-						seh|sjlj)
-						;;
-						*)
-							die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate."
-						;;
-					esac
-				;;
-				*) die "Unsupported architecture: \"$BUILD_ARCHITECTURE\". terminate." 
-				;;
-			esac
-		;;
 		--rev=*)
 			REV_NUM=${1/--rev=/}
 		;;
@@ -299,54 +293,38 @@ mkdir -p \
 source $TOP_DIR/library/os_detect.sh
 
 # **************************************************************************
-# Install host toolchains
-# **************************************************************************
-
-mkdir -p $TOOLCHAINS_DIR
-[[ $? != 0 ]] && {
-	die "can't create toolchains directory. terminate."
-}
-
-func_install_toolchain \
-	$TOOLCHAINS_DIR \
-	$i686_HOST_MINGW_PATH \
-	$x86_64_HOST_MINGW_PATH \
-	$( echo $i686_HOST_MINGW_PATH_URL | sed "s|{exceptions}|$EXCEPTIONS_MODEL|g" ) \
-	$( echo $x86_64_HOST_MINGW_PATH_URL | sed "s|{exceptions}|$EXCEPTIONS_MODEL|g" )
-
-# **************************************************************************
 
 [[ -z ${BUILD_ARCHITECTURE} ]] && {
 	die "Build architecture is not specified. terminate."
 }
 
-[[ $BUILD_MODE == gcc ]] && {
-	[[ $IS_64BIT_HOST == no ]] && {
-		[[ $BUILD_ARCHITECTURE == x86_64 ]] && {
-			die "you can't build 64-bit toolchain using 32-bit OS. terminate."
-		}
-		[[ $USE_MULTILIB == yes ]] && {
-			die "you can't build multitarget MinGW using 32-bit OS. terminate."
-		}
+[[ $IS_64BIT_HOST == no ]] && {
+	[[ $BUILD_ARCHITECTURE == x86_64 ]] && {
+		die "you can't build 64-bit toolchain using 32-bit OS. terminate."
 	}
-	case $EXCEPTIONS_MODEL in
-		dwarf)
-			[[ ${BUILD_ARCHITECTURE} == x86_64 ]] && {
-				die "DWARF exceptions not allowed on x86_64 architecture. terminate."
-			}
-		;;
-		seh)
-			[[ ${BUILD_ARCHITECTURE} == i686 ]] && {
-				die "SEH exceptions not allowed on i686 architecture. terminate."
-			}
-		;;	
-		sjlj)
-		
-		;;
-	esac
-	[[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
-		die "\"$EXCEPTIONS_MODEL\" exceptions not allowed on multilib architecture. terminate."
+	[[ $USE_MULTILIB == yes ]] && {
+		die "you can't build multitarget MinGW using 32-bit OS. terminate."
 	}
+}
+
+case $EXCEPTIONS_MODEL in
+	dwarf)
+		[[ ${BUILD_ARCHITECTURE} == x86_64 ]] && {
+			die "DWARF exceptions not allowed on x86_64 architecture. terminate."
+		}
+	;;
+	seh)
+		[[ ${BUILD_ARCHITECTURE} == i686 ]] && {
+			die "SEH exceptions not allowed on i686 architecture. terminate."
+		}
+	;;	
+	sjlj)
+	
+	;;
+esac
+
+[[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
+	die "\"$EXCEPTIONS_MODEL\" exceptions not allowed on multilib architecture. terminate."
 }
 
 [[ $[ $COMPRESSING_BINS == yes || $COMPRESSING_SRCS == yes ] == 1 ]] && {
@@ -358,10 +336,25 @@ func_install_toolchain \
 }
 
 # **************************************************************************
+# Install host toolchains
+
+mkdir -p $TOOLCHAINS_DIR
+[[ $? != 0 ]] && {
+	die "can't create toolchains directory. terminate."
+}
+
+func_install_toolchain \
+	$TOOLCHAINS_DIR \
+	$i686_HOST_MINGW_PATH \
+	$x86_64_HOST_MINGW_PATH \
+	${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL} \
+	${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL}
+
+# **************************************************************************
 # Creating necessary directories
 
 [[ -n $REV_NUM ]] && {
-	readonly REV_STRING="-r$REV_NUM"
+	readonly REV_STRING="-rev${REV_NUM}"
 } || {
 	readonly REV_STRING=""
 }
@@ -476,7 +469,7 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 	[[ $BUILD_MODE == gcc ]] && {
 		echo "-> start building $MINGW_BUILD_NAME with \"$ENABLE_LANGUAGES\" languages supported"
 	} || {
-		echo "-> start building ${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE} with \"$ENABLE_LANGUAGES\" languages supported"
+		echo "-> start building $BUILD_MODE_VERSION-$BUILD_ARCHITECTURE"
 	}
 }
 
@@ -485,7 +478,7 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 source $TOP_DIR/library/subtargets.sh
 
 readonly SUBTARGETS=( \
-	$(fun_get_subtargets \
+	$(func_get_subtargets \
 		$BUILD_MODE \
 		$BUILD_VERSION \
 	) \
@@ -545,10 +538,25 @@ for rule in ${SUBTARGETS[@]}; do
 	func_download \
 		PKG_URLS[@]
 
+	[[ ${#PKG_EXECUTE_AFTER_DOWNLOAD[@]} >0 ]] && {
+		func_execute \
+			$SRCS_DIR \
+			$PKG_DIR_NAME \
+			"execute commands..." \
+			"after_download" \
+			$CURR_LOGS_DIR \
+			PKG_EXECUTE_AFTER_DOWNLOAD[@]
+	}
+
 	func_uncompress \
 		PKG_URLS[@]
 
 	[[ $FETCH_MODE == no ]] && {
+		[[ -z $PKG_LNDIR ]] && { PKG_LNDIR=no; }
+		[[ -z $PKG_CONFIGURE_SCRIPT ]] && { PKG_CONFIGURE_SCRIPT=configure; }
+		[[ -z $PKG_MAKE_PROG ]] && { PKG_MAKE_PROG=/bin/make; }
+		[[ -z $PKG_CONFIGURE_PROG ]] && { PKG_CONFIGURE_PROG=/bin/sh; }
+
 		[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
 			func_execute \
 				$SRCS_DIR \
@@ -575,11 +583,6 @@ for rule in ${SUBTARGETS[@]}; do
 				$CURR_LOGS_DIR \
 				PKG_EXECUTE_AFTER_PATCH[@]
 		}
-
-		[[ -z $PKG_LNDIR ]] && { PKG_LNDIR=no; }
-		[[ -z $PKG_CONFIGURE_SCRIPT ]] && { PKG_CONFIGURE_SCRIPT=configure; }
-		[[ -z $PKG_MAKE_PROG ]] && { PKG_MAKE_PROG=/bin/make; }
-		[[ -z $PKG_CONFIGURE_PROG ]] && { PKG_CONFIGURE_PROG=/bin/sh; }
 
 		[[ ${#PKG_CONFIGURE_FLAGS[@]} >0 ]] && {
 			configure_flags="${PKG_CONFIGURE_FLAGS[@]}"

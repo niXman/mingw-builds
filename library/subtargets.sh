@@ -34,7 +34,7 @@
 
 # **************************************************************************
 
-function fun_get_subtargets {
+function func_get_subtargets {
 	# $1 - mode (gcc, clang, python)
 	# $2 - version
 
@@ -119,15 +119,6 @@ function fun_get_subtargets {
 	)
 
 	case $1 in
-		clang)
-			local readonly SUBTARGETS=(
-				${CLANG_SUBTARGETS[@]}
-				cleanup
-				licenses
-				build-info
-				$([[ $COMPRESSING_BINS == yes ]] && echo mingw-compress)
-			)
-		;;
 		gcc)
 			[[ $USE_MULTILIB == yes ]] && {
 				local readonly SUBTARGETS=(
@@ -140,6 +131,15 @@ function fun_get_subtargets {
 					${SUBTARGETS_PART2[@]}
 				)
 			}
+		;;
+		clang)
+			local readonly SUBTARGETS=(
+				${CLANG_SUBTARGETS[@]}
+				cleanup
+				licenses
+				build-info
+				$([[ $COMPRESSING_BINS == yes ]] && echo mingw-compress)
+			)
 		;;
 		python)
 			local readonly SUBTARGETS=(

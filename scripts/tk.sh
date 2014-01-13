@@ -83,8 +83,8 @@ PKG_CONFIGURE_FLAGS=(
 PKG_EXECUTE_AFTER_CONFIGURE=(
 	"sed -i -e 's,mingw-tcl,tcl,g' win/Makefile"
 	"sed -i -e 's,/usr/include,$LIBS_DIR/include,g' win/Makefile"
-	"sed -i -e 's,libtclstub86.a,libtclstub86.dll.a,g' win/Makefile"
-	"sed -i -e 's,tcl8.5/libtclstub86,libtclstub86,g' win/Makefile"
+#	"sed -i -e 's,libtclstub86.a,libtclstub86.dll.a,g' win/Makefile"
+#	"sed -i -e 's,tcl8.5/libtclstub86,libtclstub86,g' win/Makefile"
 	"sed -i -e 's,libtcl86.a,libtcl86.dll.a,g' win/Makefile"
 	"sed -i -e 's,tcl8.6/libtcl86,libtcl86,g' win/Makefile"
 )
@@ -109,8 +109,8 @@ PKG_INSTALL_FLAGS=(
 
 PKG_EXECUTE_AFTER_INSTALL=(
 	"ln -s $LIBS_DIR/bin/wish86.exe $LIBS_DIR/bin/wish.exe"
-	"mv $LIBS_DIR/lib/libtk86.a $LIBS_DIR/lib/libtk86.dll.a"
-	"mv $LIBS_DIR/lib/libtkstub86.a $LIBS_DIR/lib/libtkstub86.dll.a"
+#	"mv $LIBS_DIR/lib/libtk86.a $LIBS_DIR/lib/libtk86.dll.a"
+#	"mv $LIBS_DIR/lib/libtkstub86.a $LIBS_DIR/lib/libtkstub86.dll.a"
 	"ln -s $LIBS_DIR/lib/libtk86.dll.a $LIBS_DIR/lib/libtk.dll.a"
 	"ln -s $LIBS_DIR/lib/tkConfig.sh $LIBS_DIR/lib/tk8.6/tkConfig.sh"
 	"mkdir -p $LIBS_DIR/include/tk-private/{generic,win}"

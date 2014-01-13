@@ -65,7 +65,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$MINGWPREFIX
 	--with-sysroot=$PREFIX
-	--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
+	--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++/$PKG_VERSION
 	#
 	$LINK_TYPE_GCC
 	#
@@ -113,7 +113,7 @@ PKG_CONFIGURE_FLAGS=(
 	--with-system-zlib
 	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	--enable-cloog-backend=isl
-	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL, $MINGW_W64_PKG_STRING\""
+	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}, $MINGW_W64_PKG_STRING\""
 	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""

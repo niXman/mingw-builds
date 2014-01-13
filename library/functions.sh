@@ -819,6 +819,7 @@ function func_test {
 }
 
 # **************************************************************************
+
 function func_abstract_toolchain {
 	# $1 - toolchains top directory
 	# $2 - toolchain URL
@@ -826,7 +827,6 @@ function func_abstract_toolchain {
 	# $4 - toolchain arch
 	local -a _url=( "$2|root:$1" )
 	local _filename=$(basename $2)
-	local _do_install=no
 
 	echo -e "-> \E[32;40m$4 toolchain\E[37;40m"
 	[[ ! -f $1/${_filename}-unpack.marker ]] && {
@@ -834,6 +834,8 @@ function func_abstract_toolchain {
 			echo "--> Found previously installed $4 toolchain."
 			echo -n "---> Remove previous $4 toolchain..."
 			rm -rf $3
+			rm $(dirname $3)/$4-*-unpack.log
+			rm $(dirname $3)/$4-*-unpack.marker
 			echo " done"
 		} || {
 			echo -n "--> $4 toolchain is not installed "

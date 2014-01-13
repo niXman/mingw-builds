@@ -35,13 +35,13 @@
 
 # **************************************************************************
 
-PKG_VERSION=3.3
-PKG_NAME=llvm-${PKG_VERSION}.src
-PKG_DIR_NAME=llvm-${PKG_VERSION}.src
+PKG_VERSION=3.4
+PKG_NAME=llvm-${PKG_VERSION}
+PKG_DIR_NAME=llvm-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
 	"http://llvm.org/releases/${PKG_VERSION}/llvm-${PKG_VERSION}.src.tar.gz"
-	"http://llvm.org/releases/${PKG_VERSION}/cfe-${PKG_VERSION}.src.tar.gz|dir:$PKG_NAME/tools"
+	"http://llvm.org/releases/${PKG_VERSION}/clang-${PKG_VERSION}.src.tar.gz|dir:$PKG_NAME/tools"
 	"http://llvm.org/releases/${PKG_VERSION}/compiler-rt-${PKG_VERSION}.src.tar.gz|dir:$PKG_NAME/projects"
 )
 
@@ -52,8 +52,15 @@ PKG_PRIORITY=main
 #
 
 PKG_EXECUTE_AFTER_UNCOMPRESS=(
-	"mv $SRCS_DIR/$PKG_NAME/tools/cfe-${PKG_VERSION}.src $SRCS_DIR/$PKG_NAME/tools/clang"
-	"mv $SRCS_DIR/$PKG_NAME/projects/compiler-rt-${PKG_VERSION}.src $SRCS_DIR/$PKG_NAME/projects/compiler-rt"
+	"mv $SRCS_DIR/$PKG_NAME/tools/clang-${PKG_VERSION} $SRCS_DIR/$PKG_NAME/tools/clang"
+	"mv $SRCS_DIR/$PKG_NAME/projects/compiler-rt-${PKG_VERSION} $SRCS_DIR/$PKG_NAME/projects/compiler-rt"
+)
+
+#
+
+PKG_PATCHES=(
+	clang/clang-3.4-enable-tls.patch
+	clang/clang-3.4-mingw-w64-header-search.patch
 )
 
 #

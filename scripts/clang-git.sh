@@ -50,7 +50,10 @@ PKG_PRIORITY=main
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	clang/clang-3.4-enable-tls.patch
+	clang/clang-3.4-mingw-w64-header-search.patch
+)
 
 #
 
@@ -96,6 +99,13 @@ PKG_MAKE_FLAGS=(
 PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
+)
+
+#
+PKG_EXECUTE_AFTER_INSTALL=(
+	"cp -rf $TOOLCHAINS_DIR/$([[ $BUILD_ARCHITECTURE == i686 ]] && echo mingw32 || echo mingw64 )/* $PREFIX/"
+	"[[ ! -f $PREFIX/bin/clang.exe ]] && cp -f $PREFIX/bin/$TARGET-clang.exe $PREFIX/bin/clang.exe"
+	"[[ ! -f $PREFIX/bin/clang++.exe ]] && cp -f $PREFIX/bin/$TARGET-clang++.exe $PREFIX/bin/clang++.exe"
 )
 
 # **************************************************************************

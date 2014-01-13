@@ -103,8 +103,6 @@ PKG_INSTALL_FLAGS=(
 
 PKG_EXECUTE_AFTER_INSTALL=(
 	"ln -s $LIBS_DIR/bin/tclsh86.exe $LIBS_DIR/bin/tclsh.exe"
-	"mv $LIBS_DIR/lib/libtcl86.a $LIBS_DIR/lib/libtcl86.dll.a"
-	"mv $LIBS_DIR/lib/libtclstub86.a $LIBS_DIR/lib/libtclstub86.dll.a"
 	"ln -s $LIBS_DIR/lib/libtcl86.dll.a $LIBS_DIR/lib/libtcl.dll.a"
 	"ln -s $LIBS_DIR/lib/tclConfig.sh $LIBS_DIR/lib/tcl8.6/tclConfig.sh"
 	"mkdir -p $LIBS_DIR/include/tcl-private/{generic,win}"
