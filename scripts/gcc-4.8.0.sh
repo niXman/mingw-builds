@@ -65,7 +65,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$MINGWPREFIX
 	--with-sysroot=$PREFIX
-	--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++/$PKG_VERSION
+	--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
 	#
 	$LINK_TYPE_GCC
 	#
