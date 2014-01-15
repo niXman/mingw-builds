@@ -68,7 +68,7 @@ function func_get_subtargets {
 		)
 	)
 
-	[[ $1 == gcc ]] && {
+	[[ $1 == gcc || $1 == clang ]] && {
 		local readonly python_version=$DEFAULT_PYTHON_VERSION
 	} || {
 		local readonly python_version=$2
@@ -87,10 +87,6 @@ function func_get_subtargets {
 		ncurses
 		readline
 		python-$python_version
-	)
-
-	local readonly CLANG_SUBTARGETS=(
-		clang-$2
 	)
 
 	local readonly SUBTARGETS_PART2=(
@@ -120,25 +116,15 @@ function func_get_subtargets {
 
 	case $1 in
 		gcc)
-			[[ $USE_MULTILIB == yes ]] && {
-				local readonly SUBTARGETS=(
-					${SUBTARGETS_PART1[@]}
-					${SUBTARGETS_PART2[@]}
-				)
-			} || {
-				local readonly SUBTARGETS=(
-					${SUBTARGETS_PART1[@]}
-					${SUBTARGETS_PART2[@]}
-				)
-			}
+			local readonly SUBTARGETS=(
+				${SUBTARGETS_PART1[@]}
+				${SUBTARGETS_PART2[@]}
+			)
 		;;
 		clang)
 			local readonly SUBTARGETS=(
-				${CLANG_SUBTARGETS[@]}
-				cleanup
-				licenses
-				build-info
-				$([[ $COMPRESSING_BINS == yes ]] && echo mingw-compress)
+				${SUBTARGETS_PART1[@]}
+				$( echo ${SUBTARGETS_PART2[@]} | sed "s|clang-[0-9]\.[0-9]|$CLANG_GCC_VERSION|;s|3rdparty-post|clang-$2 3rdparty-post|" )
 			)
 		;;
 		python)

@@ -359,7 +359,7 @@ func_install_toolchain \
 	readonly REV_STRING=""
 }
 
-[[ $BUILD_MODE == gcc ]] && {
+[[ $BUILD_MODE == gcc || $BUILD_MODE == clang ]] && {
 	GCC_PART_NAME=${GCC_NAME/gcc-/}
 	GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
 	readonly GCC_PART_NAME=${GCC_PART_NAME//./}

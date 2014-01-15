@@ -112,7 +112,7 @@ PKG_INSTALL_FLAGS=(
 #
 
 PKG_EXECUTE_AFTER_INSTALL=(
-	"cp -rf $TOOLCHAINS_DIR/$([[ $BUILD_ARCHITECTURE == i686 ]] && echo mingw32 || echo mingw64 )/* $PREFIX/"
+#	"cp -rf $TOOLCHAINS_DIR/$([[ $BUILD_ARCHITECTURE == i686 ]] && echo mingw32 || echo mingw64 )/* $PREFIX/"
 	"[[ ! -f $PREFIX/bin/clang.exe ]] && cp -f $PREFIX/bin/$TARGET-clang.exe $PREFIX/bin/clang.exe"
 	"[[ ! -f $PREFIX/bin/clang++.exe ]] && cp -f $PREFIX/bin/$TARGET-clang++.exe $PREFIX/bin/clang++.exe"
 )

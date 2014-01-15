@@ -90,6 +90,8 @@ JOBS=1
 RUNTIME_VERSION=v4
 RUNTIME_BRANCH="trunk"
 
+CLANG_GCC_VERSION=gcc-4.8.2
+
 # **************************************************************************
 
 FETCH_MODE=no

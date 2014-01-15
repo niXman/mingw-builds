@@ -745,6 +745,19 @@ function func_test {
 	# $2 - sources names
 	# $3 - tests dir
 
+	[[ $BUILD_MODE == gcc ]] && {
+		local CC_NAME=gcc
+		local CXX_NAME=g++
+		local LD_NAME=g++
+	} || {
+		local CC_NAME=clang
+		local CXX_NAME=clang++
+		local LD_NAME=clang++
+	}
+	local CC_FLAGS="-O2"
+	local CXX_FLAGS="$CC_FLAGS"
+	local LD_FLAGS="-s"
+	
 	local _result=0
 	local -a _list=( "${!2}" )
 	local arch_it=
@@ -769,22 +782,25 @@ function func_test {
 				pushd $3/$arch_it > /dev/null
 				case $_ext in
 					c)
-						printf "%-50s" "--> GCC     $arch_it: \"$_first\" ... "
+						printf "%-50s" "--> $CC_NAME      $arch_it: \"$_first\" ... "
 						local _log_file=$3/$arch_it/$_first-compilation.log
-						echo "gcc -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
-						gcc -m${_arch_bits} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1
+						local _cmd=$( echo "$CC_NAME -m$_arch_bits $CC_FLAGS $LD_FLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" )
+						echo "$_cmd" > $_log_file
+						eval ${_cmd} >> $_log_file 2>&1
 					;;
 					cpp)
-						printf "%-50s" "--> G++     $arch_it: \"$_first\" ... "
+						printf "%-50s" "--> $CXX_NAME     $arch_it: \"$_first\" ... "
 						local _log_file=$3/$arch_it/$_first-compilation.log
-						echo "g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
-						g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1
+						local _cmd=$( echo "$CXX_NAME -m$_arch_bits $CXX_FLAGS $LD_FLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" )
+						echo "$_cmd" > $_log_file
+						eval ${_cmd} >> $_log_file 2>&1
 					;;
 					o)
-						printf "%-50s" "--> LD      $arch_it: \"$_last\" ... "
+						printf "%-50s" "--> $LD_NAME      $arch_it: \"$_last\" ... "
 						local _log_file=$3/$arch_it/$_first-link.log
-						echo "g++ -m${_arch_bits} $src_it" > $_log_file
-						g++ -m${_arch_bits} $src_it >> $_log_file 2>&1
+						local _cmd=$( echo "$LD_NAME $LD_FLAGS -m$_arch_bits $src_it" )
+						echo "$_cmd" > $_log_file
+						eval ${_cmd} >> $_log_file 2>&1
 					;;
 				esac
 				_result=$?

@@ -38,7 +38,7 @@
 function func_compress_mingw() {
 	case $BUILD_MODE in
 		clang)
-			local ARCHIVE_NAME=$ARCHIVES_DIR/clang-$BUILD_VERSION-$BUILD_ARCHITECTURE.7z
+			local ARCHIVE_NAME=$ARCHIVES_DIR/clang-$BUILD_VERSION-$BUILD_ARCHITECTURE-$EXCEPTIONS_MODEL-$THREADS_MODEL-$REV_NUM.7z
 		;;
 		gcc)
 			local ARCHIVE_NAME=$( \
