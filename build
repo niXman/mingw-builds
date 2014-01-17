@@ -128,7 +128,10 @@ while [[ $# > 0 ]]; do
 			[[ $BUILD_MODE != gcc && $BUILD_MODE != clang && $BUILD_MODE != python ]] && {
 				die "Unsupported mode: \"$BUILD_MODE.\" terminate."
 			}
-			[[ $BUILD_MODE == clang ]] && USE_MULTILIB=no
+			[[ $BUILD_MODE == clang ]] && {
+				USE_MULTILIB=no
+				ENABLE_LANGUAGES="c,c++"
+			}
 		;;
 		--arch=*)
 			readonly BUILD_ARCHITECTURE=${1/--arch=/}

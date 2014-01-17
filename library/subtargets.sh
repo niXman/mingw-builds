@@ -82,7 +82,7 @@ function func_get_subtargets {
 		tcl
 		tk
 		openssl
-		$([[ $python_version == 3.3.0 ]] && echo xz-utils)
+		$([[ $python_version == 3.3.3 ]] && echo xz-utils)
 		sqlite
 		ncurses
 		readline
