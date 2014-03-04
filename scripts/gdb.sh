@@ -55,7 +55,7 @@ PKG_PATCHES=(
 	# http://sourceware.org/bugzilla/show_bug.cgi?id=15412
 	gdb/gdb-perfomance.patch
 	# https://sourceware.org/bugzilla/show_bug.cgi?id=12127
-	gdb/gdb-python-fix-crash.patch
+#	gdb/gdb-python-fix-crash.patch
 )
 
 #

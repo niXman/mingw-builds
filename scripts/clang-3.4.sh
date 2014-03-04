@@ -112,18 +112,17 @@ PKG_INSTALL_FLAGS=(
 #
 
 PKG_EXECUTE_AFTER_INSTALL=(
-#	"cp -rf $TOOLCHAINS_DIR/$([[ $BUILD_ARCHITECTURE == i686 ]] && echo mingw32 || echo mingw64 )/* $PREFIX/"
 	"[[ ! -f $PREFIX/bin/clang.exe ]] && cp -f $PREFIX/bin/$TARGET-clang.exe $PREFIX/bin/clang.exe"
 	"[[ ! -f $PREFIX/bin/clang++.exe ]] && cp -f $PREFIX/bin/$TARGET-clang++.exe $PREFIX/bin/clang++.exe"
-	" mkdir -p ${PREFIX}lib/clang-analyzer"
-	"cp -r $SRCS_DIR/$PKG_NAME/tools/clang/tools/scan-build ${PREFIX}lib/clang-analyzer/"
-	"cp -r $SRCS_DIR/$PKG_NAME/tools/clang/tools/scan-view ${PREFIX}lib/clang-analyzer/"
-	"ln -s ${PREFIX}lib/clang-analyzer/scan-build/scan-build $PREFIX/bin/scan-build"
-	"ln -s ${PREFIX}lib/clang-analyzer/scan-view/scan-build $PREFIX/bin/scan-view"
+	" mkdir -p $PREFIX/lib/clang-analyzer"
+	"cp -rf $SRCS_DIR/$PKG_NAME/tools/clang/tools/scan-build $PREFIX/lib/clang-analyzer/"
+	"cp -rf $SRCS_DIR/$PKG_NAME/tools/clang/tools/scan-view $PREFIX/lib/clang-analyzer/"
+	"cp -f $PREFIX/lib/clang-analyzer/scan-build/scan-build $PREFIX/bin/scan-build"
+	"cp -f $PREFIX/lib/clang-analyzer/scan-view/scan-view $PREFIX/bin/scan-view"
 	# scan-build looks for clang within the same directory
-	"ln -s ${PREFIX}/bin/clang.exe ${PREFIX}/lib/clang-analyzer/scan-build/clang.exe"
-	"python2 -m compileall ${PREFIX}/lib/clang-analyzer"
-	"python2 -O -m compileall ${PREFIX}/lib/clang-analyzer"	
+	"cp -f $PREFIX/bin/clang.exe $PREFIX/lib/clang-analyzer/scan-build/clang.exe"
+	"python2 -m compileall $PREFIX/lib/clang-analyzer"
+	"python2 -O -m compileall $PREFIX/lib/clang-analyzer"	
 )
 
 # **************************************************************************
