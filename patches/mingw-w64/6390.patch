@@ -13,7 +13,7 @@ diff --git a/mingw-w64-crt/lib32/shell32.def b/mingw-w64-crt/lib32/shell32.def
 index f85843f..7a36603 100644
 --- a/mingw-w64-crt/lib32/shell32.def
 +++ b/mingw-w64-crt/lib32/shell32.def
-@@ -1,190 +1,356 @@
+@@ -1,191 +1,357 @@
 -LIBRARY SHELL32.DLL
 +;
 +; Definition file of SHELL32.dll
@@ -539,6 +539,7 @@ index f85843f..7a36603 100644
 +SHLimitInputEdit@8
 +SHGetAttributesFromDataObject@16
 +ILLoadFromStreamEx@8
+ SHValidateUNC@12
 diff --git a/mingw-w64-crt/lib64/shell32.def b/mingw-w64-crt/lib64/shell32.def
 index 209941b..91c5e19 100644
 --- a/mingw-w64-crt/lib64/shell32.def
