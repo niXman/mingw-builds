@@ -84,6 +84,8 @@ PKG_PATCHES=(
 	Python/${PKG_VERSION}/0440-MINGW-setup-_ssl-module.patch
 	Python/${PKG_VERSION}/0450-MINGW-export-_PyNode_SizeOf-as-PyAPI-for-parser-modu.patch
 	Python/${PKG_VERSION}/0460-MINGW-generalization-of-posix-build-in-sysconfig.py.patch
+	Python/${PKG_VERSION}/0462-MINGW-support-stdcall-without-underscore.patch
+	Python/${PKG_VERSION}/0464-use-replace-instead-rename-to-avoid-failure-on-windo.patch
 	Python/${PKG_VERSION}/0470-MINGW-avoid-circular-dependency-from-time-module-dur.patch
 	Python/${PKG_VERSION}/0480-MINGW-generalization-of-posix-build-in-distutils-sys.patch
 	Python/${PKG_VERSION}/0490-MINGW-customize-site.patch
@@ -94,6 +96,7 @@ PKG_PATCHES=(
 	Python/${PKG_VERSION}/0540-mingw-semicolon-DELIM.patch
 	Python/${PKG_VERSION}/0550-mingw-regen-use-stddef_h.patch
 	Python/${PKG_VERSION}/0560-mingw-use-posix-getpath.patch
+	Python/${PKG_VERSION}/0565-mingw-add-ModuleFileName-dir-to-PATH.patch
 	Python/${PKG_VERSION}/0570-mingw-add-BUILDIN_WIN32_MODULEs-time-msvcrt.patch
 	Python/${PKG_VERSION}/0580-mingw32-test-REPARSE_DATA_BUFFER.patch
 	Python/${PKG_VERSION}/0590-mingw-INSTALL_SHARED-LDLIBRARY-LIBPL.patch
@@ -105,7 +108,6 @@ PKG_PATCHES=(
 	Python/${PKG_VERSION}/0650-cross-dont-add-multiarch-paths-if-cross-compiling.patch
 	Python/${PKG_VERSION}/0660-mingw-use-backslashes-in-compileall-py.patch
 	Python/${PKG_VERSION}/0670-msys-convert_path-fix-and-root-hack.patch
-	Python/${PKG_VERSION}/0680-mingw-hack-around-double-copy-scripts-issue.patch
 	Python/${PKG_VERSION}/0690-allow-static-tcltk.patch
 	Python/${PKG_VERSION}/0700-CROSS-avoid-ncursesw-include-path-hack.patch
 	Python/${PKG_VERSION}/0710-CROSS-properly-detect-WINDOW-_flags-for-different-nc.patch
@@ -116,6 +118,12 @@ PKG_PATCHES=(
 	Python/${PKG_VERSION}/0760-msys-monkeypatch-os-system-via-sh-exe.patch
 	Python/${PKG_VERSION}/0770-msys-replace-slashes-used-in-io-redirection.patch
 	Python/${PKG_VERSION}/0790-mingw-add-_exec_prefix-for-tcltk-dlls.patch
+	Python/${PKG_VERSION}/0800-mingw-install-layout-as-posix.patch
+	Python/${PKG_VERSION}/0810-remove_path_max.default.patch
+	Python/${PKG_VERSION}/0820-dont-link-with-gettext.patch
+	Python/${PKG_VERSION}/0830-ctypes-python-dll.patch
+	Python/${PKG_VERSION}/0840-gdbm-module-includes.patch
+	Python/${PKG_VERSION}/0850-use-gnu_printf-in-format.patch
 )
 
 #
