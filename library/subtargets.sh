@@ -79,6 +79,7 @@ function func_get_subtargets {
 		bzip2
 		libffi
 		expat
+		gdbm
 		tcl
 		tk
 		openssl
