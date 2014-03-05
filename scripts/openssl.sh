@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.0.1e
+PKG_VERSION=1.0.1f
 PKG_NAME=openssl-${PKG_VERSION}
 PKG_DIR_NAME=openssl-${PKG_VERSION}
 PKG_TYPE=.tar.gz
@@ -55,7 +55,7 @@ PKG_PATCHES=(
 	openssl/openssl-1.0.1-parallel-build.patch
 	openssl/openssl-1.0.1-x32.patch
 	openssl/openssl-0.9.6-x509.patch
-	openssl/openssl-1.0.1e-manfix.patch
+	openssl/openssl-1.0.1f-manfix.patch
 )
 
 #
