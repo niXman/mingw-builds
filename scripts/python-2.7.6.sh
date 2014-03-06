@@ -134,8 +134,7 @@ PKG_EXECUTE_AFTER_PATCH=(
 	"rm -rf Modules/expat"
 	"rm -rf Modules/_ctypes/libffi*"
 	"rm -rf Modules/zlib"
-	"autoconf"
-	"autoheader"
+	"autoreconf -vfi"
 	"rm -rf autom4te.cache"
 	"touch Include/graminit.h"
 	"touch Python/graminit.c"
@@ -145,6 +144,8 @@ PKG_EXECUTE_AFTER_PATCH=(
 	"touch Include/Python-ast.h"
 	"touch Python/Python-ast.c"
 	"echo \"\" > Parser/pgen.stamp"
+	"sed -i -e \"s|^#.* /usr/local/bin/python|#!/usr/bin/python2|\" Lib/cgi.py"
+	"sed -i \"s/python2.3/python2/g\" Lib/distutils/tests/test_build_scripts.py Lib/distutils/tests/test_install_scripts.py Tools/scripts/gprof2html.py"
 )
 
 #
@@ -176,11 +177,10 @@ PKG_CONFIGURE_FLAGS=(
 	--prefix=$LIBS_DIR
 	#
 	--enable-shared
-	--without-pydebug
+	--with-threads
 	--with-system-expat
 	--with-system-ffi
 	#
-	CC="$HOST-gcc"
 	LIBFFI_INCLUDEDIR="$LIBSW_DIR/lib/libffi-$LIBFFI_VERSION/include"
 	OPT=""
 	CFLAGS="\"$COMMON_CFLAGS -fwrapv -DNDEBUG -D__USE_MINGW_ANSI_STDIO=1\""

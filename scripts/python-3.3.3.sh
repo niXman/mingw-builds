@@ -138,8 +138,7 @@ PKG_EXECUTE_AFTER_PATCH=(
 	"rm -rf Modules/expat"
 	"rm -rf Modules/_ctypes/libffi*"
 	"rm -rf Modules/zlib"
-	"autoconf"
-	"autoheader"
+	"autoreconf -vfi"
 	"rm -rf autom4te.cache"
 	"touch Include/graminit.h"
 	"touch Python/graminit.c"
@@ -180,12 +179,11 @@ PKG_CONFIGURE_FLAGS=(
 	--prefix=$LIBS_DIR
 	#
 	--enable-shared
-	--without-pydebug
+	--with-threads
 	--with-system-expat
 	--with-system-ffi
 	--enable-loadable-sqlite-extensions
 	#
-	CC="$HOST-gcc"
 	LIBFFI_INCLUDEDIR="$LIBSW_DIR/lib/libffi-$LIBFFI_VERSION/include"
 	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS $MY_CPPFLAGS\""
