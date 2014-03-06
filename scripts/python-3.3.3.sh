@@ -46,6 +46,12 @@ PKG_PRIORITY=extra
 
 #
 
+PKG_EXECUTE_AFTER_UNCOMPRESS=(
+	"rm -f Misc/config_mingw Misc/cross_mingw32 Misc/python-config.sh.in Python/fileblocks.c"
+)
+
+#
+
 PKG_PATCHES=(
 	Python/${PKG_VERSION}/0100-MINGW-BASE-use-NT-thread-model.patch
 	Python/${PKG_VERSION}/0110-MINGW-translate-gcc-internal-defines-to-python-platf.patch
