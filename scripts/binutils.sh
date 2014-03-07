@@ -53,7 +53,7 @@ PKG_PRIORITY=prereq
 #
 
 PKG_PATCHES=(
-	100-dont-escape-arguments-that-dont-need-it-in-pex-win32.c.patch
+	binutils/100-dont-escape-arguments-that-dont-need-it-in-pex-win32.c.patch
 )
 
 #
