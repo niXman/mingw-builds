@@ -1,0 +1,12 @@
+diff -Naur a/Include/pyport.h b/Include/pyport.h
+--- a/Include/pyport.h	2014-03-18 00:06:25.592600000 +0400
++++ b/Include/pyport.h	2014-03-18 00:07:38.928200000 +0400
+@@ -257,6 +257,8 @@
+ #       define PY_FORMAT_SIZE_T "l"
+ #   elif defined(MS_WINDOWS)
+ #       define PY_FORMAT_SIZE_T "I"
++#   elif defined(__MINGW32__) && defined(__USE_MINGW_ANSI_STDIO)
++#       define PY_FORMAT_SIZE_T "z"
+ #   else
+ #       error "This platform's pyconfig.h needs to define PY_FORMAT_SIZE_T"
+ #   endif
