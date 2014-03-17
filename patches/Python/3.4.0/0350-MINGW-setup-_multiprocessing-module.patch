@@ -1,0 +1,25 @@
+diff -Naur a/setup.py b/setup.py
+--- a/setup.py	2014-03-18 00:06:35.327000000 +0400
++++ b/setup.py	2014-03-18 00:06:35.498600000 +0400
+@@ -1494,7 +1494,7 @@
+             macros = dict()
+             libraries = ['rt']
+ 
+-        if host_platform == 'win32':
++        if host_platform.startswith(('mingw', 'win')):
+             multiprocessing_srcs = [ '_multiprocessing/multiprocessing.c',
+                                      '_multiprocessing/semaphore.c',
+                                    ]
+@@ -1507,8 +1507,12 @@
+                 multiprocessing_srcs.append('_multiprocessing/semaphore.c')
+ 
+         if sysconfig.get_config_var('WITH_THREAD'):
++            multiprocessing_libs = []
++            if host_platform.startswith(('mingw', 'win')):
++                multiprocessing_libs += ['ws2_32']
+             exts.append ( Extension('_multiprocessing', multiprocessing_srcs,
+                                     define_macros=list(macros.items()),
++                                    libraries=multiprocessing_libs,
+                                     include_dirs=["Modules/_multiprocessing"]))
+         else:
+             missing.append('_multiprocessing')
