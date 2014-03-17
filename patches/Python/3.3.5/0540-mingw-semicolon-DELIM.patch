@@ -1,0 +1,84 @@
+diff -Naur a/configure.ac b/configure.ac
+--- a/configure.ac	2014-03-17 10:46:14.179600000 +0400
++++ b/configure.ac	2014-03-17 10:46:14.366800000 +0400
+@@ -580,6 +580,16 @@
+ fi
+ AC_MSG_RESULT($MACHDEP)
+ 
++# Windows uses ; to separate paths, everything else uses :
++AC_MSG_CHECKING(DELIM)
++DELIM=:
++if test "$MACHDEP" = "win"
++then
++	DELIM=\;
++fi
++AC_MSG_RESULT([$DELIM])
++AC_SUBST(DELIM)
++
+ AC_MSG_CHECKING([for init system calls])
+ AC_SUBST(INITSYS)
+ case $host in
+diff -Naur a/Include/osdefs.h b/Include/osdefs.h
+--- a/Include/osdefs.h	2014-03-09 12:40:07.000000000 +0400
++++ b/Include/osdefs.h	2014-03-17 10:46:14.366800000 +0400
+@@ -20,6 +20,7 @@
+ #define MAXPATHLEN 256
+ #endif
+ #define DELIM L';'
++#define DELIMSTR ";"
+ #endif
+ #endif
+ 
+@@ -48,6 +49,7 @@
+ /* Search path entry delimiter */
+ #ifndef DELIM
+ #define DELIM L':'
++#define DELIMSTR ":"
+ #endif
+ 
+ #ifdef __cplusplus
+diff -Naur a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	2014-03-17 10:46:08.220400000 +0400
++++ b/Makefile.pre.in	2014-03-17 10:46:14.382400000 +0400
+@@ -93,7 +93,8 @@
+ # C flags used for building the interpreter object files
+ PY_CORE_CFLAGS=	$(PY_CFLAGS) $(PY_CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
+ 
+-
++# ; on Windows otherwise :
++DELIM=		@DELIM@
+ # Machine-dependent subdirectories
+ MACHDEP=	@MACHDEP@
+ 
+diff -Naur a/Modules/getpath.c b/Modules/getpath.c
+--- a/Modules/getpath.c	2014-03-09 12:40:27.000000000 +0400
++++ b/Modules/getpath.c	2014-03-17 10:46:14.382400000 +0400
+@@ -122,7 +122,7 @@
+ #endif
+ 
+ #ifndef PYTHONPATH
+-#define PYTHONPATH PREFIX "/lib/python" VERSION ":" \
++#define PYTHONPATH PREFIX "/lib/python" VERSION DELIMSTR \
+               EXEC_PREFIX "/lib/python" VERSION "/lib-dynload"
+ #endif
+ 
+diff -Naur a/Modules/Setup.dist b/Modules/Setup.dist
+--- a/Modules/Setup.dist	2014-03-17 10:45:06.194800000 +0400
++++ b/Modules/Setup.dist	2014-03-17 10:46:14.382400000 +0400
+@@ -84,14 +84,14 @@
+ # Empty since this is now just the runtime prefix.
+ DESTPATH=
+ 
+-# Site specific path components -- should begin with : if non-empty
++# Site specific path components -- should begin with $(DELIM) if non-empty
+ SITEPATH=
+ 
+ # Standard path components for test modules
+ TESTPATH=
+ 
+ # Path components for machine- or system-dependent modules and shared libraries
+-MACHDEPPATH=:plat-$(MACHDEP)
++MACHDEPPATH=$(DELIM)plat-$(MACHDEP)
+ EXTRAMACHDEPPATH=
+ 
+ COREPYTHONPATH=$(DESTPATH)$(SITEPATH)$(TESTPATH)$(MACHDEPPATH)$(EXTRAMACHDEPPATH)
