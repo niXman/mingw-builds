@@ -611,22 +611,26 @@ function func_apply_patches {
 
 		[[ ! -f $_patch_marker_name ]] && {
 			[[ -f $PATCHES_DIR/${it} ]] || die "Patch $4/${it} not found!"
-			local level=
-			local found=no
+			local _level=
+			local _found=no
 			pushd $1/$2 > /dev/null
-			for level in 0 1 2 3
-			do
-				applevel=$level
-				if patch -p$level --dry-run -i $4/${it} > $_patch_log_name 2>&1
-				then
-					found=yes
+			for _level in 0 1 2 3; do
+				applevel=$_level
+				patch -p$_level --dry-run -i $4/${it} > $_patch_log_name 2>&1
+				_result=$?
+				[[ $_result == 0 ]] && {
+					_found=yes
 					break
-				fi
+				}
 			done
-			[[ $found == "yes" ]] && {
+			[[ $_found == yes ]] && {
 				patch -p$applevel -i $4/${it} > $_patch_log_name 2>&1
-				touch $_patch_marker_name
+				_result=$?
+				[[ $_result == 0 ]] && {
+					touch $_patch_marker_name
+				}
 			} || {
+				die "Not found level for patch ${it}, error=$_result"
 				_result=1
 				break
 			}

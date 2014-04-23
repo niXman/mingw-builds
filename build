@@ -89,7 +89,8 @@ readonly RUN_ARGS="$@"
 	echo "    --enable-languages=<langs> - comma separated list(without spaces) of gcc"
 	echo "                                 supported languages. available languages:"
 	echo "                                 ada,c,c++,fortran,objc,obj-c++"
-	echo "  available Python versions: 2.7.3, 2.7.4, 2.7.5, 2.7.6, 3.3.0, 3.3.3, 3.4.0"
+	echo "    --show-subtargets          - show list of subtargets for selected '--mode'"
+	echo "  available Python versions: 2.7.3, 2.7.4, 2.7.5, 2.7.6, 3.3.0, 3.3.3, 3.3.5, 3.4.0"
 	echo "  available clang versions: 3.4, git"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
@@ -237,12 +238,9 @@ while [[ $# > 0 ]]; do
 				;;
 			esac
 		;;
-		--rev=*)
-			REV_NUM=${1/--rev=/}
-		;;
-		--with-testsuite)
-			PKG_RUN_TESTSUITE=yes
-		;;
+		--rev=*) REV_NUM=${1/--rev=/} ;;
+		--with-testsuite) PKG_RUN_TESTSUITE=yes ;;
+		--show-subtargets) SHOW_SUBTARGETS=yes ;;
 		--version) echo $MINGW_W64_BUILDS_VERSION; exit 0 ;;
 		--bin-compress) COMPRESSING_BINS=yes ;;
 		--src-compress) COMPRESSING_SRCS=yes ;;
@@ -488,6 +486,14 @@ readonly SUBTARGETS=( \
 	) \
 )
 
+[[ $SHOW_SUBTARGETS == yes ]] && {
+	echo "subtargets:"
+	echo "${SUBTARGETS[@]}"
+	echo ""
+}
+
+# **************************************************************************
+
 for rule in ${SUBTARGETS[@]}; do
 	func_clear_env
 	rule_arr=( ${rule//|/ } )
@@ -571,12 +577,14 @@ for rule in ${SUBTARGETS[@]}; do
 				PKG_EXECUTE_AFTER_UNCOMPRESS[@]
 		}
 
-		func_apply_patches \
-			$SRCS_DIR \
-			$PKG_DIR_NAME \
-			$CURR_LOGS_DIR \
-			$PATCHES_DIR \
-			PKG_PATCHES[@]
+		[[ ${#PKG_PATCHES[@]} >0 ]] && {
+			func_apply_patches \
+				$SRCS_DIR \
+				$PKG_DIR_NAME \
+				$CURR_LOGS_DIR \
+				$PATCHES_DIR \
+				PKG_PATCHES[@]
+		}
 
 		[[ ${#PKG_EXECUTE_AFTER_PATCH[@]} >0 ]] && {
 			func_execute \
