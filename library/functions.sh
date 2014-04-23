@@ -615,7 +615,7 @@ function func_apply_patches {
 			local _found=no
 			pushd $1/$2 > /dev/null
 			for _level in 0 1 2 3; do
-				applevel=$_level
+				local _applevel=$_level
 				patch -p$_level --dry-run -i $4/${it} > $_patch_log_name 2>&1
 				_result=$?
 				[[ $_result == 0 ]] && {
@@ -623,8 +623,9 @@ function func_apply_patches {
 					break
 				}
 			done
+			#echo "patch=\"${it}\", _found=$_found, _applevel=$_applevel"
 			[[ $_found == yes ]] && {
-				patch -p$applevel -i $4/${it} > $_patch_log_name 2>&1
+				patch -p$_applevel -i $4/${it} > $_patch_log_name 2>&1
 				_result=$?
 				[[ $_result == 0 ]] && {
 					touch $_patch_marker_name
@@ -644,7 +645,7 @@ function func_apply_patches {
 	} || {
 		func_show_log $_patch_log_name
 		echo " error"
-		die "Failed to apply patch ${it} at level $applevel"
+		die "Failed to apply patch ${it} at level $_applevel"
 	}
 }
 
