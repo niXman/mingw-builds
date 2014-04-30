@@ -40,18 +40,15 @@ function runtime_post_install {
 	[[ ! -d $PREFIX/mingw ]] && mkdir -p $PREFIX/mingw
 	[[ ! -d $PREFIX/$TARGET ]] && mkdir -p $PREFIX/$TARGET
 
-	[[ $BUILD_MODE == gcc ]] && {
+	if [[ $BUILD_MODE == gcc ]]; then
 		[[ -f $MARKER_NAME && ! -d $BUILDS_DIR/$GCC_NAME ]] && {
 			rm -f $MARKER_NAME
 		}
-	} || {
+	else
 		[[ -f $MARKER_NAME && ! -d $BUILDS_DIR/$CLANG_GCC_VERSION ]] && {
 			rm -f $MARKER_NAME
 		}
-	}
-
-	local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
-	local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
+	fi
 
 	[[ ! -f $MARKER_NAME ]] && {
 		[[ $USE_MULTILIB == yes ]] && {
@@ -99,6 +96,9 @@ function runtime_post_install {
 		cp -f $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-$RUNTIME_VERSION/include/*.h $PREFIX/$TARGET/include/ || { echo "19"; exit 1; }
 	
 		[[ $USE_MULTILIB == yes ]] && {
+			local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
+			local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
+
 			mkdir -p $PREFIX/$TARGET/lib$_reverse_bits
 
 			# iconv

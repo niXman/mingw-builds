@@ -125,7 +125,7 @@ function func_get_subtargets {
 		clang)
 			local readonly SUBTARGETS=(
 				${SUBTARGETS_PART1[@]}
-				$( echo ${SUBTARGETS_PART2[@]} | sed "s|clang-[0-9]\.[0-9]|$CLANG_GCC_VERSION|;s|3rdparty-post|clang-$2 3rdparty-post|" )
+				$( echo ${SUBTARGETS_PART2[@]} | sed "s|clang-[^ ]\+|$CLANG_GCC_VERSION|;s|3rdparty-post|clang-$2 3rdparty-post|" )
 			)
 		;;
 		python)

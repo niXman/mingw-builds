@@ -52,7 +52,11 @@ PKG_PRIORITY=main
 
 PKG_PATCHES=(
 	clang/clang-3.4-enable-tls.patch
-	clang/clang-3.4-mingw-w64-header-search.patch
+	clang/clang-3.5-mingw-w64-header-search.patch
+	clang/clang-3.5-mingw-driver.patch
+	clang/clang-3.5-win64-seh.patch
+	clang/llvm-3.5-emit-reg-names.patch
+	clang/llvm-3.5-win64-exceptions.patch
 )
 
 #
@@ -68,7 +72,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--enable-optimized
 	--disable-assertions
-	--disable-pthreads
+	--enable-pthreads
 	#--enable-shared
 	#--enable-embed-stdcxx
 	#--enable-libcpp
