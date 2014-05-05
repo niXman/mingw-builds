@@ -39,7 +39,7 @@ PKG_NAME=libmangle-${RUNTIME_VERSION}
 PKG_DIR_NAME=libmangle-${RUNTIME_VERSION}
 PKG_TYPE=svn
 PKG_URLS=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-libraries/libmangle|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
+	"http://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-libraries/libmangle|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
 )
 
 PKG_REVISION=
