@@ -40,7 +40,7 @@ PKG_NAME=$BUILD_ARCHITECTURE-gmp-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=gmp-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
 PKG_URLS=(
-	"ftp://ftp.gmplib.org/pub/gmp-${PKG_VERSION}/gmp-${PKG_VERSION}a.tar.bz2"
+	"https://gmplib.org/download/gmp/gmp-${PKG_VERSION}a.tar.bz2"
 )
 
 PKG_PRIORITY=prereq
