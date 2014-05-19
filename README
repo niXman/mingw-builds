@@ -9,6 +9,7 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
 
 2. Install MSYS2 from:
   http://sourceforge.net/projects/msys2/
+  [MSYS2 wiki](http://sourceforge.net/p/msys2/wiki/MSYS2%20installation/)
 
 3. Get the scripts into '<msys root>/home/<user>/mingw-builds':
   "cd && git clone <paste correct url>"
