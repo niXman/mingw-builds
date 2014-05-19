@@ -133,7 +133,7 @@ function func_check_tools {
 function func_get_reverse_triplet {
 	case ${1%%-*} in
 		i686) echo "x86_64-${1#*-}" ;;
-		amd64|x86_64) echo "i686-${1#*-}" ;;
+		x86_64) echo "i686-${1#*-}" ;;
 	esac
 }
 
