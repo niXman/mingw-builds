@@ -114,18 +114,17 @@ function func_check_tools {
 	local _it=
 	local _err=
 	
+	echo -n "Checking for necessary tools..."
 	for _it in ${_list[@]}; do
-		echo -n "Checking for $_it... "
 		command -v "$_it" > /dev/null 2>&1
-		[[ $? == 0 ]] && {
-			echo "yes"
-		} || {
-			echo "no"
+		[[ $? != 0 ]] && {
 			_err="$_err $_it"
 		}
 	done
 	[[ -n $_err ]] && {
 		die "Some of necessary tools not found: $_err"
+	} || {
+		echo "done"
 	}
 }
 
