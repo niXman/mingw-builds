@@ -104,17 +104,13 @@ function func_show_log {
 }
 # **************************************************************************
 
-function func_check_program {
-	command -v "$@" > /dev/null 2>&1 || { die "command \"$@\" not found. terminate."; }
-}
-
 function func_check_tools {
 	# $1 - list of programs
 	local _list=( $1 )
 	local _it=
 	local _err=
 	
-	echo -n "Checking for necessary tools..."
+	echo -n "-> Checking for necessary tools... "
 	for _it in ${_list[@]}; do
 		command -v "$_it" > /dev/null 2>&1
 		[[ $? != 0 ]] && {

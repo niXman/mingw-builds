@@ -258,6 +258,10 @@ done
 
 # **************************************************************************
 
+[[ -z $ROOT_DIR ]] && {
+	ROOT_DIR=$(func_simplify_path "$HOME/mingw-$BUILD_MODE_VERSION")
+}
+
 readonly PREREQ_DIR=$ROOT_DIR/prerequisites
 readonly RUNTIME_DIR=$ROOT_DIR/runtime
 readonly ARCHIVES_DIR=$ROOT_DIR/archives
@@ -327,10 +331,6 @@ esac
 
 [[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
 	die "\"$EXCEPTIONS_MODEL\" exceptions not allowed on multilib architecture. terminate."
-}
-
-[[ $[ $COMPRESSING_BINS == yes || $COMPRESSING_SRCS == yes ] == 1 ]] && {
-	func_check_program "7za"
 }
 
 [[ $BUILD_MODE != gcc && $COMPRESSING_SRCS == yes ]] && {
