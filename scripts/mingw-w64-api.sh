@@ -41,10 +41,10 @@ PKG_NAME=mingw-w64-headers-${RUNTIME_VERSION}
 } || {
 	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-nomulti
 }
-PKG_DIR_NAME=mingw-w64-headers-${RUNTIME_VERSION}
-PKG_TYPE=svn
+PKG_DIR_NAME=mingw-w64/mingw-w64-headers
+PKG_TYPE=git
 PKG_URLS=(
-	"http://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-headers|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
+	"git://git.code.sf.net/p/mingw-w64/mingw-w64|branch:$RUNTIME_BRANCH|repo:$PKG_TYPE"
 )
 
 PKG_PRIORITY=runtime

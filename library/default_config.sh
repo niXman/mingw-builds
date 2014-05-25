@@ -88,9 +88,9 @@ SHOW_LOG_ON_ERROR=yes
 JOBS=1
 
 RUNTIME_VERSION=v4
-RUNTIME_BRANCH="trunk"
+RUNTIME_BRANCH="master"
 
-CLANG_GCC_VERSION=gcc-4.8.2
+CLANG_GCC_VERSION=gcc-4.9.0
 
 # **************************************************************************
 
