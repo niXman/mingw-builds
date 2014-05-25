@@ -53,6 +53,9 @@ PKG_PATCHES=(
 	mpfr/mpfr-3.1.2-p3.patch
 	mpfr/mpfr-3.1.2-p4.patch
 	mpfr/mpfr-3.1.2-p5.patch
+	mpfr/mpfr-3.1.2-p6.patch
+	mpfr/mpfr-3.1.2-p7.patch
+	mpfr/mpfr-3.1.2-p8.patch
 )
 
 #
