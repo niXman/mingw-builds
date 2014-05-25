@@ -217,11 +217,11 @@ while [[ $# > 0 ]]; do
 			RUNTIME_VERSION=${1/--rt-version=/}
 			case $RUNTIME_VERSION in
 				v3)
-					RUNTIME_BRANCH="stable/v3.x"
+					RUNTIME_BRANCH="v3.x"
 				;;
 				v4|trunk)
 					RUNTIME_VERSION=v4
-					RUNTIME_BRANCH="trunk"
+					RUNTIME_BRANCH="master"
 				;;
 				*)
 					die "Unsupported runtime version $RUNTIME_VERSION."
