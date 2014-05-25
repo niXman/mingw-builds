@@ -55,6 +55,7 @@ PKG_PRIORITY=prereq
 PKG_PATCHES=(
 	binutils/100-dont-escape-arguments-that-dont-need-it-in-pex-win32.c.patch
 	binutils/120-Bug-16858-weak-external-reference-has-wrong-value.patch
+	binutils/130-make-relocbase-unsigned.patch
 )
 
 #
