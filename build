@@ -541,6 +541,9 @@ for rule in ${SUBTARGETS[@]}; do
 	INSTALL_LOG=$CURR_LOGS_DIR/$PKG_NAME/install.log
 	TESTSUITE_LOG=$CURR_LOGS_DIR/$PKG_NAME/testsuite.log
 
+	[[ $PKG_TYPE != git || $PKG_TYPE != svn ]] && {
+		mkdir -p $SRCS_DIR/$PKG_DIR_NAME
+	}
 	mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$PKG_NAME
 	[[ -n $PKG_SUBDIR_NAME ]] && { mkdir -p $CURR_BUILD_DIR/$PKG_NAME/$PKG_SUBDIR_NAME; }
 
