@@ -59,9 +59,9 @@ PKG_PATCHES=(
 	gcc/gcc-4.9.0-ICE.patch
 	gcc/gcc-4.9.0-PR-ipa-60965.patch
 	gcc/gcc-4.9.0-pr-57440.patch
-    gcc/gcc-4.8-filename-output.patch
-    gcc/gcc-4.9-tree-ssa-threadedge.patch
-    gcc/ktietz-libgomp.patch
+	gcc/gcc-4.8-filename-output.patch
+	gcc/gcc-4.9-tree-ssa-threadedge.patch
+	gcc/ktietz-libgomp.patch
 )
 
 #
