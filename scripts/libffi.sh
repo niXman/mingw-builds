@@ -47,7 +47,17 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	libffi/libffi-3.1-missing-gnu-stack.patch
+	libffi/libffi-3.1-typo.patch
+	libffi/toolexeclibdir-subst.patch
+)
+
+#
+
+PKG_EXECUTE_AFTER_PATCH=(
+	"autoreconf -fi"
+)
 
 #
 
