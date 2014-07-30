@@ -90,7 +90,7 @@ JOBS=1
 RUNTIME_VERSION=v4
 RUNTIME_BRANCH="master"
 
-CLANG_GCC_VERSION=gcc-4.9.0
+CLANG_GCC_VERSION=gcc-4.9.1
 
 # **************************************************************************
 
@@ -118,6 +118,6 @@ BUILD_MODE_VERSION=
 BUILD_VERSION=
 GCC_NAME=
 
-DEFAULT_PYTHON_VERSION=2.7.6
+DEFAULT_PYTHON_VERSION=2
 
 # **************************************************************************

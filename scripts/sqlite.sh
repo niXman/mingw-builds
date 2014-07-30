@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=3080403
+PKG_VERSION=3080500
 PKG_NAME=sqlite-${PKG_VERSION}
 PKG_DIR_NAME=sqlite-autoconf-${PKG_VERSION}
 PKG_TYPE=.tar.gz
@@ -61,6 +61,7 @@ PKG_CONFIGURE_FLAGS=(
 	--target=$TARGET
 	#
 	--prefix=$LIBS_DIR
+	--enable-threadsafe
 	#
 	$LINK_TYPE_SHARED
 	#
