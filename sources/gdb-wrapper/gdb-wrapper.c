@@ -3,8 +3,8 @@
 ** The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 **
 ** This file is part of 'MinGW-W64' project.
-** Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-** Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+** Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+** Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 ** All rights reserved.
 **
 ** Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -97,12 +97,12 @@ int main(int argc, char** argv) {
 	DIE_IF_FALSE(
 		GetEnvironmentVariable("PATH", envbuf, envbufsize)
 	);
-    dbg_printf("env: %s\n", envbuf);
+	dbg_printf("env: %s\n", envbuf);
 
 	DIE_IF_FALSE(
 		GetModuleFileName(0, cmdbuf, exebufsize)
 	);
-    dbg_printf("curdir: %s\n", cmdbuf);
+	dbg_printf("curdir: %s\n", cmdbuf);
 
 	DIE_IF_FALSE(
 		(sep = strrchr(cmdbuf, '\\'))
@@ -122,7 +122,7 @@ int main(int argc, char** argv) {
 	DIE_IF_FALSE(
 		(snprintf(resbuf, len, "%s;%s", cmdbuf, envbuf) > 0)
 	);
-    dbg_printf("PATH: %s\n", resbuf);
+	dbg_printf("PATH: %s\n", resbuf);
 
 	DIE_IF_FALSE(
 		SetEnvironmentVariable("PATH", resbuf)
