@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=5.0.7
-PKG_NAME=xz-${PKG_VERSION}
-PKG_DIR_NAME=xz-${PKG_VERSION}
-PKG_TYPE=.tar.xz
+PKG_VERSION=1.3.1
+PKG_NAME=termcap-${PKG_VERSION}
+PKG_DIR_NAME=termcap-${PKG_VERSION}
+PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://tukaani.org/xz/xz-${PKG_VERSION}.tar.xz"
+	"ftp://ftp.gnu.org/gnu/termcap/termcap-${PKG_VERSION}.tar.gz"
 )
 
 PKG_PRIORITY=extra
@@ -58,11 +58,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$LIBS_DIR
 	#
-	$LINK_TYPE_STATIC
-	--disable-rpath
-	--disable-lzma-links
-	#
-	CFLAGS="\"$COMMON_CFLAGS\""
+	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS\""
@@ -79,6 +75,7 @@ PKG_MAKE_FLAGS=(
 
 PKG_INSTALL_FLAGS=(
 	-j$JOBS
+	prefix="$LIBS_DIR" exec_prefix="$LIBS_DIR"
 	install
 )
 
