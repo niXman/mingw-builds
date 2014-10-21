@@ -122,6 +122,8 @@ PKG_PATCHES=(
 	Python2/0830-add-build-sysroot-config-option.patch
 	Python2/0840-add-builddir-to-library_dirs.patch
 	Python2/0850-cross-PYTHON_FOR_BUILD-gteq-276-and-fullpath-it.patch
+	Python2/0860-mingw-build-optimized-ext.patch
+	Python2/0910-fix-using-dllhandle-and-winver-mingw.patch
 	Python2/1000-dont-link-with-gettext.patch
 	Python2/1010-ctypes-python-dll.patch
 	Python2/1020-gdbm-module-includes.patch
