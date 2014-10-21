@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=5.0.5
+PKG_VERSION=5.0.7
 PKG_NAME=xz-${PKG_VERSION}
 PKG_DIR_NAME=xz-${PKG_VERSION}
 PKG_TYPE=.tar.xz
