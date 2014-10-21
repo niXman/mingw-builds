@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=4.0
+PKG_VERSION=4.1
 PKG_NAME=make-${PKG_VERSION}
 PKG_DIR_NAME=make-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
