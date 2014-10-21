@@ -77,6 +77,7 @@ function func_get_subtargets {
 	local readonly PYTHON_SUBTARGETS=(
 		libgnurx
 		bzip2
+		termcap
 		libffi
 		expat
 		gdbm
@@ -106,7 +107,7 @@ function func_get_subtargets {
 		gdbinit
 		gdb
 		gdb-wrapper
-		make_git_bat
+		make
 		3rdparty-post
 		cleanup
 		licenses
