@@ -55,9 +55,16 @@ function python_deps_post {
 			cp -f ${_gcc_dll[@]} $LIBS_DIR/bin/ >/dev/null 2>&1
 		}
 
-		rm -rf $LIBS_DIR/include
+		rm -f $LIBS_DIR/bin/{bz*,bunzip2}
+		rm -f $LIBS_DIR/bin/{tcl*,openssl.exe,capinfo.exe,captoinfo.exe,clear.exe,idle,infocmp.exe}
+		rm -f $LIBS_DIR/bin/{infotocap.exe,c_rehash,ncursesw5-config,reset.exe,sqlite3.exe,tabs.exe}
+		rm -f $LIBS_DIR/bin/{tic.exe,toe.exe,tput.exe,tset.exe,wish.exe,wish86.exe,xmlwf,testgdbm.exe}
+		rm -f $LIBS_DIR/bin/{lzmadec.exe,lzmainfo.exe,unxz.exe,xz*}
+
+		#rm -rf $LIBS_DIR/include
 		rm -rf $LIBS_DIR/lib/pkgconfig
-		find $LIBS_DIR/lib -maxdepth 1 -type f -name *.a -print0 | xargs -0 rm -f
+		#find $LIBS_DIR/lib -maxdepth 1 -type f -name *.a -print0 | xargs -0 rm -f
+		find $LIBS_DIR/lib -type f -name *.la -print0 | xargs -0 rm -f
 		rm -rf $LIBS_DIR/man
 		rm -rf $LIBS_DIR/share/man
 		rm -rf $LIBS_DIR/share/info
