@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=7.8
+PKG_VERSION=7.8.1
 PKG_NAME=gdb-${PKG_VERSION}
 PKG_DIR_NAME=gdb-${PKG_VERSION}
-PKG_TYPE=.tar.bz2
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"ftp://ftp.gnu.org/gnu/gdb/gdb-${PKG_VERSION}.tar.xz"
+	"ftp://ftp.gnu.org/gnu/gdb/gdb-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=main
