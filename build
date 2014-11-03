@@ -35,15 +35,15 @@
 #
 
 # **************************************************************************
+
 # Loading functions
 source library/functions.sh
 
 readonly ORIGINAL_PATH=$PATH
 readonly TOP_DIR=$(func_simplify_path "$PWD")
 
-# **************************************************************************
-# Loading default configuration
-source library/default_config.sh
+# Loading configuration
+source library/config.sh
 
 # **************************************************************************
 
@@ -77,7 +77,7 @@ readonly RUN_ARGS="$@"
 	echo "    --mingw-upload             - upload toolchain archives to sf-project"
 	echo "    --src-upload               - upload sources archive to sf-project"
 	echo "    --sf-user=<username>       - username to upload to sf-project"
-	echo "    --sf-password=<user_pass>  - password to upload to sf-project"	
+	echo "    --sf-pass=<user_pass>  - password to upload to sf-project"
 	echo "    --cflags='<flags>'         - additional CFLAGS"
 	echo "    --cxxflags='<flags>'       - additional CXXFLAGS"
 	echo "    --cppflags='<flags>'       - additional CPPFLAGS"
@@ -110,13 +110,13 @@ readonly RUN_ARGS="$@"
 	#echo "    gcc-4.8.4 (4.8.4 release)"
 	echo "    gcc-4.9.0 (4.9.0 release)"
 	echo "    gcc-4.9.1 (4.9.1 release)"
-	#echo "    gcc-4.9.2 (4.9.2 release)"
+	echo "    gcc-4.9.2 (4.9.2 release)"
 	#echo "    gcc-4.9.3 (4.9.3 release)"
 	echo "    gcc-4_6-branch (currently 4.6.5-prerelease)"
 	echo "    gcc-4_7-branch (currently 4.7.4-prerelease)"
-	echo "    gcc-4_8-branch (currently 4.8.3-prerelease)"
-	echo "    gcc-4_9-branch (currently 4.9.1-prerelease)"
-	echo "    gcc-trunk (currently 4.10.0-snapshot)"
+	echo "    gcc-4_8-branch (currently 4.8.4-prerelease)"
+	echo "    gcc-4_9-branch (currently 4.9.3-prerelease)"
+	echo "    gcc-trunk (currently 5.0.0-snapshot)"
 
 	exit 0
 }
@@ -237,7 +237,7 @@ while [[ $# > 0 ]]; do
 		--threads=*) 
 			THREADS_MODEL=${1/--threads=/}
 			case $THREADS_MODEL in
-				win32 | posix)
+				win32|posix)
 				;;
 				*)
 					die "\"$THREADS_MODEL\" is not valid threads model. available models: posix, win32. terminate"
@@ -253,7 +253,7 @@ while [[ $# > 0 ]]; do
 		--mingw-upload) UPLOAD_MINGW=yes ;;
 		--src-upload) UPLOAD_SOURCES=yes ;;
 		--sf-user=*) SF_USER=${1/--sf-user=/} ;;
-		--sf-password=*) SF_PASSWORD=${1/--sf-password=/} ;;
+		--sf-pass=*) SF_PASSWORD=${1/--sf-pass=/} ;;
 		--debug-upload) DEBUG_UPLOAD=yes ;;
 		*)
 			die "bad command line: \"$1\". terminate."
@@ -261,6 +261,10 @@ while [[ $# > 0 ]]; do
 	esac
 	shift
 done
+
+HOST=$(func_get_host $BUILD_ARCHITECTURE)
+BUILD=$(func_get_build $BUILD_ARCHITECTURE)
+TARGET=$(func_get_target $BUILD_ARCHITECTURE)
 
 # **************************************************************************
 
@@ -304,11 +308,6 @@ readonly MARKERS_DIR=$SRCS_DIR/MARKERS
 mkdir -p \
 	$SRCS_DIR \
 	$MARKERS_DIR
-
-# **************************************************************************
-# Determine operating system and load appropriate config
-
-source $TOP_DIR/library/os_detect.sh
 
 # **************************************************************************
 
@@ -534,11 +533,11 @@ for rule in ${SUBTARGETS[@]}; do
 	[[ -z $PKG_NAME ]] && continue
 
 	case $PKG_PRIORITY in
-		prereq | runtime)
+		prereq|runtime)
 			CURR_LOGS_DIR=$PREREQ_LOGS_DIR
 			CURR_BUILD_DIR=$PREREQ_BUILD_DIR
 		;;
-		main | extra)
+		main|extra)
 			CURR_LOGS_DIR=$LOGS_DIR
 			CURR_BUILD_DIR=$BUILDS_DIR
 		;;
@@ -689,6 +688,8 @@ for rule in ${SUBTARGETS[@]}; do
 	}
 done
 
+# ***************************************************************************
+
 func_clear_env
 
 [[ $FETCH_MODE == yes ]] && {
@@ -731,29 +732,30 @@ func_clear_env
 	mingw_archive_size=$(du -h $mingw_archive_name | cut -f 1)
 	echo -e -n "-> \E[32;40mupload $(basename $mingw_archive_name) ($mingw_archive_size) ...\E[37;40m"
 	[[ $DEBUG_UPLOAD == yes ]] && {
-		echo
 		echo "bin_cmd:${upload_cmd}"
 	} || {
-		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-mingw-upload.log 2>&1"
+		eval "${upload_cmd} > $LOGS_DIR/mingw-upload.log 2>&1"
 		func_res=$?
 		[[ $func_res != 0 ]] && {
 			echo " error!"
-			func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-mingw-upload.log
+			func_show_log $LOGS_DIR/mingw-upload.log
 			die "upload finished with error($func_res). terminate." $func_res
 		} || {
 			echo " done"
 		}
 	}
+
 	[[ $(func_map_gcc_name_to_gcc_type $GCC_NAME) == release ]] && {
 		echo -e -n "--> \E[32;40mdownload repository file...\E[37;40m"
 		[[ $DEBUG_UPLOAD == yes ]] && {
+			echo "rep_cmd:wget "$REPOSITORY_FILE" -O $TMP/$(basename "$REPOSITORY_FILE")"
 			func_res=0
 		} || {
-			wget $REPOSITORY_FILE -O $TMP/$(basename $REPOSITORY_FILE) > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-download.log 2>&1
+			wget "$REPOSITORY_FILE" -O $TMP/$(basename "$REPOSITORY_FILE") > $LOGS_DIR/repository-download.log 2>&1
 			func_res=$?
 		}
 		[[ $func_res != 0 ]] && {
-			func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-download.log
+			func_show_log $LOGS_DIR/repository-download.log
 			die " error($func_res) when downloading repository file. terminate." $func_res
 		} || {
 			echo " done"
@@ -762,7 +764,7 @@ func_clear_env
 		echo -e -n "--> \E[32;40mupdate repository file...\E[37;40m"
 		[[ $DEBUG_UPLOAD == no ]] && {
 			func_update_repository_file \
-				$TMP/$(basename $REPOSITORY_FILE) \
+				$TMP/$(basename "$REPOSITORY_FILE") \
 				$(func_map_gcc_name_to_gcc_version $GCC_NAME) \
 				$BUILD_ARCHITECTURE \
 				$THREADS_MODEL \
@@ -778,10 +780,10 @@ func_clear_env
 				$(basename $mingw_archive_name)
 		}
 		echo " done"
-		
+
 		upload_cmd=$( \
 			func_create_repository_file_upload_cmd \
-				$TMP/$(basename $REPOSITORY_FILE) \
+				$TMP/$(basename "$REPOSITORY_FILE") \
 				$SF_USER \
 				$SF_PASSWORD \
 		)
@@ -789,10 +791,10 @@ func_clear_env
 		[[ $DEBUG_UPLOAD == yes ]] && {
 			echo "rep_cmd:${upload_cmd}"
 		} || {
-			eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-upload.log 2>&1"
+			eval "${upload_cmd} > $LOGS_DIR/repository-upload.log 2>&1"
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-upload.log
+				func_show_log $LOGS_DIR/repository-upload.log
 				die " error($func_res) when uploading repository file. terminate." $func_res
 			} || {
 				echo " done"
@@ -822,12 +824,12 @@ func_clear_env
 	[[ $DEBUG_UPLOAD == yes ]] && {
 		echo "src_cmd:${upload_cmd}"
 	} || {
-		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/sources-upload.log 2>&1"
+		eval "${upload_cmd} > $LOGS_DIR/sources-upload.log 2>&1"
 	}
 	
 	func_res=$?
 	[[ $func_res != 0 ]] && {
-		func_show_log $LOGS_DIR/$GCC_NAME/sources-upload.log
+		func_show_log $LOGS_DIR/sources-upload.log
 		die " upload finished with error($func_res). terminate." $func_res
 	} || {
 		echo " done"

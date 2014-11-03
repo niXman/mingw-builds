@@ -39,16 +39,16 @@ readonly x86_64_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/f
 
 # **************************************************************************
 
-HOST=$BUILD_ARCHITECTURE-w64-mingw32
-BUILD=$BUILD_ARCHITECTURE-w64-mingw32
-TARGET=$BUILD_ARCHITECTURE-w64-mingw32
+function func_get_host { echo "$1-w64-mingw32"; }
+function func_get_build { echo "$1-w64-mingw32"; }
+function func_get_target { echo "$1-w64-mingw32"; }
 
 readonly HOST_TOOLS=""
 readonly CROSS_BUILDS=no
 
 # **************************************************************************
 
-readonly REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-windows/repository.txt
+readonly REPOSITORY_FILE="$PROJECT_ROOT_URL/files/Toolchains targetting Win32/Personal Builds/mingw-builds/installer/repository.txt"
 
 # **************************************************************************
 
@@ -60,10 +60,6 @@ readonly LOGVIEWERS=(
 
 # **************************************************************************
 
-[[ -z $i686_HOST_MINGW_PATH_URL || -z $x86_64_HOST_MINGW_PATH_URL ]] && {
-	die "i686_HOST_MINGW_PATH_URL or x86_64_HOST_MINGW_PATH_URL is empty. terminate."
-}
-
 [[ -d /mingw ]] && {
 	die "please remove \"/mingw\" directory. terminate."
 }
@@ -74,6 +70,38 @@ readonly LOGVIEWERS=(
 	-n $(which "x86_64-w64-mingw32-gcc.exe" 2>/dev/null) \
 ]] && {
 	die "remove from PATH any existing MinGW directory. terminate."
+}
+
+# **************************************************************************
+
+function func_test_installed_packages {
+	local packages=(
+		git
+		subversion
+		tar
+		zip
+		p7zip
+		make
+		patch
+		automake
+		autoconf
+		libtool
+		flex
+		bison
+		gettext
+		gettext-devel
+		wget
+		sshpass
+	)
+
+	for it in ${packages[@]}; do
+		[[ -z $(pacman -Qs $it) ]] && {
+			echo "package \"$it\" is not installed. terminate."
+			return 1
+		}
+	done
+	
+	return 0
 }
 
 # **************************************************************************

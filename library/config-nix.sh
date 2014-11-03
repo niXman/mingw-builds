@@ -43,7 +43,7 @@ HOST=$(gcc -dumpmachine)
 BUILD=$(gcc -dumpmachine)
 TARGET=$BUILD_ARCHITECTURE-w64-mingw32
 
-readonly HOST_TOOLS="gcc ld"
+readonly HOST_TOOLS=""
 readonly CROSS_BUILDS=yes
 readonly PKG_RUN_TESTSUITE=no
 

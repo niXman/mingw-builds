@@ -102,6 +102,7 @@ function func_show_log {
 	# $1 - log file
 	[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $1 &
 }
+
 # **************************************************************************
 
 function func_check_tools {
@@ -915,7 +916,7 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-4_6-branch)	echo "4.6.5" ;;
 		gcc-4_7-branch)	echo "4.7.4" ;;
 		gcc-4_8-branch)	echo "4.8.3" ;;
-		gcc-4_9-branch)	echo "4.9.1" ;;
+		gcc-4_9-branch)	echo "4.9.3" ;;
 		gcc-trunk)			echo "4.10.0" ;;
 		*) die "gcc name error: $1. terminate." ;;
 	esac
@@ -1006,17 +1007,8 @@ function func_create_mingw_upload_cmd {
 	# $7 - threads model
 	# $8 - exceptions model
 
-	local _upload_cmd="sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/host-windows"
-	local _gcc_type=$(func_map_gcc_name_to_gcc_type $4)
 	local _gcc_version=$(func_map_gcc_name_to_gcc_version $4)
-
-	[[ $_gcc_type == release ]] && {
-		_upload_cmd="$_upload_cmd/releases/$_gcc_version"
-	} || {
-		_upload_cmd="$_upload_cmd/testing/$_gcc_version"
-	}
-
-	_upload_cmd="$_upload_cmd/$( [[ $6 == i686 ]] && echo 32-bit || echo 64-bit )/threads-$7/$8"
+	local _upload_cmd="sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/'Toolchains\ targetting\ Win$( [[ $6 == i686 ]] && echo 32 || echo 64 )/Personal\ Builds/mingw-builds/$_gcc_version/threads-$7/$8'"
 
 	echo "$_upload_cmd"
 }
@@ -1030,7 +1022,9 @@ function func_create_sources_upload_cmd {
 	# $4 - gcc name
 	# $5 - archive name
 
-	echo "sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/mingw-sources/$(func_map_gcc_name_to_gcc_version $4)"
+	local _upload_cmd="sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/'Toolchain\ sources/Personal\ Builds/mingw-builds/$(func_map_gcc_name_to_gcc_version $4)'"
+	
+	echo "$_upload_cmd"
 }
 
 # **************************************************************************
@@ -1042,17 +1036,11 @@ function func_create_url_for_archive {
 	# $4 - threads model
 	# $5 - exceptions model
 
-	local _upload_url="$1/files/host-windows"
-	local _gcc_type=$(func_map_gcc_name_to_gcc_type $2)
 	local _gcc_version=$(func_map_gcc_name_to_gcc_version $2)
+	local _upload_url="$1/files/Toolchains targetting Win$( [[ $6 == i686 ]] && echo 32 || echo 64 )/Personal Builds/mingw-builds/$_gcc_version/threads-$4/$5"
+	_upload_url=${_upload_url// /%20}
 
-	[[ $_gcc_type == release ]] && {
-		_upload_url="$_upload_url/releases/$_gcc_version"
-	} || {
-		_upload_url="$_upload_url/testing/$_gcc_version"
-	}
-
-	echo "$_upload_url/$( [[ $3 == i686 ]] && echo 32-bit || echo 64-bit )/threads-$4/$5"
+	echo "$_upload_url"
 }
 
 function func_update_repository_file {
@@ -1067,7 +1055,7 @@ function func_update_repository_file {
 	
 	[[ ! -f $1 ]] && { die "repository file \"$1\" is not exists. terminate."; }
 	
-	printf "%5s|%3s|%5s|%-5s|%-5s|%s\n" $2 $3 $4 $5 "rev$6" "$7/$8" >> $1
+	printf "%5s|%-6s|%5s|%-5s|%-5s|%s\n" $2 $3 $4 $5 "rev$6" "$7/$8" >> $1
 }
 
 function func_create_repository_file_upload_cmd {
@@ -1075,7 +1063,7 @@ function func_create_repository_file_upload_cmd {
 	# $2 - sf user name
 	# $3 - sf user password
 
-	echo "sshpass -p $3 scp $1 $2@frs.sourceforge.net:$$PROJECT_FS_ROOT_DIR/host-windows"
+	echo "sshpass -p $3 scp $1 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/'Toolchains\ targetting\ Win32/Personal\ Builds/mingw-builds/installer'"
 }
 
 # **************************************************************************
