@@ -1037,7 +1037,7 @@ function func_create_url_for_archive {
 	# $5 - exceptions model
 
 	local _gcc_version=$(func_map_gcc_name_to_gcc_version $2)
-	local _upload_url="$1/files/Toolchains targetting Win$( [[ $6 == i686 ]] && echo 32 || echo 64 )/Personal Builds/mingw-builds/$_gcc_version/threads-$4/$5"
+	local _upload_url="$1/files/Toolchains targetting Win$( [[ $3 == i686 ]] && echo 32 || echo 64 )/Personal Builds/mingw-builds/$_gcc_version/threads-$4/$5"
 	_upload_url=${_upload_url// /%20}
 
 	echo "$_upload_url"
