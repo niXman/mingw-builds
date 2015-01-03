@@ -34,8 +34,8 @@
 
 # **************************************************************************
 
-readonly i686_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.8.3/threads-posix/{exceptions}/i686-4.8.3-release-posix-{exceptions}-rt_v3-rev0.7z"
-readonly x86_64_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.8.3/threads-posix/{exceptions}/x86_64-4.8.3-release-posix-{exceptions}-rt_v3-rev0.7z"
+readonly i686_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.8.4/threads-posix/{exceptions}/i686-4.8.4-release-posix-{exceptions}-rt_v3-rev0.7z"
+readonly x86_64_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.8.4/threads-posix/{exceptions}/x86_64-4.8.4-release-posix-{exceptions}-rt_v3-rev0.7z"
 
 # **************************************************************************
 
@@ -95,7 +95,7 @@ function func_test_installed_packages {
 	)
 
 	for it in ${packages[@]}; do
-		[[ -z $(pacman -Qs $it) ]] && {
+		[[ -z $(pacman -Qs ^$it) ]] && {
 			echo "package \"$it\" is not installed. terminate."
 			return 1
 		}
