@@ -40,7 +40,7 @@ PKG_NAME=$BUILD_ARCHITECTURE-isl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=isl-${PKG_VERSION}
 PKG_TYPE=.tar.lzma
 PKG_URLS=(
-	"http://isl.gforge.inria.fr/isl-${PKG_VERSION}.tar.lzma"
+	"http://ftp.cross-lfs.org/pub/clfs/conglomeration/isl/isl-${PKG_VERSION}.tar.lzma"
 )
 
 PKG_PRIORITY=prereq
