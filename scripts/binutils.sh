@@ -45,7 +45,7 @@ PKG_NAME=binutils-${PKG_VERSION}
 PKG_DIR_NAME=binutils-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
 PKG_URLS=(
-	"ftp://mirrors.kernel.org/sources.redhat.com/binutils/releases/binutils-${PKG_VERSION}.tar.bz2"
+	"https://ftp.gnu.org/gnu/binutils/binutils-${PKG_VERSION}.tar.bz2"
 )
 
 PKG_PRIORITY=prereq
