@@ -43,8 +43,8 @@ function func_build_info() {
 	echo "version : $MINGW_W64_BUILDS_VERSION" >> $INFO_FILE
 	echo "user    : $(whoami)" >> $INFO_FILE
 	echo "date    : $(date +%m.%d.%Y-%X)" >> $INFO_FILE
-	[[ -n $(echo $RUN_ARGS | grep '\-\-sf-password=') ]] && {
-		local readonly _RUN_ARGS=$(echo $RUN_ARGS | sed "s|$SF_PASSWORD|***********|g")
+	[[ -n $(echo $RUN_ARGS | grep '\-\-sf-pass=') ]] && {
+		local readonly _RUN_ARGS=$(echo "$RUN_ARGS" | sed "s|$SF_PASSWORD|***********|g")
 	} || {
 		local readonly _RUN_ARGS="$RUN_ARGS"
 	}
