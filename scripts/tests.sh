@@ -174,15 +174,13 @@ func_test \
 
 # **************************************************************************
 
-[[ $BUILD_VERSION == 4.6.? ]] || {
-	list11=(
-		"random_device.cpp -std=c++0x -o random_device.exe"
-	)
+list11=(
+	"random_device.cpp -std=c++0x -o random_device.exe"
+)
 
-	func_test \
-		"random_device" \
-		list11[@] \
-		$TESTS_ROOT_DIR
-}
+func_test \
+	"random_device" \
+	list11[@] \
+	$TESTS_ROOT_DIR
 
 # **************************************************************************
