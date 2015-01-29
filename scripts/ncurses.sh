@@ -40,7 +40,7 @@ PKG_NAME=ncurses-${PKG_VERSION}
 PKG_DIR_NAME=ncurses-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"ftp://invisible-island.net/ncurses/ncurses-${PKG_VERSION}.tar.gz"
+	"https://ftp.gnu.org/gnu/ncurses/ncurses-${PKG_VERSION}.tar.gz"
 )
 
 PKG_PRIORITY=extra

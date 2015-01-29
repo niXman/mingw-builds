@@ -40,7 +40,7 @@ PKG_NAME=termcap-${PKG_VERSION}
 PKG_DIR_NAME=termcap-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"ftp://ftp.gnu.org/gnu/termcap/termcap-${PKG_VERSION}.tar.gz"
+	"https://ftp.gnu.org/gnu/termcap/termcap-${PKG_VERSION}.tar.gz"
 )
 
 PKG_PRIORITY=extra

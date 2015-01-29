@@ -40,7 +40,7 @@ PKG_NAME=$PKG_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=libiconv-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PKG_VERSION}.tar.gz"
+	"https://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PKG_VERSION}.tar.gz"
 )
 
 PKG_PRIORITY=prereq

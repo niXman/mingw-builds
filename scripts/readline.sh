@@ -40,7 +40,7 @@ PKG_NAME=readline-${PKG_VERSION}
 PKG_DIR_NAME=readline-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"ftp://ftp.gnu.org/gnu/readline/readline-${PKG_VERSION}.tar.gz"
+	"https://ftp.gnu.org/gnu/readline/readline-${PKG_VERSION}.tar.gz"
 )
 
 PKG_PRIORITY=extra

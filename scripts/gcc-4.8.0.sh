@@ -40,7 +40,7 @@ PKG_NAME=gcc-${PKG_VERSION}
 PKG_DIR_NAME=gcc-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
 PKG_URLS=(
-	"ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}.tar.bz2"
+	"https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}.tar.bz2"
 )
 
 PKG_PRIORITY=main
