@@ -92,6 +92,7 @@ function func_test_installed_packages {
 		gettext-devel
 		wget
 		sshpass
+		texinfo
 	)
 
 	for it in ${packages[@]}; do
