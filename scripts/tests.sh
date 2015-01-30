@@ -174,13 +174,16 @@ func_test \
 
 # **************************************************************************
 
-list11=(
-	"random_device.cpp -std=c++0x -o random_device.exe"
-)
+# Can't run this test with 4.6 or 4.7 since the implementation is broken and throws
+# an exception.  4.8 has a fixed implementation, but it hasn't been backported yet.
+[[ $BUILD_VERSION == 4.6.? || $BUILD_VERSION == 4.7.? ]] || {
+	list11=(
+		"random_device.cpp -std=c++0x -o random_device.exe"
+	)
 
-func_test \
-	"random_device" \
-	list11[@] \
-	$TESTS_ROOT_DIR
-
+	func_test \
+		"random_device" \
+		list11[@] \
+		$TESTS_ROOT_DIR
+}
 # **************************************************************************
