@@ -52,6 +52,7 @@ PKG_PATCHES=(
 	gcc/gcc-4.6-iconv.patch
 	gcc/gcc-4.6-vswprintf.patch
 	gcc/gcc-4.6.4-fix-dw2.patch
+	gcc/lto-plugin-use-static-libgcc.patch
 )
 
 #
