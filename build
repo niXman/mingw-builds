@@ -229,6 +229,9 @@ while [[ $# > 0 ]]; do
 					RUNTIME_VERSION=v4
 					RUNTIME_BRANCH="master"
 				;;
+				v3.3.0)
+					RUNTIME_BRANCH="release"
+				;;
 				*)
 					die "Unsupported runtime version $RUNTIME_VERSION."
 				;;
