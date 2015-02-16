@@ -64,7 +64,9 @@ readonly RUN_ARGS="$@"
 	echo "    --static-gcc               - build static GCC"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
 	echo "    --jobs=N                   - specifies number of parallel make threads"
-	echo "    --rt-version=<v3|v4|trunk> - specifies mingw-w64 runtime version to build"
+	echo "    --rt-version=<v3|v4|trunk|<release>> - specifies mingw-w64 runtime version to build"
+	echo "                                 v3, v4, trunk specify specific branches in the git repo"
+	echo "                                 <release> is a specific release version, uses the tarball"
 	echo "    --rev=N                    - specifies number of the build revision"
 	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++"
 	echo "                                 available: win32, posix"
@@ -229,7 +231,7 @@ while [[ $# > 0 ]]; do
 					RUNTIME_VERSION=v4
 					RUNTIME_BRANCH="master"
 				;;
-				v3.3.0)
+				v?.?.?)
 					RUNTIME_BRANCH="release"
 				;;
 				*)
@@ -379,7 +381,8 @@ func_install_toolchain \
 	GCC_PART_NAME=${GCC_NAME/gcc-/}
 	GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
 	readonly GCC_PART_NAME=${GCC_PART_NAME//./}
-	BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL-rt_${RUNTIME_VERSION}${REV_STRING}
+	readonly RUNTIME_PART_NAME=${RUNTIME_VERSION//./}
+	BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL-rt_${RUNTIME_PART_NAME}${REV_STRING}
 	MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
 	[[ $BUILD_SHARED_GCC == no ]] && {
 		BASE_BUILD_DIR=$BASE_BUILD_DIR-s
