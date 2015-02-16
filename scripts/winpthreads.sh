@@ -38,16 +38,8 @@ PKG_NAME=${PKG_ARCHITECTURE}-winpthreads-${RUNTIME_VERSION}
 
 [[ $RUNTIME_BRANCH == release ]] && {
 	PKG_DIR_NAME=mingw-w64-${RUNTIME_VERSION}/mingw-w64-libraries/winpthreads
-	PKG_TYPE=.tar.bz2
-	PKG_URLS=(
-		"http://downloads.sourceforge.net/project/mingw-w64/mingw-w64-release/mingw-w64-${RUNTIME_VERSION}.tar.bz2"
-	)
 } || {
 	PKG_DIR_NAME=mingw-w64/mingw-w64-libraries/winpthreads
-	PKG_TYPE=git
-	PKG_URLS=(
-		"git://git.code.sf.net/p/mingw-w64/mingw-w64|branch:$RUNTIME_BRANCH|repo:$PKG_TYPE"
-	)
 }
 
 PKG_PRIORITY=runtime

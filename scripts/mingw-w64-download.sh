@@ -35,61 +35,20 @@
 
 # **************************************************************************
 
-PKG_NAME=mingw-w64-headers-${RUNTIME_VERSION}
-[[ $USE_MULTILIB == yes ]] && {
-	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
-} || {
-	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-nomulti
-}
+PKG_NAME=mingw-w64-${RUNTIME_VERSION}
 
 [[ $RUNTIME_BRANCH == release ]] && {
-	PKG_DIR_NAME=mingw-w64-${RUNTIME_VERSION}/mingw-w64-headers
+	PKG_DIR_NAME=mingw-w64-${RUNTIME_VERSION}
+	PKG_TYPE=.tar.bz2
+	PKG_URLS=(
+		"http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-${RUNTIME_VERSION}.tar.bz2"
+	)
 } || {
-	PKG_DIR_NAME=mingw-w64/mingw-w64-headers
+	PKG_DIR_NAME=mingw-w64
+	PKG_TYPE=git
+	PKG_URLS=(
+		"git://git.code.sf.net/p/mingw-w64/mingw-w64|branch:$RUNTIME_BRANCH|repo:$PKG_TYPE"
+	)
 }
 
 PKG_PRIORITY=runtime
-
-#
-
-PKG_PATCHES=()
-
-#
-
-[[ $USE_MULTILIB == yes ]] && {
-	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-${RUNTIME_VERSION}-multi
-} || {
-	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-${RUNTIME_VERSION}-nomulti
-}
-
-PKG_CONFIGURE_FLAGS=(
-	--host=$HOST
-	--build=$BUILD
-	--target=$TARGET
-	#
-	--prefix=$RUNTIMEPREFIX
-	#
-	--enable-sdk=all
-	--enable-secure-api
-	#
-	CFLAGS="\"$COMMON_CFLAGS\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
-)
-
-#
-
-PKG_MAKE_FLAGS=(
-	-j$JOBS
-	all
-)
-
-#
-
-PKG_INSTALL_FLAGS=(
-	-j$JOBS
-	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
-)
-
-# **************************************************************************
