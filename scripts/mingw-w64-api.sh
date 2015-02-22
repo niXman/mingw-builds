@@ -36,16 +36,11 @@
 # **************************************************************************
 
 PKG_NAME=mingw-w64-headers-${RUNTIME_VERSION}
+PKG_DIR_NAME=mingw-w64${MINGW_PKG_DIR_VERSION_SUFFIX}/mingw-w64-headers
 [[ $USE_MULTILIB == yes ]] && {
 	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
 } || {
 	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-nomulti
-}
-
-[[ $RUNTIME_BRANCH == release ]] && {
-	PKG_DIR_NAME=mingw-w64-${RUNTIME_VERSION}/mingw-w64-headers
-} || {
-	PKG_DIR_NAME=mingw-w64/mingw-w64-headers
 }
 
 PKG_PRIORITY=runtime

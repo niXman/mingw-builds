@@ -36,12 +36,7 @@
 # **************************************************************************
 
 PKG_NAME=widl-${RUNTIME_VERSION}
-PKG_DIR_NAME=widl-${RUNTIME_VERSION}
-PKG_DIR_NAME=mingw-w64/mingw-w64-tools/widl
-PKG_TYPE=git
-PKG_URLS=(
-	"git://git.code.sf.net/p/mingw-w64/mingw-w64|branch:$RUNTIME_BRANCH|repo:$PKG_TYPE"
-)
+PKG_DIR_NAME=mingw-w64${MINGW_PKG_DIR_VERSION_SUFFIX}/mingw-w64-tools/widl
 
 PKG_PRIORITY=extra
 
