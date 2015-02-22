@@ -98,6 +98,17 @@ function func_get_subtargets {
 		binutils-post
 		$GCC_NAME
 		gcc-post
+		mingw-w64-libraries-libmangle
+		#mingw-w64-libraries-pseh
+		mingw-w64-tools-gendef
+		mingw-w64-tools-genidl
+		mingw-w64-tools-genpeimg
+		mingw-w64-tools-widl
+		${PYTHON_SUBTARGETS[@]}
+		gdbinit
+		gdb
+		gdb-wrapper
+		make
 		3rdparty-post
 		cleanup
 		licenses
