@@ -92,7 +92,7 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-gold
 	--enable-install-libiberty
 	#
-	--with-libiconv-prefix=$PREREQ_DIR/libiconv-$BUILD_ARCHITECTURE
+	--with-libiconv-prefix=$PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX
 	#
 	--disable-rpath
 	--disable-nls

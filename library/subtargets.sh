@@ -56,6 +56,7 @@ function func_get_subtargets {
 		$( [[ $2 == 4.6.? || $2 == 4.7.? ]] && echo ppl )
 		isl
 		cloog
+		mingw-w64-download
 		mingw-w64-api
 		mingw-w64-crt
 		$( \

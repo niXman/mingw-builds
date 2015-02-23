@@ -35,48 +35,22 @@
 
 # **************************************************************************
 
-PKG_NAME=genpeimg-${RUNTIME_VERSION}
-PKG_DIR_NAME=mingw-w64${MINGW_PKG_DIR_VERSION_SUFFIX}/mingw-w64-tools/genpeimg
+PKG_NAME=mingw-w64-${RUNTIME_VERSION}
 
-PKG_PRIORITY=extra
+[[ $RUNTIME_BRANCH == release ]] && {
+	MINGW_PKG_DIR_VERSION_SUFFIX="-${RUNTIME_VERSION}"
+	PKG_TYPE=.tar.bz2
+	PKG_URLS=(
+		"http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-${RUNTIME_VERSION}.tar.bz2"
+	)
+} || {
+	MINGW_PKG_DIR_VERSION_SUFFIX=""
+	PKG_TYPE=git
+	PKG_URLS=(
+		"git://git.code.sf.net/p/mingw-w64/mingw-w64|branch:$RUNTIME_BRANCH|repo:$PKG_TYPE"
+	)
+}
 
-#
+PKG_DIR_NAME=mingw-w64${MINGW_PKG_DIR_VERSION_SUFFIX}
 
-PKG_PATCHES=()
-
-#
-
-PKG_EXECUTE_AFTER_PATCH=(
-	"autoreconf -i"
-)
-
-#
-
-PKG_CONFIGURE_FLAGS=(
-	--host=$HOST
-	--build=$BUILD
-	--target=$TARGET
-	#
-	--prefix=$PREFIX
-	#
-	CFLAGS="\"$COMMON_CFLAGS\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
-)
-
-#
-
-PKG_MAKE_FLAGS=(
-	-j$JOBS
-	all
-)
-
-#
-
-PKG_INSTALL_FLAGS=(
-	-j$JOBS
-	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
-)
-
-# **************************************************************************
+PKG_PRIORITY=runtime
