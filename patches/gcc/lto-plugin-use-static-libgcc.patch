@@ -1,0 +1,88 @@
+Index: lto-plugin/configure
+===================================================================
+--- lto-plugin/configure	(revision 208613)
++++ lto-plugin/configure	(revision 208614)
+@@ -622,6 +622,7 @@
+ GREP
+ SED
+ LIBTOOL
++ac_lto_plugin_ldflags
+ ac_lto_plugin_warn_cflags
+ am__fastdepCC_FALSE
+ am__fastdepCC_TRUE
+@@ -4086,6 +4087,9 @@
+   done
+ CFLAGS="$save_CFLAGS"
+ 
++# Need -Wc to get it through libtool.
++if test "x$GCC" = xyes; then ac_lto_plugin_ldflags="-Wc,-static-libgcc"; fi
++
+ case `pwd` in
+   *\ * | *\	*)
+     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&5
+Index: lto-plugin/Makefile.in
+===================================================================
+--- lto-plugin/Makefile.in	(revision 208613)
++++ lto-plugin/Makefile.in	(revision 208614)
+@@ -168,6 +168,7 @@
+ abs_top_srcdir = @abs_top_srcdir@
+ ac_ct_CC = @ac_ct_CC@
+ ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
++ac_lto_plugin_ldflags = @ac_lto_plugin_ldflags@
+ ac_lto_plugin_warn_cflags = @ac_lto_plugin_warn_cflags@
+ am__include = @am__include@
+ am__leading_dot = @am__leading_dot@
+@@ -230,6 +231,7 @@
+ libexecsubdir := $(libexecdir)/gcc/$(target_noncanonical)/$(gcc_version)
+ AM_CPPFLAGS = -I$(top_srcdir)/../include $(DEFS)
+ AM_CFLAGS = @ac_lto_plugin_warn_cflags@
++AM_LDFLAGS = @ac_lto_plugin_ldflags@
+ AM_LIBTOOLFLAGS = --tag=disable-static
+ libexecsub_LTLIBRARIES = liblto_plugin.la
+ gcc_build_dir = ../$(host_subdir)/gcc
+@@ -242,7 +244,8 @@
+ 	$(if $(wildcard ../libiberty/pic/libiberty.a),$(Wc)../libiberty/pic/libiberty.a,)
+ 
+ # Note that we intentionally override the bindir supplied by ACX_LT_HOST_FLAGS
+-liblto_plugin_la_LDFLAGS = $(lt_host_flags) -module -bindir $(libexecsubdir) \
++liblto_plugin_la_LDFLAGS = $(AM_LDFLAGS) \
++	$(lt_host_flags) -module -bindir $(libexecsubdir) \
+ 	$(if $(wildcard ../libiberty/pic/libiberty.a),,-Wc,../libiberty/libiberty.a)
+ 
+ liblto_plugin_la_DEPENDENCIES = $(if $(wildcard \
+Index: lto-plugin/configure.ac
+===================================================================
+--- lto-plugin/configure.ac	(revision 208613)
++++ lto-plugin/configure.ac	(revision 208614)
+@@ -7,6 +7,9 @@
+ AC_PROG_CC
+ AC_SYS_LARGEFILE
+ ACX_PROG_CC_WARNING_OPTS([-Wall], [ac_lto_plugin_warn_cflags])
++# Need -Wc to get it through libtool.
++if test "x$GCC" = xyes; then ac_lto_plugin_ldflags="-Wc,-static-libgcc"; fi
++AC_SUBST(ac_lto_plugin_ldflags)
+ AM_PROG_LIBTOOL
+ ACX_LT_HOST_FLAGS
+ AC_SUBST(target_noncanonical)
+Index: lto-plugin/Makefile.am
+===================================================================
+--- lto-plugin/Makefile.am	(revision 208613)
++++ lto-plugin/Makefile.am	(revision 208614)
+@@ -9,6 +9,7 @@
+ 
+ AM_CPPFLAGS = -I$(top_srcdir)/../include $(DEFS)
+ AM_CFLAGS = @ac_lto_plugin_warn_cflags@
++AM_LDFLAGS = @ac_lto_plugin_ldflags@
+ AM_LIBTOOLFLAGS = --tag=disable-static
+ 
+ libexecsub_LTLIBRARIES = liblto_plugin.la
+@@ -22,7 +23,8 @@
+ liblto_plugin_la_LIBADD = \
+ 	$(if $(wildcard ../libiberty/pic/libiberty.a),$(Wc)../libiberty/pic/libiberty.a,)
+ # Note that we intentionally override the bindir supplied by ACX_LT_HOST_FLAGS
+-liblto_plugin_la_LDFLAGS = $(lt_host_flags) -module -bindir $(libexecsubdir) \
++liblto_plugin_la_LDFLAGS = $(AM_LDFLAGS) \
++	$(lt_host_flags) -module -bindir $(libexecsubdir) \
+ 	$(if $(wildcard ../libiberty/pic/libiberty.a),,-Wc,../libiberty/libiberty.a)
+ liblto_plugin_la_DEPENDENCIES = $(if $(wildcard \
+ 	../libiberty/pic/libiberty.a),../libiberty/pic/libiberty.a,)
