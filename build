@@ -60,6 +60,7 @@ readonly RUN_ARGS="$@"
 	echo "    --use-lto                  - build with LTO using"
 	echo "    --bootstrap                - bootstraping GCC"
 	echo "    --no-multilib              - build GCC without multilib support"
+	echo "    --no-extras                - don't build extra packages, only build GCC/clang and the runtime"
 	echo "    --no-strip                 - don't strip dll's & executables on install"
 	echo "    --static-gcc               - build static GCC"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
@@ -202,6 +203,7 @@ while [[ $# > 0 ]]; do
 			BASE_LDFLAGS="$BASE_LDFLAGS -flto -fno-use-linker-plugin"
 		;;
 		--no-multilib) USE_MULTILIB=no ;;
+		--no-extras) BUILD_EXTRAS=no ;;
 		--no-strip) STRIP_ON_INSTALL=no ;;
 		--static-gcc)
 			LINK_TYPE_GCC=$LINK_TYPE_STATIC
@@ -537,6 +539,10 @@ for rule in ${SUBTARGETS[@]}; do
 	source $TOP_DIR/scripts/$sub.sh
 
 	[[ -z $PKG_NAME ]] && continue
+	[[ ($BUILD_EXTRAS == "no") && ($PKG_PRIORITY == "extra") ]] && {
+		echo -e "--> Skipping"
+		continue
+	}
 
 	case $PKG_PRIORITY in
 		prereq|runtime)
