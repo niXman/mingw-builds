@@ -89,6 +89,9 @@ function func_build_info() {
 		local sub_rule=${rule_arr[0]}
 		[[ ${sub_rule} == build-info ]] && continue
 		[[ -z $(grep 'PKG_CONFIGURE_FLAGS=' $TOP_DIR/scripts/${sub_rule}.sh) ]] && continue
+		[[ $BUILD_EXTRAS == no ]] && {
+			[[ -z $(grep 'PKG_PRIORITY=extra' $TOP_DIR/scripts/${sub_rule}.sh) ]] || continue
+		}
 		source $TOP_DIR/scripts/${sub_rule}.sh
 		echo "name         : $PKG_NAME" >> $INFO_FILE
 		echo "type         : $PKG_TYPE" >> $INFO_FILE
