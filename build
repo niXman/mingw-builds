@@ -36,14 +36,14 @@
 
 # **************************************************************************
 
-# Loading functions
-source library/functions.sh
-
 readonly ORIGINAL_PATH=$PATH
-readonly TOP_DIR=$(func_simplify_path "$PWD")
+readonly TOP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+# Loading functions
+source $TOP_DIR/library/functions.sh
 
 # Loading configuration
-source library/config.sh
+source $TOP_DIR/library/config.sh
 
 # **************************************************************************
 
