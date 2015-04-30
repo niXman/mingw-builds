@@ -54,6 +54,7 @@ readonly RUN_ARGS="$@"
 	echo "  help:"
 	echo "    --buildroot=<path>         - specifies the build root directory"
 	echo "    --fetch-only               - download sources without building"
+	echo "    --fetch-and-patch-only     - download sources and patch without building"
 	echo "    --update-sources           - try to update sources from repositories before build"
 	echo "    --exceptions=<type>        - specifies exceptions model for GCC"
 	echo "                                 available: dwarf, seh, sjlj"
@@ -181,6 +182,7 @@ while [[ $# > 0 ]]; do
 		;;
 		--bootstrap) BOOTSTRAPING=yes ;;
 		--fetch-only) FETCH_MODE=yes ;;
+		--fetch-and-patch-only) FETCH_MODE=yes; FETCH_PATCH_MODE=yes ;;
 		--update-sources) UPDATE_SOURCES=yes ;;
 		--enable-languages=*)
 			ENABLE_LANGUAGES=${1/--enable-languages=/}
@@ -585,23 +587,18 @@ for rule in ${SUBTARGETS[@]}; do
 
 	func_uncompress \
 		PKG_URLS[@]
-
-	[[ $FETCH_MODE == no ]] && {
-		[[ -z $PKG_LNDIR ]] && { PKG_LNDIR=no; }
-		[[ -z $PKG_CONFIGURE_SCRIPT ]] && { PKG_CONFIGURE_SCRIPT=configure; }
-		[[ -z $PKG_MAKE_PROG ]] && { PKG_MAKE_PROG=/bin/make; }
-		[[ -z $PKG_CONFIGURE_PROG ]] && { PKG_CONFIGURE_PROG=/bin/sh; }
-
-		[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
-			func_execute \
-				$SRCS_DIR \
-				$PKG_DIR_NAME \
-				"execute commands..." \
-				"after_unpack" \
-				$CURR_LOGS_DIR \
-				PKG_EXECUTE_AFTER_UNCOMPRESS[@]
-		}
-
+	
+	[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
+		func_execute \
+			$SRCS_DIR \
+			$PKG_DIR_NAME \
+			"execute commands..." \
+			"after_unpack" \
+			$CURR_LOGS_DIR \
+			PKG_EXECUTE_AFTER_UNCOMPRESS[@]
+	}
+	
+	[[ $FETCH_MODE == no || $FETCH_PATCH_MODE == yes ]] && {
 		[[ ${#PKG_PATCHES[@]} >0 ]] && {
 			func_apply_patches \
 				$SRCS_DIR \
@@ -620,6 +617,13 @@ for rule in ${SUBTARGETS[@]}; do
 				$CURR_LOGS_DIR \
 				PKG_EXECUTE_AFTER_PATCH[@]
 		}
+	}
+
+	[[ $FETCH_MODE == no ]] && {
+		[[ -z $PKG_LNDIR ]] && { PKG_LNDIR=no; }
+		[[ -z $PKG_CONFIGURE_SCRIPT ]] && { PKG_CONFIGURE_SCRIPT=configure; }
+		[[ -z $PKG_MAKE_PROG ]] && { PKG_MAKE_PROG=/bin/make; }
+		[[ -z $PKG_CONFIGURE_PROG ]] && { PKG_CONFIGURE_PROG=/bin/sh; }
 
 		[[ ${#PKG_CONFIGURE_FLAGS[@]} >0 ]] && {
 			configure_flags="${PKG_CONFIGURE_FLAGS[@]}"
