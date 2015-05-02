@@ -871,7 +871,7 @@ function func_install_toolchain {
 	# $4 - i686-mingw URL
 	# $5 - x86_64-mingw URL
 
-	[[ $USE_MULTILIB == yes ]] && {
+	[[ $USE_MULTILIB == yes || -z ${BUILD_ARCHITECTURE} ]] && {
 		local _arch=both
 	} || {
 		local _arch=$BUILD_ARCHITECTURE

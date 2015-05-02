@@ -54,9 +54,10 @@ readonly RUN_ARGS="$@"
 	echo "  help:"
 	echo "    --buildroot=<path>         - specifies the build root directory"
 	echo "    --fetch-only               - download sources without building"
+	echo "    --patch-on-fetch           - patch sources when fetching them"
 	echo "    --update-sources           - try to update sources from repositories before build"
 	echo "    --exceptions=<type>        - specifies exceptions model for GCC"
-	echo "                                 available: dwarf, seh, sjlj"
+	echo "                                 available: dwarf, seh, sjlj, dwarfseh (picks by architecture)"
 	echo "    --use-lto                  - build with LTO using"
 	echo "    --bootstrap                - bootstraping GCC"
 	echo "    --no-multilib              - build GCC without multilib support"
@@ -181,6 +182,7 @@ while [[ $# > 0 ]]; do
 		;;
 		--bootstrap) BOOTSTRAPING=yes ;;
 		--fetch-only) FETCH_MODE=yes ;;
+		--patch-on-fetch) FETCH_MODE=yes; FETCH_PATCH_MODE=yes ;;
 		--update-sources) UPDATE_SOURCES=yes ;;
 		--enable-languages=*)
 			ENABLE_LANGUAGES=${1/--enable-languages=/}
@@ -191,6 +193,7 @@ while [[ $# > 0 ]]; do
 			case $EXCEPTIONS_MODEL in
 				dwarf) USE_MULTILIB=no ;;
 				seh) USE_MULTILIB=no ;;
+				dwarfseh) USE_MULTILIB=no ;;
 				sjlj) USE_MULTILIB=$USE_MULTILIB ;;
 				*)
 					die "\"$EXCEPTIONS_MODEL\" is not valid exception model. available models: dwarf, seh, sjlj. terminate."
@@ -318,7 +321,7 @@ mkdir -p \
 
 # **************************************************************************
 
-[[ -z ${BUILD_ARCHITECTURE} ]] && {
+[[ -z ${BUILD_ARCHITECTURE} ]] && [[ ${FETCH_MODE} == no ]] && {
 	die "Build architecture is not specified. terminate."
 }
 
@@ -333,17 +336,29 @@ mkdir -p \
 
 case $EXCEPTIONS_MODEL in
 	dwarf)
-		[[ ${BUILD_ARCHITECTURE} == x86_64 ]] && {
+		[[ ${BUILD_ARCHITECTURE} == x86_64 && ${FETCH_MODE} == no ]] && {
 			die "DWARF exceptions not allowed on x86_64 architecture. terminate."
 		}
+		readonly EXCEPTIONS_MODEL_I686=dwarf
+		readonly EXCEPTIONS_MODEL_X86_64=seh
 	;;
 	seh)
-		[[ ${BUILD_ARCHITECTURE} == i686 ]] && {
+		[[ ${BUILD_ARCHITECTURE} == i686 && ${FETCH_MODE} == no ]] && {
 			die "SEH exceptions not allowed on i686 architecture. terminate."
 		}
-	;;	
+		readonly EXCEPTIONS_MODEL_I686=dwarf
+		readonly EXCEPTIONS_MODEL_X86_64=seh
+	;;
 	sjlj)
-	
+		readonly EXCEPTIONS_MODEL_I686=sjlj
+		readonly EXCEPTIONS_MODEL_X86_64=sjlj
+	;;
+	dwarfseh)
+		[[ -z ${BUILD_ARCHITECTURE} ]] && { EXCEPTIONS_MODEL=""; }
+		[[ ${BUILD_ARCHITECTURE} == x86_64 ]] && { EXCEPTIONS_MODEL=seh; }
+		[[ ${BUILD_ARCHITECTURE} == i686 ]] && { EXCEPTIONS_MODEL=dwarf; }
+		readonly EXCEPTIONS_MODEL_I686=dwarf
+		readonly EXCEPTIONS_MODEL_X86_64=seh
 	;;
 esac
 
@@ -367,8 +382,8 @@ func_install_toolchain \
 	$TOOLCHAINS_DIR \
 	$i686_HOST_MINGW_PATH \
 	$x86_64_HOST_MINGW_PATH \
-	${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL} \
-	${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL}
+	${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_I686} \
+	${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_X86_64}
 
 # **************************************************************************
 # Creating necessary directories
@@ -379,59 +394,61 @@ func_install_toolchain \
 	readonly REV_STRING=""
 }
 
-[[ $BUILD_MODE == gcc || $BUILD_MODE == clang ]] && {
-	GCC_PART_NAME=${GCC_NAME/gcc-/}
-	GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
-	readonly GCC_PART_NAME=${GCC_PART_NAME//./}
-	readonly RUNTIME_PART_NAME=${RUNTIME_VERSION//./}
-	BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL-rt_${RUNTIME_PART_NAME}${REV_STRING}
-	MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
-	[[ $BUILD_SHARED_GCC == no ]] && {
-		BASE_BUILD_DIR=$BASE_BUILD_DIR-s
-		MINGW_BUILD_NAME=$MINGW_BUILD_NAME-static
-	}
-	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
-	readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)	
-
-	readonly MINGWPREFIX=/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
-	readonly PREFIX=${BASE_BUILD_DIR}${MINGWPREFIX}
-	readonly LIBS_DIR=$PREFIX/opt
-
-	[[ $USE_MULTILIB == yes ]] && {
-			readonly PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
-			readonly PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
-	} || {
-		[[ $BUILD_ARCHITECTURE == i686 ]] && {
-			readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
-			readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
-		} || {
-			readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
-			readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
+[[ $FETCH_MODE == no ]] && {
+	[[ $BUILD_MODE == gcc || $BUILD_MODE == clang ]] && {
+		GCC_PART_NAME=${GCC_NAME/gcc-/}
+		GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
+		readonly GCC_PART_NAME=${GCC_PART_NAME//./}
+		readonly RUNTIME_PART_NAME=${RUNTIME_VERSION//./}
+		BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL-rt_${RUNTIME_PART_NAME}${REV_STRING}
+		MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
+		[[ $BUILD_SHARED_GCC == no ]] && {
+			BASE_BUILD_DIR=$BASE_BUILD_DIR-s
+			MINGW_BUILD_NAME=$MINGW_BUILD_NAME-static
 		}
+		MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
+		readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)	
+
+		readonly MINGWPREFIX=/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
+		readonly PREFIX=${BASE_BUILD_DIR}${MINGWPREFIX}
+		readonly LIBS_DIR=$PREFIX/opt
+
+		[[ $USE_MULTILIB == yes ]] && {
+				readonly PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
+				readonly PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
+		} || {
+			[[ $BUILD_ARCHITECTURE == i686 ]] && {
+				readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
+				readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
+			} || {
+				readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
+				readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
+			}
+		}
+	} || {
+		readonly BASE_BUILD_DIR=$ROOT_DIR/$BUILD_MODE-${BUILD_ARCHITECTURE}$REV_STRING
+		readonly PREFIX=$BASE_BUILD_DIR/${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}
+		readonly LIBS_DIR=$PREFIX
 	}
-} || {
-	readonly BASE_BUILD_DIR=$ROOT_DIR/$BUILD_MODE-${BUILD_ARCHITECTURE}$REV_STRING
-	readonly PREFIX=$BASE_BUILD_DIR/${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}
-	readonly LIBS_DIR=$PREFIX
-}
 
-readonly BUILDS_DIR=$BASE_BUILD_DIR/build
-readonly LOGS_DIR=$BASE_BUILD_DIR/logs
+	readonly BUILDS_DIR=$BASE_BUILD_DIR/build
+	readonly LOGS_DIR=$BASE_BUILD_DIR/logs
 
-mkdir -p \
-	$ARCHIVES_DIR \
-	$BASE_BUILD_DIR \
-	$PREFIX \
-	$BUILDS_DIR \
-	$LIBS_DIR \
-	$LOGS_DIR
-
-[[ $BUILD_MODE == gcc ]] && {
 	mkdir -p \
-		$PREREQ_DIR \
-		$RUNTIME_DIR \
-		$PREREQ_BUILD_DIR \
-		$PREREQ_LOGS_DIR
+		$ARCHIVES_DIR \
+		$BASE_BUILD_DIR \
+		$PREFIX \
+		$BUILDS_DIR \
+		$LIBS_DIR \
+		$LOGS_DIR
+
+	[[ $BUILD_MODE == gcc ]] && {
+		mkdir -p \
+			$PREREQ_DIR \
+			$RUNTIME_DIR \
+			$PREREQ_BUILD_DIR \
+			$PREREQ_LOGS_DIR
+	}
 }
 
 # **************************************************************************
@@ -481,8 +498,8 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 	echo -n "-> fetch sources for building ${BUILD_MODE_VERSION}-"
 	[[ $BUILD_MODE == gcc ]] && {
 		[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ]] && echo -n "multilib-"
-		echo -n "${BUILD_ARCHITECTURE}-"
-		echo "$EXCEPTIONS_MODEL"
+		[[ -z ${BUILD_ARCHITECTURE} ]] && { echo -n "any"; } || { echo -n "${BUILD_ARCHITECTURE}"; }
+		[[ -z ${EXCEPTIONS_MODEL} ]] && { echo ""; } || { echo "-${EXCEPTIONS_MODEL}"; }
 	} || {
 		echo -n "${BUILD_ARCHITECTURE}"
 	}
@@ -567,8 +584,10 @@ for rule in ${SUBTARGETS[@]}; do
 	[[ $PKG_TYPE != git && $PKG_TYPE != svn ]] && {
 		mkdir -p $SRCS_DIR/$PKG_DIR_NAME
 	}
-	mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$PKG_NAME
-	[[ -n $PKG_SUBDIR_NAME ]] && { mkdir -p $CURR_BUILD_DIR/$PKG_NAME/$PKG_SUBDIR_NAME; }
+	[[ $FETCH_MODE == no ]] && {
+		mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$PKG_NAME
+		[[ -n $PKG_SUBDIR_NAME ]] && { mkdir -p $CURR_BUILD_DIR/$PKG_NAME/$PKG_SUBDIR_NAME; }
+	}
 
 	func_download \
 		PKG_URLS[@]
@@ -585,23 +604,18 @@ for rule in ${SUBTARGETS[@]}; do
 
 	func_uncompress \
 		PKG_URLS[@]
-
-	[[ $FETCH_MODE == no ]] && {
-		[[ -z $PKG_LNDIR ]] && { PKG_LNDIR=no; }
-		[[ -z $PKG_CONFIGURE_SCRIPT ]] && { PKG_CONFIGURE_SCRIPT=configure; }
-		[[ -z $PKG_MAKE_PROG ]] && { PKG_MAKE_PROG=/bin/make; }
-		[[ -z $PKG_CONFIGURE_PROG ]] && { PKG_CONFIGURE_PROG=/bin/sh; }
-
-		[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
-			func_execute \
-				$SRCS_DIR \
-				$PKG_DIR_NAME \
-				"execute commands..." \
-				"after_unpack" \
-				$CURR_LOGS_DIR \
-				PKG_EXECUTE_AFTER_UNCOMPRESS[@]
-		}
-
+	
+	[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
+		func_execute \
+			$SRCS_DIR \
+			$PKG_DIR_NAME \
+			"execute commands..." \
+			"after_unpack" \
+			$CURR_LOGS_DIR \
+			PKG_EXECUTE_AFTER_UNCOMPRESS[@]
+	}
+	
+	[[ $FETCH_MODE == no || $FETCH_PATCH_MODE == yes ]] && {
 		[[ ${#PKG_PATCHES[@]} >0 ]] && {
 			func_apply_patches \
 				$SRCS_DIR \
@@ -620,6 +634,13 @@ for rule in ${SUBTARGETS[@]}; do
 				$CURR_LOGS_DIR \
 				PKG_EXECUTE_AFTER_PATCH[@]
 		}
+	}
+
+	[[ $FETCH_MODE == no ]] && {
+		[[ -z $PKG_LNDIR ]] && { PKG_LNDIR=no; }
+		[[ -z $PKG_CONFIGURE_SCRIPT ]] && { PKG_CONFIGURE_SCRIPT=configure; }
+		[[ -z $PKG_MAKE_PROG ]] && { PKG_MAKE_PROG=/bin/make; }
+		[[ -z $PKG_CONFIGURE_PROG ]] && { PKG_CONFIGURE_PROG=/bin/sh; }
 
 		[[ ${#PKG_CONFIGURE_FLAGS[@]} >0 ]] && {
 			configure_flags="${PKG_CONFIGURE_FLAGS[@]}"
