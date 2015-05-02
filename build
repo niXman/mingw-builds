@@ -54,7 +54,7 @@ readonly RUN_ARGS="$@"
 	echo "  help:"
 	echo "    --buildroot=<path>         - specifies the build root directory"
 	echo "    --fetch-only               - download sources without building"
-	echo "    --fetch-and-patch-only     - download sources and patch without building"
+	echo "    --patch-on-fetch           - patch sources when fetching them"
 	echo "    --update-sources           - try to update sources from repositories before build"
 	echo "    --exceptions=<type>        - specifies exceptions model for GCC"
 	echo "                                 available: dwarf, seh, sjlj"
@@ -182,7 +182,7 @@ while [[ $# > 0 ]]; do
 		;;
 		--bootstrap) BOOTSTRAPING=yes ;;
 		--fetch-only) FETCH_MODE=yes ;;
-		--fetch-and-patch-only) FETCH_MODE=yes; FETCH_PATCH_MODE=yes ;;
+		--patch-on-fetch) FETCH_MODE=yes; FETCH_PATCH_MODE=yes ;;
 		--update-sources) UPDATE_SOURCES=yes ;;
 		--enable-languages=*)
 			ENABLE_LANGUAGES=${1/--enable-languages=/}
