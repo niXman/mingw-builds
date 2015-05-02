@@ -57,7 +57,7 @@ readonly RUN_ARGS="$@"
 	echo "    --patch-on-fetch           - patch sources when fetching them"
 	echo "    --update-sources           - try to update sources from repositories before build"
 	echo "    --exceptions=<type>        - specifies exceptions model for GCC"
-	echo "                                 available: dwarf, seh, sjlj"
+	echo "                                 available: dwarf, seh, sjlj, dwarfseh (picks by architecture)"
 	echo "    --use-lto                  - build with LTO using"
 	echo "    --bootstrap                - bootstraping GCC"
 	echo "    --no-multilib              - build GCC without multilib support"
@@ -193,6 +193,7 @@ while [[ $# > 0 ]]; do
 			case $EXCEPTIONS_MODEL in
 				dwarf) USE_MULTILIB=no ;;
 				seh) USE_MULTILIB=no ;;
+				dwarfseh) USE_MULTILIB=no ;;
 				sjlj) USE_MULTILIB=$USE_MULTILIB ;;
 				*)
 					die "\"$EXCEPTIONS_MODEL\" is not valid exception model. available models: dwarf, seh, sjlj. terminate."
@@ -351,6 +352,13 @@ case $EXCEPTIONS_MODEL in
 	sjlj)
 		readonly EXCEPTIONS_MODEL_I686=sjlj
 		readonly EXCEPTIONS_MODEL_X86_64=sjlj
+	;;
+	dwarfseh)
+		[[ -z ${BUILD_ARCHITECTURE} ]] && { EXCEPTIONS_MODEL=""; }
+		[[ ${BUILD_ARCHITECTURE} == x86_64 ]] && { EXCEPTIONS_MODEL=seh; }
+		[[ ${BUILD_ARCHITECTURE} == i686 ]] && { EXCEPTIONS_MODEL=dwarf; }
+		readonly EXCEPTIONS_MODEL_I686=dwarf
+		readonly EXCEPTIONS_MODEL_X86_64=seh
 	;;
 esac
 
