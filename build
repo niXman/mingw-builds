@@ -150,13 +150,13 @@ while [[ $# > 0 ]]; do
 			case $BUILD_ARCHITECTURE in
 				i686)
 					case $EXCEPTIONS_MODEL in
-						dwarf|sjlj) ;;
+						dwarf|sjlj|dwarfseh) ;;
 						*) die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate." ;;
 					esac
 				;;
 				x86_64)
 					case $EXCEPTIONS_MODEL in
-						seh|sjlj) ;;
+						seh|sjlj|dwarfseh) ;;
 						*) die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate." ;;
 					esac
 				;;
