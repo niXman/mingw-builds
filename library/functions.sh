@@ -536,7 +536,7 @@ function func_execute {
 	((_index=${#_commands[@]}-1))
 	local _cmd_marker_name=$1/$2/exec-$4-$_index.marker
 	[[ -f $_cmd_marker_name ]] && {
-		echo "---> executed"
+		echo "---> $4 executed"
 		return $_result
 	}
 	_index=0
