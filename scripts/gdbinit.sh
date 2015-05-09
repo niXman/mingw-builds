@@ -35,11 +35,17 @@
 
 # **************************************************************************
 
-[[ ! -d $PREFIX/etc ]] && mkdir -p $PREFIX/etc
+PKG_NAME=gdbinit
+PKG_DIR_NAME=gdbinit
+PKG_PRIORITY=extra
 
-[[ ! -f $BUILDS_DIR/gbinit.marker ]] && {
+PKG_EXECUTE_AFTER_INSTALL=(
+	gdbinit_script
+)
+
+function gdbinit_script {
+	mkdir -p $PREFIX/etc
 	cat $TOP_DIR/sources/gdbinit | sed 's|%GCC_NAME%|'$GCC_NAME'|g' > $PREFIX/etc/gdbinit
-	touch $BUILDS_DIR/gdbinit.marker
 }
 
 # **************************************************************************
