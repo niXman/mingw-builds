@@ -43,7 +43,7 @@ PKG_URLS=(
 	"https://ftp.gnu.org/gnu/gdb/gdb-${PKG_VERSION}${PKG_TYPE}"
 )
 
-PKG_PRIORITY=main
+PKG_PRIORITY=extra
 
 #
 
