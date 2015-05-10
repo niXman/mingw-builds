@@ -525,11 +525,10 @@ function func_execute {
 	# $2 - src dir name
 	# $3 - message
 	# $4 - log suffix
-	# $5 - log dir
-	# $6 - commands list
+	# $5 - commands list
 
 	local _result=0
-	local -a _commands=( "${!6}" )
+	local -a _commands=( "${!5}" )
 	local it=
 	
 	local _index=0
@@ -579,15 +578,14 @@ function func_execute {
 function func_apply_patches {
 	# $1 - srcs dir name
 	# $2 - src dir name
-	# $3 - logs dir
-	# $4 - patches dir
-	# $5 - patches list
+	# $3 - patches dir
+	# $4 - patches list
 	
 	local _result=0
 	local it=
 	local applevel=
 	local _index=0
-	local -a _list=( "${!5}" )
+	local -a _list=( "${!4}" )
 	[[ ${#_list[@]} == 0 ]] && return 0
 
 	((_index=${#_list[@]}-1))
@@ -600,28 +598,28 @@ function func_apply_patches {
 	[[ ${#_list[@]} > 0 ]] && {
 		echo -n "--> patching..."
 	}
-
-	for it in ${_list[@]} ; do
+	
+	for it in ${_list[@]} ; do		
 		local _patch_marker_name=$1/$2/_patch-$_index.marker
 		local _patch_log_name=$1/$2/patch-$_index.log
+		local _patch_file=$3/${it}
 
 		[[ ! -f $_patch_marker_name ]] && {
-			[[ -f $PATCHES_DIR/${it} ]] || die "Patch $4/${it} not found!"
+			[[ -f $_patch_file ]] || die "Patch $_patch_file not found!"
 			local _level=
 			local _found=no
 			pushd $1/$2 > /dev/null
 			for _level in 0 1 2 3; do
 				local _applevel=$_level
-				patch -p$_level --dry-run -i $4/${it} > $_patch_log_name 2>&1
+				patch -p$_level --dry-run -i $_patch_file > $_patch_log_name 2>&1
 				_result=$?
 				[[ $_result == 0 ]] && {
 					_found=yes
 					break
 				}
 			done
-			#echo "patch=\"${it}\", _found=$_found, _applevel=$_applevel"
 			[[ $_found == yes ]] && {
-				patch -p$_applevel -i $4/${it} > $_patch_log_name 2>&1
+				patch -p$_applevel -i $_patch_file > $_patch_log_name 2>&1
 				_result=$?
 				[[ $_result == 0 ]] && {
 					touch $_patch_marker_name

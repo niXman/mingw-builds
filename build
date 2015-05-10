@@ -611,7 +611,6 @@ for rule in ${SUBTARGETS[@]}; do
 			$PKG_DIR_NAME \
 			"execute commands..." \
 			"after_unpack" \
-			$CURR_LOGS_DIR \
 			PKG_EXECUTE_AFTER_UNCOMPRESS[@]
 	}
 	
@@ -620,7 +619,6 @@ for rule in ${SUBTARGETS[@]}; do
 			func_apply_patches \
 				$SRCS_DIR \
 				$PKG_DIR_NAME \
-				$CURR_LOGS_DIR \
 				$PATCHES_DIR \
 				PKG_PATCHES[@]
 		}
@@ -631,7 +629,6 @@ for rule in ${SUBTARGETS[@]}; do
 				$PKG_DIR_NAME \
 				"execute commands..." \
 				"after_patch" \
-				$CURR_LOGS_DIR \
 				PKG_EXECUTE_AFTER_PATCH[@]
 		}
 	}
@@ -660,7 +657,6 @@ for rule in ${SUBTARGETS[@]}; do
 				$PKG_NAME \
 				"execute commands..." \
 				"after_configure" \
-				$CURR_LOGS_DIR \
 				PKG_EXECUTE_AFTER_CONFIGURE[@]
 		}
 
@@ -696,7 +692,6 @@ for rule in ${SUBTARGETS[@]}; do
 				$PKG_NAME \
 				"execute commands..." \
 				"after_install" \
-				$CURR_LOGS_DIR \
 				PKG_EXECUTE_AFTER_INSTALL[@]
 		}
 
