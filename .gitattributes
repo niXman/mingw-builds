@@ -4,5 +4,8 @@
 build text eol=lf
 *.sh text eol=lf
 
+# Patch complains about stripping off trailing CR's
+*.patch text eol=lf
+
 # Windows-specific files
 *.bat text eol=crlf
