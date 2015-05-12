@@ -53,7 +53,7 @@ function func_get_subtargets {
 		gmp
 		mpfr
 		mpc
-		$( [[ $2 == 4.6.? || $2 == 4.7.? ]] && echo ppl )
+		$( [[ $2 == 4.6.? || $2 == 4.7.? || $2 == 4_6-branch || $2 == 4_7-branch ]] && echo ppl )
 		isl
 		cloog
 		mingw-w64-download
