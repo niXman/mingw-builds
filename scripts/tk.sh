@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.6.1
+PKG_VERSION=8.6.4
 PKG_NAME=tk${PKG_VERSION}
 PKG_DIR_NAME=tk${PKG_VERSION}
 PKG_SUBDIR_NAME=win
@@ -49,9 +49,12 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
-	tk/tk-8.6.1-mingwexcept.patch
-	tk/tk-8.6.1-prevent-tclStubsPtr-segfault.patch
-	tk/implib-name.mingw.patch
+	tk/002-implib-name.mingw.patch
+	tk/003-fix-forbidden-colon-in-paths.mingw.patch
+	tk/004-install-man.mingw.patch
+	tk/006-prevent-tclStubsPtr-segfault.patch
+	tk/007-mingw-w64-compatibility-fix.patch
+	tk/008-dont-link-shared-with--static-libgcc.patch
 )
 
 #

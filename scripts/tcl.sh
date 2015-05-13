@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.6.1
+PKG_VERSION=8.6.4
 PKG_NAME=tcl${PKG_VERSION}
 PKG_DIR_NAME=tcl${PKG_VERSION}
 PKG_SUBDIR_NAME=win
@@ -49,14 +49,14 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
-	tcl/tcl-8.5.14-autopath.patch
-	tcl/tcl-8.5.14-conf.patch
-	tcl/tcl-8.5.14-hidden.patch
-	tcl/tcl-mingw-w64-compatibility.patch
-	tcl/tcl-8.6.1-mingwexcept.patch
-	tcl/no-xc.mingw.patch
-	tcl/use-system-zlib.mingw.patch
-	tcl/proper-implib-name.mingw.patch
+	tcl/002-fix-forbidden-colon-in-paths.mingw.patch
+	tcl/004-use-system-zlib.mingw.patch
+	tcl/005-no-xc.mingw.patch
+	tcl/006-proper-implib-name.mingw.patch
+	tcl/007-install.mingw.patch
+	tcl/008-tcl-8.5.14-hidden.patch
+	tcl/009-fix-using-gnu-print.patch
+	tcl/010-dont-link-shared-with--static-libgcc.patch
 )
 
 #
