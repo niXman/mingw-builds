@@ -1,0 +1,877 @@
+2015-05-12  Eric Botcazou  <ebotcazou@adacore.com>
+
+config/
+	* sjlj.m4: New file.
+
+libgcc/
+	* configure.ac: Include config/sjlj.m4.
+	Remove manual SJLJ check, add GCC_CHECK_SJLJ_EXCEPTIONS and adjust.
+	* config.in: Regenerate.
+	* configure: Likewise.
+	* config.host: Replace enable_sjlj_exceptions by ac_cv_sjlj_exceptions.
+
+libgo/
+	* configure.ac: Remove manual SJLJ check.
+	* config.h.in: Regenerate.
+	* configure: Likewise.
+	* runtime/go-unwind.c: Replace LIBGO_SJLJ_EXCEPTIONS by
+	__USING_SJLJ_EXCEPTIONS__.
+
+libjava/
+	* configure.ac: Include config/sjlj.m4.
+	Remove manual SJLJ check, add GCC_CHECK_SJLJ_EXCEPTIONS and adjust.
+	* include/config.h.in: Regenerate.
+	* configure: Likewise.
+	* exception.cc: Replace SJLJ_EXCEPTIONS by __USING_SJLJ_EXCEPTIONS__.
+	* stacktrace.cc: Likewise.
+	* include/default-signal.h: Likewise.
+	* sysdep/i386/backtrace.h: Likewise.
+
+libobjc/
+	* configure.ac: Remove manual SJLJ check.
+	* config.h.in: Regenerate.
+	* configure: Likewise.
+	* exception.c: Replace SJLJ_EXCEPTIONS by __USING_SJLJ_EXCEPTIONS__.
+
+libstdc++-v3/
+	* acinclude.m4 (GLIBCXX_ENABLE_SJLJ_EXCEPTIONS): Delete.
+	* configure.ac: Remove GLIBCXX_ENABLE_SJLJ_EXCEPTIONS.
+	* config.h.in: Regenerate.
+	* configure: Likewise.
+	* libsupc++/eh_personality.cc: Replace _GLIBCXX_SJLJ_EXCEPTIONS by
+	__USING_SJLJ_EXCEPTIONS__.
+	* libsupc++/eh_throw.cc: Likewise.
+	* libsupc++/eh_ptr.cc: Likewise.
+	* doc/html/manual/appendix_porting.html: Remove
+	GLIBCXX_ENABLE_SJLJ_EXCEPTIONS
+	* doc/xml/manual/build_hacking.xml: Likewise.
+	* doc/html/manual/configure.html: Remove --enable-sjlj-exceptions.
+	* doc/xml/manual/configure.xml: Likewise.
+
+
+-- 
+Eric Botcazou
+Index: gcc-5.1.0/config/sjlj.m4
+===================================================================
+--- gcc-5.1.0/config/sjlj.m4	(revision 0)
++++ gcc-5.1.0/config/sjlj.m4	(revision 0)
+@@ -0,0 +1,12 @@
++dnl Check if the compiler is configured for setjmp/longjmp exceptions
++AC_DEFUN([GCC_CHECK_SJLJ_EXCEPTIONS],
++  [AC_CACHE_CHECK([whether the compiler is configured for setjmp/longjmp exceptions],
++    ac_cv_sjlj_exceptions,
++    [AC_COMPILE_IFELSE(
++      [AC_LANG_PROGRAM(
++        [[#ifdef __USING_SJLJ_EXCEPTIONS__
++          this will fail
++          #endif]],
++        [[int i;]])],
++      [ac_cv_sjlj_exceptions=no],
++      [ac_cv_sjlj_exceptions=yes])])])
+Index: gcc-5.1.0/libgcc/config.host
+===================================================================
+--- gcc-5.1.0/libgcc/config.host	(revision 222673)
++++ gcc-5.1.0/libgcc/config.host	(working copy)
+@@ -498,7 +498,7 @@ hppa*64*-*-linux*)
+ hppa*-*-linux*)
+ 	tmake_file="$tmake_file pa/t-linux t-slibgcc-libgcc"
+ 	# Set the libgcc version number
+-	if test x$enable_sjlj_exceptions = xyes; then
++	if test x$ac_cv_sjlj_exceptions = xyes; then
+ 	    tmake_file="$tmake_file pa/t-slibgcc-sjlj-ver"
+ 	else
+ 	    tmake_file="$tmake_file pa/t-slibgcc-dwarf-ver"
+@@ -509,7 +509,7 @@ hppa*-*-linux*)
+ hppa[12]*-*-hpux10*)
+ 	tmake_file="$tmake_file pa/t-hpux pa/t-hpux10 t-libgcc-pic t-slibgcc"
+ 	# Set the libgcc version number
+-	if test x$enable_sjlj_exceptions = xyes; then
++	if test x$ac_cv_sjlj_exceptions = xyes; then
+ 	    tmake_file="$tmake_file pa/t-slibgcc-sjlj-ver"
+ 	else
+ 	    tmake_file="$tmake_file pa/t-slibgcc-dwarf-ver"
+@@ -520,7 +520,7 @@ hppa[12]*-*-hpux10*)
+ hppa*64*-*-hpux11*)
+ 	tmake_file="$tmake_file pa/t-hpux pa/t-pa64 pa/t-stublib t-libgcc-pic t-slibgcc"
+ 	# Set the libgcc version number
+-	if test x$enable_sjlj_exceptions = xyes; then
++	if test x$ac_cv_sjlj_exceptions = xyes; then
+ 	    tmake_file="$tmake_file pa/t-slibgcc-sjlj-ver"
+ 	else
+ 	    tmake_file="$tmake_file pa/t-slibgcc-dwarf-ver"
+@@ -533,7 +533,7 @@ hppa*64*-*-hpux11*)
+ hppa[12]*-*-hpux11*)
+ 	tmake_file="$tmake_file pa/t-hpux pa/t-stublib t-libgcc-pic t-slibgcc"
+ 	# Set the libgcc version number
+-	if test x$enable_sjlj_exceptions = xyes; then
++	if test x$ac_cv_sjlj_exceptions = xyes; then
+ 	    tmake_file="$tmake_file pa/t-slibgcc-sjlj-ver"
+ 	else
+ 	    tmake_file="$tmake_file pa/t-slibgcc-dwarf-ver"
+@@ -634,7 +634,7 @@ i[34567]86-*-cygwin*)
+ 		extra_parts="$extra_parts vtv_start.o vtv_end.o vtv_start_preinit.o vtv_end_preinit.o"
+ 	fi
+ 	# This has to match the logic for DWARF2_UNWIND_INFO in gcc/config/i386/cygming.h
+-	if test x$enable_sjlj_exceptions = xyes; then
++	if test x$ac_cv_sjlj_exceptions = xyes; then
+ 		tmake_eh_file="i386/t-sjlj-eh"
+ 	else
+ 		tmake_eh_file="i386/t-dw2-eh"
+@@ -653,7 +653,7 @@ x86_64-*-cygwin*)
+ 		extra_parts="$extra_parts vtv_start.o vtv_end.o vtv_start_preinit.o vtv_end_preinit.o"
+ 	fi
+ 	# This has to match the logic for DWARF2_UNWIND_INFO in gcc/config/i386/cygming.h
+-	if test x$enable_sjlj_exceptions = xyes; then
++	if test x$ac_cv_sjlj_exceptions = xyes; then
+ 		tmake_eh_file="i386/t-sjlj-eh"
+ 	else
+ 		tmake_eh_file="i386/t-seh-eh"
+@@ -681,7 +681,7 @@ i[34567]86-*-mingw*)
+ 	    ;;
+ 	esac
+ 	# This has to match the logic for DWARF2_UNWIND_INFO in gcc/config/i386/cygming.h
+-	if test x$enable_sjlj_exceptions = xyes; then
++	if test x$ac_cv_sjlj_exceptions = xyes; then
+ 		tmake_eh_file="i386/t-sjlj-eh"
+ 	else
+ 		tmake_eh_file="i386/t-dw2-eh"
+@@ -705,7 +705,7 @@ x86_64-*-mingw*)
+ 	    ;;
+ 	esac
+ 	# This has to match the logic for DWARF2_UNWIND_INFO in gcc/config/i386/cygming.h
+-	if test x$enable_sjlj_exceptions = xyes; then
++	if test x$ac_cv_sjlj_exceptions = xyes; then
+ 		tmake_eh_file="i386/t-sjlj-eh"
+ 	else
+ 		tmake_eh_file="i386/t-seh-eh"
+@@ -798,9 +798,9 @@ m68k-*-linux*)			# Motorola m68k's runni
+ 				# with ELF format using glibc 2
+ 				# aka the GNU/Linux C library 6.
+ 	tmake_file="$tmake_file m68k/t-floatlib m68k/t-linux"
+-	# If not configured with --enable-sjlj-exceptions, bump the
++	# If not configured with setjmp/longjmp exceptions, bump the
+ 	# libgcc version number.
+-	if test x$enable_sjlj_exceptions != xyes; then
++	if test x$ac_cv_sjlj_exceptions != xyes; then
+ 	    tmake_file="$tmake_file m68k/t-slibgcc-elf-ver"
+ 	fi
+ 	md_unwind_header=m68k/linux-unwind.h
+Index: gcc-5.1.0/libgcc/configure.ac
+===================================================================
+--- gcc-5.1.0/libgcc/configure.ac	(revision 222673)
++++ gcc-5.1.0/libgcc/configure.ac	(working copy)
+@@ -10,6 +10,7 @@ sinclude(../config/picflag.m4)
+ sinclude(../config/dfp.m4)
+ sinclude(../config/unwind_ipinfo.m4)
+ sinclude(../config/gthr.m4)
++sinclude(../config/sjlj.m4)
+ 
+ AC_PREREQ(2.64)
+ AC_INIT([GNU C Runtime Library], 1.0,,[libgcc])
+@@ -230,59 +231,8 @@ AC_SUBST(fixed_point)
+ # config.gcc also contains tests of with_system_libunwind.
+ GCC_CHECK_UNWIND_GETIPINFO
+ 
+-# The sjlj test is almost duplicated here and in libgo/configure.ac (for C),
+-# libstdc++-v3/acinclude.m4 and libjava/configure.ac (for C++), and
+-# libobjc/configure.ac (for Objective-C).
+-# FIXME: This should be centralized in config/sjlj.m4.
+-AC_ARG_ENABLE(sjlj-exceptions,
+-  AC_HELP_STRING([--enable-sjlj-exceptions],
+-		 [force use of builtin_setjmp for exceptions]),
+-  [case "$enableval" in
+-   yes|no|auto) ;;
+-   *) AC_MSG_ERROR([unknown argument to --enable-sjlj-exceptions]) ;;
+-   esac],
+-  [enable_sjlj_exceptions=auto])
+-
+-AC_CACHE_CHECK([whether to use setjmp/longjmp exceptions],
+-[libgcc_cv_lib_sjlj_exceptions],
+-[AC_LANG_CONFTEST(
+-  [AC_LANG_SOURCE([
+-void bar ();
+-void clean (int *);
+-void foo ()
+-{
+-  int i __attribute__ ((cleanup (clean)));
+-  bar();
+-}
+-])])
+-CFLAGS_hold=$CFLAGS
+-CFLAGS="--save-temps -fexceptions"
+-libgcc_cv_lib_sjlj_exceptions=unknown
+-AS_IF([ac_fn_c_try_compile],
+-  [if grep _Unwind_SjLj_Resume conftest.s >/dev/null 2>&1; then
+-    libgcc_cv_lib_sjlj_exceptions=yes
+-  elif grep _Unwind_Resume conftest.s >/dev/null 2>&1; then
+-    libgcc_cv_lib_sjlj_exceptions=no
+-  fi])
+-CFLAGS=$CFLAGS_hold
+-rm -f conftest*
+-])
+-
+-if test "$enable_sjlj_exceptions" = "auto"; then
+-  enable_sjlj_exceptions=$libgcc_cv_lib_sjlj_exceptions
+-fi
+-
+-case $enable_sjlj_exceptions in
+-yes)
+-  AC_DEFINE(LIBGCC_SJLJ_EXCEPTIONS, 1,
+-	[Define if the C compiler is configured for setjmp/longjmp exceptions.])
+-  ;;
+-no)
+-  ;;
+-*)
+-  AC_MSG_ERROR([unable to detect exception model])
+-  ;;
+-esac
++# Check if the compiler is configured for setjmp/longjmp exceptions.
++GCC_CHECK_SJLJ_EXCEPTIONS
+ 
+ AC_ARG_ENABLE([explicit-exception-frame-registration],
+   [AC_HELP_STRING([--enable-explicit-exception-frame-registration],
+@@ -291,9 +241,9 @@ AC_ARG_ENABLE([explicit-exception-frame-
+ [
+ force_explicit_eh_registry=
+ if test "$enable_explicit_exception_frame_registration" = yes; then
+-  if test "$enable_sjlj_exceptions" = yes; then
+-    AC_MSG_ERROR([Can't enable both of --enable-sjlj-exceptions
+-                  and --enable-explicit-exception-frame-registration])
++  if test $ac_cv_sjlj_exceptions = yes; then
++    AC_MSG_ERROR([Can't --enable-explicit-exception-frame-registration
++                  with setjmp/longjmp exceptions])
+   fi
+   force_explicit_eh_registry=-DUSE_EH_FRAME_REGISTRY_ALWAYS
+ fi
+Index: gcc-5.1.0/libgo/runtime/go-unwind.c
+===================================================================
+--- gcc-5.1.0/libgo/runtime/go-unwind.c	(revision 222673)
++++ gcc-5.1.0/libgo/runtime/go-unwind.c	(working copy)
+@@ -141,7 +141,7 @@ __go_check_defer (_Bool *frame)
+ 
+   hdr = (struct _Unwind_Exception *) g->exception;
+ 
+-#ifdef LIBGO_SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+   _Unwind_SjLj_Resume_or_Rethrow (hdr);
+ #else
+ #if defined(_LIBUNWIND_STD_ABI)
+Index: gcc-5.1.0/libgo/configure.ac
+===================================================================
+--- gcc-5.1.0/libgo/configure.ac	(revision 222673)
++++ gcc-5.1.0/libgo/configure.ac	(working copy)
+@@ -473,56 +473,6 @@ AC_C_BIGENDIAN
+ 
+ GCC_CHECK_UNWIND_GETIPINFO
+ 
+-AC_ARG_ENABLE(sjlj-exceptions,
+-  AC_HELP_STRING([--enable-sjlj-exceptions],
+-		 [force use of builtin_setjmp for exceptions]),
+-  [case "$enableval" in
+-   yes|no|auto) ;;
+-   *) AC_MSG_ERROR([unknown argument to --enable-sjlj-exceptions]) ;;
+-   esac],
+-  [enable_sjlj_exceptions=auto])
+-
+-AC_CACHE_CHECK([whether to use setjmp/longjmp exceptions],
+-[libgo_cv_lib_sjlj_exceptions],
+-[AC_LANG_CONFTEST(
+-  [AC_LANG_SOURCE([
+-void bar ();
+-void clean (int *);
+-void foo ()
+-{
+-  int i __attribute__ ((cleanup (clean)));
+-  bar();
+-}
+-])])
+-CFLAGS_hold=$CFLAGS
+-CFLAGS="--save-temps -fexceptions"
+-libgo_cv_lib_sjlj_exceptions=unknown
+-AS_IF([ac_fn_c_try_compile],
+-  [if grep _Unwind_SjLj_Resume conftest.s >/dev/null 2>&1; then
+-    libgo_cv_lib_sjlj_exceptions=yes
+-  elif grep _Unwind_Resume conftest.s >/dev/null 2>&1; then
+-    libgo_cv_lib_sjlj_exceptions=no
+-  fi])
+-CFLAGS=$CFLAGS_hold
+-rm -f conftest*
+-])
+-
+-if test "$enable_sjlj_exceptions" = "auto"; then
+-  enable_sjlj_exceptions=$libgo_cv_lib_sjlj_exceptions
+-fi
+-
+-case $enable_sjlj_exceptions in
+-yes)
+-  AC_DEFINE(LIBGO_SJLJ_EXCEPTIONS, 1,
+-	[Define if the C++ compiler is configured for setjmp/longjmp exceptions.])
+-  ;;
+-no)
+-  ;;
+-*)
+-  AC_MSG_ERROR([unable to detect exception model])
+-  ;;
+-esac
+-
+ AC_CHECK_HEADERS(sched.h sys/file.h sys/mman.h syscall.h sys/epoll.h sys/inotify.h sys/ptrace.h sys/syscall.h sys/user.h sys/utsname.h sys/select.h sys/socket.h net/if.h net/if_arp.h net/route.h netpacket/packet.h sys/prctl.h sys/mount.h sys/vfs.h sys/statfs.h sys/timex.h sys/sysinfo.h utime.h linux/ether.h linux/fs.h linux/reboot.h netinet/icmp6.h netinet/in_syst.h netinet/ip.h netinet/ip_mroute.h netinet/if_ether.h)
+ 
+ AC_CHECK_HEADERS([linux/filter.h linux/if_addr.h linux/if_ether.h linux/if_tun.h linux/netlink.h linux/rtnetlink.h], [], [],
+Index: gcc-5.1.0/libjava/configure.ac
+===================================================================
+--- gcc-5.1.0/libjava/configure.ac	(revision 222673)
++++ gcc-5.1.0/libjava/configure.ac	(working copy)
+@@ -1,4 +1,7 @@
+ dnl # Process this with autoconf to create configure
++
++sinclude(../config/sjlj.m4)
++
+ AC_PREREQ(2.64)
+ # Still use "libjava" here to placate dejagnu.
+ AC_INIT([libjava], [version-unused],, [libjava])
+@@ -699,58 +702,10 @@ INTERPRETER="$libgcj_interpreter"
+ AC_SUBST(INTERPRETER)
+ AM_CONDITIONAL(INTERPRETER, test "$libgcj_interpreter" = yes)
+ 
+-AC_MSG_CHECKING([for exception model to use])
+-AC_LANG_PUSH(C++)
+-AC_ARG_ENABLE(sjlj-exceptions,
+-  AS_HELP_STRING([--enable-sjlj-exceptions],
+-                 [force use of builtin_setjmp for exceptions]),
+-[:],
+-[dnl Botheration.  Now we've got to detect the exception model.
+-dnl Link tests against libgcc.a are problematic since -- at least
+-dnl as of this writing -- we've not been given proper -L bits for
+-dnl single-tree newlib and libgloss.
+-dnl
+-dnl This is what AC_TRY_COMPILE would do if it didn't delete the
+-dnl conftest files before we got a change to grep them first.
+-cat > conftest.$ac_ext << EOF
+-[#]line __oline__ "configure"
+-struct S { ~S(); };
+-void bar();
+-void foo()
+-{
+-  S s;
+-  bar();
+-}
+-EOF
+-old_CXXFLAGS="$CXXFLAGS"  
+-CXXFLAGS=-S
+-if AC_TRY_EVAL(ac_compile); then
+-  if grep _Unwind_SjLj_Resume conftest.s >/dev/null 2>&1 ; then
+-    enable_sjlj_exceptions=yes
+-  elif grep _Unwind_Resume conftest.s >/dev/null 2>&1 ; then
+-    enable_sjlj_exceptions=no
+-  elif grep __cxa_end_cleanup conftest.s >/dev/null 2>&1 ; then
+-    # ARM EH ABI.
+-    enable_sjlj_exceptions=no
+-  fi
+-fi
+-CXXFLAGS="$old_CXXFLAGS"
+-rm -f conftest*])
+-if test x$enable_sjlj_exceptions = xyes; then
+-  AC_DEFINE(SJLJ_EXCEPTIONS, 1,
+-	[Define if the compiler is configured for setjmp/longjmp exceptions.])
+-  ac_exception_model_name=sjlj
+-elif test x$enable_sjlj_exceptions = xno; then
+-  ac_exception_model_name="call frame"
+-else
+-  AC_MSG_ERROR([unable to detect exception model])
+-fi
+-AC_LANG_POP(C++)
+-AC_MSG_RESULT($ac_exception_model_name)
+-
+-# If we are non using SJLJ exceptions, and this host does not have support 
++# If we are not using SJLJ exceptions, and this host does not have support 
+ # for unwinding from a signal handler, enable checked dereferences and divides.
+-if test $can_unwind_signal = no && test $enable_sjlj_exceptions = no; then
++GCC_CHECK_SJLJ_EXCEPTIONS
++if test $ac_cv_sjlj_exceptions = no && test $can_unwind_signal = no; then
+   CHECKREFSPEC=-fcheck-references
+   DIVIDESPEC=-fuse-divide-subroutine
+   EXCEPTIONSPEC=
+@@ -1761,7 +1716,7 @@ case "${host}" in
+ esac
+ 
+ # If we're using sjlj exceptions, forget what we just learned.
+-if test "$enable_sjlj_exceptions" = yes; then
++if test "$ac_cv_sjlj_exceptions" = yes; then
+    SIGNAL_HANDLER=include/default-signal.h
+    SIGNAL_HANDLER_AUX=
+ fi
+Index: gcc-5.1.0/libjava/stacktrace.cc
+===================================================================
+--- gcc-5.1.0/libjava/stacktrace.cc	(revision 222673)
++++ gcc-5.1.0/libjava/stacktrace.cc	(working copy)
+@@ -325,7 +325,7 @@ _Jv_StackTrace::GetStackTraceElements (_
+ {
+   ArrayList *list = new ArrayList ();
+ 
+-#if defined (SJLJ_EXCEPTIONS) && ! defined (WIN32)
++#if defined (__USING_SJLJ_EXCEPTIONS__) && ! defined (WIN32)
+   // We can't use the nCodeMap without unwinder support. Instead,
+   // fake the method name by giving the IP in hex - better than nothing.  
+   jstring hex = JvNewStringUTF ("0x");
+@@ -344,7 +344,7 @@ _Jv_StackTrace::GetStackTraceElements (_
+       list->add (element);
+     }
+ 
+-#else /* SJLJ_EXCEPTIONS && !WIN32 */
++#else /* __USING_SJLJ_EXCEPTIONS__ && !WIN32 */
+ 
+   //JvSynchronized (ncodeMap);
+   UpdateNCodeMap ();
+@@ -412,7 +412,7 @@ _Jv_StackTrace::GetStackTraceElements (_
+     }
+   
+   finder->close();
+-#endif /* SJLJ_EXCEPTIONS && !WIN32 */
++#endif /* __USING_SJLJ_EXCEPTIONS__ && !WIN32 */
+ 
+   JArray<Object *> *array = JvNewObjectArray (list->size (), 
+     &StackTraceElement::class$, NULL);
+Index: gcc-5.1.0/libjava/include/default-signal.h
+===================================================================
+--- gcc-5.1.0/libjava/include/default-signal.h	(revision 222673)
++++ gcc-5.1.0/libjava/include/default-signal.h	(working copy)
+@@ -11,7 +11,7 @@ details.  */
+ #ifndef JAVA_SIGNAL_H
+ #define JAVA_SIGNAL_H 1
+ 
+-#ifdef SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+ 
+ #define HANDLE_SEGV 1
+ #define HANDLE_FPE 1
+@@ -37,7 +37,7 @@ while (0)
+ 
+ #define MAKE_THROW_FRAME(_exception)  do {} while (0)
+ 
+-#else /* SJLJ_EXCEPTIONS */
++#else /* __USING_SJLJ_EXCEPTIONS__ */
+ 
+ #undef HANDLE_SEGV
+ #undef HANDLE_FPE
+@@ -45,7 +45,7 @@ while (0)
+ #define INIT_SEGV   do {} while (0)
+ #define INIT_FPE   do {} while (0)
+ 
+-#endif /* SJLJ_EXCEPTIONS */
++#endif /* __USING_SJLJ_EXCEPTIONS__ */
+ 
+ #endif /* JAVA_SIGNAL_H */
+   
+Index: gcc-5.1.0/libjava/sysdep/i386/backtrace.h
+===================================================================
+--- gcc-5.1.0/libjava/sysdep/i386/backtrace.h	(revision 222673)
++++ gcc-5.1.0/libjava/sysdep/i386/backtrace.h	(working copy)
+@@ -36,7 +36,7 @@ struct _Unwind_Context
+   _Jv_uintptr_t ret_addr;
+ };
+ 
+-#ifdef SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+ 
+ #undef _Unwind_GetIPInfo
+ #define _Unwind_GetIPInfo(ctx,ip_before_insn) \
+@@ -50,7 +50,7 @@ struct _Unwind_Context
+ #define _Unwind_Backtrace(trace_fn,state_ptr) \
+   (fallback_backtrace (trace_fn, state_ptr))
+ 
+-#endif /* SJLJ_EXCEPTIONS */
++#endif /* __USING_SJLJ_EXCEPTIONS__ */
+ 
+ /* Unwind through the call stack calling TRACE_FN with STATE for each stack
+    frame.  Returns the reason why the unwinding was stopped.  */
+Index: gcc-5.1.0/libjava/exception.cc
+===================================================================
+--- gcc-5.1.0/libjava/exception.cc	(revision 222673)
++++ gcc-5.1.0/libjava/exception.cc	(working copy)
+@@ -112,7 +112,7 @@ _Jv_Throw (jthrowable value)
+ 
+   /* We're happy with setjmp/longjmp exceptions or region-based
+      exception handlers: entry points are provided here for both.  */
+-#ifdef SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+   _Unwind_SjLj_RaiseException (&xh->unwindHeader);
+ #else
+   _Unwind_RaiseException (&xh->unwindHeader);
+@@ -194,7 +194,7 @@ get_ttype_entry (_Unwind_Context *contex
+ 
+ // Using a different personality function name causes link failures
+ // when trying to mix code using different exception handling models.
+-#ifdef SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+ #define PERSONALITY_FUNCTION	__gcj_personality_sj0
+ #define __builtin_eh_return_data_regno(x) x
+ #elif defined (__SEH__)
+@@ -331,7 +331,7 @@ PERSONALITY_FUNCTION (int version,
+   action_record = 0;
+   handler_switch_value = 0;
+ 
+-#ifdef SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+   // The given "IP" is an index into the call-site table, with two
+   // exceptions -- -1 means no-action, and 0 means terminate.  But
+   // since we're using uleb128 values, we've not got random access
+@@ -380,7 +380,7 @@ PERSONALITY_FUNCTION (int version,
+ 	  goto found_something;
+ 	}
+     }
+-#endif // SJLJ_EXCEPTIONS
++#endif // __USING_SJLJ_EXCEPTIONS__
+ 
+   // If ip is not present in the table, C++ would call terminate.
+   // ??? It is perhaps better to tweek the LSDA so that no-action
+Index: gcc-5.1.0/libobjc/configure.ac
+===================================================================
+--- gcc-5.1.0/libobjc/configure.ac	(revision 222673)
++++ gcc-5.1.0/libobjc/configure.ac	(working copy)
+@@ -212,60 +212,6 @@ AC_CHECK_HEADERS(sched.h)
+ # Check if we have thread-local storage
+ GCC_CHECK_TLS
+ 
+-AC_MSG_CHECKING([for exception model to use])
+-AC_LANG_PUSH(C)
+-AC_ARG_ENABLE(sjlj-exceptions,
+-  AS_HELP_STRING([--enable-sjlj-exceptions],
+-                 [force use of builtin_setjmp for exceptions]),
+-[:],
+-[dnl Botheration.  Now we've got to detect the exception model.
+-dnl Link tests against libgcc.a are problematic since -- at least
+-dnl as of this writing -- we've not been given proper -L bits for
+-dnl single-tree newlib and libgloss.
+-dnl
+-dnl This is what AC_TRY_COMPILE would do if it didn't delete the
+-dnl conftest files before we got a change to grep them first.
+-cat > conftest.$ac_ext << EOF
+-[#]line __oline__ "configure"
+-@interface Frob
+-@end
+-@implementation Frob
+-@end
+-int proc();
+-int foo()
+-{
+-  @try {
+-   return proc();
+-  }
+-  @catch (Frob* ex) {
+-    return 0;
+-  }
+-}
+-EOF
+-old_CFLAGS="$CFLAGS" 
+-dnl work around that we don't have Objective-C support in autoconf
+-CFLAGS="-x objective-c -fgnu-runtime -fobjc-exceptions -S"
+-if AC_TRY_EVAL(ac_compile); then
+-  if grep _Unwind_SjLj_Resume conftest.s >/dev/null 2>&1 ; then
+-    enable_sjlj_exceptions=yes
+-  elif grep _Unwind_Resume conftest.s >/dev/null 2>&1 ; then
+-    enable_sjlj_exceptions=no
+-  fi
+-fi
+-CFLAGS="$old_CFLAGS"
+-rm -f conftest*])
+-if test x$enable_sjlj_exceptions = xyes; then
+-  AC_DEFINE(SJLJ_EXCEPTIONS, 1,
+-	[Define if the compiler is configured for setjmp/longjmp exceptions.])
+-  ac_exception_model_name=sjlj
+-elif test x$enable_sjlj_exceptions = xno; then
+-  ac_exception_model_name="call frame"
+-else
+-  AC_MSG_ERROR([unable to detect exception model])
+-fi
+-AC_LANG_POP(C)
+-AC_MSG_RESULT($ac_exception_model_name)
+-
+ # ------
+ # Output
+ # ------
+Index: gcc-5.1.0/libobjc/exception.c
+===================================================================
+--- gcc-5.1.0/libobjc/exception.c	(revision 222673)
++++ gcc-5.1.0/libobjc/exception.c	(working copy)
+@@ -199,10 +199,10 @@ get_ttype_entry (struct lsda_header_info
+ /* Using a different personality function name causes link failures
+    when trying to mix code using different exception handling
+    models.  */
+-#ifdef SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+ #define PERSONALITY_FUNCTION	__gnu_objc_personality_sj0
+ #define __builtin_eh_return_data_regno(x) x
+-#elif defined(__SEH__) && !defined (__USING_SJLJ_EXCEPTIONS__)
++#elif defined(__SEH__) 
+ #define PERSONALITY_FUNCTION	__gnu_objc_personality_imp
+ #else
+ #define PERSONALITY_FUNCTION	__gnu_objc_personality_v0
+@@ -329,7 +329,7 @@ PERSONALITY_FUNCTION (int version,
+   action_record = 0;
+   handler_switch_value = 0;
+ 
+-#ifdef SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+   /* The given "IP" is an index into the call-site table, with two
+      exceptions -- -1 means no-action, and 0 means terminate.  But
+      since we're using uleb128 values, we've not got random access to
+@@ -380,7 +380,7 @@ PERSONALITY_FUNCTION (int version,
+ 	  goto found_something;
+ 	}
+     }
+-#endif /* SJLJ_EXCEPTIONS  */
++#endif /* __USING_SJLJ_EXCEPTIONS__  */
+ 
+   /* If ip is not present in the table, C++ would call terminate.  */
+   /* ??? As with Java, it's perhaps better to tweek the LSDA to that
+@@ -508,7 +508,7 @@ objc_exception_throw (id exception)
+   header->base.exception_cleanup = __objc_exception_cleanup;
+   header->value = exception;
+ 
+-#ifdef SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+   _Unwind_SjLj_RaiseException (&header->base);
+ #else
+   _Unwind_RaiseException (&header->base);
+Index: gcc-5.1.0/libstdc++-v3/configure.ac
+===================================================================
+--- gcc-5.1.0/libstdc++-v3/configure.ac	(revision 222673)
++++ gcc-5.1.0/libstdc++-v3/configure.ac	(working copy)
+@@ -147,7 +147,6 @@ GLIBCXX_ENABLE_HOSTED
+ GLIBCXX_ENABLE_VERBOSE
+ 
+ # Enable compiler support that doesn't require linking.
+-GLIBCXX_ENABLE_SJLJ_EXCEPTIONS
+ GLIBCXX_ENABLE_PCH($is_hosted)
+ GLIBCXX_ENABLE_THREADS
+ GLIBCXX_ENABLE_ATOMIC_BUILTINS
+Index: gcc-5.1.0/libstdc++-v3/doc/xml/manual/configure.xml
+===================================================================
+--- gcc-5.1.0/libstdc++-v3/doc/xml/manual/configure.xml	(revision 222673)
++++ gcc-5.1.0/libstdc++-v3/doc/xml/manual/configure.xml	(working copy)
+@@ -45,15 +45,6 @@
+      </para>
+  </listitem></varlistentry>
+ 
+- <varlistentry><term><code>--enable-sjlj-exceptions</code></term>
+- <listitem><para>Forces old, set-jump/long-jump exception handling model.  If
+-	at all possible, the new, frame unwinding exception handling routines
+-	should be used instead, as they significantly reduce both
+-	runtime memory usage and executable size. This option can
+-	change the library ABI.
+-     </para>
+- </listitem></varlistentry>
+-
+  <varlistentry><term><code>--enable-version-specific-runtime-libs</code></term>
+  <listitem><para>Specify that run-time libraries should be installed in the
+ 	compiler-specific subdirectory (i.e.,
+Index: gcc-5.1.0/libstdc++-v3/doc/xml/manual/build_hacking.xml
+===================================================================
+--- gcc-5.1.0/libstdc++-v3/doc/xml/manual/build_hacking.xml	(revision 222673)
++++ gcc-5.1.0/libstdc++-v3/doc/xml/manual/build_hacking.xml	(working copy)
+@@ -232,7 +232,6 @@ in the build directory starts the build
+     GLIBCXX_ENABLE_DEBUG_FLAGS
+     GLIBCXX_ENABLE_LONG_LONG
+     GLIBCXX_ENABLE_PCH
+-    GLIBCXX_ENABLE_SJLJ_EXCEPTIONS
+     GLIBCXX_ENABLE_SYMVERS
+     GLIBCXX_ENABLE_THREADS
+ </programlisting>
+Index: gcc-5.1.0/libstdc++-v3/doc/html/manual/configure.html
+===================================================================
+--- gcc-5.1.0/libstdc++-v3/doc/html/manual/configure.html	(revision 222673)
++++ gcc-5.1.0/libstdc++-v3/doc/html/manual/configure.html	(working copy)
+@@ -22,11 +22,6 @@
+ 	libstdc++ built many different ways:  "-msoft-float"
+ 	and not, etc.  A different libstdc++ will be built for each of
+ 	the different multilib versions.  This option is on by default.
+-     </p></dd><dt><span class="term"><code class="code">--enable-sjlj-exceptions</code></span></dt><dd><p>Forces old, set-jump/long-jump exception handling model.  If
+-	at all possible, the new, frame unwinding exception handling routines
+-	should be used instead, as they significantly reduce both
+-	runtime memory usage and executable size. This option can
+-	change the library ABI.
+      </p></dd><dt><span class="term"><code class="code">--enable-version-specific-runtime-libs</code></span></dt><dd><p>Specify that run-time libraries should be installed in the
+ 	compiler-specific subdirectory (i.e.,
+ 	<code class="code">${libdir}/gcc-lib/${target_alias}/${gcc_version}</code>)
+Index: gcc-5.1.0/libstdc++-v3/doc/html/manual/appendix_porting.html
+===================================================================
+--- gcc-5.1.0/libstdc++-v3/doc/html/manual/appendix_porting.html	(revision 222673)
++++ gcc-5.1.0/libstdc++-v3/doc/html/manual/appendix_porting.html	(working copy)
+@@ -162,7 +162,6 @@ in the build directory starts the build
+     GLIBCXX_ENABLE_DEBUG_FLAGS
+     GLIBCXX_ENABLE_LONG_LONG
+     GLIBCXX_ENABLE_PCH
+-    GLIBCXX_ENABLE_SJLJ_EXCEPTIONS
+     GLIBCXX_ENABLE_SYMVERS
+     GLIBCXX_ENABLE_THREADS
+ </pre><p>
+Index: gcc-5.1.0/libstdc++-v3/libsupc++/eh_personality.cc
+===================================================================
+--- gcc-5.1.0/libstdc++-v3/libsupc++/eh_personality.cc	(revision 222673)
++++ gcc-5.1.0/libstdc++-v3/libsupc++/eh_personality.cc	(working copy)
+@@ -327,16 +327,16 @@ namespace __cxxabiv1
+ 
+ // Using a different personality function name causes link failures
+ // when trying to mix code using different exception handling models.
+-#ifdef _GLIBCXX_SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+ #define PERSONALITY_FUNCTION	__gxx_personality_sj0
+ #define __builtin_eh_return_data_regno(x) x
+-#elif defined(__SEH__) && !defined (_GLIBCXX_SJLJ_EXCEPTIONS)
++#elif defined(__SEH__)
+ #define PERSONALITY_FUNCTION	__gxx_personality_imp
+ #else
+ #define PERSONALITY_FUNCTION	__gxx_personality_v0
+ #endif
+ 
+-#if defined (__SEH__) && !defined (_GLIBCXX_SJLJ_EXCEPTIONS)
++#if defined (__SEH__) && !defined (__USING_SJLJ_EXCEPTIONS__)
+ static
+ #else
+ extern "C"
+@@ -455,7 +455,7 @@ PERSONALITY_FUNCTION (int version,
+   action_record = 0;
+   handler_switch_value = 0;
+ 
+-#ifdef _GLIBCXX_SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+   // The given "IP" is an index into the call-site table, with two
+   // exceptions -- -1 means no-action, and 0 means terminate.  But
+   // since we're using uleb128 values, we've not got random access
+@@ -508,7 +508,7 @@ PERSONALITY_FUNCTION (int version,
+ 	  goto found_something;
+ 	}
+     }
+-#endif // _GLIBCXX_SJLJ_EXCEPTIONS
++#endif // __USING_SJLJ_EXCEPTIONS__
+ 
+   // If ip is not present in the table, call terminate.  This is for
+   // a destructor inside a cleanup, or a library routine the compiler
+@@ -789,7 +789,7 @@ __cxa_call_unexpected (void *exc_obj_in)
+ }
+ #endif
+ 
+-#if defined (__SEH__) && !defined (_GLIBCXX_SJLJ_EXCEPTIONS)
++#if defined (__SEH__) && !defined (__USING_SJLJ_EXCEPTIONS__)
+ extern "C"
+ EXCEPTION_DISPOSITION
+ __gxx_personality_seh0 (PEXCEPTION_RECORD ms_exc, void *this_frame,
+Index: gcc-5.1.0/libstdc++-v3/libsupc++/eh_throw.cc
+===================================================================
+--- gcc-5.1.0/libstdc++-v3/libsupc++/eh_throw.cc	(revision 222673)
++++ gcc-5.1.0/libstdc++-v3/libsupc++/eh_throw.cc	(working copy)
+@@ -76,7 +76,7 @@ __cxxabiv1::__cxa_throw (void *obj, std:
+   __GXX_INIT_PRIMARY_EXCEPTION_CLASS(header->exc.unwindHeader.exception_class);
+   header->exc.unwindHeader.exception_cleanup = __gxx_exception_cleanup;
+ 
+-#ifdef _GLIBCXX_SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+   _Unwind_SjLj_RaiseException (&header->exc.unwindHeader);
+ #else
+   _Unwind_RaiseException (&header->exc.unwindHeader);
+@@ -109,7 +109,7 @@ __cxxabiv1::__cxa_rethrow ()
+ 		  header->exceptionType);
+ 	}
+ 
+-#ifdef _GLIBCXX_SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+       _Unwind_SjLj_Resume_or_Rethrow (&header->unwindHeader);
+ #else
+ #if defined(_LIBUNWIND_STD_ABI)
+Index: gcc-5.1.0/libstdc++-v3/libsupc++/eh_ptr.cc
+===================================================================
+--- gcc-5.1.0/libstdc++-v3/libsupc++/eh_ptr.cc	(revision 222673)
++++ gcc-5.1.0/libstdc++-v3/libsupc++/eh_ptr.cc	(working copy)
+@@ -248,7 +248,7 @@ std::rethrow_exception(std::exception_pt
+   __cxa_eh_globals *globals = __cxa_get_globals ();
+   globals->uncaughtExceptions += 1;
+ 
+-#ifdef _GLIBCXX_SJLJ_EXCEPTIONS
++#ifdef __USING_SJLJ_EXCEPTIONS__
+   _Unwind_SjLj_RaiseException (&dep->unwindHeader);
+ #else
+   _Unwind_RaiseException (&dep->unwindHeader);
+Index: gcc-5.1.0/libstdc++-v3/acinclude.m4
+===================================================================
+--- gcc-5.1.0/libstdc++-v3/acinclude.m4	(revision 222673)
++++ gcc-5.1.0/libstdc++-v3/acinclude.m4	(working copy)
+@@ -3129,79 +3129,6 @@ EOF
+ 
+ 
+ dnl
+-dnl Check for exception handling support.  If an explicit enable/disable
+-dnl sjlj exceptions is given, we don't have to detect.  Otherwise the
+-dnl target may or may not support call frame exceptions.
+-dnl
+-dnl --enable-sjlj-exceptions forces the use of builtin setjmp.
+-dnl --disable-sjlj-exceptions forces the use of call frame unwinding.
+-dnl Neither one forces an attempt at detection.
+-dnl
+-dnl Defines:
+-dnl  _GLIBCXX_SJLJ_EXCEPTIONS if the compiler is configured for it
+-dnl
+-AC_DEFUN([GLIBCXX_ENABLE_SJLJ_EXCEPTIONS], [
+-  AC_MSG_CHECKING([for exception model to use])
+-  AC_LANG_SAVE
+-  AC_LANG_CPLUSPLUS
+-  GLIBCXX_ENABLE(sjlj-exceptions,auto,,
+-    [force use of builtin_setjmp for exceptions],
+-    [permit yes|no|auto])
+-
+-  if test $enable_sjlj_exceptions = auto; then
+-    # Botheration.  Now we've got to detect the exception model.  Link tests
+-    # against libgcc.a are problematic since we've not been given proper -L
+-    # bits for single-tree newlib and libgloss.
+-    #
+-    # Fake what AC_TRY_COMPILE does.  XXX Look at redoing this new-style.
+-    cat > conftest.$ac_ext << EOF
+-[#]line __oline__ "configure"
+-struct S { ~S(); };
+-void bar();
+-void foo()
+-{
+-  S s;
+-  bar();
+-}
+-EOF
+-    old_CXXFLAGS="$CXXFLAGS"
+-    CXXFLAGS=-S
+-    if AC_TRY_EVAL(ac_compile); then
+-      if grep _Unwind_SjLj_Resume conftest.s >/dev/null 2>&1 ; then
+-	enable_sjlj_exceptions=yes
+-      elif grep _Unwind_SjLj_Register conftest.s >/dev/null 2>&1 ; then
+-	enable_sjlj_exceptions=yes
+-      elif grep _Unwind_Resume conftest.s >/dev/null 2>&1 ; then
+-	enable_sjlj_exceptions=no
+-      elif grep __cxa_end_cleanup conftest.s >/dev/null 2>&1 ; then
+-	enable_sjlj_exceptions=no
+-      fi
+-    fi
+-    CXXFLAGS="$old_CXXFLAGS"
+-    rm -f conftest*
+-  fi
+-
+-  # This is a tad weird, for hysterical raisins.  We have to map
+-  # enable/disable to two different models.
+-  case $enable_sjlj_exceptions in
+-    yes)
+-      AC_DEFINE(_GLIBCXX_SJLJ_EXCEPTIONS, 1,
+-	[Define if the compiler is configured for setjmp/longjmp exceptions.])
+-      ac_exception_model_name=sjlj
+-      ;;
+-    no)
+-      ac_exception_model_name="call frame"
+-      ;;
+-    *)
+-      AC_MSG_ERROR([unable to detect exception model])
+-      ;;
+-  esac
+- AC_LANG_RESTORE
+- AC_MSG_RESULT($ac_exception_model_name)
+-])
+-
+-
+-dnl
+ dnl Allow visibility attributes to be used on namespaces, objects, etc.
+ dnl
+ dnl --enable-libstdcxx-visibility enables attempt to use visibility attributes.
