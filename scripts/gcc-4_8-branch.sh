@@ -50,8 +50,8 @@ PKG_PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-4.8-iconv.patch
 	gcc/gcc-4.8-libstdc++export.patch
-	gcc/gcc-4.8-filename-output.patch
-	gcc/gcc-4.8-lambda-ICE.patch
+	#gcc/gcc-4.8-filename-output.patch
+	#gcc/gcc-4.8-lambda-ICE.patch
 	gcc/gcc-4.8.3-libatomic-cygwin.patch
 	gcc/gcc-4.8.2-build-more-gnattools.mingw.patch
 	gcc/gcc-4.8.2-dont-escape-arguments-that-dont-need-it-in-pex-win32.c.patch
