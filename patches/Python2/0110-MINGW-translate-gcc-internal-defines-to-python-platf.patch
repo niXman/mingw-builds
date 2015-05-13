@@ -1,6 +1,6 @@
-diff -Naur a/Include/pyport.h b/Include/pyport.h
---- a/Include/pyport.h	2014-05-31 22:58:38.000000000 +0400
-+++ b/Include/pyport.h	2014-06-03 08:12:34.793200000 +0400
+diff -Naur Python-2.7.9-orig/Include/pyport.h Python-2.7.9/Include/pyport.h
+--- Python-2.7.9-orig/Include/pyport.h	2014-12-10 18:59:32.000000000 +0300
++++ Python-2.7.9/Include/pyport.h	2014-12-11 13:49:31.233800000 +0300
 @@ -13,6 +13,21 @@
  #include <stdint.h>
  #endif

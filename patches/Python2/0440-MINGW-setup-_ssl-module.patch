@@ -1,7 +1,7 @@
-diff -Naur a/setup.py b/setup.py
---- a/setup.py	2014-06-03 08:13:27.583600000 +0400
-+++ b/setup.py	2014-06-03 08:13:34.104400000 +0400
-@@ -828,10 +828,13 @@
+diff -Naur Python-2.7.9-orig/setup.py Python-2.7.9/setup.py
+--- Python-2.7.9-orig/setup.py	2014-12-11 13:50:14.601800000 +0300
++++ Python-2.7.9/setup.py	2014-12-11 13:50:20.030600000 +0300
+@@ -832,10 +832,13 @@
  
          if (ssl_incs is not None and
              ssl_libs is not None):

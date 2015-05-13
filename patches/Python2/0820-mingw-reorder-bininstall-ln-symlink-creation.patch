@@ -1,7 +1,7 @@
-diff -Naur a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2014-06-03 08:14:22.948000000 +0400
-+++ b/Makefile.pre.in	2014-06-03 08:14:41.049600000 +0400
-@@ -872,9 +872,9 @@
+diff -Naur Python-2.7.9-orig/Makefile.pre.in Python-2.7.9/Makefile.pre.in
+--- Python-2.7.9-orig/Makefile.pre.in	2014-12-11 13:51:00.419000000 +0300
++++ Python-2.7.9/Makefile.pre.in	2014-12-11 13:51:14.771000000 +0300
+@@ -904,9 +904,9 @@
  	then rm -f $(DESTDIR)$(BINDIR)/$(PYTHON); \
  	else true; \
  	fi

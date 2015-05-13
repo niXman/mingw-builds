@@ -34,7 +34,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.7.8
+PKG_VERSION=2.7.9
 PKG_NAME=Python-${PKG_VERSION}
 PKG_DIR_NAME=Python-${PKG_VERSION}
 PKG_TYPE=.tar.xz
@@ -68,7 +68,6 @@ PKG_PATCHES=(
 	Python2/0230-MINGW-AC_LIBOBJ-replacement-of-fileblocks.patch
 	Python2/0250-MINGW-compiler-customize-mingw-cygwin-compilers.patch
 	Python2/0270-CYGWIN-issue13756-Python-make-fail-on-cygwin.patch
-	Python2/0280-issue17219-add-current-dir-in-library-path-if-buildi.patch
 	Python2/0290-issue6672-v2-Add-Mingw-recognition-to-pyport.h-to-al.patch
 	Python2/0300-MINGW-configure-for-shared-build.patch
 	Python2/0310-MINGW-dynamic-loading-support.patch
@@ -85,7 +84,6 @@ PKG_PATCHES=(
 	Python2/0420-MINGW-use-Mingw32CCompiler-as-default-compiler-for-m.patch
 	Python2/0430-MINGW-find-import-library.patch
 	Python2/0440-MINGW-setup-_ssl-module.patch
-	Python2/0450-MINGW-export-_PyNode_SizeOf-as-PyAPI-for-parser-modu.patch
 	Python2/0460-MINGW-generalization-of-posix-build-in-sysconfig.py.patch
 	Python2/0462-MINGW-support-stdcall-without-underscore.patch
 	Python2/0480-MINGW-generalization-of-posix-build-in-distutils-sys.patch
@@ -122,7 +120,9 @@ PKG_PATCHES=(
 	Python2/0830-add-build-sysroot-config-option.patch
 	Python2/0840-add-builddir-to-library_dirs.patch
 	Python2/0850-cross-PYTHON_FOR_BUILD-gteq-276-and-fullpath-it.patch
+	Python2/0855-mingw-fix-ssl-dont-use-enum_certificates.patch
 	Python2/0860-mingw-build-optimized-ext.patch
+	Python2/0870-mingw-add-LIBPL-to-library-dirs.patch
 	Python2/0910-fix-using-dllhandle-and-winver-mingw.patch
 	Python2/1000-dont-link-with-gettext.patch
 	Python2/1010-ctypes-python-dll.patch

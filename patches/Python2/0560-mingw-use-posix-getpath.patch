@@ -1,7 +1,7 @@
-diff -Naur a/configure.ac b/configure.ac
---- a/configure.ac	2014-06-03 08:13:55.663600000 +0400
-+++ b/configure.ac	2014-06-03 08:13:57.847600000 +0400
-@@ -4834,7 +4834,9 @@
+diff -Naur Python-2.7.9-orig/configure.ac Python-2.7.9/configure.ac
+--- Python-2.7.9-orig/configure.ac	2014-12-11 13:50:36.005000000 +0300
++++ Python-2.7.9/configure.ac	2014-12-11 13:50:37.643000000 +0300
+@@ -4850,7 +4850,9 @@
  case $host in
    *-*-mingw*)
      dnl default sys.path calculations for windows platforms
@@ -12,9 +12,9 @@ diff -Naur a/configure.ac b/configure.ac
      ;;
  esac
  
-diff -Naur a/Modules/getpath.c b/Modules/getpath.c
---- a/Modules/getpath.c	2014-06-03 08:13:55.663600000 +0400
-+++ b/Modules/getpath.c	2014-06-03 08:13:57.863200000 +0400
+diff -Naur Python-2.7.9-orig/Modules/getpath.c Python-2.7.9/Modules/getpath.c
+--- Python-2.7.9-orig/Modules/getpath.c	2014-12-11 13:50:36.005000000 +0300
++++ Python-2.7.9/Modules/getpath.c	2014-12-11 13:50:37.643000000 +0300
 @@ -10,6 +10,10 @@
  #include <mach-o/dyld.h>
  #endif
@@ -143,9 +143,9 @@ diff -Naur a/Modules/getpath.c b/Modules/getpath.c
                  absolutize(progpath);
          strncpy(argv0_path, progpath, MAXPATHLEN);
          argv0_path[MAXPATHLEN] = '\0';
-diff -Naur a/Modules/posixmodule.c b/Modules/posixmodule.c
---- a/Modules/posixmodule.c	2014-06-03 08:12:49.145200000 +0400
-+++ b/Modules/posixmodule.c	2014-06-03 08:13:57.863200000 +0400
+diff -Naur Python-2.7.9-orig/Modules/posixmodule.c Python-2.7.9/Modules/posixmodule.c
+--- Python-2.7.9-orig/Modules/posixmodule.c	2014-12-11 13:49:43.323800000 +0300
++++ Python-2.7.9/Modules/posixmodule.c	2014-12-11 13:50:37.643000000 +0300
 @@ -2324,7 +2324,7 @@
              Py_END_ALLOW_THREADS
              /* FindNextFile sets error to ERROR_NO_MORE_FILES if
