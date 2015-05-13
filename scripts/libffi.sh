@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=3.1
+PKG_VERSION=3.2.1
 PKG_NAME=libffi-${PKG_VERSION}
 PKG_DIR_NAME=libffi-${PKG_VERSION}
 PKG_TYPE=.tar.gz
@@ -47,17 +47,7 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=(
-	libffi/libffi-3.1-missing-gnu-stack.patch
-	libffi/libffi-3.1-typo.patch
-	libffi/toolexeclibdir-subst.patch
-)
-
-#
-
-PKG_EXECUTE_AFTER_PATCH=(
-	"autoreconf -fi"
-)
+PKG_PATCHES=()
 
 #
 
