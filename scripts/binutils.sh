@@ -58,6 +58,9 @@ PKG_PATCHES=(
 	binutils/0008-fix-libiberty-makefile.mingw.patch
 	binutils/0009-fix-libiberty-configure.mingw.patch
 	binutils/0110-binutils-mingw-gnu-print.patch
+	binutils/9ac47a4.diff
+	binutils/27aaeda.diff
+	binutils/a93d5cb.diff
 )
 
 #
