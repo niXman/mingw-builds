@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=7.8.1
+PKG_VERSION=7.9.1
 PKG_NAME=gdb-${PKG_VERSION}
 PKG_DIR_NAME=gdb-${PKG_VERSION}
 PKG_TYPE=.tar.xz
@@ -49,11 +49,10 @@ PKG_PRIORITY=extra
 
 PKG_PATCHES=(
 	# https://sourceware.org/bugzilla/show_bug.cgi?id=15559
-	gdb/gdb-mingw-gcc-4.7.patch
+	#gdb/gdb-7.9-mingw-gcc-4.7.patch
 	# http://sourceware.org/bugzilla/show_bug.cgi?id=15412
 	gdb/gdb-perfomance.patch
-	# https://sourceware.org/bugzilla/show_bug.cgi?id=12127
-#	gdb/gdb-python-fix-crash.patch
+	gdb/gdb-fix-using-gnu-print.patch
 )
 
 #
