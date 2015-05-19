@@ -34,7 +34,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=3.4.1
+PKG_VERSION=3.4.3
 PKG_NAME=Python-${PKG_VERSION}
 PKG_DIR_NAME=Python-${PKG_VERSION}
 PKG_TYPE=.tar.xz
@@ -71,7 +71,6 @@ PKG_PATCHES=(
 	Python3/0250-MINGW-compiler-customize-mingw-cygwin-compilers.patch
 	Python3/0260-MINGW-compiler-enable-new-dtags.patch
 	Python3/0270-CYGWIN-issue13756-Python-make-fail-on-cygwin.patch
-	Python3/0280-issue17219-add-current-dir-in-library-path-if-buildi.patch
 	Python3/0290-issue6672-v2-Add-Mingw-recognition-to-pyport.h-to-al.patch
 	Python3/0300-MINGW-configure-for-shared-build.patch
 	Python3/0310-MINGW-dynamic-loading-support.patch
@@ -79,7 +78,7 @@ PKG_PATCHES=(
 	Python3/0330-MINGW-ignore-main-program-for-frozen-scripts.patch
 	Python3/0340-MINGW-setup-exclude-termios-module.patch
 	Python3/0350-MINGW-setup-_multiprocessing-module.patch
-	Python3//0360-MINGW-setup-select-module.patch
+	Python3/0360-MINGW-setup-select-module.patch
 	Python3/0370-MINGW-setup-_ctypes-module-with-system-libffi.patch
 	Python3/0380-MINGW-defect-winsock2-and-setup-_socket-module.patch
 	Python3/0390-MINGW-exclude-unix-only-modules.patch
@@ -88,7 +87,6 @@ PKG_PATCHES=(
 	Python3/0420-MINGW-use-Mingw32CCompiler-as-default-compiler-for-m.patch
 	Python3/0430-MINGW-find-import-library.patch
 	Python3/0440-MINGW-setup-_ssl-module.patch
-	Python3/0450-MINGW-export-_PyNode_SizeOf-as-PyAPI-for-parser-modu.patch
 	Python3/0460-MINGW-generalization-of-posix-build-in-sysconfig.py.patch
 	Python3/0462-MINGW-support-stdcall-without-underscore.patch
 	Python3/0464-use-replace-instead-rename-to-avoid-failure-on-windo.patch
@@ -101,12 +99,11 @@ PKG_PATCHES=(
 	Python3/0530-mingw-system-libffi.patch
 	Python3/0540-mingw-semicolon-DELIM.patch
 	Python3/0550-mingw-regen-use-stddef_h.patch
+	Python3/0555-msys-mingw-prefer-unix-sep-if-MSYSTEM.patch
 	Python3/0560-mingw-use-posix-getpath.patch
 	Python3/0565-mingw-add-ModuleFileName-dir-to-PATH.patch
 	Python3/0570-mingw-add-BUILDIN_WIN32_MODULEs-time-msvcrt.patch
-	Python3/0580-mingw32-test-REPARSE_DATA_BUFFER.patch
 	Python3/0590-mingw-INSTALL_SHARED-LDLIBRARY-LIBPL.patch
-	Python3/0600-msys-mingw-prefer-unix-sep-if-MSYSTEM.patch
 	Python3/0610-msys-cygwin-semi-native-build-sysconfig.patch
 	Python3/0620-mingw-sysconfig-like-posix.patch
 	Python3/0630-mingw-_winapi_as_builtin_for_Popen_in_cygwinccompiler.patch
@@ -130,8 +127,13 @@ PKG_PATCHES=(
 	Python3/0830-ctypes-python-dll.patch
 	Python3/0840-gdbm-module-includes.patch
 	Python3/0850-use-gnu_printf-in-format.patch
+	Python3/0890-mingw-build-optimized-ext.patch
+	Python3/0900-cygwinccompiler-dont-strip-modules-if-pydebug.patch
+	Python3/0910-fix-using-dllhandle-and-winver-mingw.patch
+	Python3/0920-mingw-add-LIBPL-to-library-dirs.patch
 	Python3/1000-fix-building-posixmodule.patch
 	Python3/1010-install-msilib.patch
+	Python3/1500-mingw-w64-dont-look-in-DLLs-folder-for-python-dll.patch
 )
 
 #

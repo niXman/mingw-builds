@@ -116,11 +116,13 @@ readonly RUN_ARGS="$@"
 	echo "    gcc-4.9.1 (4.9.1 release)"
 	echo "    gcc-4.9.2 (4.9.2 release)"
 	#echo "    gcc-4.9.3 (4.9.3 release)"
+	echo "    gcc-5.1.0 (5.1.0 release)"
 	echo "    gcc-4_6-branch (currently 4.6.5-prerelease)"
 	echo "    gcc-4_7-branch (currently 4.7.4-prerelease)"
 	echo "    gcc-4_8-branch (currently 4.8.5-prerelease)"
 	echo "    gcc-4_9-branch (currently 4.9.3-prerelease)"
-	echo "    gcc-trunk (currently 5.0.0-snapshot)"
+	echo "    gcc-5-branch (currently 5.1.1-prerelease)"
+	echo "    gcc-trunk (currently 6.0.0-snapshot)"
 
 	exit 0
 }

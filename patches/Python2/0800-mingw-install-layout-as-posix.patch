@@ -1,6 +1,6 @@
-diff -Naur a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
---- a/Lib/distutils/command/install.py	2014-06-03 08:14:22.948000000 +0400
-+++ b/Lib/distutils/command/install.py	2014-06-03 08:14:39.177600000 +0400
+diff -Naur Python-2.7.9-orig/Lib/distutils/command/install.py Python-2.7.9/Lib/distutils/command/install.py
+--- Python-2.7.9-orig/Lib/distutils/command/install.py	2014-12-11 13:51:00.419000000 +0300
++++ Python-2.7.9/Lib/distutils/command/install.py	2014-12-11 13:51:13.179800000 +0300
 @@ -32,10 +32,10 @@
      }
  else:
