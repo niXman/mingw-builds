@@ -59,15 +59,9 @@ PKG_PATCHES=(
 	gcc/gcc-5.1.0-make-xmmintrin-header-cplusplus-compatible.patch
 	gcc/gcc-5.1.0-detect-sjlj-cleanup.patch
 	gcc/gcc-5.1.0-fix-lto.patch
-	gcc/gcc-5.1.0-fix-autoconf-version.patch
 	gcc/ktietz-libgomp.patch
 )
 
-#
-
-PKG_EXECUTE_AFTER_PATCH=(
-	"autoreconf -fiv"
-)
 #
 
 PKG_CONFIGURE_FLAGS=(
