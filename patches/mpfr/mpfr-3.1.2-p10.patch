@@ -1,6 +1,18 @@
+diff -Naurd mpfr-3.1.2-a/src/mpfr.h mpfr-3.1.2-b/src/mpfr.h
+--- mpfr-3.1.2-a/src/mpfr.h	2015-05-24 11:35:41.952822600 -0500
++++ mpfr-3.1.2-b/src/mpfr.h	2015-05-24 19:46:13.876605800 -0500
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 3
+ #define MPFR_VERSION_MINOR 1
+ #define MPFR_VERSION_PATCHLEVEL 2
+-#define MPFR_VERSION_STRING "3.1.2-p9"
++#define MPFR_VERSION_STRING "3.1.2-p10"
+ 
+ /* Macros dealing with MPFR VERSION */
+ #define MPFR_VERSION_NUM(a,b,c) (((a) << 16L) | ((b) << 8) | (c))
 diff -Naurd mpfr-3.1.2-a/src/version.c mpfr-3.1.2-b/src/version.c
---- mpfr-3.1.2-a/src/version.c	2014-06-30 15:17:53.337268149 +0000
-+++ mpfr-3.1.2-b/src/version.c	2014-06-30 15:17:53.413270206 +0000
+--- mpfr-3.1.2-a/src/version.c	2015-05-24 19:43:14.679564300 -0500
++++ mpfr-3.1.2-b/src/version.c	2015-05-24 19:42:30.411158500 -0500
 @@ -25,5 +25,5 @@
  const char *
  mpfr_get_version (void)
@@ -9,8 +21,8 @@ diff -Naurd mpfr-3.1.2-a/src/version.c mpfr-3.1.2-b/src/version.c
 +  return "3.1.2-p10";
  }
 diff -Naurd mpfr-3.1.2-a/tests/tsprintf.c mpfr-3.1.2-b/tests/tsprintf.c
---- mpfr-3.1.2-a/tests/tsprintf.c	2013-11-15 00:51:49.267334408 +0000
-+++ mpfr-3.1.2-b/tests/tsprintf.c	2014-06-30 15:17:53.377269231 +0000
+--- mpfr-3.1.2-a/tests/tsprintf.c	2015-05-24 19:43:14.684580600 -0500
++++ mpfr-3.1.2-b/tests/tsprintf.c	2015-05-24 19:42:30.784174300 -0500
 @@ -1184,6 +1184,69 @@
    check_emax_aux (MPFR_EMAX_MAX);
  }
@@ -89,3 +101,9 @@ diff -Naurd mpfr-3.1.2-a/tests/tsprintf.c mpfr-3.1.2-b/tests/tsprintf.c
  
  #if defined(HAVE_LOCALE_H) && defined(HAVE_SETLOCALE)
    locale_da_DK ();
+diff -Naurd mpfr-3.1.2-a/VERSION mpfr-3.1.2-b/VERSION
+--- mpfr-3.1.2-a/VERSION	2015-05-24 11:35:41.914821800 -0500
++++ mpfr-3.1.2-b/VERSION	2015-05-24 19:45:32.050297600 -0500
+@@ -1 +1 @@
+-3.1.2-p9
++3.1.2-p10
