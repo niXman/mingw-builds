@@ -40,7 +40,7 @@ PKG_NAME=openssl-${PKG_VERSION}
 PKG_DIR_NAME=openssl-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://www.openssl.org/source/openssl-${PKG_VERSION}.tar.gz"
+	"https://www.openssl.org/source/openssl-${PKG_VERSION}.tar.gz"
 )
 
 PKG_PRIORITY=extra
