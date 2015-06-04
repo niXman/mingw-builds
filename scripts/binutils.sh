@@ -61,6 +61,7 @@ PKG_PATCHES=(
 	binutils/9ac47a4.diff
 	binutils/27aaeda.diff
 	binutils/a93d5cb.diff
+	binutils/fixes-a-problem-recognizing-libraries-created-by-VS.patch
 )
 
 #

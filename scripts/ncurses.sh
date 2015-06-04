@@ -48,7 +48,7 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
-	#ncurses/ncurses-5.9-dev-20130921.patch
+	ncurses/work_around_changed_output_of_GNU_cpp_5.x.patch
 )
 
 #

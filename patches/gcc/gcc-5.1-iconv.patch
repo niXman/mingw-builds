@@ -1,0 +1,13 @@
+Index: gcc/config/i386/mingw-w64.h
+===================================================================
+--- gcc/config/i386/mingw-w64.h	(revision 223899)
++++ gcc/config/i386/mingw-w64.h	(working copy)
+@@ -48,7 +48,7 @@
+ 		 "%{mwindows:-lgdi32 -lcomdlg32} " \
+      "%{fvtable-verify=preinit:-lvtv -lpsapi; \
+         fvtable-verify=std:-lvtv -lpsapi} " \
+-		 "-ladvapi32 -lshell32 -luser32 -lkernel32"
++		 "-ladvapi32 -lshell32 -luser32 -lkernel32 -liconv"
+ 
+ #undef SPEC_32
+ #undef SPEC_64
