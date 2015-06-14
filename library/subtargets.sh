@@ -55,7 +55,7 @@ function func_get_subtargets {
 		mpc
 		$( [[ $2 == 4.6.? || $2 == 4.7.? || $2 == 4_6-branch || $2 == 4_7-branch ]] && echo ppl )
 		isl
-		$( [[ $2 == 4* ]] && echo cloog )
+		$( [[ $1 == clang || $2 == 4* ]] && echo cloog )
 		mingw-w64-download
 		mingw-w64-api
 		mingw-w64-crt
