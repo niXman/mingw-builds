@@ -913,7 +913,7 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-?.?.?)			echo "${1/gcc-/}" ;;
 		gcc-4_6-branch)	echo "4.6.5" ;;
 		gcc-4_7-branch)	echo "4.7.4" ;;
-		gcc-4_8-branch)	echo "4.8.5" ;;
+		gcc-4_8-branch)	echo "4.8.6" ;;
 		gcc-4_9-branch)	echo "4.9.3" ;;
 		gcc-5-branch)	echo "5.1.1" ;;
 		gcc-trunk)			echo "6.0.0" ;;
