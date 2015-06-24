@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=3.1.2
+PKG_VERSION=3.1.3
 PKG_NAME=$BUILD_ARCHITECTURE-mpfr-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=mpfr-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
@@ -47,19 +47,7 @@ PKG_PRIORITY=prereq
 
 #
 
-PKG_PATCHES=(
-	mpfr/mpfr-3.1.2-p1.patch
-	mpfr/mpfr-3.1.2-p2.patch
-	mpfr/mpfr-3.1.2-p3.patch
-	mpfr/mpfr-3.1.2-p4.patch
-	mpfr/mpfr-3.1.2-p5.patch
-	mpfr/mpfr-3.1.2-p6.patch
-	mpfr/mpfr-3.1.2-p7.patch
-	mpfr/mpfr-3.1.2-p8.patch
-	mpfr/mpfr-3.1.2-p9.patch
-	mpfr/mpfr-3.1.2-p10.patch
-	mpfr/mpfr-3.1.2-p11.patch
-)
+PKG_PATCHES=()
 
 #
 

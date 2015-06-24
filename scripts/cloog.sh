@@ -35,19 +35,25 @@
 
 # **************************************************************************
 
-PKG_VERSION=0.18.1
+PKG_VERSION=0.18.3
 PKG_NAME=$BUILD_ARCHITECTURE-cloog-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=cloog-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://www.bastoul.net/cloog/pages/download/count.php3?url=./cloog-${PKG_VERSION}.tar.gz"
+	"http://www.bastoul.net/cloog/pages/download/cloog-${PKG_VERSION}.tar.gz"
 )
 PKG_PRIORITY=prereq
 
 #
 
 PKG_PATCHES=(
-	cloog/cloog-0.18.1-no-undefined.patch
+	cloog/cloog-0.18.3-no-undefined.patch
+)
+
+#
+
+PKG_EXECUTE_AFTER_PATCH=(
+	"autoreconf -vfi"
 )
 
 #

@@ -54,6 +54,7 @@ PKG_PATCHES=(
 	zlib/03-dont-put-sodir-into-L.mingw.patch
 	zlib/04-wrong-w8-check.mingw.patch
 	zlib/05-fix-a-typo.mingw.patch
+	zlib/013-fix-largefile-support.patch
 )
 
 #
