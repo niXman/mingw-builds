@@ -4,7 +4,7 @@
 
 [[ $# == 0 || $1 == --help ]] && {
 	echo "usage:"
-	echo "./buildall <gcc-name> <upload> ..."
+	echo "./fullset_build <gcc-name> <upload> ..."
 	exit 1
 }
 
