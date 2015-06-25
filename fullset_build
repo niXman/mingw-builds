@@ -1,37 +1,63 @@
 #!/bin/bash
 
+# *****************************************************************************
+
 [[ $# == 0 || $1 == --help ]] && {
 	echo "usage:"
-	echo "./buildall <gcc-name> ..."
+	echo "./buildall <gcc-name> <upload> ..."
 	exit 1
 }
 
 GCC_NAME=$1
 shift
 
-BUILDROOT=/tmp
+BUILDROOT=/c/$(echo $GCC_NAME | sed 's|gcc-|mingw|;s|\.||g')
 
-case $GCC_NAME in
-	gcc-4.6.?|gcc-4.7.?|gcc-4_6-branch|gcc-4_7-branch)
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=sjlj --arch=i686 --mingw-compress && \
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=sjlj --arch=x86_64 --mingw-compress && \
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=dwarf --arch=i686 --mingw-compress && \
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=sjlj --arch=i686 --mingw-compress && \
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=sjlj --arch=x86_64 --mingw-compress && \
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=dwarf --arch=i686 --mingw-compress --src-compress
-	;;
-	gcc-4.8.?|gcc-4.9.?|gcc-4_8-branch|gcc-4_9-branch|gcc-trunk)
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --bootstrap --exceptions=dwarf --arch=i686 --mingw-compress && \
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --bootstrap --exceptions=seh --arch=x86_64 --mingw-compress && \
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --bootstrap --exceptions=seh --arch=x86_64 --mingw-compress && \
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --bootstrap --exceptions=dwarf --arch=i686 --mingw-compress && \	
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --bootstrap --exceptions=sjlj --arch=i686 --mingw-compress && \
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --bootstrap --exceptions=sjlj --arch=x86_64 --mingw-compress && \
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --bootstrap --exceptions=sjlj --arch=i686 --mingw-compress && \
-		./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --bootstrap --exceptions=sjlj --arch=x86_64 --mingw-compress --src-compress
-	;;
-	*)
-		echo "bad GCC name: $1. terminate."
-		exit 1
-	;;
-esac
+[[ $1 == upload ]] && {
+	ADV_FLAGS="--mingw-upload --sf-user=nixmann --sf-pass=****"
+	shift
+}
+
+# *****************************************************************************
+
+MARKER1=x86_64-posix-sjlj.flag
+[[ ! -e $MARKER1 ]] && {
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=sjlj --arch=x86_64 --bin-compress $ADV_FLAGS && touch $MARKER1 || exit 1
+}
+
+MARKER2=i686-posix-sjlj.flag
+[[ ! -e $MARKER2 ]] && {
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=sjlj --arch=i686 --bin-compress $ADV_FLAGS && touch $MARKER2 || exit 1
+}
+
+MARKER3=i686-posix-dwarf.flag
+[[ ! -e $MARKER3 ]] && {
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=dwarf --arch=i686 --bin-compress $ADV_FLAGS && touch $MARKER3 || exit 1
+}
+
+MARKER4=x86_64-posix-seh.flag
+[[ ! -e $MARKER4 ]] && {
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=seh --arch=x86_64 --bin-compress $ADV_FLAGS && touch $MARKER4 || exit 1
+}
+
+MARKER5=i686-win32-sjlj.flag
+[[ ! -e $MARKER5 ]] && {
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=sjlj --arch=i686 --bin-compress $ADV_FLAGS && touch $MARKER5 || exit 1
+}
+
+MARKER6=x86_64-win32-sjlj.flag
+[[ ! -e $MARKER6 ]] && {
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=sjlj --arch=x86_64 --bin-compress $ADV_FLAGS && touch $MARKER6 || exit 1
+}
+
+MARKER7=x86_64-win32-seh.flag
+[[ ! -e $MARKER7 ]] && {
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=seh --arch=x86_64 --bin-compress $ADV_FLAGS && touch $MARKER7 || exit 1
+}
+
+MARKER8=i686-win32-dwarf.marker
+[[ ! -e $MARKER8 ]] && {
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=dwarf --arch=i686 --bin-compress --src-compress $ADV_FLAGS $( [[ -n $ADV_FLAGS ]] && echo --src-upload ) && touch $MARKER8 || exit 1
+}
+
+# *****************************************************************************
