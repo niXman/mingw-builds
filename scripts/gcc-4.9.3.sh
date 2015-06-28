@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=5.1.0
+PKG_VERSION=4.9.3
 PKG_NAME=gcc-${PKG_VERSION}
 PKG_DIR_NAME=gcc-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
@@ -49,16 +49,15 @@ PKG_PRIORITY=main
 
 PKG_PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
-	gcc/gcc-5.1-iconv.patch
+	gcc/gcc-4.8-iconv.patch
 	gcc/gcc-4.8-libstdc++export.patch
+	gcc/gcc-4.9.0-libatomic-cygwin.patch
 	gcc/gcc-4.8.2-build-more-gnattools.mingw.patch
+	gcc/gcc-4.8.2-dont-escape-arguments-that-dont-need-it-in-pex-win32.c.patch
 	gcc/gcc-4.8.2-fix-for-windows-not-minding-non-existant-parent-dirs.patch
 	gcc/gcc-4.8.2-windows-lrealpath-no-force-lowercase-nor-backslash.patch
-	gcc/gcc-4.8.2-prettify-linking-no-undefined.mingw.patch
-	gcc/gcc-4.9.1-enable-shared-gnat-implib.mingw.patch
-	gcc/gcc-5.1.0-make-xmmintrin-header-cplusplus-compatible.patch
-	gcc/gcc-5.1.0-detect-sjlj-cleanup.patch
-	gcc/gcc-5.1.0-fix-lto.patch
+	gcc/gcc-4.9.0-pr-57440.patch
+	gcc/gcc-4.8-filename-output.patch
 	gcc/ktietz-libgomp.patch
 	gcc/gcc-4.8-fix-PCH.patch
 )
@@ -98,6 +97,7 @@ PKG_CONFIGURE_FLAGS=(
 	)
 	#
 	--disable-isl-version-check
+	--disable-cloog-version-check
 	--disable-libstdcxx-pch
 	--disable-libstdcxx-debug
 	$( [[ $BOOTSTRAPING == yes ]] \
@@ -118,7 +118,8 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--with-libiconv
 	--with-system-zlib
-	--with-{gmp,mpfr,mpc,isl}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--enable-cloog-backend=isl
 	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}, $MINGW_W64_PKG_STRING\""
 	--with-bugurl=$BUG_URL
 	#
