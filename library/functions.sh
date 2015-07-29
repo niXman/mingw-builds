@@ -915,7 +915,7 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-4_7-branch)	echo "4.7.4" ;;
 		gcc-4_8-branch)	echo "4.8.6" ;;
 		gcc-4_9-branch)	echo "4.9.3" ;;
-		gcc-5-branch)	echo "5.1.1" ;;
+		gcc-5-branch)	echo "5.3.0" ;;
 		gcc-trunk)			echo "6.0.0" ;;
 		*) die "gcc name error: $1. terminate." ;;
 	esac
