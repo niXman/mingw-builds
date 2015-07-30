@@ -60,7 +60,6 @@ PKG_PATCHES=(
 	gcc/gcc-5.1.0-detect-sjlj-cleanup.patch
 	gcc/gcc-5.1.0-fix-lto.patch
 	gcc/ktietz-libgomp.patch
-	gcc/gcc-4.8-fix-PCH.patch
 )
 
 #
