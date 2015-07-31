@@ -60,6 +60,7 @@ PKG_PATCHES=(
 	gcc/gcc-5.1.0-detect-sjlj-cleanup.patch
 	gcc/ktietz-libgomp.patch
 	gcc/gcc-5.2-fix-mingw-pch.patch
+	gcc/gcc-5-dwarf-regression.patch
 )
 
 #

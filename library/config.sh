@@ -81,7 +81,7 @@ LINK_TYPE_STATIC="--enable-static --disable-shared"
 LINK_TYPE_GCC=$LINK_TYPE_BOTH
 GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
 
-ENABLE_LANGUAGES='ada,c,c++,fortran,objc,obj-c++'
+ENABLE_LANGUAGES='c,c++,fortran,objc,obj-c++'
 
 SHOW_LOG_ON_ERROR=yes
 
