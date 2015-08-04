@@ -56,27 +56,31 @@ tests_prepare
 # **************************************************************************
 # **************************************************************************
 
-list1=(
-	"dll1.cpp -shared -o dll1.dll"
-	"dll_test1.cpp -o dll_test1.exe"
-)
+[[ $BUILD_SHARED_GCC == yes ]] && {
+	list1=(
+		"dll1.cpp -shared -o dll1.dll"
+		"dll_test1.cpp -o dll_test1.exe"
+	)
 
-func_test \
-	"dll_test1" \
-	list1[@] \
-	$TESTS_ROOT_DIR
+	func_test \
+		"dll_test1" \
+		list1[@] \
+		$TESTS_ROOT_DIR
+}
 
 # **************************************************************************
 
-list2=(
-	"dll2.cpp -shared -o dll2.dll"
-	"dll_test2.cpp -L. -ldll2 -o dll_test2.exe"
-)
+[[ $BUILD_SHARED_GCC == yes ]] && {
+	list2=(
+		"dll2.cpp -shared -o dll2.dll"
+		"dll_test2.cpp -L. -ldll2 -o dll_test2.exe"
+	)
 
-func_test \
-	"dll_test2" \
-	list2[@] \
-	$TESTS_ROOT_DIR
+	func_test \
+		"dll_test2" \
+		list2[@] \
+		$TESTS_ROOT_DIR
+}
 
 # **************************************************************************
 
