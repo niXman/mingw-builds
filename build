@@ -216,6 +216,7 @@ while [[ $# > 0 ]]; do
 		--no-extras) BUILD_EXTRAS=no ;;
 		--no-strip) STRIP_ON_INSTALL=no ;;
 		--static-gcc)
+			BOOTSTRAPING=yes
 			LINK_TYPE_GCC=$LINK_TYPE_STATIC
 			GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
 			BUILD_SHARED_GCC=no
