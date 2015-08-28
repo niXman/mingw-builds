@@ -672,6 +672,8 @@ function func_configure {
 	}
 
 	[[ ! -f $_marker ]] && {
+		#echo "CFLAGS=\"$CFLAGS\", CXXFLAGS=\"$CXXFLAGS\", CPPFLAGS=\"$CPPFLAGS\", LDFLAGS=\"$LDFLAGS\""
+		#echo "ARGS=\"${3}\""
 		echo -n "--> configure..."
 		pushd $5/$_subbuilddir > /dev/null
 		[[ $6 == yes ]] && {

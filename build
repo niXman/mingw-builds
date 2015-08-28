@@ -460,6 +460,18 @@ func_install_toolchain \
 	}
 }
 
+readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
+readonly COMMON_CXXFLAGS="$COMMON_CFLAGS"
+readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS"
+readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib"
+
+#echo "PROCESSOR_OPTIMIZATION=\"$PROCESSOR_OPTIMIZATION\""
+#echo "PROCESSOR_TUNE=\"$PROCESSOR_TUNE\""
+#echo "BASE_CFLAGS=\"$BASE_CFLAGS\""
+#echo "BASE_CXXFLAGS=\"$BASE_CXXFLAGS\""
+#echo "COMMON_CFLAGS=\"$COMMON_CFLAGS\""
+#echo "COMMON_CXXFLAGS=\"$COMMON_CXXFLAGS\""
+
 # **************************************************************************
 
 case $BUILD_ARCHITECTURE in
@@ -493,13 +505,6 @@ readonly REVERSE_ARCHITECTURE=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
 } || {
 	readonly ENABLE_TARGETS=$TARGET
 }
-
-# **************************************************************************
-
-readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
-readonly COMMON_CXXFLAGS="$COMMON_CFLAGS"
-readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS"
-readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib"
 
 # **************************************************************************
 
