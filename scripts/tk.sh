@@ -53,7 +53,7 @@ PKG_PATCHES=(
 	tk/003-fix-forbidden-colon-in-paths.mingw.patch
 	tk/004-install-man.mingw.patch
 	tk/006-prevent-tclStubsPtr-segfault.patch
-	$([[ $RUNTIME_VERSION == v3 ]] && echo "tk/007-mingw-w64-compatibility-fix.patch")
+	$([[ $RUNTIME_VERSION == v1 || $RUNTIME_VERSION == v2 ]] && echo "tk/007-mingw-w64-compatibility-fix.patch")
 	tk/008-dont-link-shared-with--static-libgcc.patch
 )
 
