@@ -56,7 +56,7 @@ function python_deps_post {
 		}
 
 		rm -f $LIBS_DIR/bin/{bz*,bunzip2}
-		rm -f $LIBS_DIR/bin/{tcl*,openssl.exe,capinfo.exe,captoinfo.exe,clear.exe,idle,infocmp.exe}
+		rm -f $LIBS_DIR/bin/{tclsh.exe,tclsh86.exe,openssl.exe,capinfo.exe,captoinfo.exe,clear.exe,idle,infocmp.exe}
 		rm -f $LIBS_DIR/bin/{infotocap.exe,c_rehash,ncursesw5-config,reset.exe,sqlite3.exe,tabs.exe}
 		rm -f $LIBS_DIR/bin/{tic.exe,toe.exe,tput.exe,tset.exe,wish.exe,wish86.exe,xmlwf,testgdbm.exe}
 		rm -f $LIBS_DIR/bin/{lzmadec.exe,lzmainfo.exe,unxz.exe,xz*}
