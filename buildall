@@ -4,7 +4,7 @@
 
 [[ $# == 0 || $1 == --help ]] && {
 	echo "usage:"
-	echo "./buildall <gcc-name> <upload> ..."
+	echo "./buildall <gcc-name> ..."
 	exit 1
 }
 
@@ -18,51 +18,46 @@ VERNUM=$(echo $GCC_NAME | sed 's|gcc-||;s|\.||g')
 
 BUILDROOT=/c/mingw${VERNUM}
 
-[[ $1 == upload ]] && {
-	ADV_FLAGS="--mingw-upload --sf-user=<sf-user> --sf-pass=<sf-password>"
-	shift
-}
-
 # *****************************************************************************
 
 MARKER1=mingw-$VERNUM-x86_64-posix-sjlj.flag
 [[ ! -e $MARKER1 ]] && {
-	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=sjlj --arch=x86_64 --bin-compress $ADV_FLAGS && touch $MARKER1 || exit 1
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=sjlj --arch=x86_64 --bin-compress && touch $MARKER1 || exit 1
 }
 
 MARKER2=mingw-$VERNUM-i686-posix-sjlj.flag
 [[ ! -e $MARKER2 ]] && {
-	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=sjlj --arch=i686 --bin-compress $ADV_FLAGS && touch $MARKER2 || exit 1
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=sjlj --arch=i686 --bin-compress && touch $MARKER2 || exit 1
 }
 
 MARKER3=mingw-$VERNUM-i686-posix-dwarf.flag
 [[ ! -e $MARKER3 ]] && {
-	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=dwarf --arch=i686 --bin-compress $ADV_FLAGS && touch $MARKER3 || exit 1
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=dwarf --arch=i686 --bin-compress && touch $MARKER3 || exit 1
 }
 
 MARKER4=mingw-$VERNUM-x86_64-posix-seh.flag
 [[ ! -e $MARKER4 ]] && {
-	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=seh --arch=x86_64 --bin-compress $ADV_FLAGS && touch $MARKER4 || exit 1
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=posix --exceptions=seh --arch=x86_64 --bin-compress && touch $MARKER4 || exit 1
 }
 
 MARKER5=mingw-$VERNUM-i686-win32-sjlj.flag
 [[ ! -e $MARKER5 ]] && {
-	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=sjlj --arch=i686 --bin-compress $ADV_FLAGS && touch $MARKER5 || exit 1
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=sjlj --arch=i686 --bin-compress && touch $MARKER5 || exit 1
 }
 
 MARKER6=mingw-$VERNUM-x86_64-win32-sjlj.flag
 [[ ! -e $MARKER6 ]] && {
-	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=sjlj --arch=x86_64 --bin-compress $ADV_FLAGS && touch $MARKER6 || exit 1
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=sjlj --arch=x86_64 --bin-compress && touch $MARKER6 || exit 1
 }
 
 MARKER7=mingw-$VERNUM-x86_64-win32-seh.flag
 [[ ! -e $MARKER7 ]] && {
-	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=seh --arch=x86_64 --bin-compress $ADV_FLAGS && touch $MARKER7 || exit 1
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=seh --arch=x86_64 --bin-compress && touch $MARKER7 || exit 1
 }
 
 MARKER8=mingw-$VERNUM-i686-win32-dwarf.marker
 [[ ! -e $MARKER8 ]] && {
-	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=dwarf --arch=i686 --bin-compress --src-compress $ADV_FLAGS $( [[ -n $ADV_FLAGS ]] && echo --src-upload ) && touch $MARKER8 || exit 1
+	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=dwarf --arch=i686 --bin-compress --src-compress $([[ $@ == *"--mingw-upload"* ]] && echo --src-upload) && touch $MARKER8 || exit 1
 }
 
 # *****************************************************************************
