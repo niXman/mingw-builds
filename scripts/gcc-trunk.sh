@@ -58,6 +58,7 @@ PKG_PATCHES=(
 	gcc/gcc-6-ktietz-libgomp.patch
 	gcc/gcc-5.2-fix-mingw-pch.patch
 	gcc/gcc-5-dwarf-regression.patch
+	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch
 )
 
 #
