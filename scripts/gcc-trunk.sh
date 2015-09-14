@@ -87,6 +87,7 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-checking=release
 	--enable-fully-dynamic-string
 	--enable-version-specific-runtime-libs
+	--enable-libstdcxx-filesystem-ts=yes
 	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
 		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
 	)
