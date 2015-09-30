@@ -2,8 +2,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -34,21 +34,22 @@
 
 # **************************************************************************
 
-readonly i686_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.8.1/threads-posix/sjlj/i686-4.8.1-release-posix-sjlj-rt_v3-rev2.7z"
-readonly x86_64_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.8.1/threads-posix/sjlj/x86_64-4.8.1-release-posix-sjlj-rt_v3-rev2.7z"
+readonly HOST_MINGW_VERSION=4.9.3
+readonly i686_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/$HOST_MINGW_VERSION/threads-posix/{exceptions}/i686-$HOST_MINGW_VERSION-release-posix-{exceptions}-rt_v4-rev0.7z"
+readonly x86_64_HOST_MINGW_PATH_URL="http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/$HOST_MINGW_VERSION/threads-posix/{exceptions}/x86_64-$HOST_MINGW_VERSION-release-posix-{exceptions}-rt_v4-rev0.7z"
 
 # **************************************************************************
 
-HOST=$BUILD_ARCHITECTURE-w64-mingw32
-BUILD=$BUILD_ARCHITECTURE-w64-mingw32
-TARGET=$BUILD_ARCHITECTURE-w64-mingw32
+function func_get_host { echo "$1-w64-mingw32"; }
+function func_get_build { echo "$1-w64-mingw32"; }
+function func_get_target { echo "$1-w64-mingw32"; }
 
 readonly HOST_TOOLS=""
 readonly CROSS_BUILDS=no
 
 # **************************************************************************
 
-readonly REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-windows/repository.txt
+readonly REPOSITORY_FILE="$PROJECT_ROOT_URL/files/Toolchains targetting Win32/Personal Builds/mingw-builds/installer/repository.txt"
 
 # **************************************************************************
 
@@ -59,10 +60,6 @@ readonly LOGVIEWERS=(
 )
 
 # **************************************************************************
-
-[[ -z $i686_HOST_MINGW_PATH_URL || -z $x86_64_HOST_MINGW_PATH_URL ]] && {
-	die "i686_HOST_MINGW_PATH_URL or x86_64_HOST_MINGW_PATH_URL is empty. terminate."
-}
 
 [[ -d /mingw ]] && {
 	die "please remove \"/mingw\" directory. terminate."
@@ -77,19 +74,36 @@ readonly LOGVIEWERS=(
 }
 
 # **************************************************************************
-# Install host toolchains
-# **************************************************************************
 
-mkdir -p $TOOLCHAINS_DIR
-[[ $? != 0 ]] && {
-	die "can't create toolchains directory. terminate."
+function func_test_installed_packages {
+	local packages=(
+		git
+		subversion
+		tar
+		zip
+		p7zip
+		make
+		patch
+		automake
+		autoconf
+		libtool
+		flex
+		bison
+		gettext
+		gettext-devel
+		wget
+		sshpass
+		texinfo
+	)
+
+	for it in ${packages[@]}; do
+		[[ -z $(pacman -Qs ^$it) ]] && {
+			echo "package \"$it\" is not installed. terminate."
+			return 1
+		}
+	done
+	
+	return 0
 }
-
-func_install_toolchain \
-	$TOOLCHAINS_DIR \
-	$i686_HOST_MINGW_PATH \
-	$x86_64_HOST_MINGW_PATH \
-	$i686_HOST_MINGW_PATH_URL \
-	$x86_64_HOST_MINGW_PATH_URL
 
 # **************************************************************************

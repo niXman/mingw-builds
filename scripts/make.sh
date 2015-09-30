@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=4.0
+PKG_VERSION=4.1
 PKG_NAME=make-${PKG_VERSION}
 PKG_DIR_NAME=make-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
 PKG_URLS=(
-	"ftp://ftp.gnu.org/gnu/make/make-${PKG_VERSION}.tar.bz2"
+	"https://ftp.gnu.org/gnu/make/make-${PKG_VERSION}.tar.bz2"
 )
 
 PKG_PRIORITY=extra

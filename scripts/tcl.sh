@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.6.1
+PKG_VERSION=8.6.4
 PKG_NAME=tcl${PKG_VERSION}
 PKG_DIR_NAME=tcl${PKG_VERSION}
 PKG_SUBDIR_NAME=win
@@ -49,17 +49,20 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
-	tcl/tcl-8.5.14-autopath.patch
-	tcl/tcl-8.5.14-conf.patch
-	tcl/tcl-8.5.14-hidden.patch
-	tcl/tcl-mingw-w64-compatibility.patch
-	tcl/tcl-8.6.1-mingwexcept.patch
+	tcl/002-fix-forbidden-colon-in-paths.mingw.patch
+	tcl/004-use-system-zlib.mingw.patch
+	tcl/005-no-xc.mingw.patch
+	tcl/006-proper-implib-name.mingw.patch
+	tcl/007-install.mingw.patch
+	tcl/008-tcl-8.5.14-hidden.patch
+	tcl/009-fix-using-gnu-print.patch
+	tcl/010-dont-link-shared-with--static-libgcc.patch
 )
 
 #
 
 PKG_EXECUTE_AFTER_PATCH=(
-	"cd win && autoconf"
+	"cd win && autoreconf -fi"
 )
 
 #
@@ -84,7 +87,7 @@ PKG_CONFIGURE_FLAGS=(
 
 PKG_MAKE_FLAGS=(
 	-j$JOBS
-	TCL_LIBRARY=$LIBS_DIR/lib/tcl8.6
+	#TCL_LIBRARY=$LIBS_DIR/lib/tcl8.6
 	all
 )
 
@@ -92,7 +95,7 @@ PKG_MAKE_FLAGS=(
 
 PKG_INSTALL_FLAGS=(
 	-j$JOBS
-	TCL_LIBRARY=$LIBS_DIR/lib/tcl8.6
+	#TCL_LIBRARY=$LIBS_DIR/lib/tcl8.6
 	install
 )
 
@@ -100,8 +103,6 @@ PKG_INSTALL_FLAGS=(
 
 PKG_EXECUTE_AFTER_INSTALL=(
 	"ln -s $LIBS_DIR/bin/tclsh86.exe $LIBS_DIR/bin/tclsh.exe"
-	"mv $LIBS_DIR/lib/libtcl86.a $LIBS_DIR/lib/libtcl86.dll.a"
-	"mv $LIBS_DIR/lib/libtclstub86.a $LIBS_DIR/lib/libtclstub86.dll.a"
 	"ln -s $LIBS_DIR/lib/libtcl86.dll.a $LIBS_DIR/lib/libtcl.dll.a"
 	"ln -s $LIBS_DIR/lib/tclConfig.sh $LIBS_DIR/lib/tcl8.6/tclConfig.sh"
 	"mkdir -p $LIBS_DIR/include/tcl-private/{generic,win}"

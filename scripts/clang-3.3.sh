@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -40,24 +40,20 @@ PKG_NAME=llvm-${PKG_VERSION}.src
 PKG_DIR_NAME=llvm-${PKG_VERSION}.src
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://llvm.org/releases/${PKG_VERSION}/llvm-3.3.src.tar.gz"
-	"http://llvm.org/releases/${PKG_VERSION}/cfe-3.3.src.tar.gz|dir:$PKG_NAME/tools"
-	"http://llvm.org/releases/${PKG_VERSION}/compiler-rt-3.3.src.tar.gz|dir:$PKG_NAME/projects"
-	"http://llvm.org/releases/${PKG_VERSION}/test-suite-3.3.src.tar.gz|dir:$PKG_NAME/projects"
+	"http://llvm.org/releases/${PKG_VERSION}/llvm-${PKG_VERSION}.src.tar.gz"
+	"http://llvm.org/releases/${PKG_VERSION}/cfe-${PKG_VERSION}.src.tar.gz|dir:$PKG_NAME/tools"
+	"http://llvm.org/releases/${PKG_VERSION}/compiler-rt-${PKG_VERSION}.src.tar.gz|dir:$PKG_NAME/projects"
 )
+
+#
 
 PKG_PRIORITY=main
 
 #
 
-PKG_PATCHES=()
-
-#
-
-PKG_EXECUTE_AFTER_PATCH=(
+PKG_EXECUTE_AFTER_UNCOMPRESS=(
 	"mv $SRCS_DIR/$PKG_NAME/tools/cfe-${PKG_VERSION}.src $SRCS_DIR/$PKG_NAME/tools/clang"
 	"mv $SRCS_DIR/$PKG_NAME/projects/compiler-rt-${PKG_VERSION}.src $SRCS_DIR/$PKG_NAME/projects/compiler-rt"
-	"mv $SRCS_DIR/$PKG_NAME/projects/test-suite-${PKG_VERSION}.src $SRCS_DIR/$PKG_NAME/projects/test-suite"
 )
 
 #
@@ -104,6 +100,14 @@ PKG_MAKE_FLAGS=(
 PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
+)
+
+#
+
+PKG_EXECUTE_AFTER_INSTALL=(
+	"cp -rf $TOOLCHAINS_DIR/$([[ $BUILD_ARCHITECTURE == i686 ]] && echo mingw32 || echo mingw64 )/* $PREFIX/"
+	"[[ ! -f $PREFIX/bin/clang.exe ]] && cp -f $PREFIX/bin/$TARGET-clang.exe $PREFIX/bin/clang.exe"
+	"[[ ! -f $PREFIX/bin/clang++.exe ]] && cp -f $PREFIX/bin/$TARGET-clang++.exe $PREFIX/bin/clang++.exe"
 )
 
 # **************************************************************************

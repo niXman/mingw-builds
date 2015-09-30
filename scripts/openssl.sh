@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.0.1e
+PKG_VERSION=1.0.2d
 PKG_NAME=openssl-${PKG_VERSION}
 PKG_DIR_NAME=openssl-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://www.openssl.org/source/openssl-${PKG_VERSION}.tar.gz"
+	"https://www.openssl.org/source/openssl-${PKG_VERSION}.tar.gz"
 )
 
 PKG_PRIORITY=extra
@@ -49,13 +49,10 @@ PKG_CONFIGURE_SCRIPT=Configure
 #
 
 PKG_PATCHES=(
+	openssl/openssl-0.9.6-x509.patch
 	openssl/openssl-1.0.0a-ldflags.patch
 	openssl/openssl-1.0.0d-windres.patch
-	openssl/openssl-1.0.0h-pkg-config.patch
-	openssl/openssl-1.0.1-parallel-build.patch
 	openssl/openssl-1.0.1-x32.patch
-	openssl/openssl-0.9.6-x509.patch
-	openssl/openssl-1.0.1e-manfix.patch
 )
 
 #

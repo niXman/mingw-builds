@@ -1,10 +1,9 @@
-
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -36,11 +35,12 @@
 # **************************************************************************
 
 PKG_NAME=${PKG_ARCHITECTURE}-winpthreads-${RUNTIME_VERSION}
-PKG_DIR_NAME=winpthreads-${RUNTIME_VERSION}
-PKG_TYPE=svn
-PKG_URLS=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-libraries/winpthreads|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
-)
+
+[[ $RUNTIME_BRANCH == release ]] && {
+	PKG_DIR_NAME=mingw-w64-${RUNTIME_VERSION}/mingw-w64-libraries/winpthreads
+} || {
+	PKG_DIR_NAME=mingw-w64/mingw-w64-libraries/winpthreads
+}
 
 PKG_PRIORITY=runtime
 
@@ -57,7 +57,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$RUNTIME_DIR/$PKG_NAME
 	#
-	$LINK_TYPE_BOTH
+	$LINK_TYPE_GCC
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""

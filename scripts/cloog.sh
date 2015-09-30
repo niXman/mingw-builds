@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -35,19 +35,25 @@
 
 # **************************************************************************
 
-PKG_VERSION=0.18.1
+PKG_VERSION=0.18.3
 PKG_NAME=$BUILD_ARCHITECTURE-cloog-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=cloog-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://www.bastoul.net/cloog/pages/download/count.php3?url=./cloog-${PKG_VERSION}.tar.gz"
+	"http://www.bastoul.net/cloog/pages/download/cloog-${PKG_VERSION}.tar.gz"
 )
 PKG_PRIORITY=prereq
 
 #
 
 PKG_PATCHES=(
-	cloog/cloog-0.18.1-no-undefined.patch
+	cloog/cloog-0.18.3-no-undefined.patch
+)
+
+#
+
+PKG_EXECUTE_AFTER_PATCH=(
+	"autoreconf -vfi"
 )
 
 #

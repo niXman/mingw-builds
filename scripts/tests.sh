@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -56,27 +56,31 @@ tests_prepare
 # **************************************************************************
 # **************************************************************************
 
-list1=(
-	"dll1.cpp -shared -o dll1.dll"
-	"dll_test1.cpp -o dll_test1.exe"
-)
+[[ $BUILD_SHARED_GCC == yes ]] && {
+	list1=(
+		"dll1.cpp -shared -o dll1.dll"
+		"dll_test1.cpp -o dll_test1.exe"
+	)
 
-func_test \
-	"dll_test1" \
-	list1[@] \
-	$TESTS_ROOT_DIR
+	func_test \
+		"dll_test1" \
+		list1[@] \
+		$TESTS_ROOT_DIR
+}
 
 # **************************************************************************
 
-list2=(
-	"dll2.cpp -shared -o dll2.dll"
-	"dll_test2.cpp -L. -ldll2 -o dll_test2.exe"
-)
+[[ $BUILD_SHARED_GCC == yes ]] && {
+	list2=(
+		"dll2.cpp -shared -o dll2.dll"
+		"dll_test2.cpp -L. -ldll2 -o dll_test2.exe"
+	)
 
-func_test \
-	"dll_test2" \
-	list2[@] \
-	$TESTS_ROOT_DIR
+	func_test \
+		"dll_test2" \
+		list2[@] \
+		$TESTS_ROOT_DIR
+}
 
 # **************************************************************************
 
@@ -174,13 +178,16 @@ func_test \
 
 # **************************************************************************
 
-list11=(
-	"random_device.cpp -std=c++0x -o random_device.exe"
-)
+# Can't run this test with 4.6 or 4.7 since the implementation is broken and throws
+# an exception.  4.8 has a fixed implementation, but it hasn't been backported yet.
+[[ $BUILD_VERSION == 4.6.? || $BUILD_VERSION == 4.7.? ]] || {
+	list11=(
+		"random_device.cpp -std=c++0x -o random_device.exe"
+	)
 
-func_test \
-	"random_device" \
-	list11[@] \
-	$TESTS_ROOT_DIR
-
+	func_test \
+		"random_device" \
+		list11[@] \
+		$TESTS_ROOT_DIR
+}
 # **************************************************************************

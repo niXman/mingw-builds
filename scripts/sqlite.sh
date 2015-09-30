@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=3080002
+PKG_VERSION=3081002
 PKG_NAME=sqlite-${PKG_VERSION}
 PKG_DIR_NAME=sqlite-autoconf-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://www.sqlite.org/2013/sqlite-autoconf-${PKG_VERSION}.tar.gz"
+	"https://www.sqlite.org/2015/sqlite-autoconf-${PKG_VERSION}.tar.gz"
 )
 PKG_PRIORITY=extra
 
@@ -61,6 +61,7 @@ PKG_CONFIGURE_FLAGS=(
 	--target=$TARGET
 	#
 	--prefix=$LIBS_DIR
+	--enable-threadsafe
 	#
 	$LINK_TYPE_SHARED
 	#

@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -40,7 +40,7 @@ PKG_NAME=gcc-${PKG_VERSION}
 PKG_DIR_NAME=gcc-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
 PKG_URLS=(
-	"ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}.tar.bz2"
+	"https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}.tar.bz2"
 )
 
 PKG_PRIORITY=main
@@ -63,6 +63,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$MINGWPREFIX
 	--with-sysroot=$PREFIX
+	--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
 	#
 	$LINK_TYPE_GCC
 	#
@@ -113,7 +114,7 @@ PKG_CONFIGURE_FLAGS=(
 	--with-libiconv
 	--with-system-zlib
 	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
-	--with-pkgversion="\"$MINGW_W64_PKG_STRING\""
+	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}, $MINGW_W64_PKG_STRING\""
 	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""

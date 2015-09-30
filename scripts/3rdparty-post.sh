@@ -1,10 +1,9 @@
-
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -38,18 +37,34 @@
 function python_deps_post {
 	[[ ! -f $BUILDS_DIR/3rdparty-post.marker ]] && {
 
-		local _toolchain_path=$(eval "echo \${${BUILD_ARCHITECTURE}_HOST_MINGW_PATH}")
-		local _gcc_dll=( $(find $_toolchain_path/bin -type f \
-							-name libstdc++*.dll -o \
+		case $BUILD_MODE in
+			gcc)
+				local _toolchain_path=$PREFIX
+			;;
+			*)
+				local _toolchain_path=$(eval "echo \${${BUILD_ARCHITECTURE}_HOST_MINGW_PATH}")
+			;;
+		esac
+		local _gcc_dll=( \
+			$(find $_toolchain_path/bin -type f \
 							-name libgcc*.dll -o \
-							-name libwinpthread*.dll) )
+							-name libwinpthread*.dll \
+			) \
+		)
 		[[ ${#_gcc_dll[@]} >0 ]] && {
 			cp -f ${_gcc_dll[@]} $LIBS_DIR/bin/ >/dev/null 2>&1
 		}
 
-		rm -rf $LIBS_DIR/include
+		rm -f $LIBS_DIR/bin/{bz*,bunzip2}
+		rm -f $LIBS_DIR/bin/{tclsh.exe,tclsh86.exe,openssl.exe,capinfo.exe,captoinfo.exe,clear.exe,idle,infocmp.exe}
+		rm -f $LIBS_DIR/bin/{infotocap.exe,c_rehash,ncursesw5-config,reset.exe,sqlite3.exe,tabs.exe}
+		rm -f $LIBS_DIR/bin/{tic.exe,toe.exe,tput.exe,tset.exe,wish.exe,wish86.exe,xmlwf,testgdbm.exe}
+		rm -f $LIBS_DIR/bin/{lzmadec.exe,lzmainfo.exe,unxz.exe,xz*}
+
+		#rm -rf $LIBS_DIR/include
 		rm -rf $LIBS_DIR/lib/pkgconfig
-		find $LIBS_DIR/lib -maxdepth 1 -type f -name *.a -print0 | xargs -0 rm -f
+		#find $LIBS_DIR/lib -maxdepth 1 -type f -name *.a -print0 | xargs -0 rm -f
+		find $LIBS_DIR/lib -type f -name *.la -print0 | xargs -0 rm -f
 		rm -rf $LIBS_DIR/man
 		rm -rf $LIBS_DIR/share/man
 		rm -rf $LIBS_DIR/share/info

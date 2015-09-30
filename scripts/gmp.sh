@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=5.1.3
+PKG_VERSION=6.0.0
 PKG_NAME=$BUILD_ARCHITECTURE-gmp-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=gmp-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
 PKG_URLS=(
-	"ftp://ftp.gmplib.org/pub/gmp-${PKG_VERSION}/gmp-${PKG_VERSION}.tar.bz2"
+	"https://gmplib.org/download/gmp/gmp-${PKG_VERSION}a.tar.bz2"
 )
 
 PKG_PRIORITY=prereq

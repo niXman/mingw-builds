@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -35,11 +35,17 @@
 
 # **************************************************************************
 
-[[ ! -d $PREFIX/etc ]] && mkdir -p $PREFIX/etc
+PKG_NAME=gdbinit
+PKG_DIR_NAME=gdbinit
+PKG_PRIORITY=extra
 
-[[ ! -f $BUILDS_DIR/gbinit.marker ]] && {
+PKG_EXECUTE_AFTER_INSTALL=(
+	gdbinit_script
+)
+
+function gdbinit_script {
+	mkdir -p $PREFIX/etc
 	cat $TOP_DIR/sources/gdbinit | sed 's|%GCC_NAME%|'$GCC_NAME'|g' > $PREFIX/etc/gdbinit
-	touch $BUILDS_DIR/gdbinit.marker
 }
 
 # **************************************************************************

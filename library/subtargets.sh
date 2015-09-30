@@ -2,8 +2,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -34,22 +34,42 @@
 
 # **************************************************************************
 
-function fun_get_subtargets {
+function func_get_subtargets {
 	# $1 - mode (gcc, clang, python)
 	# $2 - version
 
 	local readonly SUBTARGETS_PART1=(
+		$( \
+			[[ $USE_MULTILIB == yes ]] && { \
+				echo "libiconv|$BUILD_ARCHITECTURE"; \
+				echo "libiconv|$REVERSE_ARCHITECTURE"; \
+				echo "zlib|$BUILD_ARCHITECTURE"; \
+				echo "zlib|$REVERSE_ARCHITECTURE"; \
+			} || { \
+				echo libiconv; \
+				echo zlib; \
+			} \
+		)
 		gmp
 		mpfr
 		mpc
-		$( [[ $2 == 4.6.? || $2 == 4.7.? ]] && echo ppl )
+		$( [[ $2 == 4.6.? || $2 == 4.7.? || $2 == 4_6-branch || $2 == 4_7-branch ]] && echo ppl )
 		isl
-		cloog
+		$( [[ $1 == clang || $2 == 4* ]] && echo cloog )
+		mingw-w64-download
 		mingw-w64-api
 		mingw-w64-crt
+		$( \
+			[[ $USE_MULTILIB == yes ]] && { \
+				echo "winpthreads|$BUILD_ARCHITECTURE"; \
+				echo "winpthreads|$REVERSE_ARCHITECTURE"; \
+			} || { \
+				echo winpthreads; \
+			} \
+		)
 	)
 
-	[[ $1 == gcc ]] && {
+	[[ $1 == gcc || $1 == clang ]] && {
 		local readonly python_version=$DEFAULT_PYTHON_VERSION
 	} || {
 		local readonly python_version=$2
@@ -58,20 +78,18 @@ function fun_get_subtargets {
 	local readonly PYTHON_SUBTARGETS=(
 		libgnurx
 		bzip2
+		termcap
 		libffi
 		expat
+		gdbm
 		tcl
 		tk
 		openssl
-		$([[ $python_version == 3.3.0 ]] && echo xz-utils)
+		$([[ $python_version == 3 ]] && echo xz-utils)
 		sqlite
 		ncurses
 		readline
 		python-$python_version
-	)
-
-	local readonly CLANG_SUBTARGETS=(
-		clang-$2
 	)
 
 	local readonly SUBTARGETS_PART2=(
@@ -90,46 +108,27 @@ function fun_get_subtargets {
 		gdbinit
 		gdb
 		gdb-wrapper
-		make_git_bat
+		make
 		3rdparty-post
 		cleanup
 		licenses
 		build-info
 		tests
-		$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
+		$([[ $COMPRESSING_BINS == yes ]] && echo mingw-compress)
 	)
 
 	case $1 in
-		clang)
+		gcc)
 			local readonly SUBTARGETS=(
-				${CLANG_SUBTARGETS[@]}
-				cleanup
-				licenses
-				build-info
-				$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
+				${SUBTARGETS_PART1[@]}
+				${SUBTARGETS_PART2[@]}
 			)
 		;;
-		gcc)
-			[[ $USE_MULTILIB == yes ]] && {
-				local readonly SUBTARGETS=(
-					"libiconv|$BUILD_ARCHITECTURE"
-					"libiconv|$REVERSE_ARCHITECTURE"
-					"zlib|$BUILD_ARCHITECTURE"
-					"zlib|$REVERSE_ARCHITECTURE"
-					${SUBTARGETS_PART1[@]}
-					"winpthreads|$BUILD_ARCHITECTURE"
-					"winpthreads|$REVERSE_ARCHITECTURE"
-					${SUBTARGETS_PART2[@]}
-				)
-			} || {
-				local readonly SUBTARGETS=(
-					libiconv
-					zlib
-					${SUBTARGETS_PART1[@]}
-					winpthreads
-					${SUBTARGETS_PART2[@]}
-				)
-			}
+		clang)
+			local readonly SUBTARGETS=(
+				${SUBTARGETS_PART1[@]}
+				$( echo ${SUBTARGETS_PART2[@]} | sed "s|clang-[^ ]\+|$CLANG_GCC_VERSION|;s|3rdparty-post|clang-$2 3rdparty-post|" )
+			)
 		;;
 		python)
 			local readonly SUBTARGETS=(
@@ -139,7 +138,7 @@ function fun_get_subtargets {
 				cleanup
 				licenses
 				build-info
-				$([[ $COMPRESSING_MINGW == yes ]] && echo mingw-compress)
+				$([[ $COMPRESSING_BINS == yes ]] && echo mingw-compress)
 			)
 		;;
 	esac

@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -35,19 +35,25 @@
 
 # **************************************************************************
 
-PKG_VERSION=7.6.1
+PKG_VERSION=7.9.1
 PKG_NAME=gdb-${PKG_VERSION}
 PKG_DIR_NAME=gdb-${PKG_VERSION}
-PKG_TYPE=.tar.bz2
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"ftp://ftp.gnu.org/gnu/gdb/gdb-${PKG_VERSION}.tar.bz2"
+	"https://ftp.gnu.org/gnu/gdb/gdb-${PKG_VERSION}${PKG_TYPE}"
 )
 
-PKG_PRIORITY=main
+PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	# https://sourceware.org/bugzilla/show_bug.cgi?id=15559
+	#gdb/gdb-7.9-mingw-gcc-4.7.patch
+	# http://sourceware.org/bugzilla/show_bug.cgi?id=15412
+	gdb/gdb-perfomance.patch
+	gdb/gdb-fix-using-gnu-print.patch
+)
 
 #
 
@@ -65,7 +71,7 @@ PKG_CONFIGURE_FLAGS=(
 	--disable-rpath
 	#
 	--with-system-gdbinit=$PREFIX/etc/gdbinit
-	--with-python=$PREFIX/opt/bin/python-config.sh
+	--with-python=$PREFIX/opt/bin/python-config-u.sh
 	--with-expat
 	--with-libiconv
 	--with-zlib
@@ -75,7 +81,7 @@ PKG_CONFIGURE_FLAGS=(
 	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
 )
 
 #

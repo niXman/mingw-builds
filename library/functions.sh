@@ -2,8 +2,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -102,11 +102,8 @@ function func_show_log {
 	# $1 - log file
 	[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $1 &
 }
-# **************************************************************************
 
-function func_check_program {
-	command -v "$@" > /dev/null 2>&1 || { die "command \"$@\" not found. terminate."; }
-}
+# **************************************************************************
 
 function func_check_tools {
 	# $1 - list of programs
@@ -114,18 +111,17 @@ function func_check_tools {
 	local _it=
 	local _err=
 	
+	echo -n "-> Checking for necessary tools... "
 	for _it in ${_list[@]}; do
-		echo -n "Checking for $_it... "
 		command -v "$_it" > /dev/null 2>&1
-		[[ $? == 0 ]] && {
-			echo "yes"
-		} || {
-			echo "no"
+		[[ $? != 0 ]] && {
 			_err="$_err $_it"
 		}
 	done
 	[[ -n $_err ]] && {
 		die "Some of necessary tools not found: $_err"
+	} || {
+		echo "done"
 	}
 }
 
@@ -134,7 +130,7 @@ function func_check_tools {
 function func_get_reverse_triplet {
 	case ${1%%-*} in
 		i686) echo "x86_64-${1#*-}" ;;
-		amd64|x86_64) echo "i686-${1#*-}" ;;
+		x86_64) echo "i686-${1#*-}" ;;
 	esac
 }
 
@@ -192,6 +188,7 @@ function func_get_filename_extension {
 function func_check_languages {
 	local langs=( ${1//,/ } )
 	local lang=
+	local _lang_err=
 	
 	[[ ${#langs[@]} == 0 ]] && {
 		die "you must specify languages to build. terminate."
@@ -199,9 +196,10 @@ function func_check_languages {
 		for lang in ${langs[@]}; do
 			case $lang in
 				ada|c|c++|fortran|objc|obj-c++) ;;
-				*) die "the following language not supported: $lang" ;;
+				*) _lang_err+=" \"$lang\"" ;;
 			esac
 		done
+		[[ -n "$_lang_err" ]] && { die "the following languages are not supported: $_lang_err. terminate."; }
 	}
 }
 
@@ -355,7 +353,7 @@ function func_download {
 			[[ $_is_repo == yes ]] && {
 				echo -n "--> checkout $_filename..."
 
-				[[ -n $_dir ]] && {
+				[[ -z $_dir ]] && {
 					_lib_name=$_root/$_filename
 				} || {
 					_lib_name=$_root/$_dir/$_filename
@@ -527,18 +525,17 @@ function func_execute {
 	# $2 - src dir name
 	# $3 - message
 	# $4 - log suffix
-	# $5 - log dir
-	# $6 - commands list
+	# $5 - commands list
 
 	local _result=0
-	local -a _commands=( "${!6}" )
+	local -a _commands=( "${!5}" )
 	local it=
 	
 	local _index=0
 	((_index=${#_commands[@]}-1))
 	local _cmd_marker_name=$1/$2/exec-$4-$_index.marker
 	[[ -f $_cmd_marker_name ]] && {
-		echo "---> executed"
+		echo "---> $4 executed"
 		return $_result
 	}
 	_index=0
@@ -548,11 +545,13 @@ function func_execute {
 	}
 
 	for it in "${_commands[@]}"; do
-		_cmd_marker_name=$1/$2/exec-$4-$_index.marker
+		local _cmd_marker_name=$1/$2/exec-$4-$_index.marker
 		local _cmd_log_name=$1/$2/exec-$4-$_index.log
+		local _cmd_command_cmd=$1/$2/exec-$4-$_index.cmd
 
 		[[ ! -f $_cmd_marker_name ]] && {
 			pushd $1/$2 > /dev/null
+			echo "${it}" > $_cmd_command_cmd 2>&1
 			eval ${it} > $_cmd_log_name 2>&1
 			_result=$?
 			popd > /dev/null
@@ -579,15 +578,14 @@ function func_execute {
 function func_apply_patches {
 	# $1 - srcs dir name
 	# $2 - src dir name
-	# $3 - logs dir
-	# $4 - patches dir
-	# $5 - patches list
+	# $3 - patches dir
+	# $4 - patches list
 	
 	local _result=0
 	local it=
 	local applevel=
 	local _index=0
-	local -a _list=( "${!5}" )
+	local -a _list=( "${!4}" )
 	[[ ${#_list[@]} == 0 ]] && return 0
 
 	((_index=${#_list[@]}-1))
@@ -600,29 +598,34 @@ function func_apply_patches {
 	[[ ${#_list[@]} > 0 ]] && {
 		echo -n "--> patching..."
 	}
-
-	for it in ${_list[@]} ; do
+	
+	for it in ${_list[@]} ; do		
 		local _patch_marker_name=$1/$2/_patch-$_index.marker
 		local _patch_log_name=$1/$2/patch-$_index.log
+		local _patch_file=$3/${it}
 
 		[[ ! -f $_patch_marker_name ]] && {
-			[[ -f $PATCHES_DIR/${it} ]] || die "Patch $4/${it} not found!"
-			local level=
-			local found=no
+			[[ -f $_patch_file ]] || die "Patch $_patch_file not found!"
+			local _level=
+			local _found=no
 			pushd $1/$2 > /dev/null
-			for level in 0 1 2 3
-			do
-				applevel=$level
-				if patch -p$level --dry-run -i $4/${it} > $_patch_log_name 2>&1
-				then
-					found=yes
+			for _level in 0 1 2 3; do
+				local _applevel=$_level
+				patch -p$_level --dry-run -i $_patch_file > $_patch_log_name 2>&1
+				_result=$?
+				[[ $_result == 0 ]] && {
+					_found=yes
 					break
-				fi
+				}
 			done
-			[[ $found == "yes" ]] && {
-				patch -p$applevel -i $4/${it} > $_patch_log_name 2>&1
-				touch $_patch_marker_name
+			[[ $_found == yes ]] && {
+				patch -p$_applevel -i $_patch_file > $_patch_log_name 2>&1
+				_result=$?
+				[[ $_result == 0 ]] && {
+					touch $_patch_marker_name
+				}
 			} || {
+				die "Not found level for patch ${it}, error=$_result"
 				_result=1
 				break
 			}
@@ -636,7 +639,7 @@ function func_apply_patches {
 	} || {
 		func_show_log $_patch_log_name
 		echo " error"
-		die "Failed to apply patch ${it} at level $applevel"
+		die "Failed to apply patch ${it} at level $_applevel"
 	}
 }
 
@@ -669,6 +672,8 @@ function func_configure {
 	}
 
 	[[ ! -f $_marker ]] && {
+		#echo "CFLAGS=\"$CFLAGS\", CXXFLAGS=\"$CXXFLAGS\", CPPFLAGS=\"$CPPFLAGS\", LDFLAGS=\"$LDFLAGS\""
+		#echo "ARGS=\"${3}\""
 		echo -n "--> configure..."
 		pushd $5/$_subbuilddir > /dev/null
 		[[ $6 == yes ]] && {
@@ -741,6 +746,19 @@ function func_test {
 	# $2 - sources names
 	# $3 - tests dir
 
+	[[ $BUILD_MODE == gcc ]] && {
+		local CC_NAME=gcc
+		local CXX_NAME=g++
+		local LD_NAME=g++
+	} || {
+		local CC_NAME=clang
+		local CXX_NAME=clang++
+		local LD_NAME=clang++
+	}
+	local CC_FLAGS="-O2"
+	local CXX_FLAGS="$CC_FLAGS"
+	local LD_FLAGS="-s"
+	
 	local _result=0
 	local -a _list=( "${!2}" )
 	local arch_it=
@@ -765,22 +783,25 @@ function func_test {
 				pushd $3/$arch_it > /dev/null
 				case $_ext in
 					c)
-						printf "%-50s" "--> GCC     $arch_it: \"$_first\" ... "
+						printf "%-50s" "--> $CC_NAME      $arch_it: \"$_first\" ... "
 						local _log_file=$3/$arch_it/$_first-compilation.log
-						echo "gcc -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
-						gcc -m${_arch_bits} $COMMON_CFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1
+						local _cmd=$( echo "$CC_NAME -m$_arch_bits $CC_FLAGS $LD_FLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" )
+						echo "$_cmd" > $_log_file
+						eval ${_cmd} >> $_log_file 2>&1
 					;;
 					cpp)
-						printf "%-50s" "--> G++     $arch_it: \"$_first\" ... "
+						printf "%-50s" "--> $CXX_NAME     $arch_it: \"$_first\" ... "
 						local _log_file=$3/$arch_it/$_first-compilation.log
-						echo "g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" > $_log_file
-						g++ -m${_arch_bits} $COMMON_CXXFLAGS $COMMON_LDFLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last >> $_log_file 2>&1
+						local _cmd=$( echo "$CXX_NAME -m$_arch_bits $CXX_FLAGS $LD_FLAGS $TESTS_DIR/$_prev $3/$arch_it/$_last" )
+						echo "$_cmd" > $_log_file
+						eval ${_cmd} >> $_log_file 2>&1
 					;;
 					o)
-						printf "%-50s" "--> LD      $arch_it: \"$_last\" ... "
+						printf "%-50s" "--> $LD_NAME      $arch_it: \"$_last\" ... "
 						local _log_file=$3/$arch_it/$_first-link.log
-						echo "g++ -m${_arch_bits} $src_it" > $_log_file
-						g++ -m${_arch_bits} $src_it >> $_log_file 2>&1
+						local _cmd=$( echo "$LD_NAME $LD_FLAGS -m$_arch_bits $src_it" )
+						echo "$_cmd" > $_log_file
+						eval ${_cmd} >> $_log_file 2>&1
 					;;
 				esac
 				_result=$?
@@ -815,6 +836,7 @@ function func_test {
 }
 
 # **************************************************************************
+
 function func_abstract_toolchain {
 	# $1 - toolchains top directory
 	# $2 - toolchain URL
@@ -822,7 +844,6 @@ function func_abstract_toolchain {
 	# $4 - toolchain arch
 	local -a _url=( "$2|root:$1" )
 	local _filename=$(basename $2)
-	local _do_install=no
 
 	echo -e "-> \E[32;40m$4 toolchain\E[37;40m"
 	[[ ! -f $1/${_filename}-unpack.marker ]] && {
@@ -830,9 +851,11 @@ function func_abstract_toolchain {
 			echo "--> Found previously installed $4 toolchain."
 			echo -n "---> Remove previous $4 toolchain..."
 			rm -rf $3
+			rm $(dirname $3)/$4-*-unpack.log
+			rm $(dirname $3)/$4-*-unpack.marker
 			echo " done"
 		} || {
-			echo -n "--> $4 toolchain is not installed."
+			echo -n "--> $4 toolchain is not installed "
 		}
 		func_download _url[@]
 		func_uncompress _url[@] $1
@@ -848,21 +871,24 @@ function func_install_toolchain {
 	# $4 - i686-mingw URL
 	# $5 - x86_64-mingw URL
 
-	[[ $USE_MULTILIB == yes ]] && {
-		local _arch_bit=both
+	[[ $USE_MULTILIB == yes || -z ${BUILD_ARCHITECTURE} ]] && {
+		local _arch=both
 	} || {
-		local _arch_bit=$(func_get_arch_bit $BUILD_ARCHITECTURE)
+		local _arch=$BUILD_ARCHITECTURE
 	}
-	case $_arch_bit in
+	case $_arch in
 		i686)
-			func_abstract_toolchain $1 $4 $2 $_arch_bit
+			func_abstract_toolchain $1 $4 $2 $_arch
 		;;
 		x86_64)
-			func_abstract_toolchain $1 $5 $3 $_arch_bit
+			func_abstract_toolchain $1 $5 $3 $_arch
 		;;
 		both)
-			func_abstract_toolchain $1 $4 $2 "i686"
-			func_abstract_toolchain $1 $5 $3 "x86_64"
+			func_abstract_toolchain $1 $4 $2 i686
+			func_abstract_toolchain $1 $5 $3 x86_64
+		;;
+		*)
+			die "Can't install toolchain for architecture $_arch."
 		;;
 	esac
 }
@@ -889,9 +915,10 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-?.?.?)			echo "${1/gcc-/}" ;;
 		gcc-4_6-branch)	echo "4.6.5" ;;
 		gcc-4_7-branch)	echo "4.7.4" ;;
-		gcc-4_8-branch)	echo "4.8.3" ;;
-		gcc-4_9-branch)	echo "4.9.1" ;;
-		gcc-trunk)			echo "4.9.0" ;;
+		gcc-4_8-branch)	echo "4.8.6" ;;
+		gcc-4_9-branch)	echo "4.9.3" ;;
+		gcc-5-branch)	echo "5.3.0" ;;
+		gcc-trunk)			echo "6.0.0" ;;
 		*) die "gcc name error: $1. terminate." ;;
 	esac
 }
@@ -981,17 +1008,8 @@ function func_create_mingw_upload_cmd {
 	# $7 - threads model
 	# $8 - exceptions model
 
-	local _upload_cmd="sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/host-windows"
-	local _gcc_type=$(func_map_gcc_name_to_gcc_type $4)
 	local _gcc_version=$(func_map_gcc_name_to_gcc_version $4)
-
-	[[ $_gcc_type == release ]] && {
-		_upload_cmd="$_upload_cmd/releases/$_gcc_version"
-	} || {
-		_upload_cmd="$_upload_cmd/testing/$_gcc_version"
-	}
-
-	_upload_cmd="$_upload_cmd/$( [[ $6 == i686 ]] && echo 32-bit || echo 64-bit )/threads-$7/$8"
+	local _upload_cmd="sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/'Toolchains\ targetting\ Win$( [[ $6 == i686 ]] && echo 32 || echo 64 )/Personal\ Builds/mingw-builds/$_gcc_version/threads-$7/$8'"
 
 	echo "$_upload_cmd"
 }
@@ -1005,7 +1023,9 @@ function func_create_sources_upload_cmd {
 	# $4 - gcc name
 	# $5 - archive name
 
-	echo "sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/mingw-sources/$(func_map_gcc_name_to_gcc_version $4)"
+	local _upload_cmd="sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/'Toolchain\ sources/Personal\ Builds/mingw-builds/$(func_map_gcc_name_to_gcc_version $4)'"
+	
+	echo "$_upload_cmd"
 }
 
 # **************************************************************************
@@ -1017,17 +1037,11 @@ function func_create_url_for_archive {
 	# $4 - threads model
 	# $5 - exceptions model
 
-	local _upload_url="$1/files/host-windows"
-	local _gcc_type=$(func_map_gcc_name_to_gcc_type $2)
 	local _gcc_version=$(func_map_gcc_name_to_gcc_version $2)
+	local _upload_url="$1/files/Toolchains targetting Win$( [[ $3 == i686 ]] && echo 32 || echo 64 )/Personal Builds/mingw-builds/$_gcc_version/threads-$4/$5"
+	_upload_url=${_upload_url// /%20}
 
-	[[ $_gcc_type == release ]] && {
-		_upload_url="$_upload_url/releases/$_gcc_version"
-	} || {
-		_upload_url="$_upload_url/testing/$_gcc_version"
-	}
-
-	echo "$_upload_url/$( [[ $3 == i686 ]] && echo 32-bit || echo 64-bit )/threads-$4/$5"
+	echo "$_upload_url"
 }
 
 function func_update_repository_file {
@@ -1042,7 +1056,7 @@ function func_update_repository_file {
 	
 	[[ ! -f $1 ]] && { die "repository file \"$1\" is not exists. terminate."; }
 	
-	printf "%5s|%3s|%5s|%-5s|%-5s|%s\n" $2 $3 $4 $5 "rev$6" "$7/$8" >> $1
+	printf "%5s|%-6s|%5s|%-5s|%-5s|%s\n" $2 $3 $4 $5 "rev$6" "$7/$8" >> $1
 }
 
 function func_create_repository_file_upload_cmd {
@@ -1050,7 +1064,7 @@ function func_create_repository_file_upload_cmd {
 	# $2 - sf user name
 	# $3 - sf user password
 
-	echo "sshpass -p $3 scp $1 $2@frs.sourceforge.net:$$PROJECT_FS_ROOT_DIR/host-windows"
+	echo "sshpass -p $3 scp $1 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/'Toolchains\ targetting\ Win32/Personal\ Builds/mingw-builds/installer'"
 }
 
 # **************************************************************************

@@ -2,8 +2,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -43,8 +43,8 @@ function func_build_info() {
 	echo "version : $MINGW_W64_BUILDS_VERSION" >> $INFO_FILE
 	echo "user    : $(whoami)" >> $INFO_FILE
 	echo "date    : $(date +%m.%d.%Y-%X)" >> $INFO_FILE
-	[[ -n $(echo $RUN_ARGS | grep '\-\-sf-password=') ]] && {
-		local readonly _RUN_ARGS=$(echo $RUN_ARGS | sed "s|$SF_PASSWORD|***********|g")
+	[[ -n $(echo $RUN_ARGS | grep '\-\-sf-pass=') ]] && {
+		local readonly _RUN_ARGS=$(echo "$RUN_ARGS" | sed "s|$SF_PASSWORD|***********|g")
 	} || {
 		local readonly _RUN_ARGS="$RUN_ARGS"
 	}
@@ -53,11 +53,13 @@ function func_build_info() {
 	echo >> $INFO_FILE
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE
-	echo "host gcc 32-bit:" >> $INFO_FILE
-	$i686_HOST_MINGW_PATH/bin/gcc -v >> $INFO_FILE 2>&1
-	echo >> $INFO_FILE
-	echo "# **************************************************************************" >> $INFO_FILE
-	echo >> $INFO_FILE
+	[[ -f $i686_HOST_MINGW_PATH/bin/gcc.exe ]] && {
+		echo "host gcc 32-bit:" >> $INFO_FILE
+		$i686_HOST_MINGW_PATH/bin/gcc -v >> $INFO_FILE 2>&1
+		echo >> $INFO_FILE
+		echo "# **************************************************************************" >> $INFO_FILE
+		echo >> $INFO_FILE
+	}
 	[[ -f $x86_64_HOST_MINGW_PATH/bin/gcc.exe ]] && {
 		echo "host gcc 64-bit:" >> $INFO_FILE
 		$x86_64_HOST_MINGW_PATH/bin/gcc -v >> $INFO_FILE 2>&1
@@ -66,11 +68,20 @@ function func_build_info() {
 		echo >> $INFO_FILE
 	}
 
-	echo "host ld:" >> $INFO_FILE
-	$i686_HOST_MINGW_PATH/bin/ld -V 2>&1 >> $INFO_FILE
-	echo >> $INFO_FILE
-	echo "# **************************************************************************" >> $INFO_FILE
-	echo >> $INFO_FILE
+	[[ -f $i686_HOST_MINGW_PATH/bin/ld.exe ]] && {
+		echo "host ld 32-bit:" >> $INFO_FILE
+		$i686_HOST_MINGW_PATH/bin/ld -V 2>&1 >> $INFO_FILE
+		echo >> $INFO_FILE
+		echo "# **************************************************************************" >> $INFO_FILE
+		echo >> $INFO_FILE
+	}
+	[[ -f $x86_64_HOST_MINGW_PATH/bin/ld.exe ]] && {
+		echo "host ld 64-bit:" >> $INFO_FILE
+		$x86_64_HOST_MINGW_PATH/bin/ld -V 2>&1 >> $INFO_FILE
+		echo >> $INFO_FILE
+		echo "# **************************************************************************" >> $INFO_FILE
+		echo >> $INFO_FILE
+	}
 
 	local subtargets_it=
 	for subtargets_it in ${SUBTARGETS[@]}; do
@@ -78,6 +89,9 @@ function func_build_info() {
 		local sub_rule=${rule_arr[0]}
 		[[ ${sub_rule} == build-info ]] && continue
 		[[ -z $(grep 'PKG_CONFIGURE_FLAGS=' $TOP_DIR/scripts/${sub_rule}.sh) ]] && continue
+		[[ $BUILD_EXTRAS == no ]] && {
+			[[ -z $(grep 'PKG_PRIORITY=extra' $TOP_DIR/scripts/${sub_rule}.sh) ]] || continue
+		}
 		source $TOP_DIR/scripts/${sub_rule}.sh
 		echo "name         : $PKG_NAME" >> $INFO_FILE
 		echo "type         : $PKG_TYPE" >> $INFO_FILE

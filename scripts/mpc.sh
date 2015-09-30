@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.0.1
+PKG_VERSION=1.0.3
 PKG_NAME=$BUILD_ARCHITECTURE-mpc-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=mpc-${PKG_VERSION}
 PKG_TYPE=.tar.gz

@@ -1,0 +1,1099 @@
+﻿<project version = 9 civer = 6.3.3 winver = "2.9/6.1.7601" >
+   <autorun >1</>
+   <autoclose >0</>
+   <compname >MinGW-W64</>
+   <produrl >https://sourceforge.net/projects/mingw-w64/</>
+   <ver ></>
+   <supurl ></>
+   <updurl ></>
+   <dlgfont >verdana</>
+   <headlogo >default - 1</>
+   <dlgfontsize >s8</>
+   <output >C:\msys64\home\nixman</>
+   <exename >mingw-w64-install.exe</>
+   <beffile ></>
+   <aftfile ></>
+   <uninclude >1</>
+   <lang >english</>
+   <addlang ></>
+   <selfextr >1</>
+   <instpath ></>
+   <voltype >nolimit</>
+   <volsize ></>
+   <volpattern >disk%i.pak</>
+   <password ></>
+   <progname >MinGW-W64</>
+   <appname ></>
+   <bl >MinGW-W64</>
+   <blurl >https://sourceforge.net/projects/mingw-w64</>
+   <unpath >inst</>
+   <unexe >uninstall.exe</>
+   <unlog >uninstall.ini</>
+   <installroot sorttype = 0 >
+      <children >
+         <install id = install expanded = 2 >
+            <children >
+               <_ id = background disabled = 1 >
+                  <desc ></>
+                  <head >#lcaption#</>
+                  <foot ></>
+                  <font >Times</>
+                  <height >36</>
+                  <bold >0</>
+                  <italic >0</>
+                  <backcol >0x0000FF</>
+                  <textcol >0xFFFFFF</>
+                  <shadecol >0x888888</>
+                  <uniform >0</>
+                  <backbmp ></>
+                  <stretchback >0</>
+               </>
+               <_ tag = 0 id = getuser disabled = 1 >
+                  <desc ></>
+                  <var >username</>
+                  <vars >appdata,apppath,userpath,desktop,progpath,startup</>
+                  <if ></>
+               </>
+               <_ tag = 0 id = sources expanded = 2 >
+                  <children >
+                     <_ tag = 0 id = empty ></>
+                  </>
+                  <desc ></>
+                  <ext >1</>
+                  <src >include : $"$prjpath$\mingw-w64.g"</>
+               </>
+               <_ id = checkreq expanded = 0 disabled = 1 >
+                  <children >
+                     <_ id = empty ></>
+                  </>
+                  <desc ></>
+                  <checktype >admin</>
+                  <resvar >ischeck</>
+                  <not >0</>
+                  <msg ></>
+               </>
+               <_ tag = 0 id = varset >
+                  <desc ></>
+                  <varlist >
+                     <rows >
+                        <_ >
+                           <varname >loadrep</>
+                           <value >Getting repository description file...</>
+                           <if ></>
+                        </>
+                        <_ >
+                           <varname >addsize</>
+                           <value >70000</>
+                           <if ></>
+                        </>
+                        <_ >
+                           <varname >iscreatesh</>
+                           <value >1</>
+                           <if ></>
+                        </>
+                        <_ >
+                           <varname >welcometext</>
+                           <value >Welcome text must be here...</>
+                           <if ></>
+                        </>
+                        <_ >
+                           <varname >shgroup</>
+                           <value >MinGW-W64 project</>
+                           <if ></>
+                        </>
+                        <_ disabled = 1 >
+                           <varname >urlfile</>
+                           <value >[InternetShortcut]
+URL=https://sourceforge.net/projects/mingw-w64/</>
+                           <if ></>
+                        </>
+                        <_ >
+                           <varname >createsh</>
+                           <value >Create shortcuts in Start Menu</>
+                           <if ></>
+                        </>
+                        <_ >
+                           <varname >err_download</>
+                           <value >The file has been downloaded incorrectly!</>
+                           <if ></>
+                        </>
+                        <_ >
+                           <varname >err_repo</>
+                           <value >Cannot download repository.txt</>
+                           <if ></>
+                        </>
+                        <_ >
+                           <varname >err_dwn</>
+                           <value >Cannot download the release file</>
+                           <if ></>
+                        </>
+                        <_ >
+                           <varname >sourceforge</>
+                           <value >http://sourceforge.net/projects/mingw-w64/</>
+                           <if ></>
+                        </>
+                     </>
+                  </>
+               </>
+               <_ tag = 0 id = tempfiles >
+                  <desc ></>
+                  <templist >
+                     <rows >
+                        <_ >
+                           <filename >$prjpath$\index.html</>
+                           <varname ></>
+                           <if ></>
+                        </>
+                     </>
+                  </>
+               </>
+               <_ id = dlglang disabled = 1 >
+                  <desc ></>
+                  <buttons >nc</>
+                  <design >left</>
+                  <headlogo ></>
+                  <varlist >
+                     <rows ></>
+                  </>
+                  <head ></>
+                  <headtext ></>
+                  <dlgtext ></>
+                  <if ></>
+               </>
+               <_ tag = 0 id = dlgwel >
+                  <desc ></>
+                  <head ></>
+                  <headtext ></>
+                  <dlgtext >Welcome to the MinGW-W64 online installer.</>
+                  <headlogo ></>
+                  <design >left</>
+                  <buttons >auto</>
+                  <if ></>
+                  <varlist >
+                     <rows ></>
+                  </>
+               </>
+               <_ id = dlglic disabled = 1 >
+                  <desc ></>
+                  <file ></>
+                  <print >1</>
+                  <iagree >radio</>
+                  <buttons >pnc</>
+                  <design >left</>
+                  <headlogo ></>
+                  <varlist >
+                     <rows >
+                        <_ >
+                           <varname >Liccolor</>
+                           <value >1</>
+                        </>
+                     </>
+                  </>
+                  <head ></>
+                  <headtext ></>
+                  <if ></>
+               </>
+               <_ tag = 0 id = tempfiles disabled = 1 >
+                  <desc ></>
+                  <templist >
+                     <rows >
+                        <_ >
+                           <filename >C:\temp\repfile.txt</>
+                           <varname >repfile</>
+                           <if ></>
+                        </>
+                     </>
+                  </>
+               </>
+               <_ tag = 0 id = readvar disabled = 1 >
+                  <desc ></>
+                  <varname >repo</>
+                  <path >custom</>
+                  <name >#repfile#</>
+                  <append >0</>
+               </>
+               <_ tag = 0 id = popup expanded = 2 disabled = 0 >
+                  <children >
+                     <_ tag = 0 id = download >
+                        <desc ></>
+                        <url >#sourceforge#/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/</>
+                        <filelist >
+                           <rows >
+                              <_ >
+                                 <urlfile >repository.txt</>
+                                 <path >temp</>
+                                 <custpath ></>
+                                 <file >repository.txt</>
+                                 <if ></>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = readvar >
+                        <desc ></>
+                        <varname >reptext</>
+                        <path >temp</>
+                        <name >repository.txt</>
+                        <append >0</>
+                     </>
+                     <_ tag = 0 id = if expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = sources expanded = 2 >
+                              <children >
+                                 <_ tag = 0 id = empty ></>
+                              </>
+                              <desc ></>
+                              <ext >0</>
+                              <src >macrox_setint("errcode", inet_error())
+$body$</>
+                           </>
+                           <_ tag = 0 id = exit >
+                              <desc ></>
+                              <extype >exit</>
+                              <code >1</>
+                              <msg >#err_repo# [#errcode#]</>
+                           </>
+                        </>
+                        <desc ></>
+                        <else ></>
+                        <condlist >
+                           <rows >
+                              <_ >
+                                 <varname >reptext</>
+                                 <iftype >empty</>
+                                 <not >0</>
+                                 <value ></>
+                                 <orand >and</>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = parse >
+                        <desc ></>
+                        <varname >reptext</>
+                        <igncase >1</>
+                        <ruleslist >
+                           <rows >
+                              <_ >
+                                 <prefix >url=</>
+                                 <varname >redirurl</>
+                                 <postfix >"></>
+                              </>
+                              <_ >
+                                 <prefix >error></>
+                                 <varname >ERROR</>
+                                 <postfix >&x3c;/error></>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = replacetext >
+                        <desc ></>
+                        <varname >redirurl</>
+                        <igncase >1</>
+                        <getval >0</>
+                        <replist >
+                           <rows >
+                              <_ >
+                                 <before >amp;</>
+                                 <after ></>
+                                 <if ></>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = download >
+                        <desc ></>
+                        <url ></>
+                        <filelist >
+                           <rows >
+                              <_ >
+                                 <urlfile >#redirurl#</>
+                                 <path >temp</>
+                                 <custpath ></>
+                                 <file >repfile.txt</>
+                                 <if ></>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = readvar >
+                        <desc ></>
+                        <varname >repo</>
+                        <path >temp</>
+                        <name >repfile.txt</>
+                        <append >0</>
+                     </>
+                  </>
+                  <desc ></>
+                  <poptype >text</>
+                  <name >#loadrep#</>
+                  <time >500</>
+                  <if ></>
+               </>
+               <_ tag = 0 id = sources expanded = 2 >
+                  <children >
+                     <_ tag = 0 id = empty ></>
+                  </>
+                  <desc ></>
+                  <ext >0</>
+                  <src >loadversions()
+$body$</>
+               </>
+               <_ tag = 0 id = if expanded = 2 >
+                  <children >
+                     <_ tag = 0 id = exit >
+                        <desc ></>
+                        <extype >exit</>
+                        <code >1</>
+                        <msg >#err_repo#</>
+                     </>
+                  </>
+                  <desc ></>
+                  <else ></>
+                  <condlist >
+                     <rows >
+                        <_ >
+                           <varname >repo</>
+                           <iftype >empty</>
+                           <not >0</>
+                           <value ></>
+                           <orand >and</>
+                        </>
+                     </>
+                  </>
+               </>
+               <_ tag = 0 id = dlgsets >
+                  <desc ></>
+                  <head ></>
+                  <headtext ></>
+                  <headlogo ></>
+                  <buttons >auto</>
+                  <if ></>
+                  <setlist >
+                     <rows >
+                        <_ >
+                           <type >combo</>
+                           <left >40</>
+                           <width >30</>
+                           <varname >vers</>
+                           <value >Version</>
+                        </>
+                        <_ >
+                           <type >combo</>
+                           <left >40</>
+                           <width >30</>
+                           <varname >arch</>
+                           <value >Architecture</>
+                        </>
+                        <_ >
+                           <type >combo</>
+                           <left >40</>
+                           <width >30</>
+                           <varname >thread</>
+                           <value >Threads</>
+                        </>
+                        <_ >
+                           <type >combo</>
+                           <left >40</>
+                           <width >30</>
+                           <varname >except</>
+                           <value >Exception</>
+                        </>
+                        <_ >
+                           <type >combo</>
+                           <left >40</>
+                           <width >30</>
+                           <varname >build</>
+                           <value >Build revision</>
+                        </>
+                     </>
+                  </>
+                  <varlist >
+                     <rows >
+                        <_ >
+                           <varname >Dfunc</>
+                           <value >vercmdproc</>
+                        </>
+                     </>
+                  </>
+               </>
+               <_ id = dlgpath >
+                  <desc ></>
+                  <buttons >auto</>
+                  <design >left</>
+                  <headlogo ></>
+                  <chlist >
+                     <rows >
+                        <_ >
+                           <varname >iscreatesh</>
+                           <value >#createsh#</>
+                        </>
+                     </>
+                  </>
+                  <varlist >
+                     <rows >
+                        <_ >
+                           <varname >H:2005</>
+                           <value >0</>
+                        </>
+                     </>
+                  </>
+                  <head ></>
+                  <headtext ></>
+                  <dlgtext ></>
+                  <pathadd ></>
+                  <enforce >0</>
+                  <if ></>
+                  <savepath >0</>
+               </>
+               <_ id = dlgprog expanded = 2 >
+                  <children >
+                     <_ tag = 0 id = sources expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = empty ></>
+                        </>
+                        <desc ></>
+                        <ext >0</>
+                        <src >calcsize()
+$body$</>
+                     </>
+                     <_ tag = 0 id = progset >
+                        <desc ></>
+                        <text ></>
+                        <dirname >>Downloading file...</>
+                        <name >#originalfile#</>
+                        <addsize ></>
+                        <progper ></>
+                     </>
+                     <_ tag = 0 id = download disabled = 0 >
+                        <desc ></>
+                        <url ></>
+                        <filelist >
+                           <rows >
+                              <_ >
+                                 <urlfile >#urlapp#</>
+                                 <path >temp</>
+                                 <custpath ></>
+                                 <file >#originalfile#</>
+                                 <if ></>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = download disabled = 1 >
+                        <desc ></>
+                        <url ></>
+                        <filelist >
+                           <rows >
+                              <_ >
+                                 <urlfile >#urlapp#</>
+                                 <path >temp</>
+                                 <custpath ></>
+                                 <file >down.txt</>
+                                 <if ></>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = readvar disabled = 1 >
+                        <desc ></>
+                        <varname >downtext</>
+                        <path >temp</>
+                        <name >down.txt</>
+                        <append >0</>
+                     </>
+                     <_ tag = 0 id = parse disabled = 1 >
+                        <desc ></>
+                        <varname >downtext</>
+                        <igncase >1</>
+                        <ruleslist >
+                           <rows >
+                              <_ >
+                                 <prefix >url=</>
+                                 <varname >redirurl</>
+                                 <postfix >"></>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = replacetext disabled = 1 >
+                        <desc ></>
+                        <varname >redirurl</>
+                        <igncase >1</>
+                        <getval >0</>
+                        <replist >
+                           <rows >
+                              <_ >
+                                 <before >amp;</>
+                                 <after ></>
+                                 <if ></>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = if expanded = 2 disabled = 1 >
+                        <children >
+                           <_ tag = 0 id = exit >
+                              <desc ></>
+                              <extype >exit</>
+                              <code >1</>
+                              <msg >#err_dwn#</>
+                           </>
+                        </>
+                        <desc ></>
+                        <else ></>
+                        <condlist >
+                           <rows >
+                              <_ >
+                                 <varname >redirurl</>
+                                 <iftype >empty</>
+                                 <not >0</>
+                                 <value ></>
+                                 <orand >and</>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = sources expanded = 2 disabled = 1 >
+                        <children >
+                           <_ tag = 0 id = empty ></>
+                        </>
+                        <desc ></>
+                        <ext >0</>
+                        <src >finfo fi
+str sfile
+macrox_do(  sfile = "#tempinstpath#\\#originalfile#" )
+
+//dwnflag = $HTTPF_CONTINUE
+//label againdwn
+$body$
+//congetch("\( fi.sizelo)==\(dwnsize)== \(dwnallsize )\l")
+if !getfileinfo ( macrox_do( "#tempinstpath#\\#originalfile#" ), fi ) || fi.sizelo != dwnallsize
+{
+     msg_error( "#err_download#", "#lcaption#")
+//    goto againdwn
+}
+//print("OOPSS=\( fi.sizelo)==\(dwnsize)\l")</>
+                     </>
+                     <_ tag = 0 id = download disabled = 1 >
+                        <desc ></>
+                        <url ></>
+                        <filelist >
+                           <rows >
+                              <_ >
+                                 <urlfile >#redirurl#</>
+                                 <path >temp</>
+                                 <custpath ></>
+                                 <file >#originalfile#</>
+                                 <if ></>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = sources expanded = 2 disabled = 0 >
+                        <children >
+                           <_ tag = 0 id = exit >
+                              <desc ></>
+                              <extype >exit</>
+                              <code >1</>
+                              <msg ></>
+                           </>
+                        </>
+                        <desc ></>
+                        <ext >0</>
+                        <src >finfo fi
+//str sfile
+//macrox_do(  sfile = "#tempinstpath#\\#originalfile#" )
+if !getfileinfo ( macrox_do( "#tempinstpath#\\#originalfile#" ), fi ) || fi.sizelo != dwnallsize
+{
+     msg_error( "#err_download#", "#lcaption#")
+     $body$
+}</>
+                     </>
+                     <_ tag = 0 id = progset >
+                        <desc ></>
+                        <text ></>
+                        <dirname >Direcory:>Decompressing file...</>
+                        <name ></>
+                        <addsize ></>
+                        <progper ></>
+                     </>
+                     <_ tag = 0 id = if expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = redir64 >
+                              <desc ></>
+                              <redir >off</>
+                              <var >progfiles64</>
+                           </>
+                        </>
+                        <desc ></>
+                        <else ></>
+                        <condlist >
+                           <rows >
+                              <_ >
+                                 <varname >arch</>
+                                 <iftype >equali</>
+                                 <not >0</>
+                                 <value >x64</>
+                                 <orand >and</>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = decomp7z disabled = 0 >
+                        <desc ></>
+                        <srcpath >temp</>
+                        <name >#originalfile#</>
+                        <path >inst</>
+                        <custpath ></>
+                        <ifexist >overnewer</>
+                        <wild >*.*</>
+                        <ignwild ></>
+                        <if ></>
+                     </>
+                     <_ tag = 0 id = unpack >
+                        <desc ></>
+                        <comptype >default</>
+                        <ratio >r5</>
+                        <solid >1</>
+                        <path >inst</>
+                        <custpath ></>
+                        <ifexist >over</>
+                        <if ></>
+                        <srclist >
+                           <rows >
+                              <_ >
+                                 <filename >$prjpath$\mingw-w64.url</>
+                                 <recurse >0</>
+                                 <justfile >0</>
+                                 <emptydir >0</>
+                                 <exclude ></>
+                              </>
+                              <_ >
+                                 <filename >$prjpath$\mingw-w64.bat</>
+                                 <recurse >0</>
+                                 <justfile >0</>
+                                 <emptydir >0</>
+                                 <exclude ></>
+                              </>
+                           </>
+                        </>
+                        <varlist >
+                           <rows ></>
+                        </>
+                     </>
+                     <_ tag = 0 id = sources expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = empty ></>
+                        </>
+                        <desc ></>
+                        <ext >0</>
+                        <src >getdirname()
+$body$</>
+                     </>
+                     <_ tag = 0 id = substvar >
+                        <desc ></>
+                        <path >inst</>
+                        <name >mingw-w64.bat</>
+                        <syschar >#</>
+                        <if ></>
+                     </>
+                     <_ tag = 0 id = if expanded = 2 >
+                        <children >
+                           <_ id = shcut >
+                              <desc ></>
+                              <shpath >prog</>
+                              <shfile >#lunname#</>
+                              <path >inst</>
+                              <file >uninstall.exe</>
+                              <icon ></>
+                              <cmdline ></>
+                              <comment ></>
+                              <work >inst</>
+                              <defwork ></>
+                              <runas >norm</>
+                              <runasadmin >0</>
+                           </>
+                           <_ id = shcut >
+                              <desc ></>
+                              <shpath >prog</>
+                              <shfile >Open project web-site</>
+                              <path >inst</>
+                              <file >mingw-w64.url</>
+                              <icon ></>
+                              <cmdline ></>
+                              <comment ></>
+                              <work >inst</>
+                              <defwork ></>
+                              <runas >norm</>
+                              <runasadmin >0</>
+                           </>
+                           <_ tag = 0 id = shcut >
+                              <desc ></>
+                              <shpath >prog</>
+                              <shfile >Run terminal</>
+                              <path >inst</>
+                              <file >mingw-w64.bat</>
+                              <cmdline ></>
+                              <comment ></>
+                              <icon ></>
+                              <work >inst</>
+                              <defwork ></>
+                              <runas >norm</>
+                              <runasadmin >0</>
+                           </>
+                        </>
+                        <desc ></>
+                        <else ></>
+                        <condlist >
+                           <rows >
+                              <_ >
+                                 <varname >iscreatesh</>
+                                 <iftype >check</>
+                                 <not >0</>
+                                 <value ></>
+                                 <orand >and</>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ id = uninstexe >
+                        <desc ></>
+                     </>
+                     <_ id = unar >
+                        <desc ></>
+                        <name ></>
+                        <path >inst</>
+                        <ifile ></>
+                     </>
+                  </>
+                  <desc >Go into the item for viewing unpacking actions.</>
+                  <auto >0</>
+                  <buttons >nc</>
+                  <design >left</>
+                  <headlogo ></>
+                  <varlist >
+                     <rows ></>
+                  </>
+                  <head ></>
+                  <headtext ></>
+                  <dlgtext ></>
+                  <if ></>
+               </>
+               <_ id = dlgfin >
+                  <desc ></>
+                  <buttons >c</>
+                  <design >left</>
+                  <headlogo ></>
+                  <chlist >
+                     <rows ></>
+                  </>
+                  <varlist >
+                     <rows ></>
+                  </>
+                  <head ></>
+                  <headtext ></>
+                  <dlgtext ></>
+               </>
+            </>
+            <icofile >default</>
+            <resfile ></>
+            <leftimg >install - 1</>
+            <caption ></>
+            <verinfo >1</>
+            <noadmin >0</>
+            <selfdelete >0</>
+         </>
+      </>
+   </>
+   <uninstallroot sorttype = 0 >
+      <children >
+         <uninstall id = uninstall expanded = 2 >
+            <children >
+               <_ id = dlguconf >
+                  <desc ></>
+                  <buttons >c</>
+                  <design >left</>
+                  <headlogo ></>
+                  <varlist >
+                     <rows ></>
+                  </>
+               </>
+               <_ id = dlguprog expanded = 2 >
+                  <children >
+                     <_ id = unprocess >
+                        <desc ></>
+                     </>
+                  </>
+                  <desc ></>
+                  <buttons >nc</>
+                  <design >left</>
+                  <headlogo ></>
+                  <varlist >
+                     <rows ></>
+                  </>
+               </>
+               <_ id = dlgundel >
+                  <desc ></>
+                  <buttons >nc</>
+                  <design >left</>
+                  <headlogo ></>
+                  <varlist >
+                     <rows ></>
+                  </>
+               </>
+               <_ id = dlgufin >
+                  <desc ></>
+                  <buttons >nc</>
+                  <design >left</>
+                  <headlogo ></>
+                  <varlist >
+                     <rows ></>
+                  </>
+               </>
+            </>
+            <unicon >uninstall</>
+            <unresfile ></>
+            <leftimg >uninstall - 1</>
+            <caption ></>
+            <noadmin >0</>
+         </>
+      </>
+   </>
+   <phone ></>
+   <shfolder ></>
+   <headcol ></>
+   <headtext ></>
+   <headimg ></>
+   <stretchback >0</>
+   <custfont ></>
+   <silentpar >-silent</>
+   <upinclude >0</>
+   <uppath >inst</>
+   <upexe >update.exe</>
+   <upurl ></>
+   <upxml >update.ini</>
+   <upredir ></>
+   <ignnotfound >0</>
+   <csfile ></>
+   <csinst >"<exefilename>"</>
+   <csuninst >"<exefilename>"</>
+   <csupdate >"<exefilename>"</>
+   <crautorun >0</>
+   <autoicon ></>
+   <multilist >
+      <rows ></>
+   </>
+   <updateroot sorttype = 0 >
+      <children >
+         <update id = update expanded = 2 >
+            <children >
+               <_ tag = 0 id = varset >
+                  <desc ></>
+                  <varlist >
+                     <rows >
+                        <_ >
+                           <varname >silent</>
+                           <value >0</>
+                           <if ></>
+                        </>
+                        <_ >
+                           <varname >param</>
+                           <value >#updatexml#</>
+                           <if ></>
+                        </>
+                     </>
+                  </>
+               </>
+               <_ tag = 0 id = if expanded = 2 >
+                  <children >
+                     <_ tag = 0 id = varset >
+                        <desc ></>
+                        <varlist >
+                           <rows >
+                              <_ >
+                                 <varname >silent</>
+                                 <value >1</>
+                                 <if ></>
+                              </>
+                           </>
+                        </>
+                     </>
+                  </>
+                  <desc ></>
+                  <else ></>
+                  <condlist >
+                     <rows >
+                        <_ >
+                           <varname ></>
+                           <iftype >ifcommand</>
+                           <not >0</>
+                           <value >-s</>
+                           <orand >and</>
+                        </>
+                     </>
+                  </>
+               </>
+               <_ tag = 0 id = download >
+                  <desc ></>
+                  <url ></>
+                  <filelist >
+                     <rows >
+                        <_ >
+                           <urlfile >#updatexml#</>
+                           <path >temp</>
+                           <custpath ></>
+                           <file >update.ini</>
+                           <if ></>
+                        </>
+                     </>
+                  </>
+               </>
+               <_ tag = 0 id = iniget >
+                  <desc ></>
+                  <path >temp</>
+                  <ifile >update.ini</>
+                  <section >main</>
+                  <inilist >
+                     <rows >
+                        <_ >
+                           <key >version</>
+                           <varname >newver</>
+                           <defval >0</>
+                        </>
+                        <_ >
+                           <key >url</>
+                           <varname >url</>
+                           <defval ></>
+                        </>
+                     </>
+                  </>
+               </>
+               <_ tag = 0 id = if expanded = 2 >
+                  <children >
+                     <_ tag = 0 id = if expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = exit >
+                              <desc ></>
+                              <extype >exit</>
+                              <code >1</>
+                              <msg ></>
+                           </>
+                        </>
+                        <desc ></>
+                        <else ></>
+                        <condlist >
+                           <rows >
+                              <_ >
+                                 <varname >silent</>
+                                 <iftype >notempty</>
+                                 <not >0</>
+                                 <value ></>
+                                 <orand >and</>
+                              </>
+                           </>
+                        </>
+                     </>
+                     <_ tag = 0 id = if expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = exit >
+                              <desc ></>
+                              <extype >exit</>
+                              <code >1</>
+                              <msg >#luperrdown#</>
+                           </>
+                        </>
+                        <desc ></>
+                        <else ></>
+                        <condlist >
+                           <rows >
+                              <_ >
+                                 <varname >silent</>
+                                 <iftype >empty</>
+                                 <not >0</>
+                                 <value ></>
+                                 <orand >and</>
+                              </>
+                           </>
+                        </>
+                     </>
+                  </>
+                  <desc ></>
+                  <else ></>
+                  <condlist >
+                     <rows >
+                        <_ >
+                           <varname >newver</>
+                           <iftype >empty</>
+                           <not >0</>
+                           <value ></>
+                           <orand >and</>
+                        </>
+                     </>
+                  </>
+               </>
+               <_ tag = 0 id = if expanded = 2 >
+                  <children >
+                     <_ tag = 0 id = message expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = shell >
+                              <desc ></>
+                              <path >custom</>
+                              <name >#url#</>
+                              <if ></>
+                           </>
+                        </>
+                        <desc ></>
+                        <type >quest</>
+                        <caption >#lupcaption#</>
+                        <text >#lupnewer#</>
+                        <btns >yesno</>
+                        <resvar >msgret</>
+                        <msgif >yes</>
+                        <if ></>
+                     </>
+                  </>
+                  <desc ></>
+                  <else >lowerver</>
+                  <condlist >
+                     <rows >
+                        <_ >
+                           <varname >newver</>
+                           <iftype >greaterver</>
+                           <not >0</>
+                           <value >#ver#</>
+                           <orand >and</>
+                        </>
+                     </>
+                  </>
+               </>
+               <_ tag = 0 id = function expanded = 2 >
+                  <children >
+                     <_ tag = 0 id = message expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = empty ></>
+                        </>
+                        <desc ></>
+                        <type >info</>
+                        <caption >#lupcaption#</>
+                        <text >#lupok#</>
+                        <btns >def</>
+                        <resvar >msgret</>
+                        <msgif >def</>
+                        <if >!silent</>
+                     </>
+                  </>
+                  <desc ></>
+                  <name >lowerver</>
+               </>
+            </>
+            <upicon >update</>
+            <resfile ></>
+            <leftimg >update - 1</>
+            <caption ></>
+            <noadmin >1</>
+         </>
+      </>
+   </>
+</>

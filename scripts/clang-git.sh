@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -50,7 +50,14 @@ PKG_PRIORITY=main
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	clang/clang-3.4-enable-tls.patch
+	clang/clang-3.5-mingw-w64-header-search.patch
+	clang/clang-3.5-mingw-driver.patch
+	clang/clang-3.5-win64-seh.patch
+	clang/llvm-3.5-emit-reg-names.patch
+	clang/llvm-3.5-win64-exceptions.patch
+)
 
 #
 
@@ -65,7 +72,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--enable-optimized
 	--disable-assertions
-	--disable-pthreads
+	--enable-pthreads
 	#--enable-shared
 	#--enable-embed-stdcxx
 	#--enable-libcpp
@@ -96,6 +103,21 @@ PKG_MAKE_FLAGS=(
 PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	install
+)
+
+#
+PKG_EXECUTE_AFTER_INSTALL=(
+	"[[ ! -f $PREFIX/bin/clang.exe ]] && cp -f $PREFIX/bin/$TARGET-clang.exe $PREFIX/bin/clang.exe"
+	"[[ ! -f $PREFIX/bin/clang++.exe ]] && cp -f $PREFIX/bin/$TARGET-clang++.exe $PREFIX/bin/clang++.exe"
+	" mkdir -p $PREFIX/lib/clang-analyzer"
+	"cp -rf $SRCS_DIR/$PKG_NAME/tools/clang/tools/scan-build $PREFIX/lib/clang-analyzer/"
+	"cp -rf $SRCS_DIR/$PKG_NAME/tools/clang/tools/scan-view $PREFIX/lib/clang-analyzer/"
+	"cp -f $PREFIX/lib/clang-analyzer/scan-build/scan-build $PREFIX/bin/scan-build"
+	"cp -f $PREFIX/lib/clang-analyzer/scan-view/scan-view $PREFIX/bin/scan-view"
+	# scan-build looks for clang within the same directory
+	"cp -f $PREFIX/bin/clang.exe $PREFIX/lib/clang-analyzer/scan-build/clang.exe"
+	"python2 -m compileall $PREFIX/lib/clang-analyzer"
+	"python2 -O -m compileall $PREFIX/lib/clang-analyzer"	
 )
 
 # **************************************************************************

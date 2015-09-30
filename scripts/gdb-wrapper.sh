@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -35,21 +35,27 @@
 
 # **************************************************************************
 
-[[ ! -f $BUILDS_DIR/gdb-wrapper.marker ]] && {
-	mkdir -p $BUILDS_DIR/gdb-wrapper
-	cd $BUILDS_DIR/gdb-wrapper
-	echo -n "--> building..."
-	$HOST-gcc ${COMMON_CFLAGS} -U_DEBUG -o gdb.exe ${SOURCES_DIR}/gdb-wrapper/gdb-wrapper.c || { die "cannot build gdb-wrapper.exe"; }
-	echo " done"
-	echo -n "--> installing..."
+PKG_NAME=gdb-wrapper
+PKG_DIR_NAME=gdb-wrapper
+PKG_PRIORITY=extra
+
+PKG_MAKE_PROG=$HOST-gcc
+PKG_MAKE_FLAGS=(
+	${COMMON_CFLAGS}
+	-U_DEBUG
+	-o gdb.exe
+	${SOURCES_DIR}/gdb-wrapper/gdb-wrapper.c
+)
+
+PKG_EXECUTE_AFTER_INSTALL=(
+	gdb_wrapper_install_script
+)
+
+function gdb_wrapper_install_script {
 	[[ ! -f $PREFIX/bin/gdborig.exe ]] && {
 		mv $PREFIX/bin/gdb.exe $PREFIX/bin/gdborig.exe
 	}
 	cp -f gdb.exe $PREFIX/bin || die "Cannot copy gdb.exe to $PREFIX/bin"
-	echo " done"
-	touch $BUILDS_DIR/gdb-wrapper.marker
-} || {
-	echo "---> installed"
 }
 
 # **************************************************************************

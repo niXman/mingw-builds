@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -36,13 +36,8 @@
 # **************************************************************************
 
 PKG_NAME=libmangle-${RUNTIME_VERSION}
-PKG_DIR_NAME=libmangle-${RUNTIME_VERSION}
-PKG_TYPE=svn
-PKG_URLS=(
-	"svn://svn.code.sf.net/p/mingw-w64/code/$RUNTIME_BRANCH/mingw-w64-libraries/libmangle|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
-)
+PKG_DIR_NAME=mingw-w64${MINGW_PKG_DIR_VERSION_SUFFIX}/mingw-w64-libraries/libmangle
 
-PKG_REVISION=
 PKG_PRIORITY=extra
 
 #

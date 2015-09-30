@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -38,7 +38,7 @@
 function func_compress_mingw() {
 	case $BUILD_MODE in
 		clang)
-			local ARCHIVE_NAME=$ARCHIVES_DIR/clang-$BUILD_VERSION-$BUILD_ARCHITECTURE.7z
+			local ARCHIVE_NAME=$ARCHIVES_DIR/clang-$BUILD_VERSION-$BUILD_ARCHITECTURE-$EXCEPTIONS_MODEL-$THREADS_MODEL-$REV_NUM.7z
 		;;
 		gcc)
 			local ARCHIVE_NAME=$( \

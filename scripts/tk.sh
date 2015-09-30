@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.6.1
+PKG_VERSION=8.6.4
 PKG_NAME=tk${PKG_VERSION}
 PKG_DIR_NAME=tk${PKG_VERSION}
 PKG_SUBDIR_NAME=win
@@ -49,8 +49,18 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
-	tk/tk-8.6.1-mingwexcept.patch
-	tk/tk-8.6.1-prevent-tclStubsPtr-segfault.patch
+	tk/002-implib-name.mingw.patch
+	tk/003-fix-forbidden-colon-in-paths.mingw.patch
+	tk/004-install-man.mingw.patch
+	tk/006-prevent-tclStubsPtr-segfault.patch
+	$([[ $RUNTIME_VERSION == v1 || $RUNTIME_VERSION == v2 ]] && echo "tk/007-mingw-w64-compatibility-fix.patch")
+	tk/008-dont-link-shared-with--static-libgcc.patch
+)
+
+#
+
+PKG_EXECUTE_AFTER_PATCH=(
+	"cd win && autoreconf -fi"
 )
 
 #
@@ -76,8 +86,8 @@ PKG_CONFIGURE_FLAGS=(
 PKG_EXECUTE_AFTER_CONFIGURE=(
 	"sed -i -e 's,mingw-tcl,tcl,g' win/Makefile"
 	"sed -i -e 's,/usr/include,$LIBS_DIR/include,g' win/Makefile"
-	"sed -i -e 's,libtclstub86.a,libtclstub86.dll.a,g' win/Makefile"
-	"sed -i -e 's,tcl8.5/libtclstub86,libtclstub86,g' win/Makefile"
+#	"sed -i -e 's,libtclstub86.a,libtclstub86.dll.a,g' win/Makefile"
+#	"sed -i -e 's,tcl8.5/libtclstub86,libtclstub86,g' win/Makefile"
 	"sed -i -e 's,libtcl86.a,libtcl86.dll.a,g' win/Makefile"
 	"sed -i -e 's,tcl8.6/libtcl86,libtcl86,g' win/Makefile"
 )
@@ -102,8 +112,8 @@ PKG_INSTALL_FLAGS=(
 
 PKG_EXECUTE_AFTER_INSTALL=(
 	"ln -s $LIBS_DIR/bin/wish86.exe $LIBS_DIR/bin/wish.exe"
-	"mv $LIBS_DIR/lib/libtk86.a $LIBS_DIR/lib/libtk86.dll.a"
-	"mv $LIBS_DIR/lib/libtkstub86.a $LIBS_DIR/lib/libtkstub86.dll.a"
+#	"mv $LIBS_DIR/lib/libtk86.a $LIBS_DIR/lib/libtk86.dll.a"
+#	"mv $LIBS_DIR/lib/libtkstub86.a $LIBS_DIR/lib/libtkstub86.dll.a"
 	"ln -s $LIBS_DIR/lib/libtk86.dll.a $LIBS_DIR/lib/libtk.dll.a"
 	"ln -s $LIBS_DIR/lib/tkConfig.sh $LIBS_DIR/lib/tk8.6/tkConfig.sh"
 	"mkdir -p $LIBS_DIR/include/tk-private/{generic,win}"

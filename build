@@ -4,8 +4,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -35,15 +35,15 @@
 #
 
 # **************************************************************************
-# Loading functions
-source library/functions.sh
 
 readonly ORIGINAL_PATH=$PATH
-readonly TOP_DIR=$(func_simplify_path "$PWD")
+readonly TOP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-# **************************************************************************
-# Loading default configuration
-source library/default_config.sh
+# Loading functions
+source $TOP_DIR/library/functions.sh
+
+# Loading configuration
+source $TOP_DIR/library/config.sh
 
 # **************************************************************************
 
@@ -54,17 +54,21 @@ readonly RUN_ARGS="$@"
 	echo "  help:"
 	echo "    --buildroot=<path>         - specifies the build root directory"
 	echo "    --fetch-only               - download sources without building"
+	echo "    --patch-on-fetch           - patch sources when fetching them"
 	echo "    --update-sources           - try to update sources from repositories before build"
 	echo "    --exceptions=<type>        - specifies exceptions model for GCC"
-	echo "                                 available: dwarf, seh, sjlj"
+	echo "                                 available: dwarf, seh, sjlj, dwarfseh (picks by architecture)"
 	echo "    --use-lto                  - build with LTO using"
 	echo "    --bootstrap                - bootstraping GCC"
 	echo "    --no-multilib              - build GCC without multilib support"
+	echo "    --no-extras                - don't build extra packages, only build GCC/clang and the runtime"
 	echo "    --no-strip                 - don't strip dll's & executables on install"
 	echo "    --static-gcc               - build static GCC"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
 	echo "    --jobs=N                   - specifies number of parallel make threads"
-	echo "    --rt-version=<v3|v4|trunk> - specifies mingw-w64 runtime version to build"
+	echo "    --rt-version=<v3|v4|trunk|<release>> - specifies mingw-w64 runtime version to build"
+	echo "                                 v3, v4, trunk specify specific branches in the git repo"
+	echo "                                 <release> is a specific release version, uses the tarball"
 	echo "    --rev=N                    - specifies number of the build revision"
 	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++"
 	echo "                                 available: win32, posix"
@@ -72,25 +76,27 @@ readonly RUN_ARGS="$@"
 	echo "    --mode=<[clang|gcc|python]-version>  - specify building software with version"
 	echo "    --with-testsuite           - run testsuite for packages if possible"
 	echo "    --version                  - print the version of the MinGW-W64 builds scripts"
-	echo "    --mingw-compress           - compressing MinGW"
+	echo "    --bin-compress             - compressing binaries"
 	echo "    --src-compress             - compressing sources"
 	echo "    --mingw-upload             - upload toolchain archives to sf-project"
 	echo "    --src-upload               - upload sources archive to sf-project"
 	echo "    --sf-user=<username>       - username to upload to sf-project"
-	echo "    --sf-password=<user_pass>  - password to upload to sf-project"	
+	echo "    --sf-pass=<user_pass>  - password to upload to sf-project"
 	echo "    --cflags='<flags>'         - additional CFLAGS"
 	echo "    --cxxflags='<flags>'       - additional CXXFLAGS"
 	echo "    --cppflags='<flags>'       - additional CPPFLAGS"
 	echo "    --ldflags='<flags>'        - additional LDFLAGS"
 	echo "    --march-x32='<arch>'       - arch for x32 target"
-	echo "    --mtume-x32='<arch>'       - tune for x32 target"
+	echo "    --mtune-x32='<arch>'       - tune for x32 target"
 	echo "    --march-x64='<arch>'       - arch for x64 target"
-	echo "    --mtume-x64='<arch>'       - tune for x64 target"
+	echo "    --mtune-x64='<arch>'       - tune for x64 target"
 	echo "    --enable-languages=<langs> - comma separated list(without spaces) of gcc"
 	echo "                                 supported languages. available languages:"
 	echo "                                 ada,c,c++,fortran,objc,obj-c++"
-	echo "  available Python versions: 2.7.3, 2.7.4, 2.7.5"
-	echo "  available clang versions: 3.3, git"
+	echo "    --show-subtargets          - show list of subtargets for selected '--mode'"
+	echo "    --logviewer-command        - use this command for the log viewer"
+	echo "  available Python versions: 2, 3"
+	echo "  available clang versions: 3.4, git"
 	echo "  available gcc versions:"
 	echo "    gcc-4.6.2 (4.6.2 release)"
 	echo "    gcc-4.6.3 (4.6.3 release)"
@@ -105,10 +111,23 @@ readonly RUN_ARGS="$@"
 	echo "    gcc-4.8.0 (4.8.0 release)"
 	echo "    gcc-4.8.1 (4.8.1 release)"
 	echo "    gcc-4.8.2 (4.8.2 release)"
+	echo "    gcc-4.8.3 (4.8.3 release)"
+	echo "    gcc-4.8.4 (4.8.4 release)"
+	echo "    gcc-4.8.5 (4.8.5 release)"
+	#echo "    gcc-4.8.6 (4.8.6 release)"
+	echo "    gcc-4.9.0 (4.9.0 release)"
+	echo "    gcc-4.9.1 (4.9.1 release)"
+	echo "    gcc-4.9.2 (4.9.2 release)"
+	echo "    gcc-4.9.3 (4.9.3 release)"
+	#echo "    gcc-4.9.4 (4.9.4 release)"
+	echo "    gcc-5.1.0 (5.1.0 release)"
+	echo "    gcc-5.2.0 (5.2.0 release)"
 	echo "    gcc-4_6-branch (currently 4.6.5-prerelease)"
 	echo "    gcc-4_7-branch (currently 4.7.4-prerelease)"
-	echo "    gcc-4_8-branch (currently 4.8.3-prerelease)"
-	echo "    gcc-trunk (currently 4.9.0-snapshot)"
+	echo "    gcc-4_8-branch (currently 4.8.6-prerelease)"
+	echo "    gcc-4_9-branch (currently 4.9.4-prerelease)"
+	echo "    gcc-5-branch (currently 5.3.0-prerelease)"
+	echo "    gcc-trunk (currently 6.0.0-snapshot)"
 
 	exit 0
 }
@@ -117,10 +136,44 @@ readonly RUN_ARGS="$@"
 
 while [[ $# > 0 ]]; do
 	case $1 in
+		--mode=*)
+			[[ ! -f $TOP_DIR/scripts/${1/--mode=/}.sh ]] && {
+				die "bad mode. Script ${1/--mode=/}.sh not found. terminate."
+			}
+			readonly BUILD_MODE_VERSION=${1/--mode=/}
+			readonly BUILD_VERSION=${BUILD_MODE_VERSION#*-}
+			readonly BUILD_MODE=${BUILD_MODE_VERSION%%-*}
+			readonly GCC_NAME=$BUILD_MODE_VERSION
+			[[ $BUILD_MODE != gcc && $BUILD_MODE != clang && $BUILD_MODE != python ]] && {
+				die "Unsupported mode: \"$BUILD_MODE.\" terminate."
+			}
+			[[ $BUILD_MODE == clang ]] && {
+				USE_MULTILIB=no
+				ENABLE_LANGUAGES="c,c++"
+			}
+		;;
+		--arch=*)
+			readonly BUILD_ARCHITECTURE=${1/--arch=/}
+			case $BUILD_ARCHITECTURE in
+				i686)
+					case $EXCEPTIONS_MODEL in
+						dwarf|sjlj|dwarfseh) ;;
+						*) die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate." ;;
+					esac
+				;;
+				x86_64)
+					case $EXCEPTIONS_MODEL in
+						seh|sjlj|dwarfseh) ;;
+						*) die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate." ;;
+					esac
+				;;
+				*) die "Unsupported architecture: \"$BUILD_ARCHITECTURE\". terminate."  ;;
+			esac
+		;;
 		--march-x32=*) PROCESSOR_OPTIMIZATION_ARCH_32=${1/--march-x32=/} ;;
-		--mtume-x32=*) PROCESSOR_OPTIMIZATION_TUNE_32=${1/--mtume-x32=/} ;;
+		--mtune-x32=*) PROCESSOR_OPTIMIZATION_TUNE_32=${1/--mtune-x32=/} ;;
 		--march-x64=*) PROCESSOR_OPTIMIZATION_ARCH_64=${1/--march-x64=/} ;;
-		--mtume-x64=*) PROCESSOR_OPTIMIZATION_TUNE_64=${1/--mtume-x64=/} ;;
+		--mtune-x64=*) PROCESSOR_OPTIMIZATION_TUNE_64=${1/--mtune-x64=/} ;;
 		--cflags=*) BASE_CFLAGS="$BASE_CFLAGS ${1/--cflags=/}" ;;
 		--cxxflags=*) BASE_CXXFLAGS="$BASE_CXXFLAGS ${1/--cxxflags=/}" ;;
 		--cppflags=*) BASE_CPPFLAGS="$BASE_CPPFLAGS ${1/--cppflags=/}" ;;
@@ -136,25 +189,19 @@ while [[ $# > 0 ]]; do
 		;;
 		--bootstrap) BOOTSTRAPING=yes ;;
 		--fetch-only) FETCH_MODE=yes ;;
+		--patch-on-fetch) FETCH_MODE=yes; FETCH_PATCH_MODE=yes ;;
 		--update-sources) UPDATE_SOURCES=yes ;;
 		--enable-languages=*)
-			func_check_languages "${1/--enable-languages=/}"
 			ENABLE_LANGUAGES=${1/--enable-languages=/}
+			func_check_languages "${ENABLE_LANGUAGES}"
 		;;
 		--exceptions=*)
 			EXCEPTIONS_MODEL=${1/--exceptions=/}
 			case $EXCEPTIONS_MODEL in
-				dwarf)
-					USE_MULTILIB=no
-					BUILD_ARCHITECTURE=i686
-				;;
-				seh)
-					USE_MULTILIB=no
-					BUILD_ARCHITECTURE=x86_64
-				;;
-				sjlj)
-					USE_MULTILIB=$USE_MULTILIB			
-				;;
+				dwarf) USE_MULTILIB=no ;;
+				seh) USE_MULTILIB=no ;;
+				dwarfseh) USE_MULTILIB=no ;;
+				sjlj) USE_MULTILIB=$USE_MULTILIB ;;
 				*)
 					die "\"$EXCEPTIONS_MODEL\" is not valid exception model. available models: dwarf, seh, sjlj. terminate."
 				;;
@@ -166,8 +213,10 @@ while [[ $# > 0 ]]; do
 			BASE_LDFLAGS="$BASE_LDFLAGS -flto -fno-use-linker-plugin"
 		;;
 		--no-multilib) USE_MULTILIB=no ;;
+		--no-extras) BUILD_EXTRAS=no ;;
 		--no-strip) STRIP_ON_INSTALL=no ;;
 		--static-gcc)
+			BOOTSTRAPING=yes
 			LINK_TYPE_GCC=$LINK_TYPE_STATIC
 			GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
 			BUILD_SHARED_GCC=no
@@ -189,11 +238,14 @@ while [[ $# > 0 ]]; do
 			RUNTIME_VERSION=${1/--rt-version=/}
 			case $RUNTIME_VERSION in
 				v3)
-					RUNTIME_BRANCH="stable/v3.x"
+					RUNTIME_BRANCH="v3.x"
 				;;
 				v4|trunk)
 					RUNTIME_VERSION=v4
-					RUNTIME_BRANCH="trunk"
+					RUNTIME_BRANCH="master"
+				;;
+				v?.?.?)
+					RUNTIME_BRANCH="release"
 				;;
 				*)
 					die "Unsupported runtime version $RUNTIME_VERSION."
@@ -203,55 +255,55 @@ while [[ $# > 0 ]]; do
 		--threads=*) 
 			THREADS_MODEL=${1/--threads=/}
 			case $THREADS_MODEL in
-				win32 | posix)
+				win32|posix)
 				;;
 				*)
 					die "\"$THREADS_MODEL\" is not valid threads model. available models: posix, win32. terminate"
 				;;
 			esac
 		;;
-		--mode=*)
-			[[ ! -f $TOP_DIR/scripts/${1/--mode=/}.sh ]] && {
-				die "bad mode. Script ${1/--mode=/}.sh not found. terminate."
-			}
-			readonly BUILD_MODE_VERSION=${1/--mode=/}
-			readonly BUILD_VERSION=${BUILD_MODE_VERSION#*-}
-			readonly BUILD_MODE=${BUILD_MODE_VERSION%%-*}
-			readonly GCC_NAME=$BUILD_MODE_VERSION
-			[[ $BUILD_MODE != gcc && $BUILD_MODE != clang && $BUILD_MODE != python ]] && {
-				die "Unsupported mode: \"$BUILD_MODE.\" terminate."
-			}
-		;;
-		--arch=*)
-			readonly BUILD_ARCHITECTURE=${1/--arch=/}
-			case $BUILD_ARCHITECTURE in
-				i686|x86_64)
-				;;
-				*) die "Unsupported architecture: \"$BUILD_ARCHITECTURE\". terminate." 
-				;;
-			esac
-		;;
-		--rev=*)
-			REV_NUM=${1/--rev=/}
-			MINGW_W64_PKG_STRING="rev$REV_NUM, $MINGW_W64_PKG_STRING"
-		;;
-		--with-testsuite)
-			PKG_RUN_TESTSUITE=yes
-		;;
+		--rev=*) REV_NUM=${1/--rev=/} ;;
+		--with-testsuite) PKG_RUN_TESTSUITE=yes ;;
+		--show-subtargets) SHOW_SUBTARGETS=yes ;;
 		--version) echo $MINGW_W64_BUILDS_VERSION; exit 0 ;;
-		--mingw-compress) COMPRESSING_MINGW=yes ;;
+		--bin-compress) COMPRESSING_BINS=yes ;;
 		--src-compress) COMPRESSING_SRCS=yes ;;
 		--mingw-upload) UPLOAD_MINGW=yes ;;
 		--src-upload) UPLOAD_SOURCES=yes ;;
 		--sf-user=*) SF_USER=${1/--sf-user=/} ;;
-		--sf-password=*) SF_PASSWORD=${1/--sf-password=/} ;;
+		--sf-pass=*) SF_PASSWORD=${1/--sf-pass=/} ;;
 		--debug-upload) DEBUG_UPLOAD=yes ;;
+		--logviewer-command=*) LOGVIEWER=${1/--logviewer-command=/} ;;
 		*)
 			die "bad command line: \"$1\". terminate."
 		;;
 	esac
 	shift
 done
+
+HOST=$(func_get_host $BUILD_ARCHITECTURE)
+BUILD=$(func_get_build $BUILD_ARCHITECTURE)
+TARGET=$(func_get_target $BUILD_ARCHITECTURE)
+
+# **************************************************************************
+
+[[ -z $BUILD_MODE_VERSION ]] && {
+	die "--mode=<...> is required. terminate."
+}
+
+# **************************************************************************
+
+[[ -z $ROOT_DIR ]] && {
+	ROOT_DIR=$(func_simplify_path "$HOME/mingw-$BUILD_MODE_VERSION")
+}
+
+readonly PREREQ_DIR=$ROOT_DIR/prerequisites
+readonly RUNTIME_DIR=$ROOT_DIR/runtime
+readonly ARCHIVES_DIR=$ROOT_DIR/archives
+readonly PREREQ_BUILD_DIR=$ROOT_DIR/prerequisites-build
+readonly PREREQ_LOGS_DIR=$ROOT_DIR/prerequisites-logs
+readonly SRCS_DIR=$ROOT_DIR/src
+readonly MARKERS_DIR=$SRCS_DIR/MARKERS
 
 # **************************************************************************
 
@@ -262,7 +314,7 @@ done
 
 # **************************************************************************
 # Create primary directories
-# **************************************************************************
+
 [[ ! -d $ROOT_DIR ]] && {
 	mkdir -p $ROOT_DIR
 	[[ $? == 0 ]] && {
@@ -272,55 +324,55 @@ done
 	}
 }
 
-readonly SRCS_DIR=$ROOT_DIR/src
-readonly MARKERS_DIR=$SRCS_DIR/MARKERS
-
 mkdir -p \
 	$SRCS_DIR \
 	$MARKERS_DIR
 
 # **************************************************************************
-# Determine operating system and load appropriate config
-# **************************************************************************
-source $TOP_DIR/library/os_detect.sh
 
-# **************************************************************************
-
-[[ -z ${BUILD_ARCHITECTURE} ]] && {
+[[ -z ${BUILD_ARCHITECTURE} ]] && [[ ${FETCH_MODE} == no ]] && {
 	die "Build architecture is not specified. terminate."
 }
 
-[[ $BUILD_MODE == gcc ]] && {
-	[[ $IS_64BIT_HOST == no ]] && {
-		[[ $BUILD_ARCHITECTURE == x86_64 ]] && {
-			die "you can't build 64-bit toolchain using 32-bit OS. terminate."
-		}
-		[[ $USE_MULTILIB == yes ]] && {
-			die "you can't build multitarget MinGW using 32-bit OS. terminate."
-		}
+[[ $IS_64BIT_HOST == no ]] && {
+	[[ $BUILD_ARCHITECTURE == x86_64 ]] && {
+		die "you can't build 64-bit toolchain using 32-bit OS. terminate."
 	}
-	case $EXCEPTIONS_MODEL in
-		dwarf)
-			[[ ${BUILD_ARCHITECTURE} == x86_64 ]] && {
-				die "DWARF exceptions not allowed on x86_64 architecture. terminate."
-			}
-		;;
-		seh)
-			[[ ${BUILD_ARCHITECTURE} == i686 ]] && {
-				die "SEH exceptions not allowed on i686 architecture. terminate."
-			}
-		;;	
-		sjlj)
-		
-		;;
-	esac
-	[[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
-		die "\"$EXCEPTIONS_MODEL\" exceptions not allowed on multilib architecture. terminate."
+	[[ $USE_MULTILIB == yes ]] && {
+		die "you can't build multitarget MinGW using 32-bit OS. terminate."
 	}
 }
 
-[[ $[ $COMPRESSING_MINGW == yes || $COMPRESSING_SRCS == yes ] == 1 ]] && {
-	func_check_program "7za"
+case $EXCEPTIONS_MODEL in
+	dwarf)
+		[[ ${BUILD_ARCHITECTURE} == x86_64 && ${FETCH_MODE} == no ]] && {
+			die "DWARF exceptions not allowed on x86_64 architecture. terminate."
+		}
+		readonly EXCEPTIONS_MODEL_I686=dwarf
+		readonly EXCEPTIONS_MODEL_X86_64=seh
+	;;
+	seh)
+		[[ ${BUILD_ARCHITECTURE} == i686 && ${FETCH_MODE} == no ]] && {
+			die "SEH exceptions not allowed on i686 architecture. terminate."
+		}
+		readonly EXCEPTIONS_MODEL_I686=dwarf
+		readonly EXCEPTIONS_MODEL_X86_64=seh
+	;;
+	sjlj)
+		readonly EXCEPTIONS_MODEL_I686=sjlj
+		readonly EXCEPTIONS_MODEL_X86_64=sjlj
+	;;
+	dwarfseh)
+		[[ -z ${BUILD_ARCHITECTURE} ]] && { EXCEPTIONS_MODEL=""; }
+		[[ ${BUILD_ARCHITECTURE} == x86_64 ]] && { EXCEPTIONS_MODEL=seh; }
+		[[ ${BUILD_ARCHITECTURE} == i686 ]] && { EXCEPTIONS_MODEL=dwarf; }
+		readonly EXCEPTIONS_MODEL_I686=dwarf
+		readonly EXCEPTIONS_MODEL_X86_64=seh
+	;;
+esac
+
+[[ $EXCEPTIONS_MODEL != sjlj && $USE_MULTILIB == yes ]] && {
+	die "\"$EXCEPTIONS_MODEL\" exceptions not allowed on multilib architecture. terminate."
 }
 
 [[ $BUILD_MODE != gcc && $COMPRESSING_SRCS == yes ]] && {
@@ -328,73 +380,97 @@ source $TOP_DIR/library/os_detect.sh
 }
 
 # **************************************************************************
-# Creating necessary directories
+# Install host toolchains
+
+mkdir -p $TOOLCHAINS_DIR
+[[ $? != 0 ]] && {
+	die "can't create toolchains directory. terminate."
+}
+
+func_install_toolchain \
+	$TOOLCHAINS_DIR \
+	$i686_HOST_MINGW_PATH \
+	$x86_64_HOST_MINGW_PATH \
+	${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_I686} \
+	${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_X86_64}
+
 # **************************************************************************
-readonly PREREQ_DIR=$ROOT_DIR/prerequisites
-readonly RUNTIME_DIR=$ROOT_DIR/runtime
-readonly ARCHIVES_DIR=$ROOT_DIR/archives
-readonly PREREQ_BUILD_DIR=$ROOT_DIR/prerequisites-build
-readonly PREREQ_LOGS_DIR=$ROOT_DIR/prerequisites-logs
+# Creating necessary directories
 
 [[ -n $REV_NUM ]] && {
-	readonly REV_STRING="-r$REV_NUM"
+	readonly REV_STRING="-rev${REV_NUM}"
 } || {
 	readonly REV_STRING=""
 }
 
-[[ $BUILD_MODE == gcc ]] && {
-	GCC_PART_NAME=${GCC_NAME/gcc-/}
-	GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
-	readonly GCC_PART_NAME=${GCC_PART_NAME//./}
-	BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL-rt_${RUNTIME_VERSION}${REV_STRING}
-	MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
-	[[ $BUILD_SHARED_GCC == no ]] && {
-		BASE_BUILD_DIR=$BASE_BUILD_DIR-s
-		MINGW_BUILD_NAME=$MINGW_BUILD_NAME-static
-	}
-	MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
-	readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)	
-
-	readonly MINGWPREFIX=/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
-	readonly PREFIX=${BASE_BUILD_DIR}${MINGWPREFIX}
-	readonly LIBS_DIR=$PREFIX/opt
-
-	[[ $USE_MULTILIB == yes ]] && {
-			readonly PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
-			readonly PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
-	} || {
-		[[ $BUILD_ARCHITECTURE == i686 ]] && {
-			readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
-			readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
-		} || {
-			readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
-			readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
+[[ $FETCH_MODE == no ]] && {
+	[[ $BUILD_MODE == gcc || $BUILD_MODE == clang ]] && {
+		GCC_PART_NAME=${GCC_NAME/gcc-/}
+		GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
+		readonly GCC_PART_NAME=${GCC_PART_NAME//./}
+		readonly RUNTIME_PART_NAME=${RUNTIME_VERSION//./}
+		BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL-rt_${RUNTIME_PART_NAME}${REV_STRING}
+		MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
+		[[ $BUILD_SHARED_GCC == no ]] && {
+			BASE_BUILD_DIR=$BASE_BUILD_DIR-s
+			MINGW_BUILD_NAME=$MINGW_BUILD_NAME-static
 		}
+		MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
+		readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)	
+
+		readonly MINGWPREFIX=/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
+		readonly PREFIX=${BASE_BUILD_DIR}${MINGWPREFIX}
+		readonly LIBS_DIR=$PREFIX/opt
+
+		[[ $USE_MULTILIB == yes ]] && {
+				readonly PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
+				readonly PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
+		} || {
+			[[ $BUILD_ARCHITECTURE == i686 ]] && {
+				readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
+				readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
+			} || {
+				readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_64"
+				readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_64"
+			}
+		}
+	} || {
+		readonly BASE_BUILD_DIR=$ROOT_DIR/$BUILD_MODE-${BUILD_ARCHITECTURE}$REV_STRING
+		readonly PREFIX=$BASE_BUILD_DIR/${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}
+		readonly LIBS_DIR=$PREFIX
 	}
-} || {
-	readonly BASE_BUILD_DIR=$ROOT_DIR/$BUILD_MODE-${BUILD_ARCHITECTURE}$REV_STRING
-	readonly PREFIX=$BASE_BUILD_DIR/${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}
-	readonly LIBS_DIR=$PREFIX
-}
 
-readonly BUILDS_DIR=$BASE_BUILD_DIR/build
-readonly LOGS_DIR=$BASE_BUILD_DIR/logs
+	readonly BUILDS_DIR=$BASE_BUILD_DIR/build
+	readonly LOGS_DIR=$BASE_BUILD_DIR/logs
 
-mkdir -p \
-	$ARCHIVES_DIR \
-	$BASE_BUILD_DIR \
-	$PREFIX \
-	$BUILDS_DIR \
-	$LIBS_DIR \
-	$LOGS_DIR
-
-[[ $BUILD_MODE == gcc ]] && {
 	mkdir -p \
-		$PREREQ_DIR \
-		$RUNTIME_DIR \
-		$PREREQ_BUILD_DIR \
-		$PREREQ_LOGS_DIR
+		$ARCHIVES_DIR \
+		$BASE_BUILD_DIR \
+		$PREFIX \
+		$BUILDS_DIR \
+		$LIBS_DIR \
+		$LOGS_DIR
+
+	[[ $BUILD_MODE == gcc ]] && {
+		mkdir -p \
+			$PREREQ_DIR \
+			$RUNTIME_DIR \
+			$PREREQ_BUILD_DIR \
+			$PREREQ_LOGS_DIR
+	}
 }
+
+readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
+readonly COMMON_CXXFLAGS="$COMMON_CFLAGS"
+readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS"
+readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib"
+
+#echo "PROCESSOR_OPTIMIZATION=\"$PROCESSOR_OPTIMIZATION\""
+#echo "PROCESSOR_TUNE=\"$PROCESSOR_TUNE\""
+#echo "BASE_CFLAGS=\"$BASE_CFLAGS\""
+#echo "BASE_CXXFLAGS=\"$BASE_CXXFLAGS\""
+#echo "COMMON_CFLAGS=\"$COMMON_CFLAGS\""
+#echo "COMMON_CXXFLAGS=\"$COMMON_CXXFLAGS\""
 
 # **************************************************************************
 
@@ -432,27 +508,20 @@ readonly REVERSE_ARCHITECTURE=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
 
 # **************************************************************************
 
-readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
-readonly COMMON_CXXFLAGS="$COMMON_CFLAGS"
-readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS"
-readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib"
-
-# **************************************************************************
-
 [[ $FETCH_MODE == yes ]] && {
 	echo -n "-> fetch sources for building ${BUILD_MODE_VERSION}-"
 	[[ $BUILD_MODE == gcc ]] && {
 		[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ]] && echo -n "multilib-"
-		echo -n "${BUILD_ARCHITECTURE}-"
-		echo "$EXCEPTIONS_MODEL"
+		[[ -z ${BUILD_ARCHITECTURE} ]] && { echo -n "any"; } || { echo -n "${BUILD_ARCHITECTURE}"; }
+		[[ -z ${EXCEPTIONS_MODEL} ]] && { echo ""; } || { echo "-${EXCEPTIONS_MODEL}"; }
 	} || {
 		echo -n "${BUILD_ARCHITECTURE}"
 	}
 } || {
 	[[ $BUILD_MODE == gcc ]] && {
-		echo "-> start building $MINGW_BUILD_NAME"
+		echo "-> start building $MINGW_BUILD_NAME with \"$ENABLE_LANGUAGES\" languages supported"
 	} || {
-		echo "-> start building ${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}"
+		echo "-> start building $BUILD_MODE_VERSION-$BUILD_ARCHITECTURE"
 	}
 }
 
@@ -461,11 +530,19 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 source $TOP_DIR/library/subtargets.sh
 
 readonly SUBTARGETS=( \
-	$(fun_get_subtargets \
+	$(func_get_subtargets \
 		$BUILD_MODE \
 		$BUILD_VERSION \
 	) \
 )
+
+[[ $SHOW_SUBTARGETS == yes ]] && {
+	echo "subtargets:"
+	echo "${SUBTARGETS[@]}"
+	echo ""
+}
+
+# **************************************************************************
 
 for rule in ${SUBTARGETS[@]}; do
 	func_clear_env
@@ -493,13 +570,17 @@ for rule in ${SUBTARGETS[@]}; do
 	source $TOP_DIR/scripts/$sub.sh
 
 	[[ -z $PKG_NAME ]] && continue
+	[[ ($BUILD_EXTRAS == "no") && ($PKG_PRIORITY == "extra") ]] && {
+		echo -e "--> Skipping"
+		continue
+	}
 
 	case $PKG_PRIORITY in
-		prereq | runtime)
+		prereq|runtime)
 			CURR_LOGS_DIR=$PREREQ_LOGS_DIR
 			CURR_BUILD_DIR=$PREREQ_BUILD_DIR
 		;;
-		main | extra)
+		main|extra)
 			CURR_LOGS_DIR=$LOGS_DIR
 			CURR_BUILD_DIR=$BUILDS_DIR
 		;;
@@ -514,34 +595,47 @@ for rule in ${SUBTARGETS[@]}; do
 	INSTALL_LOG=$CURR_LOGS_DIR/$PKG_NAME/install.log
 	TESTSUITE_LOG=$CURR_LOGS_DIR/$PKG_NAME/testsuite.log
 
-	mkdir -p $SRCS_DIR/$PKG_DIR_NAME
-	mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$PKG_NAME
-	[[ -n $PKG_SUBDIR_NAME ]] && { mkdir -p $CURR_BUILD_DIR/$PKG_NAME/$PKG_SUBDIR_NAME; }
-	#[[ $PKG_NAME != $PKG_DIR_NAME ]] && mkdir -p {$BUILDS_DIR/,$LOGS_DIR/}$PKG_NAME
+	[[ $PKG_TYPE != git && $PKG_TYPE != svn ]] && {
+		mkdir -p $SRCS_DIR/$PKG_DIR_NAME
+	}
+	[[ $FETCH_MODE == no ]] && {
+		mkdir -p {$CURR_LOGS_DIR/,$CURR_BUILD_DIR/}$PKG_NAME
+		[[ -n $PKG_SUBDIR_NAME ]] && { mkdir -p $CURR_BUILD_DIR/$PKG_NAME/$PKG_SUBDIR_NAME; }
+	}
 
 	func_download \
 		PKG_URLS[@]
 
-	func_uncompress \
-		PKG_URLS[@]
-
-	[[ $FETCH_MODE == no ]] && {
-		[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
-			func_execute \
-				$SRCS_DIR \
-				$PKG_DIR_NAME \
-				"execute commands..." \
-				"after_unpack" \
-				$CURR_LOGS_DIR \
-				PKG_EXECUTE_AFTER_UNCOMPRESS[@]
-		}
-
-		func_apply_patches \
+	[[ ${#PKG_EXECUTE_AFTER_DOWNLOAD[@]} >0 ]] && {
+		func_execute \
 			$SRCS_DIR \
 			$PKG_DIR_NAME \
+			"execute commands..." \
+			"after_download" \
 			$CURR_LOGS_DIR \
-			$PATCHES_DIR \
-			PKG_PATCHES[@]
+			PKG_EXECUTE_AFTER_DOWNLOAD[@]
+	}
+
+	func_uncompress \
+		PKG_URLS[@]
+	
+	[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
+		func_execute \
+			$SRCS_DIR \
+			$PKG_DIR_NAME \
+			"execute commands..." \
+			"after_unpack" \
+			PKG_EXECUTE_AFTER_UNCOMPRESS[@]
+	}
+	
+	[[ $FETCH_MODE == no || $FETCH_PATCH_MODE == yes ]] && {
+		[[ ${#PKG_PATCHES[@]} >0 ]] && {
+			func_apply_patches \
+				$SRCS_DIR \
+				$PKG_DIR_NAME \
+				$PATCHES_DIR \
+				PKG_PATCHES[@]
+		}
 
 		[[ ${#PKG_EXECUTE_AFTER_PATCH[@]} >0 ]] && {
 			func_execute \
@@ -549,10 +643,11 @@ for rule in ${SUBTARGETS[@]}; do
 				$PKG_DIR_NAME \
 				"execute commands..." \
 				"after_patch" \
-				$CURR_LOGS_DIR \
 				PKG_EXECUTE_AFTER_PATCH[@]
 		}
+	}
 
+	[[ $FETCH_MODE == no ]] && {
 		[[ -z $PKG_LNDIR ]] && { PKG_LNDIR=no; }
 		[[ -z $PKG_CONFIGURE_SCRIPT ]] && { PKG_CONFIGURE_SCRIPT=configure; }
 		[[ -z $PKG_MAKE_PROG ]] && { PKG_MAKE_PROG=/bin/make; }
@@ -576,7 +671,6 @@ for rule in ${SUBTARGETS[@]}; do
 				$PKG_NAME \
 				"execute commands..." \
 				"after_configure" \
-				$CURR_LOGS_DIR \
 				PKG_EXECUTE_AFTER_CONFIGURE[@]
 		}
 
@@ -612,7 +706,6 @@ for rule in ${SUBTARGETS[@]}; do
 				$PKG_NAME \
 				"execute commands..." \
 				"after_install" \
-				$CURR_LOGS_DIR \
 				PKG_EXECUTE_AFTER_INSTALL[@]
 		}
 
@@ -636,6 +729,8 @@ for rule in ${SUBTARGETS[@]}; do
 		switch_back_to_arch
 	}
 done
+
+# ***************************************************************************
 
 func_clear_env
 
@@ -679,29 +774,30 @@ func_clear_env
 	mingw_archive_size=$(du -h $mingw_archive_name | cut -f 1)
 	echo -e -n "-> \E[32;40mupload $(basename $mingw_archive_name) ($mingw_archive_size) ...\E[37;40m"
 	[[ $DEBUG_UPLOAD == yes ]] && {
-		echo
 		echo "bin_cmd:${upload_cmd}"
 	} || {
-		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-mingw-upload.log 2>&1"
+		eval "${upload_cmd} > $LOGS_DIR/mingw-upload.log 2>&1"
 		func_res=$?
 		[[ $func_res != 0 ]] && {
 			echo " error!"
-			func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-mingw-upload.log
+			func_show_log $LOGS_DIR/mingw-upload.log
 			die "upload finished with error($func_res). terminate." $func_res
 		} || {
 			echo " done"
 		}
 	}
+
 	[[ $(func_map_gcc_name_to_gcc_type $GCC_NAME) == release ]] && {
 		echo -e -n "--> \E[32;40mdownload repository file...\E[37;40m"
 		[[ $DEBUG_UPLOAD == yes ]] && {
+			echo "rep_cmd:wget "$REPOSITORY_FILE" -O $TMP/$(basename "$REPOSITORY_FILE")"
 			func_res=0
 		} || {
-			wget $REPOSITORY_FILE -O $TMP/$(basename $REPOSITORY_FILE) > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-download.log 2>&1
+			wget "$REPOSITORY_FILE" -O $TMP/$(basename "$REPOSITORY_FILE") > $LOGS_DIR/repository-download.log 2>&1
 			func_res=$?
 		}
 		[[ $func_res != 0 ]] && {
-			func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-download.log
+			func_show_log $LOGS_DIR/repository-download.log
 			die " error($func_res) when downloading repository file. terminate." $func_res
 		} || {
 			echo " done"
@@ -710,7 +806,7 @@ func_clear_env
 		echo -e -n "--> \E[32;40mupdate repository file...\E[37;40m"
 		[[ $DEBUG_UPLOAD == no ]] && {
 			func_update_repository_file \
-				$TMP/$(basename $REPOSITORY_FILE) \
+				$TMP/$(basename "$REPOSITORY_FILE") \
 				$(func_map_gcc_name_to_gcc_version $GCC_NAME) \
 				$BUILD_ARCHITECTURE \
 				$THREADS_MODEL \
@@ -726,10 +822,10 @@ func_clear_env
 				$(basename $mingw_archive_name)
 		}
 		echo " done"
-		
+
 		upload_cmd=$( \
 			func_create_repository_file_upload_cmd \
-				$TMP/$(basename $REPOSITORY_FILE) \
+				$TMP/$(basename "$REPOSITORY_FILE") \
 				$SF_USER \
 				$SF_PASSWORD \
 		)
@@ -737,10 +833,10 @@ func_clear_env
 		[[ $DEBUG_UPLOAD == yes ]] && {
 			echo "rep_cmd:${upload_cmd}"
 		} || {
-			eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-upload.log 2>&1"
+			eval "${upload_cmd} > $LOGS_DIR/repository-upload.log 2>&1"
 			func_res=$?
 			[[ $func_res != 0 ]] && {
-				func_show_log $LOGS_DIR/$GCC_NAME/${BUILD_ARCHITECTURE}-repository-upload.log
+				func_show_log $LOGS_DIR/repository-upload.log
 				die " error($func_res) when uploading repository file. terminate." $func_res
 			} || {
 				echo " done"
@@ -770,12 +866,12 @@ func_clear_env
 	[[ $DEBUG_UPLOAD == yes ]] && {
 		echo "src_cmd:${upload_cmd}"
 	} || {
-		eval "${upload_cmd} > $LOGS_DIR/$GCC_NAME/sources-upload.log 2>&1"
+		eval "${upload_cmd} > $LOGS_DIR/sources-upload.log 2>&1"
 	}
 	
 	func_res=$?
 	[[ $func_res != 0 ]] && {
-		func_show_log $LOGS_DIR/$GCC_NAME/sources-upload.log
+		func_show_log $LOGS_DIR/sources-upload.log
 		die " upload finished with error($func_res). terminate." $func_res
 	} || {
 		echo " done"

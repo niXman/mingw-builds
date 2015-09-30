@@ -3,8 +3,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -40,7 +40,7 @@ PKG_NAME=ncurses-${PKG_VERSION}
 PKG_DIR_NAME=ncurses-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"ftp://invisible-island.net/ncurses/ncurses-${PKG_VERSION}.tar.gz"
+	"https://ftp.gnu.org/gnu/ncurses/ncurses-${PKG_VERSION}.tar.gz"
 )
 
 PKG_PRIORITY=extra
@@ -48,7 +48,7 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
-	#ncurses/ncurses-5.9-dev-20130921.patch
+	ncurses/work_around_changed_output_of_GNU_cpp_5.x.patch
 )
 
 #
