@@ -4,8 +4,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011-2015 by niXman (i dotty nixman doggy gmail dotty com)
+#                        ,by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -205,7 +205,7 @@ while [[ $# > 0 ]]; do
 				*)
 					die "\"$EXCEPTIONS_MODEL\" is not valid exception model. available models: dwarf, seh, sjlj. terminate."
 				;;
-			esac	
+			esac
 		;;
 		--use-lto)
 			BASE_CFLAGS="$BASE_CFLAGS -flto -fno-use-linker-plugin"
@@ -252,7 +252,7 @@ while [[ $# > 0 ]]; do
 				;;
 			esac
 		;;
-		--threads=*) 
+		--threads=*)
 			THREADS_MODEL=${1/--threads=/}
 			case $THREADS_MODEL in
 				win32|posix)
@@ -416,7 +416,7 @@ func_install_toolchain \
 			MINGW_BUILD_NAME=$MINGW_BUILD_NAME-static
 		}
 		MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
-		readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)	
+		readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
 
 		readonly MINGWPREFIX=/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
 		readonly PREFIX=${BASE_BUILD_DIR}${MINGWPREFIX}
@@ -499,7 +499,7 @@ readonly REVERSE_HOST=$(func_get_reverse_triplet $HOST)
 readonly REVERSE_BUILD=$(func_get_reverse_triplet $BUILD)
 readonly REVERSE_TARGET=$(func_get_reverse_triplet $TARGET)
 readonly REVERSE_ARCHITECTURE=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
-	
+
 [[ $USE_MULTILIB == yes ]] && {
 	readonly ENABLE_TARGETS=${TARGET},${REVERSE_TARGET}
 } || {
@@ -618,7 +618,7 @@ for rule in ${SUBTARGETS[@]}; do
 
 	func_uncompress \
 		PKG_URLS[@]
-	
+
 	[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
 		func_execute \
 			$SRCS_DIR \
@@ -627,7 +627,7 @@ for rule in ${SUBTARGETS[@]}; do
 			"after_unpack" \
 			PKG_EXECUTE_AFTER_UNCOMPRESS[@]
 	}
-	
+
 	[[ $FETCH_MODE == no || $FETCH_PATCH_MODE == yes ]] && {
 		[[ ${#PKG_PATCHES[@]} >0 ]] && {
 			func_apply_patches \
@@ -699,7 +699,7 @@ for rule in ${SUBTARGETS[@]}; do
 				$CURR_BUILD_DIR \
 				$PKG_SUBDIR_NAME
 		}
-	
+
 		[[ ${#PKG_EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
 			func_execute \
 				$CURR_BUILD_DIR \
@@ -802,7 +802,7 @@ func_clear_env
 		} || {
 			echo " done"
 		}
-	
+
 		echo -e -n "--> \E[32;40mupdate repository file...\E[37;40m"
 		[[ $DEBUG_UPLOAD == no ]] && {
 			func_update_repository_file \
@@ -868,7 +868,7 @@ func_clear_env
 	} || {
 		eval "${upload_cmd} > $LOGS_DIR/sources-upload.log 2>&1"
 	}
-	
+
 	func_res=$?
 	[[ $func_res != 0 ]] && {
 		func_show_log $LOGS_DIR/sources-upload.log
