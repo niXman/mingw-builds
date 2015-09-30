@@ -7,19 +7,22 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
 
 1. Windows-64bit or Linux + Wine-64bit
 
-2. Install MSYS2:
+2. Install MSYS2 from:
   http://sourceforge.net/projects/msys2/
+  (MSYS2 wiki: http://sourceforge.net/p/msys2/wiki/MSYS2%20installation/)
 
-3. Get the scripts into '<msys root>/home/<user>/mingw-w64-builds':
+3. Get the scripts into '<msys root>/home/<user>/mingw-builds':
   "cd && git clone <paste correct url>"
+  (see the diff between the 'master' and 'develop' branches, maybe you need
+   the 'develop' branch exactly)
 
-4. In the MSYS file structure delete the '/MinGW' directory.
+4. In the MSYS2 file structure delete the '/MinGW' directory.
 
 5. Delete the paths pointing to any preinstalled MinGW from the 'PATH'
   environment variable.
 
 6. Go into the MinGW-builds root directory.
-  "cd && cd mingw-w64-builds"
+  "cd && cd mingw-builds"
 
 7. Options:
   '--mode=[gcc|python|clang]-version' - what package to build with version.
@@ -79,15 +82,23 @@ At the moment, successfully building the following versions:
   gcc-4.8.0
   gcc-4.8.1
   gcc-4.8.2
+  gcc-4.9.0
+  gcc-4.9.1
+  gcc-4.9.2
+  gcc-4.9.3
+  gcc-5.1.0
+  gcc-5.2.0
   gcc-4_6-branch (currently 4.6.5 prerelease)
   gcc-4_7-branch (currently 4.7.4 prerelease)
   gcc-4_8-branch (currently 4.8.3 prerelease)
-  gcc-trunk (currently 4.9.0 snapshot)
+  gcc-4_9-branch (currently 4.9.4 prerelease)
+  gcc-5-branch (currently 5.3.0 prerelease)
+  gcc-trunk (currently 6.0.0 snapshot)
 
-Builds also contains patches for building Python 2.7.3, 2.7.4, 2.7.5 and 3.3.0 versions for support gdb pretty printers.
+Builds also contains patches for building Python 2.7.9 and 3.4.3 versions for support gdb pretty printers.
 Big thanks for these patches to:
-  2010-2012 Roumen Petrov, Руслан Ижбулатов
-  2012 Ray Donnelly
+  2010-2013 Roumen Petrov, Руслан Ижбулатов
+  2012-2015 Ray Donnelly, Alexey Pavlov
  
 [1] http://sourceforge.net/projects/mingw-w64/
 [2] http://www.opensource.org/licenses/BSD-3-Clause
