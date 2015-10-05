@@ -35,10 +35,10 @@
 
 # **************************************************************************
 
-PKG_VERSION=0.12.2
+PKG_VERSION=0.14.1
 PKG_NAME=$BUILD_ARCHITECTURE-isl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=isl-${PKG_VERSION}
-PKG_TYPE=.tar.lzma
+PKG_TYPE=.tar.xz
 PKG_URLS=(
 	"http://isl.gforge.inria.fr/isl-${PKG_VERSION}${PKG_TYPE}"
 )
@@ -48,7 +48,7 @@ PKG_PRIORITY=prereq
 #
 
 PKG_PATCHES=(
-	isl/isl-0.12-no-undefined.patch
+	isl/isl-0.14.1-no-undefined.patch
 )
 
 #
