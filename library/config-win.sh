@@ -96,13 +96,25 @@ function func_test_installed_packages {
 		sshpass
 		texinfo
 	)
+	
+	local _packages=()
+	local packages_str=""
 
 	for it in ${packages[@]}; do
 		[[ -z $(pacman -Qs ^$it) ]] && {
-			echo "package \"$it\" is not installed. terminate."
-			return 1
+			_packages=(${_packages[@]} $it)
 		}
 	done
+
+	[[ ${#_packages[@]} != 0 ]] && {
+		packages_str=$(printf ",%s" "${_packages[@]}")
+		packages_str=${packages_str:1}
+		echo ""
+		echo "the following packages are not installed: $packages_str"
+		echo "you can install it using command:"
+		echo "   pacman -S$(printf " %s" "${_packages[@]}")"
+		return 1
+	}
 
 	return 0
 }
