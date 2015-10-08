@@ -77,7 +77,7 @@ readonly LOGVIEWERS=(
 # **************************************************************************
 
 function func_test_installed_packages {
-	local packages=(
+	local required_packages=(
 		git
 		subversion
 		tar
@@ -97,22 +97,21 @@ function func_test_installed_packages {
 		texinfo
 	)
 	
-	local _packages=()
-	local packages_str=""
+	local not_installed_packages=()
 
-	for it in ${packages[@]}; do
+	for it in ${required_packages[@]}; do
 		[[ -z $(pacman -Qs ^$it) ]] && {
-			_packages=(${_packages[@]} $it)
+			not_installed_packages=(${not_installed_packages[@]} $it)
 		}
 	done
 
-	[[ ${#_packages[@]} != 0 ]] && {
-		packages_str=$(printf ",%s" "${_packages[@]}")
+	[[ ${#not_installed_packages[@]} != 0 ]] && {
+		local packages_str=$(printf ",%s" "${not_installed_packages[@]}")
 		packages_str=${packages_str:1}
 		echo ""
 		echo "the following packages are not installed: $packages_str"
 		echo "you can install it using command:"
-		echo "   pacman -S$(printf " %s" "${_packages[@]}")"
+		echo "   pacman -S$(printf " %s" "${not_installed_packages[@]}")"
 		return 1
 	}
 
