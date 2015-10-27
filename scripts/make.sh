@@ -58,7 +58,6 @@ PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$TARGET
 	--prefix=$PREFIX
-	--enable-case-insensitive-file-system
 	--program-prefix=mingw32-
 	--enable-job-server
 	--without-guile
