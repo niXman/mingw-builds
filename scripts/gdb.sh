@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=7.9.1
+PKG_VERSION=7.10.1
 PKG_NAME=gdb-${PKG_VERSION}
 PKG_DIR_NAME=gdb-${PKG_VERSION}
 PKG_TYPE=.tar.xz
