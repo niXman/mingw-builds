@@ -1,9 +1,10 @@
+
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
+# This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
+# Copyright (c) 2011-2015 by niXman (i dotty nixman doggy gmail dotty com)
+#                        ,by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -110,7 +111,7 @@ function func_check_tools {
 	local _list=( $1 )
 	local _it=
 	local _err=
-	
+
 	echo -n "-> Checking for necessary tools... "
 	for _it in ${_list[@]}; do
 		command -v "$_it" > /dev/null 2>&1
@@ -165,12 +166,12 @@ function func_get_reverse_arch {
 
 function func_get_filename_extension {
 	# $1 - filename
-	
+
 	local _filename=$1
 	local _ext=
 	local _finish=0
 	case "${_filename##*.}" in
-		bz2|gz|lzma|xz) 
+		bz2|gz|lzma|xz)
 			_ext=$_ext'.'${_filename##*.}
 			_filename=${_filename%$_ext}
 			local _sub_ext=$(func_get_filename_extension $_filename)
@@ -189,7 +190,7 @@ function func_check_languages {
 	local langs=( ${1//,/ } )
 	local lang=
 	local _lang_err=
-	
+
 	[[ ${#langs[@]} == 0 ]] && {
 		die "you must specify languages to build. terminate."
 	} || {
@@ -207,10 +208,10 @@ function func_check_languages {
 
 function func_test_vars_list_for_null {
 	# $1 - array of vars
-	
+
 	local list=( $1 )
 	local it=
-	
+
 	for it in ${list[@]}; do
 		eval "test -z $it"
 		[[ $? == 0 ]] && { die "var \"$it\" is NULL. terminate."; }
@@ -252,7 +253,7 @@ function func_find_logviewer {
 			return 0;
 		}
 	done
-	
+
 	return 1
 }
 
@@ -292,7 +293,7 @@ function func_absolute_to_relative {
 
 # download the sources
 function func_download {
-	# $1 - list of URLs	
+	# $1 - list of URLs
 
 	local -a _list=( "${!1}" )
 	[[ ${#_list[@]} == 0 ]] && {
@@ -320,7 +321,7 @@ function func_download {
 		local _root=$SRCS_DIR
 		local _module=
 		local _lib_name=
-		
+
 		local _index=1
 		while [ "$_index" -lt "${#_params[@]}" ]; do
 			local _params2=( $(echo ${_params[$_index]} | sed 's|:| |g') )
@@ -410,7 +411,7 @@ function func_download {
 						}
 						_result=$?
 					;;
-				esac	
+				esac
 			} || {
 				_lib_name=$SRCS_DIR/$_filename
 				[[ -f $_lib_name ]] && {
@@ -436,7 +437,7 @@ function func_download {
 			}
 		} || {
 			echo "---> $_filename downloaded"
-		}	
+		}
 	done
 }
 
@@ -466,7 +467,7 @@ function func_uncompress {
 		local _dir=
 		local _root=$SRCS_DIR
 		local _lib_name=
-		
+
 		local _index=1
 		while [ "$_index" -lt "${#_params[@]}" ]
 		do
@@ -530,7 +531,7 @@ function func_execute {
 	local _result=0
 	local -a _commands=( "${!5}" )
 	local it=
-	
+
 	local _index=0
 	((_index=${#_commands[@]}-1))
 	local _cmd_marker_name=$1/$2/exec-$4-$_index.marker
@@ -580,7 +581,7 @@ function func_apply_patches {
 	# $2 - src dir name
 	# $3 - patches dir
 	# $4 - patches list
-	
+
 	local _result=0
 	local it=
 	local applevel=
@@ -598,8 +599,8 @@ function func_apply_patches {
 	[[ ${#_list[@]} > 0 ]] && {
 		echo -n "--> patching..."
 	}
-	
-	for it in ${_list[@]} ; do		
+
+	for it in ${_list[@]} ; do
 		local _patch_marker_name=$1/$2/_patch-$_index.marker
 		local _patch_log_name=$1/$2/patch-$_index.log
 		local _patch_file=$3/${it}
@@ -672,6 +673,8 @@ function func_configure {
 	}
 
 	[[ ! -f $_marker ]] && {
+		#echo "CFLAGS=\"$CFLAGS\", CXXFLAGS=\"$CXXFLAGS\", CPPFLAGS=\"$CPPFLAGS\", LDFLAGS=\"$LDFLAGS\""
+		#echo "ARGS=\"${3}\""
 		echo -n "--> configure..."
 		pushd $5/$_subbuilddir > /dev/null
 		[[ $6 == yes ]] && {
@@ -756,7 +759,7 @@ function func_test {
 	local CC_FLAGS="-O2"
 	local CXX_FLAGS="$CC_FLAGS"
 	local LD_FLAGS="-s"
-	
+
 	local _result=0
 	local -a _list=( "${!2}" )
 	local arch_it=
@@ -913,9 +916,9 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-?.?.?)			echo "${1/gcc-/}" ;;
 		gcc-4_6-branch)	echo "4.6.5" ;;
 		gcc-4_7-branch)	echo "4.7.4" ;;
-		gcc-4_8-branch)	echo "4.8.5" ;;
+		gcc-4_8-branch)	echo "4.8.6" ;;
 		gcc-4_9-branch)	echo "4.9.3" ;;
-		gcc-5-branch)	echo "5.1.1" ;;
+		gcc-5-branch)	echo "5.3.0" ;;
 		gcc-trunk)			echo "6.0.0" ;;
 		*) die "gcc name error: $1. terminate." ;;
 	esac
@@ -1022,7 +1025,7 @@ function func_create_sources_upload_cmd {
 	# $5 - archive name
 
 	local _upload_cmd="sshpass -p $3 scp $5 $2@frs.sourceforge.net:$PROJECT_FS_ROOT_DIR/'Toolchain\ sources/Personal\ Builds/mingw-builds/$(func_map_gcc_name_to_gcc_version $4)'"
-	
+
 	echo "$_upload_cmd"
 }
 
@@ -1051,9 +1054,9 @@ function func_update_repository_file {
 	# $6 - revision
 	# $7 - url for archive
 	# $8 - archive file name
-	
+
 	[[ ! -f $1 ]] && { die "repository file \"$1\" is not exists. terminate."; }
-	
+
 	printf "%5s|%-6s|%5s|%-5s|%-5s|%s\n" $2 $3 $4 $5 "rev$6" "$7/$8" >> $1
 }
 

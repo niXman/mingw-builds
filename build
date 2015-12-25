@@ -4,8 +4,8 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of 'MinGW-W64' project.
-# Copyright (c) 2011,2012,2013,2014 by niXman (i dotty nixman doggy gmail dotty com)
-# Copyright (c) 2012,2013,2014 by Alexpux (alexpux doggy gmail dotty com)
+# Copyright (c) 2011-2015 by niXman (i dotty nixman doggy gmail dotty com)
+#                        ,by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
 # Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
@@ -94,6 +94,7 @@ readonly RUN_ARGS="$@"
 	echo "                                 supported languages. available languages:"
 	echo "                                 ada,c,c++,fortran,objc,obj-c++"
 	echo "    --show-subtargets          - show list of subtargets for selected '--mode'"
+	echo "    --logviewer-command        - use this command for the log viewer"
 	echo "  available Python versions: 2, 3"
 	echo "  available clang versions: 3.4, git"
 	echo "  available gcc versions:"
@@ -112,16 +113,21 @@ readonly RUN_ARGS="$@"
 	echo "    gcc-4.8.2 (4.8.2 release)"
 	echo "    gcc-4.8.3 (4.8.3 release)"
 	echo "    gcc-4.8.4 (4.8.4 release)"
+	echo "    gcc-4.8.5 (4.8.5 release)"
+	#echo "    gcc-4.8.6 (4.8.6 release)"
 	echo "    gcc-4.9.0 (4.9.0 release)"
 	echo "    gcc-4.9.1 (4.9.1 release)"
 	echo "    gcc-4.9.2 (4.9.2 release)"
-	#echo "    gcc-4.9.3 (4.9.3 release)"
+	echo "    gcc-4.9.3 (4.9.3 release)"
+	#echo "    gcc-4.9.4 (4.9.4 release)"
 	echo "    gcc-5.1.0 (5.1.0 release)"
+	echo "    gcc-5.2.0 (5.2.0 release)"
+	echo "    gcc-5.3.0 (5.3.0 release)"
 	echo "    gcc-4_6-branch (currently 4.6.5-prerelease)"
 	echo "    gcc-4_7-branch (currently 4.7.4-prerelease)"
-	echo "    gcc-4_8-branch (currently 4.8.5-prerelease)"
-	echo "    gcc-4_9-branch (currently 4.9.3-prerelease)"
-	echo "    gcc-5-branch (currently 5.1.1-prerelease)"
+	echo "    gcc-4_8-branch (currently 4.8.6-prerelease)"
+	echo "    gcc-4_9-branch (currently 4.9.4-prerelease)"
+	echo "    gcc-5-branch (currently 5.3.0-prerelease)"
 	echo "    gcc-trunk (currently 6.0.0-snapshot)"
 
 	exit 0
@@ -200,7 +206,7 @@ while [[ $# > 0 ]]; do
 				*)
 					die "\"$EXCEPTIONS_MODEL\" is not valid exception model. available models: dwarf, seh, sjlj. terminate."
 				;;
-			esac	
+			esac
 		;;
 		--use-lto)
 			BASE_CFLAGS="$BASE_CFLAGS -flto -fno-use-linker-plugin"
@@ -211,6 +217,7 @@ while [[ $# > 0 ]]; do
 		--no-extras) BUILD_EXTRAS=no ;;
 		--no-strip) STRIP_ON_INSTALL=no ;;
 		--static-gcc)
+			BOOTSTRAPING=yes
 			LINK_TYPE_GCC=$LINK_TYPE_STATIC
 			GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
 			BUILD_SHARED_GCC=no
@@ -246,7 +253,7 @@ while [[ $# > 0 ]]; do
 				;;
 			esac
 		;;
-		--threads=*) 
+		--threads=*)
 			THREADS_MODEL=${1/--threads=/}
 			case $THREADS_MODEL in
 				win32|posix)
@@ -267,6 +274,7 @@ while [[ $# > 0 ]]; do
 		--sf-user=*) SF_USER=${1/--sf-user=/} ;;
 		--sf-pass=*) SF_PASSWORD=${1/--sf-pass=/} ;;
 		--debug-upload) DEBUG_UPLOAD=yes ;;
+		--logviewer-command=*) LOGVIEWER=${1/--logviewer-command=/} ;;
 		*)
 			die "bad command line: \"$1\". terminate."
 		;;
@@ -409,7 +417,7 @@ func_install_toolchain \
 			MINGW_BUILD_NAME=$MINGW_BUILD_NAME-static
 		}
 		MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
-		readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)	
+		readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
 
 		readonly MINGWPREFIX=/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
 		readonly PREFIX=${BASE_BUILD_DIR}${MINGWPREFIX}
@@ -453,6 +461,18 @@ func_install_toolchain \
 	}
 }
 
+readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
+readonly COMMON_CXXFLAGS="$COMMON_CFLAGS"
+readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS"
+readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib"
+
+#echo "PROCESSOR_OPTIMIZATION=\"$PROCESSOR_OPTIMIZATION\""
+#echo "PROCESSOR_TUNE=\"$PROCESSOR_TUNE\""
+#echo "BASE_CFLAGS=\"$BASE_CFLAGS\""
+#echo "BASE_CXXFLAGS=\"$BASE_CXXFLAGS\""
+#echo "COMMON_CFLAGS=\"$COMMON_CFLAGS\""
+#echo "COMMON_CXXFLAGS=\"$COMMON_CXXFLAGS\""
+
 # **************************************************************************
 
 case $BUILD_ARCHITECTURE in
@@ -480,19 +500,12 @@ readonly REVERSE_HOST=$(func_get_reverse_triplet $HOST)
 readonly REVERSE_BUILD=$(func_get_reverse_triplet $BUILD)
 readonly REVERSE_TARGET=$(func_get_reverse_triplet $TARGET)
 readonly REVERSE_ARCHITECTURE=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
-	
+
 [[ $USE_MULTILIB == yes ]] && {
 	readonly ENABLE_TARGETS=${TARGET},${REVERSE_TARGET}
 } || {
 	readonly ENABLE_TARGETS=$TARGET
 }
-
-# **************************************************************************
-
-readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
-readonly COMMON_CXXFLAGS="$COMMON_CFLAGS"
-readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS"
-readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib"
 
 # **************************************************************************
 
@@ -606,7 +619,7 @@ for rule in ${SUBTARGETS[@]}; do
 
 	func_uncompress \
 		PKG_URLS[@]
-	
+
 	[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
 		func_execute \
 			$SRCS_DIR \
@@ -615,7 +628,7 @@ for rule in ${SUBTARGETS[@]}; do
 			"after_unpack" \
 			PKG_EXECUTE_AFTER_UNCOMPRESS[@]
 	}
-	
+
 	[[ $FETCH_MODE == no || $FETCH_PATCH_MODE == yes ]] && {
 		[[ ${#PKG_PATCHES[@]} >0 ]] && {
 			func_apply_patches \
@@ -687,7 +700,7 @@ for rule in ${SUBTARGETS[@]}; do
 				$CURR_BUILD_DIR \
 				$PKG_SUBDIR_NAME
 		}
-	
+
 		[[ ${#PKG_EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
 			func_execute \
 				$CURR_BUILD_DIR \
@@ -790,7 +803,7 @@ func_clear_env
 		} || {
 			echo " done"
 		}
-	
+
 		echo -e -n "--> \E[32;40mupdate repository file...\E[37;40m"
 		[[ $DEBUG_UPLOAD == no ]] && {
 			func_update_repository_file \
@@ -856,7 +869,7 @@ func_clear_env
 	} || {
 		eval "${upload_cmd} > $LOGS_DIR/sources-upload.log 2>&1"
 	}
-	
+
 	func_res=$?
 	[[ $func_res != 0 ]] && {
 		func_show_log $LOGS_DIR/sources-upload.log
