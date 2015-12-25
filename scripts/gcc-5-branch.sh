@@ -56,7 +56,7 @@ PKG_PATCHES=(
 	gcc/gcc-4.8.2-prettify-linking-no-undefined.mingw.patch
 	gcc/gcc-4.9.1-enable-shared-gnat-implib.mingw.patch
 	gcc/gcc-5.1.0-make-xmmintrin-header-cplusplus-compatible.patch
-	gcc/gcc-5.1.0-detect-sjlj-cleanup.patch
+	gcc/gcc-5.3.0-detect-sjlj-cleanup.patch
 	gcc/ktietz-libgomp.patch
 	gcc/gcc-5.2-fix-mingw-pch.patch
 	gcc/gcc-5-dwarf-regression.patch
