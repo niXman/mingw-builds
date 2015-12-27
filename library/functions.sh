@@ -502,7 +502,7 @@ function func_uncompress {
 					.zip) _unpack_cmd="unzip $SRCS_DIR/$_filename -d $_lib_name > $_log_name 2>&1" ;;
 					*) die " error. bad archive type: $_ext" ;;
 				esac
-				eval ${_unpack_cmd}
+				eval ${_unpack_cmd} || true
 				_result=$?
 				[[ $_result == 0 ]] && {
 					echo " done"
