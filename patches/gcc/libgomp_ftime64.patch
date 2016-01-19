@@ -1,0 +1,14 @@
+diff -rupN a/libgomp/config/mingw32/time.c b/libgomp/config/mingw32/time.c
+--- a/libgomp/config/mingw32/time.c	2013-01-14 19:18:49.000000000 +0100
++++ b/libgomp/config/mingw32/time.c	2013-12-16 17:04:52.014237600 +0100
+@@ -31,8 +31,8 @@
+ double
+ omp_get_wtime (void)
+ {
+-  struct _timeb timebuf;
+-  _ftime (&timebuf);
++  struct __timeb64 timebuf;
++  _ftime64 (&timebuf);
+   return (timebuf.time + (long)(timebuf.millitm) / 1e3);
+ }
+ 

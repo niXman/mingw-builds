@@ -105,10 +105,10 @@ function func_get_subtargets {
 		mingw-w64-tools-genidl
 		mingw-w64-tools-genpeimg
 		mingw-w64-tools-widl
-		${PYTHON_SUBTARGETS[@]}
-		gdbinit
-		gdb
-		gdb-wrapper
+		#${PYTHON_SUBTARGETS[@]}
+		#gdbinit
+		#gdb
+		#gdb-wrapper
 		make
 		3rdparty-post
 		cleanup
@@ -134,7 +134,7 @@ function func_get_subtargets {
 		python)
 			local readonly SUBTARGETS=(
 				zlib
-				${PYTHON_SUBTARGETS[@]}
+				#${PYTHON_SUBTARGETS[@]}
 				3rdparty-post
 				cleanup
 				licenses

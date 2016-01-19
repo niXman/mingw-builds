@@ -59,6 +59,7 @@ PKG_PATCHES=(
 	gcc/gcc-5.1.0-make-xmmintrin-header-cplusplus-compatible.patch
 	gcc/gcc-5.3.0-detect-sjlj-cleanup.patch
 	gcc/ktietz-libgomp.patch
+    gcc/libgomp_ftime64.patch
 	gcc/gcc-5.2-fix-mingw-pch.patch
 	gcc/gcc-5-dwarf-regression.patch
 	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch

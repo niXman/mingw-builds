@@ -73,7 +73,7 @@ function func_get_licenses {
 
 	case $1 in
 		gcc)
-			echo -n "${gcc_part[@]} ${python_part[@]}"
+			echo -n "${gcc_part[@]}"
 		;;
 		python)
 			echo -n "${python_part[@]}"
