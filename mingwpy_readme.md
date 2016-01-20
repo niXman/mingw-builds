@@ -7,9 +7,11 @@ Install and update a fresh msys2 from https://msys2.github.io according to the i
 *NEVER* use an installation path for msys2 containing SPACES or other special characters!
 
 Now install the following tools and programs with the help of pacman:
+
 `pacman -Sy --noconfirm git svn zip tar autoconf make libtool automake p7zip patch bison gettext-devel wget sshpass texinfo`
 
 Now make sure the mingw-w64 toolchain supplied by pacman is NOT installed:
+
 `$ gcc -v` should show the following error: `bash: gcc: command not found`
 
 The mingw-builds build script is responsible to download an approbriate toolchain needed for  the gcc build process.
@@ -25,3 +27,5 @@ The mingw-builds build script is responsible to download an approbriate toolchai
 `./build --mode=gcc-5.3.0 --static-gcc --arch=i686 --march-x32='pentium4' --mtune-x32='generic' --buildroot=/tmp/i686 --rev=201601 --rt-version=trunk --threads=win32 --exceptions=sjlj --enable-languages=c,c++,fortran --fetch-only`
 
 `./build --mode=gcc-5.3.0 --static-gcc --arch=i686 --march-x32='pentium4' --mtune-x32='generic' --buildroot=/tmp/i686 --rev=201601 --rt-version=trunk --threads=win32 --exceptions=sjlj --enable-languages=c,c++,fortran --bootstrap --no-multilib --bin-compress`
+
+The build process can be accelerated with the flag`--jobs=N`. The number `N` given should be the number of cores avaiilabe for the build process.
