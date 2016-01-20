@@ -2,15 +2,17 @@
 
 ## prepare msys2 to allow mingw-builds to run
 
-Install and update a fresh msys2 from https://msys2.github.io according the instructions given on this site.
+Install and update a fresh msys2 from https://msys2.github.io according to the instructions given there.
 
-*NEVER* use an installation path with SPACES or other special characters!
+*NEVER* use an installation path for msys2 containing SPACES or other special characters!
 
-Install the following tools and programs with the help of pacman:
-`pacman -Sy svn zip tar autoconf make libtool automake p7zip patch bison gettext-devel wget curl sshpass`
+Now install the following tools and programs with the help of pacman:
+`pacman -Sy --noconfirm git svn zip tar autoconf make libtool automake p7zip patch bison gettext-devel wget sshpass texinfo`
 
 Now make sure the mingw-w64 toolchain supplied by pacman is NOT installed:
 `$ gcc -v` should show the following error: `bash: gcc: command not found`
+
+The mingw-builds build script is responsible to download an approbriate toolchain needed for  the gcc build process.
 
 ## build the 64-bit toolchain
 
