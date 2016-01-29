@@ -62,7 +62,11 @@ PKG_PATCHES=(
 	binutils/27aaeda.diff
 	binutils/a93d5cb.diff
 	binutils/fixes-a-problem-recognizing-libraries-created-by-VS.patch
+	binutils/binutils-IMPORT_DATA-fix-2.patch
 )
+# Note: binutis-IMPORT_DATA-fix-2.patch is not included the master
+# branch of upstream binutils at this time:
+# https://sourceware.org/bugzilla/show_bug.cgi?id=19541
 
 #
 
