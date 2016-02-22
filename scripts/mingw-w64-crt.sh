@@ -49,13 +49,7 @@ PKG_PRIORITY=runtime
 #
 
 PKG_PATCHES=(
-	$(
-		[[ $RUNTIME_VERSION == v3 ]] && { \
-			echo "mingw-w64/6385.patch"; \
-			echo "mingw-w64/6386.patch"; \
-			echo "mingw-w64/6390.patch"; \
-		} \
-	)
+	mingw-w64/fpclassify.patch
 )
 
 #
