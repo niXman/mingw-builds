@@ -1,6 +1,6 @@
-diff -rupN libgcc/soft-fp/extendxftf2.c libgcc_a/soft-fp/extendxftf2.c
---- libgcc/soft-fp/extendxftf2.c	2014-02-13 00:24:49.000000000 +0100
-+++ libgcc_a/soft-fp/extendxftf2.c	2016-02-23 15:57:47.005539700 +0100
+diff -rupN gcc-5.3.0/libgcc/soft-fp/extendxftf2.c gcc-5.3.0_wc/libgcc/soft-fp/extendxftf2.c
+--- gcc-5.3.0/libgcc/soft-fp/extendxftf2.c	2014-10-09 20:21:30.000000000 +0200
++++ gcc-5.3.0_wc/libgcc/soft-fp/extendxftf2.c	2016-02-24 19:34:25.007541000 +0100
 @@ -1,53 +0,0 @@
 -/* Software floating-point emulation.
 -   Return a converted to IEEE quad
@@ -43,7 +43,7 @@ diff -rupN libgcc/soft-fp/extendxftf2.c libgcc_a/soft-fp/extendxftf2.c
 -  FP_DECL_Q (R);
 -  TFtype r;
 -
--  FP_INIT_ROUNDMODE;
+-  FP_INIT_TRAPPING_EXCEPTIONS;
 -  FP_UNPACK_RAW_E (A, a);
 -#if (2 * _FP_W_TYPE_SIZE) < _FP_FRACBITS_Q
 -  FP_EXTEND (Q, E, 4, 4, R, A);
@@ -55,9 +55,9 @@ diff -rupN libgcc/soft-fp/extendxftf2.c libgcc_a/soft-fp/extendxftf2.c
 -
 -  return r;
 -}
-diff -rupN libgcc/soft-fp/trunctfxf2.c libgcc_a/soft-fp/trunctfxf2.c
---- libgcc/soft-fp/trunctfxf2.c	2014-02-13 00:24:49.000000000 +0100
-+++ libgcc_a/soft-fp/trunctfxf2.c	2016-02-23 15:58:01.263964700 +0100
+diff -rupN gcc-5.3.0/libgcc/soft-fp/trunctfxf2.c gcc-5.3.0_wc/libgcc/soft-fp/trunctfxf2.c
+--- gcc-5.3.0/libgcc/soft-fp/trunctfxf2.c	2014-02-13 00:24:49.000000000 +0100
++++ gcc-5.3.0_wc/libgcc/soft-fp/trunctfxf2.c	2016-02-24 19:34:37.279768100 +0100
 @@ -1,53 +0,0 @@
 -/* Software floating-point emulation.
 -   Truncate IEEE quad into IEEE extended
