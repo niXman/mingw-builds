@@ -1,7 +1,9 @@
-The scripts provided by the MinGW-W64 project[1] are designed
+The scripts provided by the
+[MinGW-W64 project](http://sourceforge.net/projects/mingw-w64/) are designed
 for building the dual-target(i686/x86_64) MinGW-W64 compiler for i686/x86_64 hosts.
 
-The scripts are distributed under the 'BSD 3' license[2].
+The scripts are distributed under the
+['BSD 3' license](http://www.opensource.org/licenses/BSD-3-Clause).
 
 In order to use the scripts provided by the MinGW-W64 project it is needed:
 
@@ -12,9 +14,9 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
   (MSYS2 wiki: http://sourceforge.net/p/msys2/wiki/MSYS2%20installation/)
 
 3. Get the scripts into '<msys root>/home/<user>/mingw-builds'
-
-    cd && git clone <paste correct url>
-    
+  ```
+  cd && git clone <paste correct url>
+  ``` 
   (see the diff between the 'master' and 'develop' branches, maybe you need
    the 'develop' branch exactly)
 
@@ -24,11 +26,12 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
   environment variable.
 
 6. Go into the MinGW-builds root directory.
-
-    cd && cd mingw-builds
+  ```
+  cd && cd mingw-builds
+  ```
 
 7. Options:
-```
+  ```
   `--mode=[gcc|python|clang]-version` - what package to build with version.
   `--arch=<i686|x86_64>`              - build architecture.
     
@@ -50,7 +53,7 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
   `--enable-languages=<langs>`        - comma separated list(without spaces) of gcc supported languages.
                                         available languages: ada,c,c++,fortran,objc,obj-c++
                                         
-```
+  ```
   For more options run: `./build --help`
   
 8. Run:
@@ -115,6 +118,3 @@ Big thanks for these patches to:
   2010-2013 Roumen Petrov, Руслан Ижбулатов
   2012-2015 Ray Donnelly, Alexey Pavlov
 ``` 
-[1]
-http://sourceforge.net/projects/mingw-w64/
-[2] http://www.opensource.org/licenses/BSD-3-Clause
