@@ -95,13 +95,14 @@ function die {
 	# $2 - exit code
 	local _retcode=1
 	[[ -n $2 ]] && _retcode=$2
-	echo $1
+	echo
+	>&2 echo $1
 	exit $_retcode
 }
 
 function func_show_log {
 	# $1 - log file
-	[[ $SHOW_LOG_ON_ERROR == yes ]] && $LOGVIEWER $1 &
+	[[ $SHOW_LOG_ON_ERROR == yes ]] && { $LOGVIEWER $1 & }
 }
 
 # **************************************************************************
