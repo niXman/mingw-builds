@@ -55,7 +55,7 @@ MARKER7=mingw-$VERNUM-x86_64-win32-seh.flag
 	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=seh --arch=x86_64 --bin-compress && touch $MARKER7 || exit 1
 }
 
-MARKER8=mingw-$VERNUM-i686-win32-dwarf.marker
+MARKER8=mingw-$VERNUM-i686-win32-dwarf.flag
 [[ ! -e $MARKER8 ]] && {
 	./build --mode=$GCC_NAME --buildroot=$BUILDROOT $@ --threads=win32 --exceptions=dwarf --arch=i686 --bin-compress --src-compress $([[ $@ == *"--mingw-upload"* ]] && echo --src-upload) && touch $MARKER8 || exit 1
 }
