@@ -57,7 +57,6 @@ PKG_PATCHES=(
 	gcc/gcc-4.8.2-fix-for-windows-not-minding-non-existant-parent-dirs.patch
 	gcc/gcc-4.8.2-windows-lrealpath-no-force-lowercase-nor-backslash.patch
 	gcc/lto-plugin-use-static-libgcc.patch
-	gcc/gcc-4.8-fix-PCH.patch
 )
 
 #
@@ -93,8 +92,6 @@ PKG_CONFIGURE_FLAGS=(
 		&& echo "--enable-sjlj-exceptions" \
 	)
 	#
-	--disable-isl-version-check
-	--disable-cloog-version-check
 	--disable-libstdcxx-pch
 	--disable-libstdcxx-debug
 	$( [[ $BOOTSTRAPING == yes ]] \
