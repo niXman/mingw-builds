@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=0.15
+PKG_VERSION=$( [[ $GCC_NAME == gcc-4* ]] && { echo 0.14.1; } || { echo 0.15; } )
 PKG_NAME=$BUILD_ARCHITECTURE-isl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=isl-${PKG_VERSION}
 PKG_TYPE=.tar.xz
