@@ -35,15 +35,21 @@
 
 # **************************************************************************
 
+PKG_NAME=binutils-post
+PKG_DIR_NAME=binutils-post
+PKG_PRIORITY=main
+
 [[ $USE_MULTILIB == yes ]] && {
 	BINUTILSPREFIX=$PREREQ_DIR/$BUILD_ARCHITECTURE-binutils-multi
 } || {
 	BINUTILSPREFIX=$PREREQ_DIR/$BUILD_ARCHITECTURE-binutils-nomulti
 }
 
-[[ ! -f $BUILDS_DIR/binutils-post.marker ]] && {
-	cp -rf $BINUTILSPREFIX/* $PREFIX || exit 1
-	touch $BUILDS_DIR/binutils-post.marker
-}
+PKG_MAKE_PROG=cp
+PKG_INSTALL_FLAGS=(
+	"-rfv"
+	"$BINUTILSPREFIX/*"
+	"$PREFIX"
+)
 
 # **************************************************************************
