@@ -18,14 +18,14 @@ The mingw-builds build script is responsible to download an approbriate toolchai
 
 ## build the 64-bit toolchain
 
-`./build --mode=gcc-5.3.0 --static-gcc --arch=x86_64 --march-x64='x86-64' --mtune-x64='generic' --buildroot=/tmp/x86_64 --rev=201601 --rt-version=trunk --threads=win32 --exceptions=seh --enable-languages=c,c++,fortran --fetch-only`
+`./build --mode=gcc-5.3.0 --static-gcc --arch=x86_64 --march-x64='x86-64' --mtune-x64='generic' --buildroot=/tmp/x86_64 --rev=201604 --rt-version=trunk --threads=win32 --exceptions=seh --enable-languages=c,c++,fortran --fetch-only`
 
-`./build --mode=gcc-5.3.0 --static-gcc --arch=x86_64 --march-x64='x86-64' --mtune-x64='generic' --buildroot=/tmp/x86_64 --rev=201601 --rt-version=trunk --threads=win32 --exceptions=seh --enable-languages=c,c++,fortran --bootstrap --no-multilib --bin-compress`
+`./build --mode=gcc-5.3.0 --static-gcc --arch=x86_64 --march-x64='x86-64' --mtune-x64='generic' --buildroot=/tmp/x86_64 --rev=201604 --rt-version=trunk --threads=win32 --exceptions=seh --enable-languages=c,c++,fortran --bootstrap --no-multilib --bin-compress`
 
 ## build the 32-bit toolchain
 
-`./build --mode=gcc-5.3.0 --static-gcc --arch=i686 --march-x32='pentium4' --mtune-x32='generic' --buildroot=/tmp/i686 --rev=201601 --rt-version=trunk --threads=win32 --exceptions=sjlj --enable-languages=c,c++,fortran --fetch-only`
+`./build --mode=gcc-5.3.0 --static-gcc --arch=i686 --march-x32='pentium4' --mtune-x32='generic' --buildroot=/tmp/i686 --rev=201604 --rt-version=trunk --threads=win32 --exceptions=sjlj --enable-languages=c,c++,fortran --fetch-only`
 
-`./build --mode=gcc-5.3.0 --static-gcc --arch=i686 --march-x32='pentium4' --mtune-x32='generic' --buildroot=/tmp/i686 --rev=201601 --rt-version=trunk --threads=win32 --exceptions=sjlj --enable-languages=c,c++,fortran --bootstrap --no-multilib --bin-compress`
+`./build --mode=gcc-5.3.0 --static-gcc --arch=i686 --march-x32='pentium4' --mtune-x32='generic' --buildroot=/tmp/i686 --rev=201604 --rt-version=trunk --threads=win32 --exceptions=sjlj --enable-languages=c,c++,fortran --bootstrap --no-multilib --bin-compress`
 
 The build process can be accelerated with the flag`--jobs=N`. The number `N` given should be the number of cores avaiilabe for the build process.
