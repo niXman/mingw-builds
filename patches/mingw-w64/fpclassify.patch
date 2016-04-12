@@ -1,5 +1,6 @@
---- mingw-w64/mingw-w64-crt/Makefile.am	2016-02-01 14:07:18.603478000 +0100
-+++ mingw-w64/mingw-w64-crt/Makefile.am	mingwpy working copy
+diff -rupN mingw-w64/mingw-w64-crt/Makefile.am mingw-w64_b/mingw-w64-crt/Makefile.am
+--- mingw-w64/mingw-w64-crt/Makefile.am	2016-04-12 16:10:31.000000000 +0200
++++ mingw-w64_b/mingw-w64-crt/Makefile.am	2016-04-12 22:40:58.247098300 +0200
 @@ -123,7 +123,7 @@ src_libportabledeviceguids=libsrc/portab
  src_libmingw32=include/oscalls.h include/internal.h include/sect_attribs.h \
    crt/atonexit.c      crt/crt0_c.c         crt/dll_argv.c  crt/gccmain.c     crt/natstart.c  crt/pseudo-reloc-list.c  crt/wildcard.c \
@@ -9,8 +10,9 @@
    crt/mingw_custom.c  crt/mingw_helpers.c  \
    crt/pseudo-reloc.c  crt/udll_argv.c      \
    crt/xtxtmode.c      crt/crt_handler.c    \
---- mingw-w64/mingw-w64-crt/Makefile.in	2016-02-01 14:07:18.627480400 +0100
-+++ mingw-w64/mingw-w64-crt/Makefile.in	mingwpy working copy
+diff -rupN mingw-w64/mingw-w64-crt/Makefile.in mingw-w64_b/mingw-w64-crt/Makefile.in
+--- mingw-w64/mingw-w64-crt/Makefile.in	2016-04-12 16:10:31.000000000 +0200
++++ mingw-w64_b/mingw-w64-crt/Makefile.in	2016-04-12 22:40:58.293898400 +0200
 @@ -494,7 +494,7 @@ am__lib32_libmingw32_a_SOURCES_DIST = in
  	crt/pseudo-reloc-list.c crt/wildcard.c crt/charmax.c \
  	crt/crt0_w.c crt/dllargv.c crt/gs_support.c crt/_newmode.c \
@@ -29,7 +31,7 @@
  	crt/lib32_libmingw32_a-mingw_custom.$(OBJEXT) \
  	crt/lib32_libmingw32_a-mingw_helpers.$(OBJEXT) \
  	crt/lib32_libmingw32_a-pseudo-reloc.$(OBJEXT) \
-@@ -1667,7 +1667,7 @@ am__lib64_libmingw32_a_SOURCES_DIST = in
+@@ -1672,7 +1672,7 @@ am__lib64_libmingw32_a_SOURCES_DIST = in
  	crt/pseudo-reloc-list.c crt/wildcard.c crt/charmax.c \
  	crt/crt0_w.c crt/dllargv.c crt/gs_support.c crt/_newmode.c \
  	crt/tlssup.c crt/xncommod.c crt/cinitexe.c crt/merr.c \
@@ -38,7 +40,7 @@
  	crt/mingw_custom.c crt/mingw_helpers.c crt/pseudo-reloc.c \
  	crt/udll_argv.c crt/xtxtmode.c crt/crt_handler.c crt/tlsthrd.c \
  	crt/tlsmthread.c crt/tlsmcrt.c
-@@ -1691,7 +1691,7 @@ am__objects_53 = crt/lib64_libmingw32_a-
+@@ -1696,7 +1696,7 @@ am__objects_53 = crt/lib64_libmingw32_a-
  	crt/lib64_libmingw32_a-pesect.$(OBJEXT) \
  	crt/lib64_libmingw32_a-udllargc.$(OBJEXT) \
  	crt/lib64_libmingw32_a-xthdloc.$(OBJEXT) \
@@ -47,7 +49,7 @@
  	crt/lib64_libmingw32_a-mingw_custom.$(OBJEXT) \
  	crt/lib64_libmingw32_a-mingw_helpers.$(OBJEXT) \
  	crt/lib64_libmingw32_a-pseudo-reloc.$(OBJEXT) \
-@@ -5137,7 +5137,7 @@ src_libportabledeviceguids = libsrc/port
+@@ -5152,7 +5152,7 @@ src_libportabledeviceguids = libsrc/port
  src_libmingw32 = include/oscalls.h include/internal.h include/sect_attribs.h \
    crt/atonexit.c      crt/crt0_c.c         crt/dll_argv.c  crt/gccmain.c     crt/natstart.c  crt/pseudo-reloc-list.c  crt/wildcard.c \
    crt/charmax.c       crt/crt0_w.c         crt/dllargv.c   crt/gs_support.c  crt/_newmode.c  crt/tlssup.c             crt/xncommod.c \
@@ -56,7 +58,7 @@
    crt/mingw_custom.c  crt/mingw_helpers.c  \
    crt/pseudo-reloc.c  crt/udll_argv.c      \
    crt/xtxtmode.c      crt/crt_handler.c    \
-@@ -7270,7 +7270,7 @@ EXTRA_DIST = $(srcdir)/ChangeLog.* revst
+@@ -7286,7 +7286,7 @@ EXTRA_DIST = $(srcdir)/ChangeLog.* revst
  	$(top_srcdir)/lib32/*.def.in $(top_srcdir)/lib64/*.def.in \
  	$(top_srcdir)/def-include/*.def.in $(top_srcdir)/$(winrtlibs) \
  	crt/binmode.c crt/crtbegin.c crt/crtdll.c crt/crtend.c \
@@ -65,7 +67,7 @@
  	crt/CRT_noglob.c crt/txtmode.c crt/ucrtexe.c profile/gcrt0.c \
  	profile/COPYING profile/CYGWIN_LICENSE \
  	math/DFP/mpdecimal-2.3/.hg_archival.txt \
-@@ -8270,7 +8270,7 @@ crt/lib32_libmingw32_a-udllargc.$(OBJEXT
+@@ -8286,7 +8286,7 @@ crt/lib32_libmingw32_a-udllargc.$(OBJEXT
  	crt/$(DEPDIR)/$(am__dirstamp)
  crt/lib32_libmingw32_a-xthdloc.$(OBJEXT): crt/$(am__dirstamp) \
  	crt/$(DEPDIR)/$(am__dirstamp)
@@ -74,7 +76,7 @@
  	crt/$(DEPDIR)/$(am__dirstamp)
  crt/lib32_libmingw32_a-mingw_custom.$(OBJEXT): crt/$(am__dirstamp) \
  	crt/$(DEPDIR)/$(am__dirstamp)
-@@ -9963,7 +9963,7 @@ crt/lib64_libmingw32_a-udllargc.$(OBJEXT
+@@ -9985,7 +9985,7 @@ crt/lib64_libmingw32_a-udllargc.$(OBJEXT
  	crt/$(DEPDIR)/$(am__dirstamp)
  crt/lib64_libmingw32_a-xthdloc.$(OBJEXT): crt/$(am__dirstamp) \
  	crt/$(DEPDIR)/$(am__dirstamp)
@@ -83,7 +85,7 @@
  	crt/$(DEPDIR)/$(am__dirstamp)
  crt/lib64_libmingw32_a-mingw_custom.$(OBJEXT): crt/$(am__dirstamp) \
  	crt/$(DEPDIR)/$(am__dirstamp)
-@@ -13926,7 +13926,7 @@ distclean-compile:
+@@ -13969,7 +13969,7 @@ distclean-compile:
  @AMDEP_TRUE@@am__include@ @am__quote@complex/$(DEPDIR)/libarm32_libmingwex_a-ctan.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@complex/$(DEPDIR)/libarm32_libmingwex_a-ctanf.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@complex/$(DEPDIR)/libarm32_libmingwex_a-ctanl.Po@am__quote@
@@ -92,7 +94,7 @@
  @AMDEP_TRUE@@am__include@ @am__quote@crt/$(DEPDIR)/lib32_libmingw32_a-_newmode.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@crt/$(DEPDIR)/lib32_libmingw32_a-atonexit.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@crt/$(DEPDIR)/lib32_libmingw32_a-charmax.Po@am__quote@
-@@ -13957,7 +13957,7 @@ distclean-compile:
+@@ -14000,7 +14000,7 @@ distclean-compile:
  @AMDEP_TRUE@@am__include@ @am__quote@crt/$(DEPDIR)/lib32_libmingw32_a-xtxtmode.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@crt/$(DEPDIR)/lib32_libmingwex_a-dllentry.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@crt/$(DEPDIR)/lib32_libmingwex_a-dllmain.Po@am__quote@
@@ -101,7 +103,7 @@
  @AMDEP_TRUE@@am__include@ @am__quote@crt/$(DEPDIR)/lib64_libmingw32_a-_newmode.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@crt/$(DEPDIR)/lib64_libmingw32_a-atonexit.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@crt/$(DEPDIR)/lib64_libmingw32_a-charmax.Po@am__quote@
-@@ -19439,19 +19439,19 @@ crt/lib32_libmingw32_a-xthdloc.obj: crt/
+@@ -19482,19 +19482,19 @@ crt/lib32_libmingw32_a-xthdloc.obj: crt/
  @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
  @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib32_libmingw32_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o crt/lib32_libmingw32_a-xthdloc.obj `if test -f 'crt/xthdloc.c'; then $(CYGPATH_W) 'crt/xthdloc.c'; else $(CYGPATH_W) '$(srcdir)/crt/xthdloc.c'; fi`
  
@@ -133,7 +135,7 @@
  
  crt/lib32_libmingw32_a-mingw_custom.o: crt/mingw_custom.c
  @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib32_libmingw32_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT crt/lib32_libmingw32_a-mingw_custom.o -MD -MP -MF crt/$(DEPDIR)/lib32_libmingw32_a-mingw_custom.Tpo -c -o crt/lib32_libmingw32_a-mingw_custom.o `test -f 'crt/mingw_custom.c' || echo '$(srcdir)/'`crt/mingw_custom.c
-@@ -28791,19 +28791,19 @@ crt/lib64_libmingw32_a-xthdloc.obj: crt/
+@@ -28876,19 +28876,19 @@ crt/lib64_libmingw32_a-xthdloc.obj: crt/
  @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
  @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib64_libmingw32_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o crt/lib64_libmingw32_a-xthdloc.obj `if test -f 'crt/xthdloc.c'; then $(CYGPATH_W) 'crt/xthdloc.c'; else $(CYGPATH_W) '$(srcdir)/crt/xthdloc.c'; fi`
  
