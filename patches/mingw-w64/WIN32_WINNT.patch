@@ -1,0 +1,12 @@
+diff -rupN mingw-w64/mingw-w64-headers/crt/_mingw.h.in mingw-w64_wc/mingw-w64-headers/crt/_mingw.h.in
+--- mingw-w64/mingw-w64-headers/crt/_mingw.h.in	2016-04-13 17:05:13.123831500 +0200
++++ mingw-w64_wc/mingw-w64-headers/crt/_mingw.h.in	2016-04-14 14:43:53.745313500 +0200
+@@ -222,7 +222,7 @@ limitations in handling dllimport attrib
+ 
+ 
+ #ifndef _WIN32_WINNT
+-#define _WIN32_WINNT 0x502
++#define _WIN32_WINNT 0x600
+ #endif
+ 
+ #ifndef _INT128_DEFINED

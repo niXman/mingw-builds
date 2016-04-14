@@ -50,6 +50,7 @@ PKG_PRIORITY=runtime
 
 PKG_PATCHES=(
 	mingw-w64/fpclassify.patch
+	mingw-w64/WIN32_WINNT.patch
 )
 
 #
