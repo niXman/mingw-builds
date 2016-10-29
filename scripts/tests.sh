@@ -35,159 +35,71 @@
 
 # **************************************************************************
 
-TESTS_ROOT_DIR=$BUILDS_DIR/tests
+PKG_NAME=tests
+PKG_DIR_NAME=tests/$PKG_ARCHITECTURE
+PKG_PRIORITY=main
 
-function tests_prepare {
-	mkdir -p $TESTS_ROOT_DIR/$BUILD_ARCHITECTURE
-	[[ $USE_MULTILIB == yes ]] && {
-		local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
-		local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
-		mkdir -p $TESTS_ROOT_DIR/${_reverse_arch}
-		[[ $BUILD_SHARED_GCC == yes ]] && {
-			cp -f $( find $PREFIX/$TARGET/lib${_reverse_bits} -type f \( -iname *.dll \) ) \
-				$TESTS_ROOT_DIR/${_reverse_arch}/
-		}
-	}
-}
+dll_test1_list=(
+	"dll1.cpp -shared -o dll1.dll"
+	"dll_test1.cpp -o dll_test1.exe"
+)
 
-tests_prepare
+dll_test2_list=(
+	"dll2.cpp -shared -o dll2.dll"
+	"dll_test2.cpp -L. -ldll2 -o dll_test2.exe"
+)
 
-# **************************************************************************
-# **************************************************************************
-# **************************************************************************
-
-[[ $BUILD_SHARED_GCC == yes ]] && {
-	list1=(
-		"dll1.cpp -shared -o dll1.dll"
-		"dll_test1.cpp -o dll_test1.exe"
-	)
-
-	func_test \
-		"dll_test1" \
-		list1[@] \
-		$TESTS_ROOT_DIR
-}
-
-# **************************************************************************
-
-[[ $BUILD_SHARED_GCC == yes ]] && {
-	list2=(
-		"dll2.cpp -shared -o dll2.dll"
-		"dll_test2.cpp -L. -ldll2 -o dll_test2.exe"
-	)
-
-	func_test \
-		"dll_test2" \
-		list2[@] \
-		$TESTS_ROOT_DIR
-}
-
-# **************************************************************************
-
-list3=(
+lto_test_list=(
 	"lto_int.cpp -I$TESTS_DIR -flto -c -o lto_int.o"
 	"lto_test.cpp -I$TESTS_DIR -flto -c -o lto_test.o"
 	"lto_int.o lto_test.o -flto -o lto_test.exe"
 )
 
-func_test \
-	"lto_test" \
-	list3[@] \
-	$TESTS_ROOT_DIR
-
-# **************************************************************************
-
-list4=(
+omp_test_list=(
 	"omp_test.c -fopenmp -o omp_test.exe"
 )
 
-func_test \
-	"omp_test" \
-	list4[@] \
-	$TESTS_ROOT_DIR
-
-# **************************************************************************
-
-list5=(
+pthread_test_list=(
 	"pthread_test.c -mthreads -lpthread -o pthread_test.exe"
 )
 
-func_test \
-	"pthread_test" \
-	list5[@] \
-	$TESTS_ROOT_DIR
+stdthread_test_list=(
+	"stdthread_test.cpp -std=c++0x -o stdthread_test.exe"
+)
 
-# **************************************************************************
-
-[[ $THREADS_MODEL == posix ]] && {
-	list6=(
-		"stdthread_test.cpp -std=c++0x -o stdthread_test.exe"
-	)
-
-	func_test \
-		"stdthread_test" \
-		list6[@] \
-		$TESTS_ROOT_DIR
-}
-
-# **************************************************************************
-
-list7=(
+lasterror_test1_list=(
 	"lasterror_test1.cpp -o lasterror_test1.exe"
 )
 
-func_test \
-	"lasterror_test1" \
-	list7[@] \
-	$TESTS_ROOT_DIR
-
-# **************************************************************************
-
-list8=(
+lasterror_test2_list=(
 	"lasterror_test2.cpp -o lasterror_test2.exe"
 )
 
-func_test \
-	"lasterror_test2" \
-	list8[@] \
-	$TESTS_ROOT_DIR
-
-# **************************************************************************
-
-list9=(
+time_test_list=(
 	"time_test.c -lpthread -o time_test.exe"
 )
 
-func_test \
-	"time_test" \
-	list9[@] \
-	$TESTS_ROOT_DIR
+sleep_test_list=(
+	"sleep_test.cpp -std=c++0x -o sleep_test.exe"
+)
+
+random_device_list=(
+	"random_device.cpp -std=c++0x -o random_device.exe"
+)
 
 # **************************************************************************
-
-[[ $THREADS_MODEL == posix ]] && {
-	list10=(
-		"sleep_test.cpp -std=c++0x -o sleep_test.exe"
-	)
-
-	func_test \
-		"sleep_test" \
-		list10[@] \
-		$TESTS_ROOT_DIR
-}
-
+# **************************************************************************
 # **************************************************************************
 
-# Can't run this test with 4.6 or 4.7 since the implementation is broken and throws
-# an exception.  4.8 has a fixed implementation, but it hasn't been backported yet.
-[[ $BUILD_VERSION == 4.6.? || $BUILD_VERSION == 4.7.? ]] || {
-	list11=(
-		"random_device.cpp -std=c++0x -o random_device.exe"
-	)
-
-	func_test \
-		"random_device" \
-		list11[@] \
-		$TESTS_ROOT_DIR
-}
-# **************************************************************************
+declare -A PKG_TESTS
+[[ $BUILD_SHARED_GCC == yes ]] && { PKG_TESTS["dll_test1"]=dll_test1_list[@]; }
+[[ $BUILD_SHARED_GCC == yes ]] && { PKG_TESTS["dll_test2"]=dll_test2_list[@]; }
+PKG_TESTS["lto_test"]=lto_test_list[@]
+PKG_TESTS["omp_test"]=omp_test_list[@]
+PKG_TESTS["pthread_test"]=pthread_test_list[@]
+[[ $THREADS_MODEL == posix ]] && { PKG_TESTS["stdthread_test"]=stdthread_test_list[@]; }
+PKG_TESTS["lasterror_test1"]=lasterror_test1_list[@]
+PKG_TESTS["lasterror_test2"]=lasterror_test2_list[@]
+PKG_TESTS["time_test"]=time_test_list[@]
+[[ $THREADS_MODEL == posix ]] && { PKG_TESTS["sleep_test"]=sleep_test_list[@]; }
+[[ $BUILD_VERSION == 4.6.? || $BUILD_VERSION == 4.7.? ]] || { PKG_TESTS["random_device"]=random_device_list[@]; }

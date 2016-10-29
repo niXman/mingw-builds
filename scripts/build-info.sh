@@ -35,6 +35,17 @@
 
 # **************************************************************************
 
+PKG_NAME=build-info
+PKG_DIR_NAME=build-info
+PKG_PRIORITY=main
+
+PKG_EXECUTE_AFTER_INSTALL=(
+	func_build_info
+)
+
+# Remove any markers in order to force another run
+rm -f $BUILDS_DIR/$PKG_NAME/*.marker
+
 function func_build_info() {
 	local readonly INFO_FILE=$PREFIX/build-info.txt
 	echo > $INFO_FILE
@@ -127,13 +138,5 @@ function func_build_info() {
 		echo >> $INFO_FILE
 		echo "# **************************************************************************" >> $INFO_FILE
 		echo >> $INFO_FILE
-
-		func_clear_env
 	done
 }
-
-# **************************************************************************
-
-func_build_info
-
-# **************************************************************************

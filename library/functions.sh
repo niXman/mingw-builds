@@ -38,6 +38,7 @@
 function func_clear_env {
 	unset PKG_ARCHITECTURE
 	unset PKG_NAME
+	unset PKG_DISPLAY_NAME
 	unset PKG_VERSION
 	unset PKG_DIR_NAME
 	unset PKG_SUBDIR_NAME
@@ -297,7 +298,7 @@ function func_download {
 
 	local -a _list=( "${!1}" )
 	[[ ${#_list[@]} == 0 ]] && {
-		echo "--> Doesn't need to download."
+		[[ $SHORT_OUTPUT != "yes" ]] && echo "--> Doesn't need to download."
 		return 0
 	}
 
@@ -450,7 +451,7 @@ function func_uncompress {
 	local -a _list=( "${!1}" )
 	local it=
 	[[ ${#_list[@]} == 0 ]] && {
-		echo "--> Unpack doesn't need."
+		[[ $SHORT_OUTPUT != "yes" ]] && echo "--> Unpack doesn't need."
 		return 0
 	}
 
