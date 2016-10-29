@@ -437,7 +437,7 @@ function func_download {
 				die " error $_result" $_result
 			}
 		} || {
-			echo "---> $_filename downloaded"
+			[[ $SHORT_OUTPUT != "yes" ]] && echo "---> $_filename downloaded"
 		}
 	done
 }
@@ -513,7 +513,7 @@ function func_uncompress {
 					die " error $_result" $_result
 				}
 			} || {
-				echo "---> $_filename unpacked"
+				[[ $SHORT_OUTPUT != "yes" ]] && echo "---> $_filename unpacked"
 			}
 		}
 	done
@@ -537,7 +537,7 @@ function func_execute {
 	((_index=${#_commands[@]}-1))
 	local _cmd_marker_name=$1/$2/exec-$4-$_index.marker
 	[[ -f $_cmd_marker_name ]] && {
-		echo "---> $4 executed"
+		[[ $SHORT_OUTPUT != "yes" ]] && echo "---> $4 executed"
 		return $_result
 	}
 	_index=0
@@ -592,7 +592,7 @@ function func_apply_patches {
 
 	((_index=${#_list[@]}-1))
 	[[ -f $1/$2/_patch-$_index.marker ]] && {
-		echo "---> patched"
+		[[ $SHORT_OUTPUT != "yes" ]] && echo "---> patched"
 		return 0
 	}
 	_index=0
@@ -694,7 +694,7 @@ function func_configure {
 			die " error!" $_result
 		}
 	} || {
-		echo "---> configured"
+		[[ $SHORT_OUTPUT != "yes" ]] && echo "---> configured"
 	}
 }
 
@@ -732,7 +732,7 @@ function func_make {
 			die " error!" $_result
 		}
 	} || {
-		echo "---> $6"
+		[[ $SHORT_OUTPUT != "yes" ]] && echo "---> $6"
 	}
 }
 
@@ -862,7 +862,7 @@ function func_abstract_toolchain {
 		func_download _url[@]
 		func_uncompress _url[@] $1
 	} || {
-		echo "--> Toolchain installed."
+		[[ $SHORT_OUTPUT != "yes" ]] && echo "--> Toolchain installed."
 	}
 }
 
