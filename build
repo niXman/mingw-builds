@@ -614,7 +614,7 @@ for rule in ${SUBTARGETS[@]}; do
 	INSTALL_LOG=$CURR_LOGS_DIR/$PKG_NAME/install.log
 	TESTSUITE_LOG=$CURR_LOGS_DIR/$PKG_NAME/testsuite.log
 
-	[[ $PKG_TYPE != git && $PKG_TYPE != svn ]] && {
+	[[ -n $PKG_URLS && $PKG_TYPE != git && $PKG_TYPE != svn ]] && {
 		mkdir -p $SRCS_DIR/$PKG_DIR_NAME
 	}
 	[[ $FETCH_MODE == no ]] && {
