@@ -94,8 +94,6 @@ PKG_CONFIGURE_FLAGS=(
 		&& echo "--enable-sjlj-exceptions" \
 	)
 	#
-	--disable-isl-version-check
-	--disable-cloog-version-check
 	--disable-libstdcxx-pch
 	--disable-libstdcxx-debug
 	$( [[ $BOOTSTRAPING == yes ]] \
