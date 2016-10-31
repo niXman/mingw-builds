@@ -46,6 +46,9 @@ PKG_EXECUTE_AFTER_INSTALL=(
 	gcc_switch_compilers
 )
 
+# Remove the after install markers in order to force another run
+rm -f $BUILDS_DIR/$PKG_NAME/exec-after_install-*.marker
+
 function gcc_post_install {
 	# remove <prefix>/mingw directory
 	rm -rf $PREFIX/mingw > /dev/null 2>&1
@@ -129,9 +132,8 @@ function gcc_post_install {
 }
 
 function gcc_switch_compilers {
-	echo -n "--> Switching to new compiler..."
+	# Change the path to use the new compilers instead of the old ones
 	export PATH=$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
-	echo " done"
 }
 
 # **************************************************************************
