@@ -35,6 +35,14 @@
 
 # **************************************************************************
 
+PKG_NAME=licenses
+PKG_DIR_NAME=licenses
+PKG_PRIORITY=main
+
+PKG_EXECUTE_AFTER_INSTALL=(
+	func_process_licenses
+)
+
 function func_get_licenses {
 	# $1 - mode (gcc/python/clang)
 
@@ -84,15 +92,12 @@ function func_get_licenses {
 	esac
 }
 
-# **************************************************************************
-
-[[ ! -f $BUILDS_DIR/licenses.marker ]] && {
+function func_process_licenses {
 	mkdir -p $PREFIX/licenses || die "can't create licenses directory. terminate."
 
 	readonly LICENSES=( \
 		$( \
-			func_get_licenses \
-				$BUILD_MODE \
+			func_get_licenses $BUILD_MODE
 		) \
 	)
 
@@ -104,8 +109,4 @@ function func_get_licenses {
 
 	#echo "licenses_cmd: ${licenses_cmd}"
 	eval ${licenses_cmd} || die "can't copy licenses. terminate."
-
-	touch $BUILDS_DIR/licenses.marker
 }
-
-# **************************************************************************

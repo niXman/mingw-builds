@@ -35,45 +35,46 @@
 
 # **************************************************************************
 
+PKG_NAME=3rdparty-post
+PKG_DIR_NAME=3rdparty-post
+PKG_PRIORITY=extra
+
+PKG_EXECUTE_AFTER_INSTALL=(
+	python_deps_post
+)
+
 function python_deps_post {
-	[[ ! -f $BUILDS_DIR/3rdparty-post.marker ]] && {
-
-		case $BUILD_MODE in
-			gcc)
-				local _toolchain_path=$PREFIX
-			;;
-			*)
-				local _toolchain_path=$(eval "echo \${${BUILD_ARCHITECTURE}_HOST_MINGW_PATH}")
-			;;
-		esac
-		local _gcc_dll=( \
-			$(find $_toolchain_path/bin -type f \
-							-name libgcc*.dll -o \
-							-name libwinpthread*.dll \
-			) \
-		)
-		[[ ${#_gcc_dll[@]} >0 ]] && {
-			cp -f ${_gcc_dll[@]} $LIBS_DIR/bin/ >/dev/null 2>&1
-		}
-
-		rm -f $LIBS_DIR/bin/{bz*,bunzip2}
-		rm -f $LIBS_DIR/bin/{tclsh.exe,tclsh86.exe,openssl.exe,capinfo.exe,captoinfo.exe,clear.exe,idle,infocmp.exe}
-		rm -f $LIBS_DIR/bin/{infotocap.exe,c_rehash,ncursesw5-config,reset.exe,sqlite3.exe,tabs.exe}
-		rm -f $LIBS_DIR/bin/{tic.exe,toe.exe,tput.exe,tset.exe,wish.exe,wish86.exe,xmlwf,testgdbm.exe}
-		rm -f $LIBS_DIR/bin/{lzmadec.exe,lzmainfo.exe,unxz.exe,xz*}
-
-		#rm -rf $LIBS_DIR/include
-		rm -rf $LIBS_DIR/lib/pkgconfig
-		#find $LIBS_DIR/lib -maxdepth 1 -type f -name *.a -print0 | xargs -0 rm -f
-		find $LIBS_DIR/lib -type f -name *.la -print0 | xargs -0 rm -f
-		rm -rf $LIBS_DIR/man
-		rm -rf $LIBS_DIR/share/man
-		rm -rf $LIBS_DIR/share/info
-
-		touch $BUILDS_DIR/3rdparty-post.marker
+	case $BUILD_MODE in
+		gcc)
+			local _toolchain_path=$PREFIX
+		;;
+		*)
+			local _toolchain_path=$(eval "echo \${${BUILD_ARCHITECTURE}_HOST_MINGW_PATH}")
+		;;
+	esac
+	local _gcc_dll=( \
+		$(find $_toolchain_path/bin -type f \
+						-name libgcc*.dll -o \
+						-name libwinpthread*.dll \
+		) \
+	)
+	[[ ${#_gcc_dll[@]} >0 ]] && {
+		cp -f ${_gcc_dll[@]} $LIBS_DIR/bin/ >/dev/null 2>&1
 	}
-}
 
-python_deps_post
+	rm -f $LIBS_DIR/bin/{bz*,bunzip2}
+	rm -f $LIBS_DIR/bin/{tclsh.exe,tclsh86.exe,openssl.exe,capinfo.exe,captoinfo.exe,clear.exe,idle,infocmp.exe}
+	rm -f $LIBS_DIR/bin/{infotocap.exe,c_rehash,ncursesw5-config,reset.exe,sqlite3.exe,tabs.exe}
+	rm -f $LIBS_DIR/bin/{tic.exe,toe.exe,tput.exe,tset.exe,wish.exe,wish86.exe,xmlwf,testgdbm.exe}
+	rm -f $LIBS_DIR/bin/{lzmadec.exe,lzmainfo.exe,unxz.exe,xz*}
+
+	#rm -rf $LIBS_DIR/include
+	rm -rf $LIBS_DIR/lib/pkgconfig
+	#find $LIBS_DIR/lib -maxdepth 1 -type f -name *.a -print0 | xargs -0 rm -f
+	find $LIBS_DIR/lib -type f -name *.la -print0 | xargs -0 rm -f
+	rm -rf $LIBS_DIR/man
+	rm -rf $LIBS_DIR/share/man
+	rm -rf $LIBS_DIR/share/info
+}
 
 # **************************************************************************

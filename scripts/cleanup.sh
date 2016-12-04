@@ -35,12 +35,18 @@
 
 # **************************************************************************
 
-[[ ! -f $BUILDS_DIR/cleanup.marker ]] && {
+PKG_NAME=cleanup
+PKG_DIR_NAME=cleanup
+PKG_PRIORITY=main
+
+PKG_EXECUTE_AFTER_INSTALL=(
+	func_perform_cleanup
+)
+
+function func_perform_cleanup() {
 	find $PREFIX -type f -name "*.la" -exec rm -f {} \;
 
 	rm -rf $PREFIX/{mingw,share/info,share/man}
-
-	touch $BUILDS_DIR/cleanup.marker
 }
 
 # **************************************************************************

@@ -94,6 +94,7 @@ readonly RUN_ARGS="$@"
 	echo "                                 supported languages. available languages:"
 	echo "                                 ada,c,c++,fortran,objc,obj-c++"
 	echo "    --show-subtargets          - show list of subtargets for selected '--mode'"
+	echo "    --short-output             - reduce output by not printing skipped subtargets"
 	echo "    --logviewer-command        - use this command for the log viewer"
 	echo "  available Python versions: 2, 3"
 	echo "  available clang versions: 3.4, git"
@@ -274,6 +275,7 @@ while [[ $# > 0 ]]; do
 		--sf-user=*) SF_USER=${1/--sf-user=/} ;;
 		--sf-pass=*) SF_PASSWORD=${1/--sf-pass=/} ;;
 		--debug-upload) DEBUG_UPLOAD=yes ;;
+		--short-output) SHORT_OUTPUT=yes ;;
 		--logviewer-command=*) LOGVIEWER=${1/--logviewer-command=/} ;;
 		*)
 			die "bad command line: \"$1\". terminate."
@@ -443,6 +445,7 @@ func_install_toolchain \
 
 	readonly BUILDS_DIR=$BASE_BUILD_DIR/build
 	readonly LOGS_DIR=$BASE_BUILD_DIR/logs
+	readonly TESTS_ROOT_DIR=$BUILDS_DIR/tests
 
 	mkdir -p \
 		$ARCHIVES_DIR \
@@ -550,18 +553,24 @@ for rule in ${SUBTARGETS[@]}; do
 	rule_arr=( ${rule//|/ } )
 	sub=${rule_arr[0]}
 	PKG_ARCHITECTURE=${rule_arr[1]}
+	
 	[[ -z $PKG_ARCHITECTURE ]] && {
 		PKG_ARCHITECTURE=$BUILD_ARCHITECTURE
-		echo -e "-> \E[32;40m$sub\E[37;40m"
+		PKG_DISPLAY_NAME=$sub
 	} || {
-		echo -e "-> \E[32;40m$sub-$PKG_ARCHITECTURE\E[37;40m"
+		PKG_DISPLAY_NAME=$sub-$PKG_ARCHITECTURE
 	}
 
 	[[ ! -f $TOP_DIR/scripts/$sub.sh ]] && {
 		die "script for subtarget \"$sub\" is not exists. terminate."
 	}
 	[[ $FETCH_MODE == yes ]] && {
-		[[ -z $( grep 'PKG_URLS=' $TOP_DIR/scripts/${sub}.sh ) ]] && continue
+		[[ -z $( grep 'PKG_URLS=' $TOP_DIR/scripts/${sub}.sh ) ]] && {
+			[[ $SHORT_OUTPUT != "yes" ]] && {
+				echo -e "-> \E[32;40m$PKG_DISPLAY_NAME\E[37;40m"
+			}
+			continue
+		}
 	}
 
 	[[ "$PKG_ARCHITECTURE" == "$REVERSE_ARCHITECTURE" ]] && {
@@ -569,12 +578,21 @@ for rule in ${SUBTARGETS[@]}; do
 	}
 
 	source $TOP_DIR/scripts/$sub.sh
-
-	[[ -z $PKG_NAME ]] && continue
-	[[ ($BUILD_EXTRAS == "no") && ($PKG_PRIORITY == "extra") ]] && {
-		echo -e "--> Skipping"
+	
+	[[ -z $PKG_NAME ]] && {
+		echo -e "-> \E[32;40m$PKG_DISPLAY_NAME\E[37;40m"
 		continue
 	}
+	
+	[[ ($BUILD_EXTRAS == "no") && ($PKG_PRIORITY == "extra") ]] && {
+		[[ $SHORT_OUTPUT != "yes" ]] && {
+			echo -e "-> \E[32;40m$PKG_DISPLAY_NAME\E[37;40m"
+			echo -e "--> Skipping"
+		}
+		continue
+	}
+	
+	echo -e "-> \E[32;40m$PKG_DISPLAY_NAME\E[37;40m"
 
 	case $PKG_PRIORITY in
 		prereq|runtime)
@@ -596,7 +614,7 @@ for rule in ${SUBTARGETS[@]}; do
 	INSTALL_LOG=$CURR_LOGS_DIR/$PKG_NAME/install.log
 	TESTSUITE_LOG=$CURR_LOGS_DIR/$PKG_NAME/testsuite.log
 
-	[[ $PKG_TYPE != git && $PKG_TYPE != svn ]] && {
+	[[ -n $PKG_URLS && $PKG_TYPE != git && $PKG_TYPE != svn ]] && {
 		mkdir -p $SRCS_DIR/$PKG_DIR_NAME
 	}
 	[[ $FETCH_MODE == no ]] && {
@@ -708,6 +726,22 @@ for rule in ${SUBTARGETS[@]}; do
 				"execute commands..." \
 				"after_install" \
 				PKG_EXECUTE_AFTER_INSTALL[@]
+		}
+		
+		[[ ${#PKG_TESTS[@]} >0 ]] && {
+			mkdir -p $TESTS_ROOT_DIR/$BUILD_ARCHITECTURE
+			[[ $USE_MULTILIB == yes ]] && {
+				local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
+				local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
+				mkdir -p $TESTS_ROOT_DIR/${_reverse_arch}
+				[[ $BUILD_SHARED_GCC == yes ]] && {
+					cp -f $( find $PREFIX/$TARGET/lib${_reverse_bits} -type f \( -iname *.dll \) ) \
+					$TESTS_ROOT_DIR/${_reverse_arch}/
+				}
+			}
+			for test in "${!PKG_TESTS[@]}"; do
+				func_test $test ${PKG_TESTS[$test]} $TESTS_ROOT_DIR
+			done
 		}
 
 		[[ $PKG_RUN_TESTSUITE == yes ]] && {
