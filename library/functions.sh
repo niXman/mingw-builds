@@ -847,7 +847,7 @@ function func_abstract_toolchain {
 	local -a _url=( "$2|root:$1" )
 	local _filename=$(basename $2)
 
-	echo -e "-> \E[32;40m$4 toolchain\E[37;40m"
+	echo -e "-> ${COLOR_STATUS}$4 toolchain${COLOR_RESET}"
 	[[ ! -f $1/${_filename}-unpack.marker ]] && {
 		[[ -d $3 ]] && {
 			echo "--> Found previously installed $4 toolchain."

@@ -567,7 +567,7 @@ for rule in ${SUBTARGETS[@]}; do
 	[[ $FETCH_MODE == yes ]] && {
 		[[ -z $( grep 'PKG_URLS=' $TOP_DIR/scripts/${sub}.sh ) ]] && {
 			[[ $SHORT_OUTPUT != "yes" ]] && {
-				echo -e "-> \E[32;40m$PKG_DISPLAY_NAME\E[37;40m"
+				echo -e "-> ${COLOR_PKG_NAME}$PKG_DISPLAY_NAME${COLOR_RESET}"
 			}
 			continue
 		}
@@ -580,19 +580,19 @@ for rule in ${SUBTARGETS[@]}; do
 	source $TOP_DIR/scripts/$sub.sh
 	
 	[[ -z $PKG_NAME ]] && {
-		echo -e "-> \E[32;40m$PKG_DISPLAY_NAME\E[37;40m"
+		echo -e "-> ${COLOR_PKG_NAME}$PKG_DISPLAY_NAME${COLOR_RESET}"
 		continue
 	}
 	
 	[[ ($BUILD_EXTRAS == "no") && ($PKG_PRIORITY == "extra") ]] && {
 		[[ $SHORT_OUTPUT != "yes" ]] && {
-			echo -e "-> \E[32;40m$PKG_DISPLAY_NAME\E[37;40m"
-			echo -e "--> Skipping"
+			echo -e "-> ${COLOR_PKG_NAME}$PKG_DISPLAY_NAME${COLOR_RESET}"
+			echo "--> Skipping"
 		}
 		continue
 	}
 	
-	echo -e "-> \E[32;40m$PKG_DISPLAY_NAME\E[37;40m"
+	echo -e "-> ${COLOR_PKG_NAME}$PKG_DISPLAY_NAME${COLOR_RESET}"
 
 	case $PKG_PRIORITY in
 		prereq|runtime)
@@ -777,7 +777,7 @@ func_clear_env
 # ***************************************************************************
 
 [[ $COMPRESSING_SRCS == yes ]] && {
-	echo -e "-> \E[32;40mcompress mingw sources\E[37;40m"
+	echo -e "-> ${COLOR_STATUS}compress mingw sources${COLOR_RESET}"
 	source $TOP_DIR/scripts/srcs-compress.sh
 }
 
@@ -807,7 +807,7 @@ func_clear_env
 			$EXCEPTIONS_MODEL \
 	)
 	mingw_archive_size=$(du -h $mingw_archive_name | cut -f 1)
-	echo -e -n "-> \E[32;40mupload $(basename $mingw_archive_name) ($mingw_archive_size) ...\E[37;40m"
+	echo -e -n "-> ${COLOR_STATUS}upload $(basename $mingw_archive_name) ($mingw_archive_size) ...${COLOR_RESET}"
 	[[ $DEBUG_UPLOAD == yes ]] && {
 		echo "bin_cmd:${upload_cmd}"
 	} || {
@@ -823,7 +823,7 @@ func_clear_env
 	}
 
 	[[ $(func_map_gcc_name_to_gcc_type $GCC_NAME) == release ]] && {
-		echo -e -n "--> \E[32;40mdownload repository file...\E[37;40m"
+		echo -e -n "--> ${COLOR_STATUS}download repository file...${COLOR_RESET}"
 		[[ $DEBUG_UPLOAD == yes ]] && {
 			echo "rep_cmd:wget "$REPOSITORY_FILE" -O $TMP/$(basename "$REPOSITORY_FILE")"
 			func_res=0
@@ -838,7 +838,7 @@ func_clear_env
 			echo " done"
 		}
 
-		echo -e -n "--> \E[32;40mupdate repository file...\E[37;40m"
+		echo -e -n "--> ${COLOR_STATUS}update repository file...${COLOR_RESET}"
 		[[ $DEBUG_UPLOAD == no ]] && {
 			func_update_repository_file \
 				$TMP/$(basename "$REPOSITORY_FILE") \
@@ -864,7 +864,7 @@ func_clear_env
 				$SF_USER \
 				$SF_PASSWORD \
 		)
-		echo -e -n "--> \E[32;40mupload repository file...\E[37;40m"
+		echo -e -n "--> ${COLOR_STATUS}upload repository file...${COLOR_RESET}"
 		[[ $DEBUG_UPLOAD == yes ]] && {
 			echo "rep_cmd:${upload_cmd}"
 		} || {
@@ -897,7 +897,7 @@ func_clear_env
 			$sources_archive_name \
 	)
 	sources_archive_size=$(du -h $sources_archive_name | cut -f 1)
-	echo -e -n "-> \E[32;40mupload $(basename $sources_archive_name) ($sources_archive_size) ...\E[37;40m"
+	echo -e -n "-> ${COLOR_STATUS}upload $(basename $sources_archive_name) ($sources_archive_size) ...${COLOR_RESET}"
 	[[ $DEBUG_UPLOAD == yes ]] && {
 		echo "src_cmd:${upload_cmd}"
 	} || {
