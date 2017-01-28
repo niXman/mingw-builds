@@ -1,0 +1,160 @@
+#!/bin/bash
+
+#
+# The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
+#
+# This file is part of 'MinGW-W64' project.
+# Copyright (c) 2011-2015 by niXman (i dotty nixman doggy gmail dotty com)
+#                        ,by Alexpux (alexpux doggy gmail dotty com)
+# All rights reserved.
+#
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# - Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+# - Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the distribution.
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may
+#     be used to endorse or promote products derived from this software
+#     without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED.
+# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+# USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
+# **************************************************************************
+
+CLEAN_INSTALLED=no
+CLEAN_RUNTIME=no
+CLEAN_PREREQS=no
+CLEAN_SOURCES=no
+CLEAN_ARCHIVES=no
+CLEAN_ALL=no
+PRINT_VERBOSE_ARG=
+
+# **************************************************************************
+
+[[ $# == 1 && $1 == --help || $[ $# == 0 ] == 1 ]] && {
+	echo "usage:"
+	echo "  ./${0##*/} [OPTIONS]"
+	echo "  help:"
+	echo "    --buildroot=<path>         - specifies the build root directory"
+	echo "    --installed                - cleans the prerequisite installs"
+	echo "    --sources                  - deletes the extracted sources"
+	echo "    --archives                 - cleans the archives directory"
+	echo "    --generated                - cleans everything except the compressed sources"
+	echo "    --full                     - remove the buildroot folder itself"
+
+	exit 0
+}
+
+# **************************************************************************
+
+while [[ $# > 0 ]]; do
+	case $1 in
+		--buildroot=*)
+			ROOT_DIR=${1/--buildroot=/}
+			ROOT_DIR=${ROOT_DIR//:/:\/}
+			ROOT_DIR=${ROOT_DIR//\/\//\/}
+			mkdir -p ${ROOT_DIR} || die "incorrect buildroot directory: \"${ROOT_DIR}\". terminate."
+			pushd ${ROOT_DIR} > /dev/null
+			ROOT_DIR=$PWD
+			popd > /dev/null
+		;;
+		--installed) CLEAN_INSTALLED=yes ;;
+		--prereqs) CLEAN_PREREQS=yes ;;
+		--sources) CLEAN_SOURCES=yes ;;
+		--archives) CLEAN_ARCHIVES=yes ;;
+		--all-generated)
+			CLEAN_OUTPUT=yes
+			CLEAN_INSTALLED=yes
+			CLEAN_RUNTIME=yes
+			CLEAN_PREREQS=yes
+			CLEAN_SOURCES=yes
+			CLEAN_ARCHIVES=yes
+		;;
+		--full)
+			CLEAN_OUTPUT=yes
+			CLEAN_INSTALLED=yes
+			CLEAN_RUNTIME=yes
+			CLEAN_PREREQS=yes
+			CLEAN_SOURCES=yes
+			CLEAN_ARCHIVES=yes
+			CLEAN_ALL=yes
+		;;
+		--verbose)
+			PRINT_VERBOSE_ARG=-print
+		;;
+		*)
+			die "bad command line: \"$1\". terminate."
+		;;
+	esac
+	shift
+done
+
+# **************************************************************************
+
+readonly PREREQ_DIR=$ROOT_DIR/prerequisites
+readonly RUNTIME_DIR=$ROOT_DIR/runtime
+readonly ARCHIVES_DIR=$ROOT_DIR/archives
+readonly PREREQ_BUILD_DIR=$ROOT_DIR/prerequisites-build
+readonly PREREQ_LOGS_DIR=$ROOT_DIR/prerequisites-logs
+readonly SRCS_DIR=$ROOT_DIR/src
+readonly MARKERS_DIR=$SRCS_DIR/MARKERS
+
+# **************************************************************************
+
+[[ $CLEAN_OUTPUT == "yes" ]] && {
+	echo "Deleting main output directories"
+	
+	find $ROOT_DIR -mindepth 1 -maxdepth 1 -type d -name i686* $PRINT_VERBOSE_ARG -exec rm -rf {} \;
+	find $ROOT_DIR -mindepth 1 -maxdepth 1 -type d -name x86_64* $PRINT_VERBOSE_ARG -exec rm -rf {} \;
+}
+
+[[ $CLEAN_RUNTIME == "yes" ]] && {
+	echo "Deleting runtime directory"
+	rm -Rf $RUNTIME_DIR
+}
+
+[[ $CLEAN_INSTALLED == "yes" ]] && {
+	echo "Deleting _installed.marker files"
+	[[ -d $PREREQ_BUILD_DIR ]] && {
+		find $PREREQ_BUILD_DIR -name _installed.marker $PRINT_VERBOSE_ARG -delete
+	}
+	
+	echo "Deleting prerequisites install directory"
+	rm -Rf $PREREQ_DIR
+}
+
+[[ $CLEAN_PREREQS == "yes" ]] && {
+	echo "Deleting the prereq build and log directories"
+	rm -Rf $PREREQ_BUILD_DIR
+	rm -Rf $PREREQ_LOGS_DIR
+}
+
+[[ $CLEAN_SOURCES == "yes" ]] && {
+	echo "Deleting extracted source directories"
+	find $SRCS_DIR -mindepth 1 -maxdepth 1 -type d ! -name MARKERS $PRINT_VERBOSE_ARG -exec rm -rf {} \;
+}
+
+[[ $CLEAN_ARCHIVES == "yes" ]] && {
+	echo "Deleting archives folder"
+	rm -Rf $ARCHIVES_DIR
+}
+
+[[ $CLEAN_ALL == "yes" ]] && {
+	echo "Deleting buildroot"
+	rm -Rf $ROOT_DIR
+}
