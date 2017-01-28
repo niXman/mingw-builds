@@ -181,6 +181,7 @@ echo "done"
 # **************************************************************************
 
 LOGVIEWER=
+LOGVIEWER_WAIT=no
 
 func_find_logviewer \
 	LOGVIEWERS[@] \

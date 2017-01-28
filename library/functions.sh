@@ -102,7 +102,13 @@ function die {
 
 function func_show_log {
 	# $1 - log file
-	[[ $SHOW_LOG_ON_ERROR == yes ]] && { $LOGVIEWER $1 & }
+	[[ $SHOW_LOG_ON_ERROR == yes ]] && {
+		[[ $LOGVIEWER_WAIT == yes ]] && {
+			$LOGVIEWER $1
+		} || {
+			$LOGVIEWER $1 &
+		}
+	}
 }
 
 # **************************************************************************

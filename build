@@ -95,6 +95,7 @@ readonly RUN_ARGS="$@"
 	echo "                                 ada,c,c++,fortran,objc,obj-c++"
 	echo "    --show-subtargets          - show list of subtargets for selected '--mode'"
 	echo "    --logviewer-command        - use this command for the log viewer"
+	echo "    --wait-for-logviewer       - wait until after logviewer completes, e.g. for echo"
 	echo "  available Python versions: 2, 3"
 	echo "  available clang versions: 3.4, git"
 	echo "  available gcc versions:"
@@ -275,6 +276,7 @@ while [[ $# > 0 ]]; do
 		--sf-pass=*) SF_PASSWORD=${1/--sf-pass=/} ;;
 		--debug-upload) DEBUG_UPLOAD=yes ;;
 		--logviewer-command=*) LOGVIEWER=${1/--logviewer-command=/} ;;
+		--wait-for-logviewer) LOGVIEWER_WAIT=yes ;;
 		*)
 			die "bad command line: \"$1\". terminate."
 		;;
