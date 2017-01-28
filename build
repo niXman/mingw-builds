@@ -96,6 +96,7 @@ readonly RUN_ARGS="$@"
 	echo "    --show-subtargets          - show list of subtargets for selected '--mode'"
 	echo "    --short-output             - reduce output by not printing skipped subtargets"
 	echo "    --logviewer-command        - use this command for the log viewer"
+	echo "    --no-colors                - disable colorized output, useful when logging to a file"
 	echo "  available Python versions: 2, 3"
 	echo "  available clang versions: 3.4, git"
 	echo "  available gcc versions:"
@@ -277,6 +278,11 @@ while [[ $# > 0 ]]; do
 		--debug-upload) DEBUG_UPLOAD=yes ;;
 		--short-output) SHORT_OUTPUT=yes ;;
 		--logviewer-command=*) LOGVIEWER=${1/--logviewer-command=/} ;;
+		--no-colors)
+			COLOR_RESET=""
+			COLOR_PKG_NAME=""
+			COLOR_STATUS=""
+		;;
 		*)
 			die "bad command line: \"$1\". terminate."
 		;;

@@ -53,9 +53,13 @@ export LC_ALL=en_US.UTF-8
 # **************************************************************************
 
 # Colors for some of the output lines
-readonly COLOR_RESET="\E[0m"
-readonly COLOR_PKG_NAME="\E[32m"
-readonly COLOR_STATUS="\E[34m"
+readonly COLOR_NONE="\E[0m"
+readonly COLOR_GREEN="\E[32m"
+readonly COLOR_BLUE="\E[34m"
+
+COLOR_RESET=$COLOR_GREY
+COLOR_PKG_NAME=$COLOR_GREEN
+COLOR_STATUS=$COLOR_BLUE
 
 # **************************************************************************
 
