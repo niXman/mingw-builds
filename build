@@ -97,6 +97,7 @@ readonly RUN_ARGS="$@"
 	echo "    --short-output             - reduce output by not printing skipped subtargets"
 	echo "    --logviewer-command        - use this command for the log viewer"
 	echo "    --no-colors                - disable colorized output, useful when logging to a file"
+	echo "    --wait-for-logviewer       - wait until after logviewer completes, e.g. for echo"
 	echo "  available Python versions: 2, 3"
 	echo "  available clang versions: 3.4, git"
 	echo "  available gcc versions:"
@@ -283,6 +284,7 @@ while [[ $# > 0 ]]; do
 			COLOR_PKG_NAME=""
 			COLOR_STATUS=""
 		;;
+		--wait-for-logviewer) LOGVIEWER_WAIT=yes ;;
 		*)
 			die "bad command line: \"$1\". terminate."
 		;;
