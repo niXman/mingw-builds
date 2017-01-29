@@ -52,6 +52,17 @@ export LC_ALL=en_US.UTF-8
 
 # **************************************************************************
 
+# Colors for some of the output lines
+readonly COLOR_NONE="\E[0m"
+readonly COLOR_GREEN="\E[32m"
+readonly COLOR_BLUE="\E[34m"
+
+COLOR_RESET=$COLOR_NONE
+COLOR_PKG_NAME=$COLOR_GREEN
+COLOR_STATUS=$COLOR_BLUE
+
+# **************************************************************************
+
 readonly PATCHES_DIR=$TOP_DIR/patches
 readonly SOURCES_DIR=$TOP_DIR/sources
 readonly TESTS_DIR=$TOP_DIR/tests
