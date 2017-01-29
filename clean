@@ -77,7 +77,7 @@ while [[ $# > 0 ]]; do
 		--prereqs) CLEAN_PREREQS=yes ;;
 		--sources) CLEAN_EXTRACTED_SOURCES=yes ;;
 		--archives) CLEAN_ARCHIVES=yes ;;
-		--all-generated)
+		--generated)
 			CLEAN_OUTPUT=yes
 			CLEAN_INSTALLED=yes
 			CLEAN_RUNTIME=yes
@@ -97,7 +97,8 @@ while [[ $# > 0 ]]; do
 			PRINT_VERBOSE_ARG=-print
 		;;
 		*)
-			die "bad command line: \"$1\". terminate."
+			>&2 echo "bad command line: \"$1\". terminate."
+			exit 1
 		;;
 	esac
 	shift
