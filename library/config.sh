@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2015 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2016 by niXman (i dotty nixman doggy gmail dotty com)
 #                        ,by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-MINGW_W64_BUILDS_VERSION="MinGW-W64-builds-4.2.0"
+MINGW_W64_BUILDS_VERSION="MinGW-W64-builds-4.3.0"
 MINGW_W64_PKG_STRING="Built by MinGW-W64 project"
 
 # **************************************************************************
 
-PROJECT_ROOT_URL=http://sourceforge.net/projects/mingw-w64
+PROJECT_ROOT_URL=https://sourceforge.net/projects/mingw-w64
 BUG_URL=$PROJECT_ROOT_URL
 PROJECT_FS_ROOT_DIR=/home/frs/project/mingw-w64
 
@@ -75,10 +75,10 @@ ROOT_DIR=
 
 # **************************************************************************
 
-BASE_CFLAGS="-O2 -pipe"
+BASE_CFLAGS="-O2 -pipe -fno-ident"
 BASE_CXXFLAGS="$BASE_CFLAGS"
 BASE_CPPFLAGS=""
-BASE_LDFLAGS="-pipe"
+BASE_LDFLAGS="-pipe -fno-ident"
 
 PROCESSOR_OPTIMIZATION_TUNE_32='generic'
 PROCESSOR_OPTIMIZATION_ARCH_32='i686'
@@ -99,10 +99,10 @@ SHOW_LOG_ON_ERROR=yes
 
 JOBS=1
 
-RUNTIME_VERSION=v4
+RUNTIME_VERSION=v5
 RUNTIME_BRANCH="master"
 
-CLANG_GCC_VERSION=gcc-4.9.1
+CLANG_GCC_VERSION=gcc-4.9.3
 
 # **************************************************************************
 

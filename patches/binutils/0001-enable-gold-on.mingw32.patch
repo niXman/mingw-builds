@@ -17,7 +17,7 @@
 +      *-*-mingw*)
 +        is_pe=yes;;
      esac
-
+ 
 -    if test "$is_elf" = "yes"; then
 +    if test "$is_elf" = "yes" -o "$is_pe" = "yes"; then
        # Check for target supported by gold.

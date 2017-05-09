@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=5.9
+PKG_VERSION=6.0
 PKG_NAME=ncurses-${PKG_VERSION}
 PKG_DIR_NAME=ncurses-${PKG_VERSION}
 PKG_TYPE=.tar.gz

@@ -35,11 +35,12 @@
 
 # **************************************************************************
 
-PKG_NAME=gcc-trunk
-PKG_DIR_NAME=gcc-trunk
-PKG_TYPE=svn
+PKG_VERSION=6.1.0
+PKG_NAME=gcc-${PKG_VERSION}
+PKG_DIR_NAME=gcc-${PKG_VERSION}
+PKG_TYPE=.tar.bz2
 PKG_URLS=(
-	"svn://gcc.gnu.org/svn/gcc/trunk|repo:$PKG_TYPE|module:$PKG_NAME"
+	"https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=main
@@ -50,6 +51,7 @@ PKG_PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-5.1-iconv.patch
 	gcc/gcc-4.8-libstdc++export.patch
+	gcc/gcc-4.8.2-build-more-gnattools.mingw.patch
 	gcc/gcc-4.8.2-fix-for-windows-not-minding-non-existant-parent-dirs.patch
 	gcc/gcc-4.8.2-windows-lrealpath-no-force-lowercase-nor-backslash.patch
 	gcc/gcc-4.9.1-enable-shared-gnat-implib.mingw.patch
@@ -58,8 +60,8 @@ PKG_PATCHES=(
 	gcc/gcc-5-dwarf-regression.patch
 	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch
 	gcc/gcc-6-ktietz-libgomp.patch
+#	gcc/gcc-7-filesystem.patch
 	gcc/gcc-6.1-disable-weak-refs.patch
-	gcc/gcc-7-filesystem.patch
 )
 
 #
@@ -71,7 +73,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$MINGWPREFIX
 	--with-sysroot=$PREFIX
-	#--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
+#	--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
 	#
 	$LINK_TYPE_GCC
 	#

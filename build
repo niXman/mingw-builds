@@ -66,7 +66,7 @@ readonly RUN_ARGS="$@"
 	echo "    --static-gcc               - build static GCC"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
 	echo "    --jobs=N                   - specifies number of parallel make threads"
-	echo "    --rt-version=<v3|v4|trunk|<release>> - specifies mingw-w64 runtime version to build"
+	echo "    --rt-version=<v3|v4|v5|trunk|<release>> - specifies mingw-w64 runtime version to build"
 	echo "                                 v3, v4, trunk specify specific branches in the git repo"
 	echo "                                 <release> is a specific release version, uses the tarball"
 	echo "    --rev=N                    - specifies number of the build revision"
@@ -126,12 +126,18 @@ readonly RUN_ARGS="$@"
 	echo "    gcc-5.1.0 (5.1.0 release)"
 	echo "    gcc-5.2.0 (5.2.0 release)"
 	echo "    gcc-5.3.0 (5.3.0 release)"
+	echo "    gcc-5.4.0 (5.4.0 release)"
 	echo "    gcc-4_6-branch (currently 4.6.5-prerelease)"
 	echo "    gcc-4_7-branch (currently 4.7.4-prerelease)"
 	echo "    gcc-4_8-branch (currently 4.8.6-prerelease)"
 	echo "    gcc-4_9-branch (currently 4.9.4-prerelease)"
-	echo "    gcc-5-branch (currently 5.3.0-prerelease)"
-	echo "    gcc-trunk (currently 6.0.0-snapshot)"
+	echo "    gcc-5-branch (currently 5.5.0-prerelease)"
+	echo "    gcc-6.1.0 (6.1.0 release)"
+	echo "    gcc-6.2.0 (6.2.0 release)"
+	echo "    gcc-6.3.0 (6.3.0 release)"
+	echo "    gcc-6-branch (currently 6.4.0-prerelease)"
+	echo "    gcc-7.1.0 (currently 7.1.0 release)"
+	echo "    gcc-trunk (currently 8-snapshot)"
 
 	exit 0
 }
@@ -212,9 +218,9 @@ while [[ $# > 0 ]]; do
 			esac
 		;;
 		--use-lto)
-			BASE_CFLAGS="$BASE_CFLAGS -flto -fno-use-linker-plugin"
-			BASE_CXXFLAGS="$BASE_CXXFLAGS -flto -fno-use-linker-plugin"
-			BASE_LDFLAGS="$BASE_LDFLAGS -flto -fno-use-linker-plugin"
+			BASE_CFLAGS="$BASE_CFLAGS -flto -fuse-linker-plugin"
+			BASE_CXXFLAGS="$BASE_CXXFLAGS -flto -fuse-linker-plugin"
+			BASE_LDFLAGS="$BASE_LDFLAGS -flto -fuse-linker-plugin"
 		;;
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-extras) BUILD_EXTRAS=no ;;
@@ -242,14 +248,20 @@ while [[ $# > 0 ]]; do
 			RUNTIME_VERSION=${1/--rt-version=/}
 			case $RUNTIME_VERSION in
 				v3)
+					RUNTIME_VERSION=v3
 					RUNTIME_BRANCH="v3.x"
 				;;
-				v4|trunk)
+				v4)
+					RUNTIME_VERSION=v4
+					RUNTIME_BRANCH="v4.x"
+				;;
+				v5)
+					RUNTIME_VERSION=v5
+					RUNTIME_BRANCH="v5.x"
+				;;
+				trunk)
 					RUNTIME_VERSION=v4
 					RUNTIME_BRANCH="master"
-				;;
-				v?.?.?)
-					RUNTIME_BRANCH="release"
 				;;
 				*)
 					die "Unsupported runtime version $RUNTIME_VERSION."
@@ -473,8 +485,8 @@ func_install_toolchain \
 }
 
 readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
-readonly COMMON_CXXFLAGS="$COMMON_CFLAGS"
-readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS"
+readonly COMMON_CXXFLAGS="$BASE_CXXFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
+readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
 readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib"
 
 #echo "PROCESSOR_OPTIMIZATION=\"$PROCESSOR_OPTIMIZATION\""

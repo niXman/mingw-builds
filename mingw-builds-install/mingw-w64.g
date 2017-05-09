@@ -140,14 +140,14 @@ func buildchange( uint wnd )
    if garch %== "x86_64" : macrox_setstr("setuppath", "#progfiles64#\\mingw-w64\\\(filename)" )
    else : macrox_setstr("setuppath", "#progfiles#\\mingw-w64\\\(filename)" )
 
-   str stemp = items[5].replace("sourceforge","downloads.sourceforge", $QS_IGNCASE )
+/*   str stemp = items[5].replace("sourceforge","downloads.sourceforge", $QS_IGNCASE )
    stemp += "?r=&ts=1367578968&use_mirror=garr"
    stemp.replace("/i686/","/32-bit/", $QS_IGNCASE )
    stemp.replace("/x86_64/","/64-bit/", $QS_IGNCASE )
-   //macrox_setint("app64", filename.search( "x86_64", $QS_IGNCASE ))
    stemp.replace("files/","", $QS_IGNCASE )
    stemp.replace("projects/","project/", $QS_IGNCASE )
-   stemp.replace("release/","releases/", $QS_IGNCASE )
+   stemp.replace("release/","releases/", $QS_IGNCASE )*/
+   str stemp = items[5]
 //   macrox_setstr("urlapp", items[5].replace("sourceforge","garr.dl.sourceforge", $QS_IGNCASE ) )
    macrox_setstr("urlapp", stemp )
    macrox_setstr("originalfile", original )

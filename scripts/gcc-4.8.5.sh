@@ -57,6 +57,7 @@ PKG_PATCHES=(
 	gcc/gcc-4.8.2-fix-for-windows-not-minding-non-existant-parent-dirs.patch
 	gcc/gcc-4.8.2-windows-lrealpath-no-force-lowercase-nor-backslash.patch
 	gcc/lto-plugin-use-static-libgcc.patch
+	gcc/gcc-4.8-fix-PCH.patch
 )
 
 #

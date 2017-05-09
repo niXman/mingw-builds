@@ -62,6 +62,10 @@ function func_build_info() {
 	}
 	echo "args    : $_RUN_ARGS" >> $INFO_FILE
 	echo "PATH    : $ORIGINAL_PATH" >> $INFO_FILE
+    echo "CFLAGS  : $BASE_CFLAGS" >> $INFO_FILE
+    echo "CXXFLAGS: $BASE_CXXFLAGS" >> $INFO_FILE
+    echo "CPPFLAGS: $BASE_CPPFLAGS" >> $INFO_FILE
+    echo "LDFLAGS : $BASE_LDFLAGS" >> $INFO_FILE
 	echo >> $INFO_FILE
 	echo "# **************************************************************************" >> $INFO_FILE
 	echo >> $INFO_FILE

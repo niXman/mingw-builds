@@ -6,7 +6,7 @@
  funcs="$funcs vsprintf"
 -funcs="$funcs waitpid"
  funcs="$funcs setproctitle"
-
+ 
  # Also in the old function.def file: alloca, vfork, getopt.
 @@ -437,6 +437,7 @@
      AC_LIBOBJ([insque])
@@ -21,7 +21,7 @@
      AC_LIBOBJ([strverscmp])
      AC_LIBOBJ([vasprintf])
 -    AC_LIBOBJ([waitpid])
-
+ 
      for f in $funcs; do
        case "$f" in
 @@ -615,9 +615,6 @@
@@ -42,12 +42,12 @@
  funcs="$funcs vsprintf"
 -funcs="$funcs waitpid"
  funcs="$funcs setproctitle"
-
+ 
  # Also in the old function.def file: alloca, vfork, getopt.
 @@ -5721,13 +5721,6 @@
   ;;
  esac
-
+ 
 -    case " $LIBOBJS " in
 -  *" waitpid.$ac_objext "* ) ;;
 -  *) LIBOBJS="$LIBOBJS waitpid.$ac_objext"
@@ -61,7 +61,7 @@
 @@ -5867,12 +5860,6 @@
   ;;
  esac
-
+ 
 -    case " $LIBOBJS " in
 -  *" vfork.$ac_objext "* ) ;;
 -  *) LIBOBJS="$LIBOBJS vfork.$ac_objext"
@@ -76,7 +76,7 @@
      case " $LIBOBJS " in
    *" vfork.$ac_objext "* ) ;;
 -  *) LIBOBJS="$LIBOBJS vfork.$ac_objext"
-+  *)
++  *) 
   ;;
  esac
-
+ 
