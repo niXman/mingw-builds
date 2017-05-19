@@ -1,4 +1,4 @@
-* text=crlf
+* text=auto
 
 # Shell scripts
 build text eol=lf

@@ -49,11 +49,8 @@ PKG_LNDIR=yes
 #
 
 PKG_PATCHES=(
-	zlib/01-zlib-1.2.7-1-buildsys.mingw.patch
-	zlib/02-no-undefined.mingw.patch
+	zlib/01-zlib-1.2.11-1-buildsys.mingw.patch
 	zlib/03-dont-put-sodir-into-L.mingw.patch
-	zlib/04-wrong-w8-check.mingw.patch
-	zlib/05-fix-a-typo.mingw.patch
 	zlib/013-fix-largefile-support.patch
 )
 

@@ -305,7 +305,7 @@ function func_download {
 
 	local -a _list=( "${!1}" )
 	[[ ${#_list[@]} == 0 ]] && {
-		[[ $SHORT_OUTPUT != "yes" ]] && echo "--> Doesn't need to download."
+		[[ $SHORT_OUTPUT != "yes" ]] && echo "--> Doesn't need to download"
 		return 0
 	}
 
@@ -458,7 +458,7 @@ function func_uncompress {
 	local -a _list=( "${!1}" )
 	local it=
 	[[ ${#_list[@]} == 0 ]] && {
-		[[ $SHORT_OUTPUT != "yes" ]] && echo "--> Unpack doesn't need."
+		[[ $SHORT_OUTPUT != "yes" ]] && echo "--> Unpack doesn't need"
 		return 0
 	}
 
@@ -921,13 +921,15 @@ function func_map_gcc_name_to_gcc_version {
 	# $1 - gcc name
 
 	case $1 in
-		gcc-?.?.?)			echo "${1/gcc-/}" ;;
+		gcc-?.?.?)		echo "${1/gcc-/}" ;;
 		gcc-4_6-branch)	echo "4.6.5" ;;
-		gcc-4_7-branch)	echo "4.7.4" ;;
+		gcc-4_7-branch)	echo "4.7.5" ;;
 		gcc-4_8-branch)	echo "4.8.6" ;;
-		gcc-4_9-branch)	echo "4.9.3" ;;
-		gcc-5-branch)	echo "5.3.0" ;;
-		gcc-trunk)			echo "6.0.0" ;;
+		gcc-4_9-branch)	echo "4.9.5" ;;
+		gcc-5-branch)	echo "5.5.0" ;;
+		gcc-6-branch)	echo "6.4.0" ;;
+		gcc-7-branch)	echo "7.1.1" ;;
+		gcc-trunk)		echo "8.0.0" ;;
 		*) die "gcc name error: $1. terminate." ;;
 	esac
 }
