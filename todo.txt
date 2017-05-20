@@ -2,8 +2,4 @@
    or, maybe, create separate files for each OS.
    (usage-win.txt, usage-nix.txt, usage-osx.txt)
 
-2. Fix building Python with shared NCURSES.
-
-3. Fix building GNU Make with autotools.
-
-4. Use separate archives for languages: 1)c,c++, 2)ada, 3)fortran, 4)obj-c,obj-c++
+2. Use separate archives for languages: 1)c,c++, 2)ada, 3)fortran, 4)obj-c,obj-c++

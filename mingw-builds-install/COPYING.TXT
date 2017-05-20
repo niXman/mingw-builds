@@ -2,8 +2,8 @@
 #
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
-# This file is part of MinGW-builds(https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2015 by niXman (i dotty nixman doggy gmail dotty com)
+# This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
+# Copyright (c) 2011-2017 by niXman (i dotty nixman doggy gmail dotty com)
 # All rights reserved.
 #
 #

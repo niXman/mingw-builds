@@ -1,4 +1,4 @@
-1. As indentation TAB is used.
+1. As indentation four spaces is used.
 2. Global variables should mainly consist of uppercase characters.
 3. Global variables that should not be changed, should be defined with the 'readonly' keyword.
 4. Functions are defined using the 'function' keyword.
