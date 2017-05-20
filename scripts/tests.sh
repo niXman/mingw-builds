@@ -64,7 +64,7 @@ pthread_test_list=(
 )
 
 stdthread_test_list=(
-	"stdthread_test.cpp -std=c++0x -o stdthread_test.exe"
+	"stdthread_test.cpp -std=c++11 -o stdthread_test.exe"
 )
 
 lasterror_test1_list=(
@@ -80,11 +80,15 @@ time_test_list=(
 )
 
 sleep_test_list=(
-	"sleep_test.cpp -std=c++0x -o sleep_test.exe"
+	"sleep_test.cpp -std=c++11 -o sleep_test.exe"
 )
 
 random_device_list=(
-	"random_device.cpp -std=c++0x -o random_device.exe"
+	"random_device.cpp -std=c++11 -o random_device.exe"
+)
+
+filesystem_list=(
+    "filesystem.cpp -std=c++11 -lstdc++fs -o filesystem.exe"
 )
 
 # **************************************************************************
@@ -102,4 +106,5 @@ PKG_TESTS["lasterror_test1"]=lasterror_test1_list[@]
 PKG_TESTS["lasterror_test2"]=lasterror_test2_list[@]
 PKG_TESTS["time_test"]=time_test_list[@]
 [[ $THREADS_MODEL == posix ]] && { PKG_TESTS["sleep_test"]=sleep_test_list[@]; }
-[[ $BUILD_VERSION == 4.6.? || $BUILD_VERSION == 4.7.? ]] || { PKG_TESTS["random_device"]=random_device_list[@]; }
+[[ ${BUILD_VERSION:0:1} -ge 6 ]] && { PKG_TESTS["random_device"]=random_device_list[@]; }
+[[ ${BUILD_VERSION:0:1} -ge 7 ]] && { PKG_TESTS["filesystem"]=filesystem_list[@]; }
