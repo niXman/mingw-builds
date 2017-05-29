@@ -79,6 +79,7 @@ readonly LOGVIEWERS=(
 
 function func_test_installed_packages {
 	local required_packages=(
+		patch
 		git
 		subversion
 		tar
