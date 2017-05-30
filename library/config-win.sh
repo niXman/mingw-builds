@@ -101,7 +101,7 @@ function func_test_installed_packages {
 	local not_installed_packages=()
 
 	for it in ${required_packages[@]}; do
-		$(pacman -Qs ^$it > /dev/null 2>&1)
+		$(pacman -Qi ^$it > /dev/null 2>&1)
 		[[ $? != 0 ]] && {
 			not_installed_packages=(${not_installed_packages[@]} $it)
 		}
