@@ -79,7 +79,6 @@ readonly LOGVIEWERS=(
 
 function func_test_installed_packages {
 	local required_packages=(
-		patch
 		git
 		subversion
 		tar
@@ -102,7 +101,8 @@ function func_test_installed_packages {
 	local not_installed_packages=()
 
 	for it in ${required_packages[@]}; do
-		[[ -z $(pacman -Qs ^$it) ]] && {
+		$(pacman -Qs ^$it > /dev/null 2>&1)
+		[[ $? != 0 ]] && {
 			not_installed_packages=(${not_installed_packages[@]} $it)
 		}
 	done
