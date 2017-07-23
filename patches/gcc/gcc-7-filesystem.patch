@@ -1,6 +1,6 @@
 Index: libstdc++-v3/src/filesystem/dir.cc
 ===================================================================
---- libstdc++-v3/src/filesystem/dir.cc	(revision 246136)
+--- libstdc++-v3/src/filesystem/dir.cc	(revision 250297)
 +++ libstdc++-v3/src/filesystem/dir.cc	(working copy)
 @@ -41,9 +41,10 @@
  #endif
@@ -87,7 +87,7 @@ Index: libstdc++-v3/src/filesystem/fs-posix.h
 ===================================================================
 --- libstdc++-v3/src/filesystem/fs-posix.h	(revision 0)
 +++ libstdc++-v3/src/filesystem/fs-posix.h	(working copy)
-@@ -0,0 +1,49 @@
+@@ -0,0 +1,50 @@
 +
 +// Copyright (C) 2014-2017 Free Software Foundation, Inc.
 +//
@@ -125,6 +125,7 @@ Index: libstdc++-v3/src/filesystem/fs-posix.h
 +#define os_chmod chmod
 +#define os_mkdir mkdir
 +#define os_getcwd getcwd
++#define os_getenv getenv
 +#define os_chdir chdir
 +#define os_utimbuf_t utimbuf
 +#define os_utime utime
@@ -141,7 +142,7 @@ Index: libstdc++-v3/src/filesystem/fs-win32.h
 ===================================================================
 --- libstdc++-v3/src/filesystem/fs-win32.h	(revision 0)
 +++ libstdc++-v3/src/filesystem/fs-win32.h	(working copy)
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,65 @@
 +
 +// Copyright (C) 2014-2017 Free Software Foundation, Inc.
 +//
@@ -179,6 +180,7 @@ Index: libstdc++-v3/src/filesystem/fs-win32.h
 +#define os_chmod _wchmod
 +#define os_mkdir _wmkdir
 +#define os_getcwd _wgetcwd
++#define os_getenv _wgetenv
 +#define os_chdir _wchdir
 +#define os_utimbuf_t _utimbuf
 +#define os_utime _wutime
@@ -208,7 +210,7 @@ Index: libstdc++-v3/src/filesystem/fs-win32.h
 +#endif // _GLIBCXX_EXPERIMENTAL_FS_WIN32_H
 Index: libstdc++-v3/src/filesystem/ops.cc
 ===================================================================
---- libstdc++-v3/src/filesystem/ops.cc	(revision 246136)
+--- libstdc++-v3/src/filesystem/ops.cc	(revision 250297)
 +++ libstdc++-v3/src/filesystem/ops.cc	(working copy)
 @@ -56,11 +56,10 @@
  #endif
@@ -511,7 +513,7 @@ Index: libstdc++-v3/src/filesystem/ops.cc
      {
        int err = errno;
        ec.assign(err, std::generic_category());
-@@ -1376,11 +1391,13 @@
+@@ -1376,6 +1391,7 @@
      }
    return status;
  }
@@ -519,28 +521,56 @@ Index: libstdc++-v3/src/filesystem/ops.cc
  
  fs::file_status
  fs::symlink_status(const fs::path& p, std::error_code& ec) noexcept
+@@ -1382,7 +1398,7 @@
  {
    file_status status;
-+#if !defined(_GLIBCXX_FILESYSTEM_IS_WINDOWS) && defined(_GLIBCXX_HAVE_SYS_STAT_H)
    stat_type st;
-   if (::lstat(p.c_str(), &st))
+-  if (::lstat(p.c_str(), &st))
++  if (::os_stat(p.c_str(), &st))
      {
-@@ -1394,9 +1411,11 @@
-       status = make_file_status(st);
-       ec.clear();
+       int err = errno;
+       ec.assign(err, std::generic_category());
+@@ -1396,7 +1412,6 @@
      }
-+#else
-+  ec = std::make_error_code(std::errc::not_supported);
-+#endif
    return status;
  }
 -#endif
  
  fs::file_status
  fs::status(const fs::path& p)
+@@ -1458,14 +1473,16 @@
+ fs::path fs::temp_directory_path(error_code& ec)
+ {
+ #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
+-  ec = std::make_error_code(std::errc::not_supported);
+-  return {}; // TODO
++  using char_t = wchar_t;
+ #else
+-  const char* tmpdir = nullptr;
+-  const char* env[] = { "TMPDIR", "TMP", "TEMP", "TEMPDIR", nullptr };
++  using char_t = char;
++#endif // _GLIBCXX_FILESYSTEM_IS_WINDOWS
++
++  const char_t* tmpdir = nullptr;
++  const char_t* env[] = { _WS("TMPDIR"), _WS("TMP"), _WS("TEMP"), _WS("TEMPDIR"), nullptr };
+   for (auto e = env; tmpdir == nullptr && *e != nullptr; ++e)
+-    tmpdir = ::getenv(*e);
+-  path p = tmpdir ? tmpdir : "/tmp";
++    tmpdir = ::os_getenv(*e);
++  path p = tmpdir;
+   auto st = status(p, ec);
+   if (!ec)
+     {
+@@ -1478,6 +1495,5 @@
+ 	ec = std::make_error_code(std::errc::not_a_directory);
+     }
+   return {};
+-#endif
+ }
+ 
 Index: libstdc++-v3/src/filesystem/path.cc
 ===================================================================
---- libstdc++-v3/src/filesystem/path.cc	(revision 246136)
+--- libstdc++-v3/src/filesystem/path.cc	(revision 250297)
 +++ libstdc++-v3/src/filesystem/path.cc	(working copy)
 @@ -296,7 +296,7 @@
  std::pair<const path::string_type*, std::size_t>

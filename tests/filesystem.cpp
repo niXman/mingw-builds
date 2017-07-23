@@ -51,8 +51,8 @@ void demo_status(const fs::file_status s) {
 }
 
 int main(int argc, char **argv) {
-	const fs::path path = fs::current_path();
-	std::cout << "curpath=" << path << std::endl << std::endl;
+	std::cout << "curpath=" << fs::current_path() << std::endl << std::endl;
+	std::cout << "tmppath=" << fs::temp_directory_path() << std::endl << std::endl;
 	
 	if ( !fs::exists(argv[0]) ) {
 		std::cout << "error";
@@ -61,6 +61,6 @@ int main(int argc, char **argv) {
 	}
 	std::cout << std::endl << std::endl;
 	
-	const fs::file_status s = fs::status(path);
+	const fs::file_status s = fs::status(argv[0]);
 	demo_status(s);
 }
