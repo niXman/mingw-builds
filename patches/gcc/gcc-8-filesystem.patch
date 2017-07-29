@@ -182,16 +182,16 @@ Index: libstdc++-v3/src/filesystem/dir.cc
    {
  #ifdef _GLIBCXX_HAVE_STRUCT_DIRENT_D_TYPE
      switch (d.d_type)
-@@ -145,13 +146,15 @@
+@@ -145,7 +146,7 @@
      ec->clear();
  
    int err = std::exchange(errno, 0);
 -  const auto entp = readdir(dirp);
--  std::swap(errno, err);
 +  const auto entp = ::os_readdir(dirp);
-+  // std::swap cannot be used with Bionic's errno
-+  err = std::exchange(errno, err);
+   // std::swap cannot be used with Bionic's errno
+   err = std::exchange(errno, err);
  
+@@ -152,7 +153,8 @@
    if (entp)
      {
        // skip past dot and dot-dot
@@ -201,7 +201,7 @@ Index: libstdc++-v3/src/filesystem/dir.cc
  	return advance(ec, options);
        entry = fs::directory_entry{path / entp->d_name};
        type = get_file_type(*entp);
-@@ -239,7 +242,7 @@
+@@ -240,7 +242,7 @@
                               error_code* ec)
  : _M_options(options), _M_pending(true)
  {
