@@ -49,23 +49,27 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
   For more options run: "./build --help"
 
 8. Run:
-  `./build --mode=gcc-4.8.1 --arch=i686` for building i686-MinGW-w64
-  `./build --mode=gcc-4.8.1 --arch=x86_64` for building x86_64-MinGW-w64
-  `./build --mode=gcc-4.8.1 --arch=x86_64 --preload` for preload sources and building x86_64-MinGW-w64
-  `./build --mode=gcc-4.8.1 --arch=i686 --exceptions=dwarf` for building i686-MinGW-w64 with DWARF exception handling
+*  `./build --mode=gcc-4.8.1 --arch=i686` for building i686-MinGW-w64
+*  `./build --mode=gcc-4.8.1 --arch=x86_64` for building x86_64-MinGW-w64
+*  `./build --mode=gcc-4.8.1 --arch=x86_64 --preload` for preload sources and building x86_64-MinGW-w64
+*  `./build --mode=gcc-4.8.1 --arch=i686 --exceptions=dwarf` for building i686-MinGW-w64 with DWARF exception handling
 
 For example, during the process of building of the i686-gcc-4.7.2 will
   be created the following directories:
-  `<buildroot>/i686-4.7.2-release-posix-sjlj-rev1/build`
-  `<buildroot>/i686-4.7.2-release-posix-sjlj-rev1/libs`
-  `<buildroot>/i686-4.7.2-release-posix-sjlj-rev1/logs`
-  `<buildroot>/i686-4.7.2-release-posix-sjlj-rev1/prefix`
+```
+  <buildroot>/i686-4.7.2-release-posix-sjlj-rev1/build
+  <buildroot>/i686-4.7.2-release-posix-sjlj-rev1/libs
+  <buildroot>/i686-4.7.2-release-posix-sjlj-rev1/logs
+  <buildroot>/i686-4.7.2-release-posix-sjlj-rev1/prefix
+```
 
 For x86_64:
-  `<buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/build`
-  `<buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/libs`
-  `<buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/logs`
-  `<buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/prefix`
+```
+  <buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/build
+  <buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/libs
+  <buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/logs
+  <buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/prefix
+```
 
 And the sources directory:
   `<buildroot>/src`
