@@ -35,15 +35,21 @@
 
 # **************************************************************************
 
-PKG_VERSION=7-branch
+PKG_VERSION=6.4.0
 PKG_NAME=gcc-${PKG_VERSION}
 PKG_DIR_NAME=gcc-${PKG_VERSION}
-PKG_TYPE=svn
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"svn://gcc.gnu.org/svn/gcc/branches/${PKG_NAME}|repo:$PKG_TYPE"
+	"https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=main
+
+#
+
+PKG_EXECUTE_AFTER_UNCOMPRESS=(
+    "[[ ! -f libgcc/config/i386/enable-execute-stack.c ]] && cp libgcc/config/i386/enable-execute-stack-mingw32.c libgcc/config/i386/enable-execute-stack.c"
+)
 
 #
 
@@ -51,6 +57,7 @@ PKG_PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-5.1-iconv.patch
 	gcc/gcc-4.8-libstdc++export.patch
+	gcc/gcc-4.8.2-build-more-gnattools.mingw.patch
 	gcc/gcc-4.8.2-fix-for-windows-not-minding-non-existant-parent-dirs.patch
 	gcc/gcc-4.8.2-windows-lrealpath-no-force-lowercase-nor-backslash.patch
 	gcc/gcc-4.9.1-enable-shared-gnat-implib.mingw.patch

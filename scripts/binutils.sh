@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.27
+PKG_VERSION=2.28
 PKG_NAME=binutils-${PKG_VERSION}
 [[ $USE_MULTILIB == yes ]] && {
 	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
@@ -58,7 +58,6 @@ PKG_PATCHES=(
 	binutils/0008-fix-libiberty-makefile.mingw.patch
 	binutils/0009-fix-libiberty-configure.mingw.patch
 	binutils/0110-binutils-mingw-gnu-print.patch
-	binutils/0018-binutils-PC64-PCRQUAD-relocation-fix.mingw32.patch
 )
 
 #

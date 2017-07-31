@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=7.11.1
+PKG_VERSION=8.0
 PKG_NAME=gdb-${PKG_VERSION}
 PKG_DIR_NAME=gdb-${PKG_VERSION}
 PKG_TYPE=.tar.xz
@@ -53,6 +53,7 @@ PKG_PATCHES=(
 	# http://sourceware.org/bugzilla/show_bug.cgi?id=15412
 	gdb/gdb-perfomance.patch
 	gdb/gdb-fix-using-gnu-print.patch
+	gdb/gdb-7.12-dynamic-libs.patch
 )
 
 #
