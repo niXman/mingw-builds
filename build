@@ -137,8 +137,9 @@ readonly RUN_ARGS="$@"
 	echo "    gcc-6.3.0 (6.3.0 release)"
 	echo "    gcc-6.4.0 (6.4.0 release)"
 	echo "    gcc-6-branch (currently 6.4.0-prerelease)"
-	echo "    gcc-7.1.0 (currently 7.1.0 release)"
-	echo "    gcc-7-branch (currently 7.2.0-prerelease)"
+	echo "    gcc-7.1.0 (7.1.0 release)"
+	echo "    gcc-7.2.0 (7.2.0 release)"
+	echo "    gcc-7-branch (currently 7.3.0-prerelease)"
 	echo "    gcc-trunk (currently 8-snapshot)"
 
 	exit 0
@@ -262,7 +263,7 @@ while [[ $# > 0 ]]; do
 					RUNTIME_BRANCH="v5.x"
 				;;
 				trunk)
-					RUNTIME_VERSION=v4
+					RUNTIME_VERSION=v6
 					RUNTIME_BRANCH="master"
 				;;
 				*)
