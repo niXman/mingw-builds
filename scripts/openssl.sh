@@ -52,6 +52,7 @@ PKG_PATCHES=(
 	openssl/openssl-0.9.6-x509.patch
 	openssl/openssl-1.0.0a-ldflags.patch
 	openssl/openssl-1.0.1-x32.patch
+	openssl/openssl-1.0.2a-parallel-build.patch
 )
 
 #
