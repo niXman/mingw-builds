@@ -52,6 +52,7 @@ PKG_PATCHES=(
 	readline/readline62-002
 	readline/readline62-003
 	readline/readline62-004
+	readline/readline62-005
 )
 
 #
