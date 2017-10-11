@@ -6,13 +6,12 @@ and nul here acts like a normal file with 0 size as far as stat() is concerned.
 Check harder for the file in question being unusual (isatty() does see that).
 And since configure script expects /dev/nul, do report it that way.
 
-diff -urN binutils-2.27.orig/binutils/bucomm.c binutils-2.27/binutils/bucomm.c
---- binutils-2.27.orig/binutils/bucomm.c	2016-08-03 09:36:51.000000000 +0200
-+++ binutils-2.27/binutils/bucomm.c	2016-09-21 20:43:33.158175700 +0200
-@@ -575,6 +575,15 @@
+--- binutils-2.29.1_orig/binutils/bucomm.c	2017-07-10 12:54:41.000000000 +0300
++++ binutils-2.29.1/binutils/bucomm.c	2017-10-11 11:04:36.443817900 +0300
+@@ -587,6 +587,15 @@
  {
    struct stat statbuf;
-
+ 
 +  int f, t;
 +  t = -1;
 +  f = open (file_name, O_RDONLY | O_BINARY);
@@ -22,13 +21,13 @@ diff -urN binutils-2.27.orig/binutils/bucomm.c binutils-2.27/binutils/bucomm.c
 +      close (f);
 +    }
 +
-   if (stat (file_name, &statbuf) < 0)
-     {
-       if (errno == ENOENT)
-@@ -583,8 +592,15 @@
- 	non_fatal (_("Warning: could not locate '%s'.  reason: %s"),
- 		   file_name, strerror (errno));
+   if (file_name == NULL)
+     return (off_t) -1;
+ 
+@@ -600,8 +609,15 @@
      }
+   else if (S_ISDIR (statbuf.st_mode))
+     non_fatal (_("Warning: '%s' is a directory"), file_name);
 -  else if (! S_ISREG (statbuf.st_mode))
 -    non_fatal (_("Warning: '%s' is not an ordinary file"), file_name);
 +  else if (! S_ISREG (statbuf.st_mode) || t > 0)
@@ -43,9 +42,9 @@ diff -urN binutils-2.27.orig/binutils/bucomm.c binutils-2.27/binutils/bucomm.c
    else if (statbuf.st_size < 0)
      non_fatal (_("Warning: '%s' has negative size, probably it is too large"),
                 file_name);
-diff -urN binutils-2.27.orig/binutils/elfedit.c binutils-2.27/binutils/elfedit.c
---- binutils-2.27.orig/binutils/elfedit.c	2016-08-03 09:36:51.000000000 +0200
-+++ binutils-2.27/binutils/elfedit.c	2016-09-21 20:38:40.359931800 +0200
+diff -urN binutils-2.29.1_orig/binutils/elfedit.c binutils-2.29.1/binutils/elfedit.c
+--- binutils-2.29.1_orig/binutils/elfedit.c	2017-07-10 12:54:41.000000000 +0300
++++ binutils-2.29.1/binutils/elfedit.c	2017-10-11 11:08:16.937742600 +0300
 @@ -483,6 +483,14 @@
  check_file (const char *file_name, struct stat *statbuf_p)
  {
@@ -58,13 +57,13 @@ diff -urN binutils-2.27.orig/binutils/elfedit.c binutils-2.27/binutils/elfedit.c
 +      t = isatty (f);
 +      close (f);
 +    }
-
+ 
    if (statbuf_p == NULL)
      statbuf_p = &statbuf;
 @@ -497,8 +505,13 @@
        return 1;
      }
-
+ 
 -  if (! S_ISREG (statbuf_p->st_mode))
 +  if (! S_ISREG (statbuf_p->st_mode) || t > 0)
      {
