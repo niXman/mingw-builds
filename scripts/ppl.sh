@@ -48,7 +48,6 @@ PKG_PRIORITY=prereq
 #
 
 PKG_PATCHES=(
-	ppl/ppl-resolve-conflicts-with-gmp-5.1.0.patch
 )
 
 #
