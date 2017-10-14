@@ -95,6 +95,7 @@ At the moment, successfully building the following versions:
   gcc-4.9.1
   gcc-4.9.2
   gcc-4.9.3
+  gcc-4.9.4
   gcc-5.1.0
   gcc-5.2.0
   gcc-5.3.0
