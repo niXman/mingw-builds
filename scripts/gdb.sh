@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.0.1
+PKG_VERSION=$( [[ $GCC_NAME == gcc-4.6* || $GCC_NAME == gcc-4.7* ]] && { echo 7.12; } || { echo 8.0.1; } )
 PKG_NAME=gdb-${PKG_VERSION}
 PKG_DIR_NAME=gdb-${PKG_VERSION}
 PKG_TYPE=.tar.xz
