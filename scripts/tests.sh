@@ -67,6 +67,10 @@ stdthread_test_list=(
 	"stdthread_test.cpp -std=c++11 -o stdthread_test.exe"
 )
 
+stdthread_test_gcc_4_list=(
+	"stdthread_test.cpp -std=c++0x -o stdthread_test.exe"
+)
+
 lasterror_test1_list=(
 	"lasterror_test1.cpp -o lasterror_test1.exe"
 )
@@ -81,6 +85,10 @@ time_test_list=(
 
 sleep_test_list=(
 	"sleep_test.cpp -std=c++11 -o sleep_test.exe"
+)
+
+sleep_test_gcc_4_list=(
+	"sleep_test.cpp -std=c++0x -o sleep_test.exe"
 )
 
 random_device_list=(
@@ -101,10 +109,18 @@ declare -A PKG_TESTS
 PKG_TESTS["lto_test"]=lto_test_list[@]
 PKG_TESTS["omp_test"]=omp_test_list[@]
 PKG_TESTS["pthread_test"]=pthread_test_list[@]
-[[ $THREADS_MODEL == posix ]] && { PKG_TESTS["stdthread_test"]=stdthread_test_list[@]; }
+if [[ $THREADS_MODEL == posix && ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 6 ]]; then
+   PKG_TESTS["stdthread_test"]=stdthread_test_gcc_4_list[@];
+elif [[ $THREADS_MODEL == posix ]]; then
+   PKG_TESTS["stdthread_test"]=stdthread_test_list[@];
+fi
 PKG_TESTS["lasterror_test1"]=lasterror_test1_list[@]
 PKG_TESTS["lasterror_test2"]=lasterror_test2_list[@]
 PKG_TESTS["time_test"]=time_test_list[@]
-[[ $THREADS_MODEL == posix ]] && { PKG_TESTS["sleep_test"]=sleep_test_list[@]; }
+if [[ $THREADS_MODEL == posix && ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 6 ]]; then
+   PKG_TESTS["sleep_test"]=sleep_test_gcc_4_list[@];
+elif [[ $THREADS_MODEL == posix ]]; then
+   PKG_TESTS["sleep_test"]=sleep_test_list[@];
+fi
 [[ ${BUILD_VERSION:0:1} -ge 6 ]] && { PKG_TESTS["random_device"]=random_device_list[@]; }
 [[ ${BUILD_VERSION:0:1} -ge 7 ]] && { PKG_TESTS["filesystem"]=filesystem_list[@]; }
