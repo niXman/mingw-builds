@@ -84,6 +84,7 @@ At the moment, successfully building the following versions:
   gcc-4.7.1
   gcc-4.7.2
   gcc-4.7.3
+  gcc-4.7.4
   gcc-4.8.0
   gcc-4.8.1
   gcc-4.8.2
