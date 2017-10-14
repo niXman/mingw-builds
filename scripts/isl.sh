@@ -35,8 +35,7 @@
 
 # **************************************************************************
 
-
-if [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 8 ]]; then
+if [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 8 ]] || [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} == 9 && ${BUILD_VERSION:4:1} -le 2 ]]; then
    PKG_VERSION=0.12.2
    PKG_TYPE=.tar.lzma
 elif [[ $GCC_NAME == gcc-4* ]]; then
@@ -56,15 +55,9 @@ PKG_PRIORITY=prereq
 
 #
 
-if [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 8 ]]; then
-	PKG_PATCHES=(
-		isl/isl-0.12-no-undefined.patch
-	)
-else
-	PKG_PATCHES=(
-		isl/isl-0.14.1-no-undefined.patch
-	)
-fi
+PKG_PATCHES=(
+	$([[ ${PKG_VERSION} == 0.12.2 ]] && echo "isl/isl-0.12-no-undefined.patch" || echo "isl/isl-0.14.1-no-undefined.patch" )
+)
 
 #
 
