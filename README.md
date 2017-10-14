@@ -79,8 +79,6 @@ The archives with the built MinGW will be created in `<buildroot>/archives/`
 
 At the moment, successfully building the following versions:
 ```
-  gcc-4.6.2
-  gcc-4.6.3
   gcc-4.6.4
   gcc-4.7.0
   gcc-4.7.1

@@ -53,6 +53,7 @@ PKG_PATCHES=(
 	gcc/gcc-4.6-vswprintf.patch
 	gcc/gcc-4.6.4-fix-dw2.patch
 	gcc/lto-plugin-use-static-libgcc.patch
+	gcc/gcc-4.6-fix_mismatch_in_gnu_inline_attributes.patch
 )
 
 #
@@ -122,6 +123,7 @@ PKG_CONFIGURE_FLAGS=(
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS\""
+	MAKEINFO=missing
 )
 
 #
