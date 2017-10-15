@@ -60,7 +60,10 @@ PKG_PATCHES=(
 	gcc/gcc-5-dwarf-regression.patch
 	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch
 	gcc/gcc-6-ktietz-libgomp.patch
+	gcc/gcc-7-filesystem.patch
 	gcc/gcc-6.1-disable-weak-refs.patch
+	gcc/gcc-6-backport-fix-of-check-for-empty-string-in-ubsan.c.patch
+	gcc/gcc-6.3.0-define_more_error_constants_for_mingw-w64_backport.patch
 )
 
 #
