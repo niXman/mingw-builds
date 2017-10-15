@@ -61,6 +61,13 @@ PKG_PATCHES=(
 
 #
 
+if [[ ${PKG_VERSION} == 0.18 ]]; then
+	PKG_EXECUTE_AFTER_PATCH=(
+		"aclocal"
+		"automake"
+	)
+fi
+
 PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
