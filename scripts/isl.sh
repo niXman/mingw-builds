@@ -38,7 +38,7 @@
 if [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 8 ]] || [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} == 9 && ${BUILD_VERSION:4:1} -le 2 ]]; then
    PKG_VERSION=0.12.2
    PKG_TYPE=.tar.lzma
-elif [[ $GCC_NAME == gcc-4* ]]; then
+elif [[ $GCC_NAME == gcc-4* ]] || [[ ${BUILD_VERSION:0:1} == 5 && ${BUILD_VERSION:2:1} -le 2 ]]; then
    PKG_VERSION=0.14.1
    PKG_TYPE=.tar.xz
 else
