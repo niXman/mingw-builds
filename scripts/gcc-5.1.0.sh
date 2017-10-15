@@ -61,6 +61,7 @@ PKG_PATCHES=(
 	gcc/gcc-5.1.0-fix-lto.patch
 	gcc/ktietz-libgomp.patch
 	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch
+	gcc/gcc-4.6-fix_mismatch_in_gnu_inline_attributes.patch
 )
 
 #
