@@ -100,6 +100,7 @@ At the moment, successfully building the following versions:
   gcc-5.2.0
   gcc-5.3.0
   gcc-5.4.0
+  gcc-5.5.0
   gcc-6.1.0
   gcc-6.2.0
   gcc-6.3.0
