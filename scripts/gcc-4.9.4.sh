@@ -35,19 +35,30 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.2.4
-PKG_NAME=expat-${PKG_VERSION}
-PKG_DIR_NAME=expat-${PKG_VERSION}
+PKG_VERSION=4.9.4
+PKG_NAME=gcc-${PKG_VERSION}
+PKG_DIR_NAME=gcc-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
 PKG_URLS=(
-	"http://sourceforge.net/projects/expat/files/expat/${PKG_VERSION}/expat-${PKG_VERSION}${PKG_TYPE}"
+	"https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
 )
 
-PKG_PRIORITY=extra
+PKG_PRIORITY=main
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	gcc/gcc-4.7-stdthreads.patch
+	gcc/gcc-4.8-iconv.patch
+	gcc/gcc-4.8-libstdc++export.patch
+	gcc/gcc-4.9.0-libatomic-cygwin.patch
+	gcc/gcc-4.8.2-build-more-gnattools.mingw.patch
+	gcc/gcc-4.8.2-dont-escape-arguments-that-dont-need-it-in-pex-win32.c.patch
+	gcc/gcc-4.8.2-fix-for-windows-not-minding-non-existant-parent-dirs.patch
+	gcc/gcc-4.8.2-windows-lrealpath-no-force-lowercase-nor-backslash.patch
+	gcc/gcc-4.9.0-pr-57440.patch
+	gcc/ktietz-libgomp.patch
+)
 
 #
 
@@ -56,14 +67,62 @@ PKG_CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$LIBS_DIR
+	--prefix=$MINGWPREFIX
+	--with-sysroot=$PREFIX
+	--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
 	#
-	$LINK_TYPE_STATIC
+	$LINK_TYPE_GCC
+	#
+	$( [[ $USE_MULTILIB == yes ]] \
+		&& echo "--enable-targets=all --enable-multilib" \
+		|| echo "--disable-multilib" \
+	)
+	--enable-languages=$ENABLE_LANGUAGES,lto
+	--enable-libstdcxx-time=yes
+	--enable-threads=$THREADS_MODEL
+	--enable-libgomp
+	--enable-libatomic
+	--enable-lto
+	--enable-graphite
+	--enable-checking=release
+	--enable-fully-dynamic-string
+	--enable-version-specific-runtime-libs
+	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
+		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
+	)
+	$( [[ $EXCEPTIONS_MODEL == sjlj ]] \
+		&& echo "--enable-sjlj-exceptions" \
+	)
+	#
+	--disable-libstdcxx-pch
+	--disable-libstdcxx-debug
+	$( [[ $BOOTSTRAPING == yes ]] \
+		&& echo "--enable-bootstrap" \
+		|| echo "--disable-bootstrap" \
+	)
+	--disable-rpath
+	--disable-win32-registry
+	--disable-nls
+	--disable-werror
+	--disable-symvers
+	#
+	--with-gnu-as
+	--with-gnu-ld
+	#
+	$PROCESSOR_OPTIMIZATION
+	$PROCESSOR_TUNE
+	#
+	--with-libiconv
+	--with-system-zlib
+	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--enable-cloog-backend=isl
+	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}, $MINGW_W64_PKG_STRING\""
+	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
 )
 
 #
@@ -76,8 +135,9 @@ PKG_MAKE_FLAGS=(
 #
 
 PKG_INSTALL_FLAGS=(
-	-j$JOBS
-	install
+	-j1
+	DESTDIR=$BASE_BUILD_DIR
+	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
 # **************************************************************************

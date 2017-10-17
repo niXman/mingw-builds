@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.10
+PKG_VERSION=1.13
 PKG_NAME=gdbm-${PKG_VERSION}
 PKG_DIR_NAME=gdbm-${PKG_VERSION}
 PKG_TYPE=.tar.gz
@@ -47,8 +47,7 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
-	gdbm/gdbm-1.10-zeroheaders.patch
-	gdbm/gdbm-win32-support.patch
+	gdbm/gdbm_1.13-win32-support.patch
 )
 
 #

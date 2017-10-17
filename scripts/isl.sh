@@ -35,10 +35,18 @@
 
 # **************************************************************************
 
-PKG_VERSION=$( [[ $GCC_NAME == gcc-4* ]] && { echo 0.14.1; } || { echo 0.16.1; } )
+if [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 8 ]] || [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} == 9 && ${BUILD_VERSION:4:1} -le 2 ]]; then
+   PKG_VERSION=0.12.2
+   PKG_TYPE=.tar.lzma
+elif [[ $GCC_NAME == gcc-4* ]] || [[ ${BUILD_VERSION:0:1} == 5 && ${BUILD_VERSION:2:1} -le 2 ]]; then
+   PKG_VERSION=0.14.1
+   PKG_TYPE=.tar.xz
+else
+   PKG_VERSION=0.18
+   PKG_TYPE=.tar.xz
+fi
 PKG_NAME=$BUILD_ARCHITECTURE-isl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=isl-${PKG_VERSION}
-PKG_TYPE=.tar.xz
 PKG_URLS=(
 	"http://isl.gforge.inria.fr/isl-${PKG_VERSION}${PKG_TYPE}"
 )
@@ -48,10 +56,17 @@ PKG_PRIORITY=prereq
 #
 
 PKG_PATCHES=(
-	isl/isl-0.14.1-no-undefined.patch
+	$([[ ${PKG_VERSION} == 0.12.2 ]] && echo "isl/isl-0.12-no-undefined.patch" || echo "isl/isl-0.14.1-no-undefined.patch" )
 )
 
 #
+
+if [[ ${PKG_VERSION} == 0.18 ]]; then
+	PKG_EXECUTE_AFTER_PATCH=(
+		"aclocal"
+		"automake"
+	)
+fi
 
 PKG_CONFIGURE_FLAGS=(
 	--host=$HOST

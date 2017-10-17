@@ -79,13 +79,12 @@ The archives with the built MinGW will be created in `<buildroot>/archives/`
 
 At the moment, successfully building the following versions:
 ```
-  gcc-4.6.2
-  gcc-4.6.3
   gcc-4.6.4
   gcc-4.7.0
   gcc-4.7.1
   gcc-4.7.2
   gcc-4.7.3
+  gcc-4.7.4
   gcc-4.8.0
   gcc-4.8.1
   gcc-4.8.2
@@ -96,21 +95,23 @@ At the moment, successfully building the following versions:
   gcc-4.9.1
   gcc-4.9.2
   gcc-4.9.3
+  gcc-4.9.4
   gcc-5.1.0
   gcc-5.2.0
   gcc-5.3.0
   gcc-5.4.0
+  gcc-5.5.0
   gcc-6.1.0
   gcc-6.2.0
   gcc-6.3.0
   gcc-7.1.0
   gcc-4_6-branch (currently 4.6.5 prerelease)
-  gcc-4_7-branch (currently 4.7.4 prerelease)
+  gcc-4_7-branch (currently 4.7.5 prerelease)
   gcc-4_8-branch (currently 4.8.6 prerelease)
-  gcc-4_9-branch (currently 4.9.4 prerelease)
-  gcc-5-branch (currently 5.5.0 prerelease)
-  gcc-6-branch (currently 6.4.0 prerelease)
-  gcc-7-branch (currently 7.2.0 prerelease)
+  gcc-4_9-branch (currently 4.9.5 prerelease)
+  gcc-5-branch (currently 5.6.0 prerelease)
+  gcc-6-branch (currently 6.5.0 prerelease)
+  gcc-7-branch (currently 7.3.0 prerelease)
   gcc-trunk (currently 8.0.0 snapshot)
 ```
 

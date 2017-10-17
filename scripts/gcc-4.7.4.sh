@@ -35,19 +35,25 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.2.4
-PKG_NAME=expat-${PKG_VERSION}
-PKG_DIR_NAME=expat-${PKG_VERSION}
+PKG_VERSION=4.7.4
+PKG_NAME=gcc-${PKG_VERSION}
+PKG_DIR_NAME=gcc-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
 PKG_URLS=(
-	"http://sourceforge.net/projects/expat/files/expat/${PKG_VERSION}/expat-${PKG_VERSION}${PKG_TYPE}"
+	"https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}.tar.bz2"
 )
 
-PKG_PRIORITY=extra
+PKG_PRIORITY=main
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	gcc/gcc-4.7-stdthreads.patch
+	gcc/gcc-4.7-iconv.patch
+	gcc/gcc-4.7-vswprintf.patch
+	gcc/lto-plugin-use-static-libgcc.patch
+	gcc/gcc-4.6-fix_mismatch_in_gnu_inline_attributes.patch
+)
 
 #
 
@@ -56,14 +62,67 @@ PKG_CONFIGURE_FLAGS=(
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$LIBS_DIR
+	--prefix=$MINGWPREFIX
+	--with-sysroot=$PREFIX
+	--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
 	#
-	$LINK_TYPE_STATIC
+	$LINK_TYPE_GCC
+	#
+	$( [[ $USE_MULTILIB == yes ]] \
+		&& echo "--enable-targets=all --enable-multilib" \
+		|| echo "--disable-multilib" \
+	)
+	--enable-languages=$ENABLE_LANGUAGES,lto
+	--enable-libstdcxx-time=yes
+	--enable-threads=$THREADS_MODEL
+	--enable-libgomp
+	--enable-lto
+	--enable-graphite
+	--enable-cloog-backend=isl
+	--enable-checking=release
+	--enable-fully-dynamic-string
+	--enable-version-specific-runtime-libs
+	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
+		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
+	)
+	$( [[ $EXCEPTIONS_MODEL == sjlj ]] \
+		&& echo "--enable-sjlj-exceptions" \
+	)
+	#
+	--disable-ppl-version-check
+	--disable-cloog-version-check
+	--disable-libstdcxx-pch
+	--disable-libstdcxx-debug
+	$( [[ $BOOTSTRAPING == yes ]] \
+		&& echo "--enable-bootstrap" \
+		|| echo "--disable-bootstrap" \
+	)
+	--disable-rpath
+	--disable-win32-registry
+	--disable-nls
+	--disable-werror
+	--disable-symvers
+	#
+	--with-gnu-as
+	--with-gnu-ld
+	#
+	$PROCESSOR_OPTIMIZATION
+	$PROCESSOR_TUNE
+	#
+	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
+		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
+	)
+	--with-libiconv
+	--with-system-zlib
+	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}, $MINGW_W64_PKG_STRING\""
+	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
+	MAKEINFO=missing
 )
 
 #
@@ -76,8 +135,9 @@ PKG_MAKE_FLAGS=(
 #
 
 PKG_INSTALL_FLAGS=(
-	-j$JOBS
-	install
+	-j1
+	DESTDIR=$BASE_BUILD_DIR
+	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
 # **************************************************************************

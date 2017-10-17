@@ -63,8 +63,14 @@ pthread_test_list=(
 	"pthread_test.c -mthreads -lpthread -o pthread_test.exe"
 )
 
-stdthread_test_list=(
-	"stdthread_test.cpp -std=c++11 -o stdthread_test.exe"
+[[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 6 ]] && (
+	stdthread_test_list=(
+		"stdthread_test.cpp -std=c++0x -o stdthread_test.exe"
+	)
+) || (
+	stdthread_test_list=(
+		"stdthread_test.cpp -std=c++11 -o stdthread_test.exe"
+	)
 )
 
 lasterror_test1_list=(
@@ -79,8 +85,14 @@ time_test_list=(
 	"time_test.c -lpthread -o time_test.exe"
 )
 
-sleep_test_list=(
-	"sleep_test.cpp -std=c++11 -o sleep_test.exe"
+[[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 6 ]] && (
+	sleep_test_list=(
+		"sleep_test.cpp -std=c++0x -o sleep_test.exe"
+	)
+) || (
+	sleep_test_list=(
+		"sleep_test.cpp -std=c++11 -o sleep_test.exe"
+	)
 )
 
 random_device_list=(

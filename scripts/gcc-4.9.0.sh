@@ -62,6 +62,7 @@ PKG_PATCHES=(
 	gcc/gcc-4.8-filename-output.patch
 	gcc/gcc-4.9-tree-ssa-threadedge.patch
 	gcc/ktietz-libgomp.patch
+	gcc/gcc-4.6-fix_mismatch_in_gnu_inline_attributes.patch
 )
 
 #

@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.0
+PKG_VERSION=1.2
 PKG_NAME=$BUILD_ARCHITECTURE-ppl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=ppl-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
@@ -48,7 +48,6 @@ PKG_PRIORITY=prereq
 #
 
 PKG_PATCHES=(
-	ppl/ppl-resolve-conflicts-with-gmp-5.1.0.patch
 )
 
 #

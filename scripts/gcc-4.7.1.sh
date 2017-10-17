@@ -51,6 +51,9 @@ PKG_PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
 	gcc/gcc-4.7-iconv.patch
 	gcc/gcc-4.7-vswprintf.patch
+	gcc/gcc-4.6-fix_mismatch_in_gnu_inline_attributes.patch
+	gcc/gcc-4.7-wrong_include_search_path_composition.patch
+	gcc/gcc-4.7-seg_fault_when_building_gcc.patch
 )
 
 #
@@ -120,6 +123,7 @@ PKG_CONFIGURE_FLAGS=(
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS\""
+	MAKEINFO=missing
 )
 
 #
