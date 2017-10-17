@@ -60,6 +60,9 @@ function func_clear_env {
 	unset PKG_CONFIGURE_SCRIPT
 	unset PKG_MAKE_PROG
 	unset PKG_CONFIGURE_PROG
+
+	unset CDPATH
+	unset PYTHONHOME
 }
 
 function switch_to_reverse_arch {
