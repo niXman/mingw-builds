@@ -48,13 +48,7 @@ PKG_PRIORITY=runtime
 
 #
 
-PKG_PATCHES=(
-	$(
-		[[ $RUNTIME_VERSION == v5 ]] && { \
-			echo "mingw-w64/bug-647.patch"; \
-		} \
-	)
-)
+PKG_PATCHES=()
 
 #
 

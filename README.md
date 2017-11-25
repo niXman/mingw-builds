@@ -105,6 +105,7 @@ At the moment, successfully building the following versions:
   gcc-6.2.0
   gcc-6.3.0
   gcc-7.1.0
+  gcc-7.2.0
   gcc-4_6-branch (currently 4.6.5 prerelease)
   gcc-4_7-branch (currently 4.7.5 prerelease)
   gcc-4_8-branch (currently 4.8.6 prerelease)

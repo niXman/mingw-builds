@@ -62,6 +62,7 @@ PKG_PATCHES=(
 	gcc/gcc-6.1-disable-weak-refs.patch
 	gcc/gcc-7-filesystem.patch
 	gcc/gcc-libgomp-ftime64.patch
+	gcc/gcc-7-branch-diagnostic-color.c.patch
 )
 
 #

@@ -58,8 +58,6 @@ PKG_PATCHES=(
 	gcc/gcc-5-dwarf-regression.patch
 	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch
 	gcc/gcc-6-ktietz-libgomp.patch
-	gcc/gcc-6.1-disable-weak-refs.patch
-	gcc/gcc-7-filesystem.patch
 	gcc/gcc-libgomp-ftime64.patch
 )
 
@@ -72,7 +70,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$MINGWPREFIX
 	--with-sysroot=$PREFIX
-	#--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
+	--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
 	#
 	$LINK_TYPE_GCC
 	#
