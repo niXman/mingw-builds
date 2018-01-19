@@ -40,7 +40,7 @@ PKG_NAME=$BUILD_ARCHITECTURE-mpc-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=mpc-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://www.multiprecision.org/mpc/download/mpc-${PKG_VERSION}.tar.gz"
+	"https://ftp.gnu.org/gnu/mpc/mpc-${PKG_VERSION}.tar.gz"
 )
 
 PKG_PRIORITY=prereq
