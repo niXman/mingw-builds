@@ -1,18 +1,19 @@
---- ncurses-5.9/ncurses/base/MKlib_gen.sh	2011-06-04 21:14:08.000000000 +0200
-+++ ncurses-5.9/ncurses/base/MKlib_gen.sh	2015-04-26 00:47:06.911680782 +0200
+diff -urN ncurses-6.1_orig/ncurses/base/MKlib_gen.sh ncurses-6.1/ncurses/base/MKlib_gen.sh
+--- ncurses-6.1_orig/ncurses/base/MKlib_gen.sh	2017-12-10 00:27:41.000000000 +0200
++++ ncurses-6.1/ncurses/base/MKlib_gen.sh	2018-02-14 15:35:56.238967800 +0200
 @@ -62,7 +62,15 @@
  if test "${LC_CTYPE+set}"    = set; then LC_CTYPE=C;    export LC_CTYPE;    fi
  if test "${LC_COLLATE+set}"  = set; then LC_COLLATE=C;  export LC_COLLATE;  fi
-
--preprocessor="$1 -DNCURSES_INTERNALS -I../include"
+ 
+-preprocessor="$1 -DNCURSES_WATTR_MACROS -DNCURSES_INTERNALS -I../include"
 +# Work around "unexpected" output of GCC 5.1.0's cpp w.r.t. #line directives
 +# by simply suppressing them:
 +case `$1 -dumpversion 2>/dev/null` in
 +    5.[0123].*)  # assume a "broken" one
-+        preprocessor="$1 -P -DNCURSES_INTERNALS -I../include"
++	preprocessor="$1 -P -DNCURSES_WATTR_MACROS -DNCURSES_INTERNALS -I../include"
 +        ;;
 +    *)
-+        preprocessor="$1 -DNCURSES_INTERNALS -I../include"
++        preprocessor="$1 -DNCURSES_WATTR_MACROS -DNCURSES_INTERNALS -I../include"
 +esac
  AWK="$2"
  USE="$3"
