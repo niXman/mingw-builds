@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.6.7
+PKG_VERSION=8.6.8
 PKG_NAME=tcl${PKG_VERSION}
 PKG_DIR_NAME=tcl${PKG_VERSION}
 PKG_SUBDIR_NAME=win
