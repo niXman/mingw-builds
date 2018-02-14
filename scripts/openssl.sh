@@ -52,7 +52,7 @@ PKG_PATCHES=(
 	openssl/openssl-0.9.6-x509.patch
 	openssl/openssl-1.0.0a-ldflags.patch
 	openssl/openssl-1.0.1-x32.patch
-	openssl/openssl-1.0.2a-parallel-build.patch
+	# openssl/openssl-1.0.2a-parallel-build.patch
 )
 
 #
@@ -77,7 +77,7 @@ PKG_CONFIGURE_FLAGS=(
 #
 
 PKG_MAKE_FLAGS=(
-	-j$JOBS
+	# -j$JOBS
 	ZLIB_INCLUDE="\"-I$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/include\""
 	depend
 	all
@@ -86,7 +86,7 @@ PKG_MAKE_FLAGS=(
 #
 
 PKG_INSTALL_FLAGS=(
-	-j$JOBS
+	# -j$JOBS
 	install
 )
 
