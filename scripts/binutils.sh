@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.29.1
+PKG_VERSION=2.30
 PKG_NAME=binutils-${PKG_VERSION}
 [[ $USE_MULTILIB == yes ]] && {
 	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
