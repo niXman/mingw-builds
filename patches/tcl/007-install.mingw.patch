@@ -1,6 +1,6 @@
-diff -urN tcl8.6.7_orig/win/Makefile.in tcl8.6.7/win/Makefile.in
---- tcl8.6.7_orig/win/Makefile.in	2017-10-11 19:42:33.985854900 +0300
-+++ tcl8.6.7/win/Makefile.in	2017-10-11 19:38:30.968158200 +0300
+diff -urN tcl8.6.8_orig/win/Makefile.in tcl8.6.8/win/Makefile.in
+--- tcl8.6.8_orig/win/Makefile.in	2017-12-21 20:16:25.000000000 +0200
++++ tcl8.6.8/win/Makefile.in	2018-02-14 14:45:33.833531700 +0200
 @@ -103,6 +103,8 @@
  COMPAT_DIR		= $(TOP_DIR)/compat
  PKGS_DIR		= $(TOP_DIR)/pkgs
@@ -10,7 +10,7 @@ diff -urN tcl8.6.7_orig/win/Makefile.in tcl8.6.7/win/Makefile.in
  
  # Converts a POSIX path to a Windows native path.
  CYGPATH			= @CYGPATH@
-@@ -195,6 +197,12 @@
+@@ -196,6 +198,12 @@
  RM		= rm -f
  COPY		= cp
  
@@ -23,7 +23,7 @@ diff -urN tcl8.6.7_orig/win/Makefile.in tcl8.6.7/win/Makefile.in
  CC_SWITCHES = ${CFLAGS} ${CFLAGS_WARNING} ${TCL_SHLIB_CFLAGS} \
  -I"${ZLIB_DIR_NATIVE}" -I"${GENERIC_DIR_NATIVE}" -DTCL_TOMMATH \
  -DMP_PREC=4 -I"${TOMMATH_DIR_NATIVE}" -I"${WIN_DIR_NATIVE}" \
-@@ -557,8 +565,7 @@
+@@ -566,8 +574,7 @@
  	    do \
  	    if [ ! -d $$i ] ; then \
  		echo "Making directory $$i"; \
@@ -33,7 +33,7 @@ diff -urN tcl8.6.7_orig/win/Makefile.in tcl8.6.7/win/Makefile.in
  		else true; \
  		fi; \
  	    done;
-@@ -566,7 +573,7 @@
+@@ -575,7 +582,7 @@
  	    do \
  	    if [ ! -d $(LIB_INSTALL_DIR)/$$i ] ; then \
  		echo "Making directory $(LIB_INSTALL_DIR)/$$i"; \
@@ -42,7 +42,7 @@ diff -urN tcl8.6.7_orig/win/Makefile.in tcl8.6.7/win/Makefile.in
  		else true; \
  		fi; \
  	    done;
-@@ -574,35 +581,35 @@
+@@ -583,35 +590,35 @@
  	    do \
  	    if [ -f $$i ]; then \
  		echo "Installing $$i to $(BIN_INSTALL_DIR)/"; \
@@ -86,7 +86,7 @@ diff -urN tcl8.6.7_orig/win/Makefile.in tcl8.6.7/win/Makefile.in
  	    fi
  
  install-libraries: libraries install-tzdata install-msgs
-@@ -611,7 +618,7 @@
+@@ -620,7 +627,7 @@
  	    do \
  	    if [ ! -d $$i ] ; then \
  		echo "Making directory $$i"; \
@@ -95,7 +95,7 @@ diff -urN tcl8.6.7_orig/win/Makefile.in tcl8.6.7/win/Makefile.in
  		else true; \
  		fi; \
  	    done;
-@@ -619,7 +626,7 @@
+@@ -628,7 +635,7 @@
  	    do \
  	    if [ ! -d $(SCRIPT_INSTALL_DIR)/$$i ] ; then \
  		echo "Making directory $(SCRIPT_INSTALL_DIR)/$$i"; \
@@ -104,7 +104,7 @@ diff -urN tcl8.6.7_orig/win/Makefile.in tcl8.6.7/win/Makefile.in
  		else true; \
  		fi; \
  	    done;
-@@ -630,36 +637,36 @@
+@@ -639,36 +646,36 @@
  		"$(GENERIC_DIR)/tclTomMath.h" \
  		"$(GENERIC_DIR)/tclTomMathDecls.h"; \
  	    do \
@@ -123,8 +123,8 @@ diff -urN tcl8.6.7_orig/win/Makefile.in tcl8.6.7/win/Makefile.in
 -	    $(COPY) "$$j" "$(SCRIPT_INSTALL_DIR)/http1.0"; \
 +	    $(INSTALL_DATA) "$$j" "$(SCRIPT_INSTALL_DIR)/http1.0"; \
  	    done;
- 	@echo "Installing package http 2.8.11 as a Tcl Module";
--	@$(COPY) $(ROOT_DIR)/library/http/http.tcl $(SCRIPT_INSTALL_DIR)/../tcl8/8.6/http-2.8.11.tm;
+ 	@echo "Installing package http 2.8.12 as a Tcl Module";
+-	@$(COPY) $(ROOT_DIR)/library/http/http.tcl $(SCRIPT_INSTALL_DIR)/../tcl8/8.6/http-2.8.12.tm;
 +	@$(INSTALL_DATA) $(ROOT_DIR)/library/http/http.tcl $(SCRIPT_INSTALL_DIR)/../tcl8/8.6/http-2.8.11.tm;
  	@echo "Installing library opt0.4 directory";
  	@for j in $(ROOT_DIR)/library/opt/*.tcl; \
@@ -151,7 +151,7 @@ diff -urN tcl8.6.7_orig/win/Makefile.in tcl8.6.7/win/Makefile.in
  	done;
  
  install-tzdata:
-@@ -673,6 +680,28 @@
+@@ -682,6 +689,28 @@
  	    "$(ROOT_DIR)/library/msgs" "$(SCRIPT_INSTALL_DIR)/msgs"
  
  install-doc: doc
@@ -180,7 +180,7 @@ diff -urN tcl8.6.7_orig/win/Makefile.in tcl8.6.7/win/Makefile.in
  
  # Optional target to install private headers
  install-private-headers: libraries
-@@ -680,7 +709,7 @@
+@@ -689,7 +718,7 @@
  	    do \
  	    if [ ! -d $$i ] ; then \
  		echo "Making directory $$i"; \
@@ -189,7 +189,7 @@ diff -urN tcl8.6.7_orig/win/Makefile.in tcl8.6.7/win/Makefile.in
  		else true; \
  		fi; \
  	    done;
-@@ -690,7 +719,7 @@
+@@ -699,7 +728,7 @@
  		"$(GENERIC_DIR)/tclOOInt.h" "$(GENERIC_DIR)/tclOOIntDecls.h" \
  		"$(WIN_DIR)/tclWinPort.h" ; \
  	    do \
