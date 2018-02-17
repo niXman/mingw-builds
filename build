@@ -104,34 +104,31 @@ readonly RUN_ARGS="$@"
 	#echo "    gcc-4.6.2 (4.6.2 release)"
 	#echo "    gcc-4.6.3 (4.6.3 release)"
 	echo "    gcc-4.6.4 (4.6.4 release)"
-	#echo "    gcc-4.6.5 (4.6.5 release)"
-	#echo "    gcc-4.6.6 (4.6.6 release)"
+	echo "    gcc-4_6-branch (currently 4.6.5-prerelease)"
 	echo "    gcc-4.7.0 (4.7.0 release)"
 	echo "    gcc-4.7.1 (4.7.1 release)"
 	echo "    gcc-4.7.2 (4.7.2 release)"
 	echo "    gcc-4.7.3 (4.7.3 release)"
 	echo "    gcc-4.7.4 (4.7.4 release)"
+	echo "    gcc-4_7-branch (currently 4.7.5-prerelease)"
 	echo "    gcc-4.8.0 (4.8.0 release)"
 	echo "    gcc-4.8.1 (4.8.1 release)"
 	echo "    gcc-4.8.2 (4.8.2 release)"
 	echo "    gcc-4.8.3 (4.8.3 release)"
 	echo "    gcc-4.8.4 (4.8.4 release)"
 	echo "    gcc-4.8.5 (4.8.5 release)"
-	#echo "    gcc-4.8.6 (4.8.6 release)"
+	echo "    gcc-4_8-branch (currently 4.8.6-prerelease)"
 	echo "    gcc-4.9.0 (4.9.0 release)"
 	echo "    gcc-4.9.1 (4.9.1 release)"
 	echo "    gcc-4.9.2 (4.9.2 release)"
 	echo "    gcc-4.9.3 (4.9.3 release)"
 	echo "    gcc-4.9.4 (4.9.4 release)"
+	echo "    gcc-4_9-branch (currently 4.9.5-prerelease)"
 	echo "    gcc-5.1.0 (5.1.0 release)"
 	echo "    gcc-5.2.0 (5.2.0 release)"
 	echo "    gcc-5.3.0 (5.3.0 release)"
 	echo "    gcc-5.4.0 (5.4.0 release)"
 	echo "    gcc-5.5.0 (5.5.0 release)"
-	echo "    gcc-4_6-branch (currently 4.6.5-prerelease)"
-	echo "    gcc-4_7-branch (currently 4.7.5-prerelease)"
-	echo "    gcc-4_8-branch (currently 4.8.6-prerelease)"
-	echo "    gcc-4_9-branch (currently 4.9.5-prerelease)"
 	echo "    gcc-5-branch (currently 5.6.0-prerelease)"
 	echo "    gcc-6.1.0 (6.1.0 release)"
 	echo "    gcc-6.2.0 (6.2.0 release)"
@@ -383,6 +380,11 @@ case $EXCEPTIONS_MODEL in
 		[[ ${BUILD_ARCHITECTURE} == i686 && ${FETCH_MODE} == no ]] && {
 			die "SEH exceptions not allowed on i686 architecture. terminate."
 		}
+		
+		[[ ${GCC_NAME} == gcc-4.6* || ${GCC_NAME} == gcc-4.7* ]] && {
+			die "SEH exceptions supported in 64-bit GCC since version 4.8. terminate."
+		}
+		
 		readonly EXCEPTIONS_MODEL_I686=dwarf
 		readonly EXCEPTIONS_MODEL_X86_64=seh
 	;;
