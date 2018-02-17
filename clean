@@ -146,7 +146,7 @@ readonly MARKERS_DIR=$SRCS_DIR/MARKERS
 
 [[ $CLEAN_EXTRACTED_SOURCES == "yes" ]] && {
 	echo "Deleting extracted source directories"
-	find $SRCS_DIR -mindepth 1 -maxdepth 1 -type d ! -name MARKERS ! -name mingw-w64 ! -name "gcc-*-branch" $PRINT_VERBOSE_ARG -exec rm -rf {} \;
+	find $SRCS_DIR -mindepth 1 -maxdepth 1 -type d ! -name MARKERS ! -name mingw-w64 ! -name "gcc-*-branch" ! -name gcc-trunk $PRINT_VERBOSE_ARG -exec rm -rf {} \;
 }
 
 [[ $CLEAN_ALL_SOURCES == "yes" ]] && {
