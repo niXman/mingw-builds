@@ -35,11 +35,12 @@
 
 # **************************************************************************
 
-PKG_NAME=gcc-trunk
-PKG_DIR_NAME=gcc-trunk
-PKG_TYPE=svn
+PKG_VERSION=8.1.0
+PKG_NAME=gcc-${PKG_VERSION}
+PKG_DIR_NAME=gcc-${PKG_VERSION}
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"svn://gcc.gnu.org/svn/gcc/trunk|repo:$PKG_TYPE|module:$PKG_NAME"
+	"https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=main

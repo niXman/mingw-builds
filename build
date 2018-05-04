@@ -139,7 +139,9 @@ readonly RUN_ARGS="$@"
 	echo "    gcc-7.2.0 (7.2.0 release)"
 	echo "    gcc-7.3.0 (7.3.0 release)"
 	echo "    gcc-7-branch (currently 7.4.0-prerelease)"
-	echo "    gcc-trunk (currently 8-snapshot)"
+	echo "    gcc-8.1.0 (8.1.0 release)"
+	echo "    gcc-8-branch (currently 8.2.0-prerelease)"
+	echo "    gcc-trunk (currently 9-snapshot)"
 
 	exit 0
 }

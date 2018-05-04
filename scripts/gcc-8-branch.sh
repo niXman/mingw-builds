@@ -35,11 +35,12 @@
 
 # **************************************************************************
 
-PKG_NAME=gcc-trunk
-PKG_DIR_NAME=gcc-trunk
+PKG_VERSION=8-branch
+PKG_NAME=gcc-${PKG_VERSION}
+PKG_DIR_NAME=gcc-${PKG_VERSION}
 PKG_TYPE=svn
 PKG_URLS=(
-	"svn://gcc.gnu.org/svn/gcc/trunk|repo:$PKG_TYPE|module:$PKG_NAME"
+	"svn://gcc.gnu.org/svn/gcc/branches/${PKG_NAME}|repo:$PKG_TYPE"
 )
 
 PKG_PRIORITY=main
