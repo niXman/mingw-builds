@@ -42,7 +42,9 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	mingw-w64/incorrect_cast_fix.patch
+)
 
 #
 
