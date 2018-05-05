@@ -70,7 +70,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$MINGWPREFIX
 	--with-sysroot=$PREFIX
-	--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
+	#--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
 	#
 	$LINK_TYPE_GCC
 	#
@@ -88,7 +88,7 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-checking=release
 	--enable-fully-dynamic-string
 	--enable-version-specific-runtime-libs
-	--enable-libstdcxx-filesystem-ts=yes
+	# --enable-libstdcxx-filesystem-ts=yes
 	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
 		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
 	)

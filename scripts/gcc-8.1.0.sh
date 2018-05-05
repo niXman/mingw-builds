@@ -35,54 +35,96 @@
 
 # **************************************************************************
 
-if [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 8 ]] || [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} == 9 && ${BUILD_VERSION:4:1} -le 2 ]]; then
-   PKG_VERSION=0.12.2
-   PKG_TYPE=.tar.lzma
-elif [[ ${BUILD_VERSION:0:1} == 4 ]] || [[ ${BUILD_VERSION:0:1} == 5 && ${BUILD_VERSION:2:1} -le 2 ]]; then
-   PKG_VERSION=0.14.1
-   PKG_TYPE=.tar.xz
-else
-   PKG_VERSION=0.19
-   PKG_TYPE=.tar.xz
-fi
-PKG_NAME=$BUILD_ARCHITECTURE-isl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
-PKG_DIR_NAME=isl-${PKG_VERSION}
+PKG_VERSION=8.1.0
+PKG_NAME=gcc-${PKG_VERSION}
+PKG_DIR_NAME=gcc-${PKG_VERSION}
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"http://isl.gforge.inria.fr/isl-${PKG_VERSION}${PKG_TYPE}"
+	"https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
 )
 
-PKG_PRIORITY=prereq
+PKG_PRIORITY=main
 
 #
 
 PKG_PATCHES=(
-	$([[ ${PKG_VERSION} == 0.12.2 ]] && echo "isl/isl-0.12-no-undefined.patch" || echo "isl/isl-0.14.1-no-undefined.patch" )
+	gcc/gcc-4.7-stdthreads.patch
+	gcc/gcc-5.1-iconv.patch
+	gcc/gcc-4.8-libstdc++export.patch
+	gcc/gcc-4.8.2-fix-for-windows-not-minding-non-existant-parent-dirs.patch
+	gcc/gcc-4.8.2-windows-lrealpath-no-force-lowercase-nor-backslash.patch
+	gcc/gcc-4.9.1-enable-shared-gnat-implib.mingw.patch
+	gcc/gcc-5.1.0-make-xmmintrin-header-cplusplus-compatible.patch
+	gcc/gcc-5.2-fix-mingw-pch.patch
+	gcc/gcc-5-dwarf-regression.patch
+	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch
+	gcc/gcc-6-ktietz-libgomp.patch
+	gcc/gcc-libgomp-ftime64.patch
 )
 
 #
-
-if [[ ${PKG_VERSION} == 0.18 || ${PKG_VERSION} == 0.19 ]]; then
-	PKG_EXECUTE_AFTER_PATCH=(
-		"aclocal"
-		"automake"
-	)
-fi
 
 PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--prefix=$MINGWPREFIX
+	--with-sysroot=$PREFIX
+	#--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
 	#
-	$GCC_DEPS_LINK_TYPE
+	$LINK_TYPE_GCC
 	#
-	--with-gmp-prefix=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	$( [[ $USE_MULTILIB == yes ]] \
+		&& echo "--enable-targets=all --enable-multilib" \
+		|| echo "--disable-multilib" \
+	)
+	--enable-languages=$ENABLE_LANGUAGES,lto
+	--enable-libstdcxx-time=yes
+	--enable-threads=$THREADS_MODEL
+	--enable-libgomp
+	--enable-libatomic
+	--enable-lto
+	--enable-graphite
+	--enable-checking=release
+	--enable-fully-dynamic-string
+	--enable-version-specific-runtime-libs
+	# --enable-libstdcxx-filesystem-ts=yes
+	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
+		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
+	)
+	$( [[ $EXCEPTIONS_MODEL == sjlj ]] \
+		&& echo "--enable-sjlj-exceptions" \
+	)
+	#
+	--disable-libstdcxx-pch
+	--disable-libstdcxx-debug
+	$( [[ $BOOTSTRAPING == yes ]] \
+		&& echo "--enable-bootstrap" \
+		|| echo "--disable-bootstrap" \
+	)
+	--disable-rpath
+	--disable-win32-registry
+	--disable-nls
+	--disable-werror
+	--disable-symvers
+	#
+	--with-gnu-as
+	--with-gnu-ld
+	#
+	$PROCESSOR_OPTIMIZATION
+	$PROCESSOR_TUNE
+	#
+	--with-libiconv
+	--with-system-zlib
+	--with-{gmp,mpfr,mpc,isl}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}, $MINGW_W64_PKG_STRING\""
+	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
 )
 
 #
@@ -95,7 +137,8 @@ PKG_MAKE_FLAGS=(
 #
 
 PKG_INSTALL_FLAGS=(
-	-j$JOBS
+	-j1
+	DESTDIR=$BASE_BUILD_DIR
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
