@@ -1,7 +1,7 @@
-diff -Naur Python-2.7.9-orig/configure.ac Python-2.7.9/configure.ac
---- Python-2.7.9-orig/configure.ac	2014-12-11 13:50:34.460600000 +0300
-+++ Python-2.7.9/configure.ac	2014-12-11 13:50:34.585400000 +0300
-@@ -551,6 +551,16 @@
+diff -urN Python-2.7.15_orig/configure.ac Python-2.7.15/configure.ac
+--- Python-2.7.15_orig/configure.ac	2018-04-30 01:47:33.000000000 +0300
++++ Python-2.7.15/configure.ac	2018-06-18 16:59:31.299801300 +0300
+@@ -533,6 +533,16 @@
  fi
  AC_MSG_RESULT($EXTRAPLATDIR)
  
@@ -15,12 +15,12 @@ diff -Naur Python-2.7.9-orig/configure.ac Python-2.7.9/configure.ac
 +AC_MSG_RESULT([$DELIM])
 +AC_SUBST(DELIM)
 +
- AC_MSG_CHECKING([for init system calls])
- AC_SUBST(INITSYS)
- case $host in
-diff -Naur Python-2.7.9-orig/Include/osdefs.h Python-2.7.9/Include/osdefs.h
---- Python-2.7.9-orig/Include/osdefs.h	2014-12-10 18:59:32.000000000 +0300
-+++ Python-2.7.9/Include/osdefs.h	2014-12-11 13:50:34.585400000 +0300
+ # Record the configure-time value of MACOSX_DEPLOYMENT_TARGET,
+ # it may influence the way we can build extensions, so distutils
+ # needs to check it
+diff -urN Python-2.7.15_orig/Include/osdefs.h Python-2.7.15/Include/osdefs.h
+--- Python-2.7.15_orig/Include/osdefs.h	2018-04-30 01:47:33.000000000 +0300
++++ Python-2.7.15/Include/osdefs.h	2018-06-18 16:57:47.975891500 +0300
 @@ -10,7 +10,7 @@
  /* Mod by chrish: QNX has WATCOM, but isn't DOS */
  #if !defined(__QNX__)
@@ -54,10 +54,10 @@ diff -Naur Python-2.7.9-orig/Include/osdefs.h Python-2.7.9/Include/osdefs.h
  #endif
  
  #ifdef __cplusplus
-diff -Naur Python-2.7.9-orig/Makefile.pre.in Python-2.7.9/Makefile.pre.in
---- Python-2.7.9-orig/Makefile.pre.in	2014-12-11 13:50:29.203400000 +0300
-+++ Python-2.7.9/Makefile.pre.in	2014-12-11 13:50:34.585400000 +0300
-@@ -84,7 +84,8 @@
+diff -urN Python-2.7.15_orig/Makefile.pre.in Python-2.7.15/Makefile.pre.in
+--- Python-2.7.15_orig/Makefile.pre.in	2018-04-30 01:47:33.000000000 +0300
++++ Python-2.7.15/Makefile.pre.in	2018-06-18 16:57:47.977891600 +0300
+@@ -88,7 +88,8 @@
  # C flags used for building the interpreter object files
  PY_CFLAGS=	$(CFLAGS) $(CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
  
@@ -67,21 +67,9 @@ diff -Naur Python-2.7.9-orig/Makefile.pre.in Python-2.7.9/Makefile.pre.in
  # Machine-dependent subdirectories
  MACHDEP=	@MACHDEP@
  
-diff -Naur Python-2.7.9-orig/Modules/getpath.c Python-2.7.9/Modules/getpath.c
---- Python-2.7.9-orig/Modules/getpath.c	2014-12-10 18:59:55.000000000 +0300
-+++ Python-2.7.9/Modules/getpath.c	2014-12-11 13:50:34.585400000 +0300
-@@ -117,7 +117,7 @@
- #endif
- 
- #ifndef PYTHONPATH
--#define PYTHONPATH PREFIX "/lib/python" VERSION ":" \
-+#define PYTHONPATH PREFIX "/lib/python" VERSION DELIMSTR \
-               EXEC_PREFIX "/lib/python" VERSION "/lib-dynload"
- #endif
- 
-diff -Naur Python-2.7.9-orig/Modules/Setup.dist Python-2.7.9/Modules/Setup.dist
---- Python-2.7.9-orig/Modules/Setup.dist	2014-12-11 13:49:48.191000000 +0300
-+++ Python-2.7.9/Modules/Setup.dist	2014-12-11 13:50:34.585400000 +0300
+diff -urN Python-2.7.15_orig/Modules/Setup.dist Python-2.7.15/Modules/Setup.dist
+--- Python-2.7.15_orig/Modules/Setup.dist	2018-04-30 01:47:33.000000000 +0300
++++ Python-2.7.15/Modules/Setup.dist	2018-06-18 17:07:54.615589300 +0300
 @@ -84,22 +84,22 @@
  # Empty since this is now just the runtime prefix.
  DESTPATH=
@@ -94,8 +82,8 @@ diff -Naur Python-2.7.9-orig/Modules/Setup.dist Python-2.7.9/Modules/Setup.dist
  TESTPATH=
  
  # Path components for machine- or system-dependent modules and shared libraries
--MACHDEPPATH=:plat-$(MACHDEP)
-+MACHDEPPATH=$(DELIM)plat-$(MACHDEP)
+-MACHDEPPATH=:$(PLATDIR)
++MACHDEPPATH=$(DELIM)$(PLATDIR)
  EXTRAMACHDEPPATH=
  
  # Path component for the Tkinter-related modules
