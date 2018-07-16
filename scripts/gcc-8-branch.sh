@@ -60,6 +60,7 @@ PKG_PATCHES=(
 	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch
 	gcc/gcc-6-ktietz-libgomp.patch
 	gcc/gcc-libgomp-ftime64.patch
+	gcc/gcc-8-branch-Backport-patches-for-std-filesystem-from-master.patch
 )
 
 #
@@ -89,7 +90,7 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-checking=release
 	--enable-fully-dynamic-string
 	--enable-version-specific-runtime-libs
-	# --enable-libstdcxx-filesystem-ts=yes
+	--enable-libstdcxx-filesystem-ts=yes
 	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
 		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
 	)
