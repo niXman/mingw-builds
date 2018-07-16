@@ -386,6 +386,8 @@ function func_download {
 						[[ -d $_lib_name/.svn ]] && {
 							pushd $_lib_name > /dev/null
 							svn-clean -f > $_log_name 2>&1
+							svn cleanup >> $_log_name 2>&1
+							svn status | rm -rf $(awk '/^?/{$1 = ""; print $0}') >> $_log_name 2>&1
 							svn revert -R ./ >> $_log_name 2>&1
 							[[ -n $_rev ]] && {
 								svn up -r $_rev >> $_log_name 2>&1
