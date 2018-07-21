@@ -100,7 +100,11 @@ function func_build_info() {
 	}
 
 	local subtargets_it=
-	for subtargets_it in ${SUBTARGETS[@]}; do
+	local filtered_subtargets=${SUBTARGETS[@]}
+	[[ $BOOTSTRAPINGALL == yes ]] && {
+		read -ra filtered_subtargets<<<$(echo ${SUBTARGETS[@]} | awk -v RS='[[:space:]]+' '!a[$0]++{printf "%s%s", $0, RT}')
+	}
+	for subtargets_it in ${filtered_subtargets[@]}; do
 		local rule_arr=( ${subtargets_it//|/ } )
 		local sub_rule=${rule_arr[0]}
 		[[ ${sub_rule} == build-info ]] && continue

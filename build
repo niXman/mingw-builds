@@ -60,6 +60,7 @@ readonly RUN_ARGS="$@"
 	echo "                                 available: dwarf, seh, sjlj, dwarfseh (picks by architecture)"
 	echo "    --use-lto                  - build with LTO using"
 	echo "    --bootstrap                - bootstraping GCC"
+	echo "    --bootstrapall             - bootstraping GCC & all prerequisites"
 	echo "    --no-multilib              - build GCC without multilib support"
 	echo "    --no-extras                - don't build extra packages, only build GCC/clang and the runtime"
 	echo "    --no-strip                 - don't strip dll's & executables on install"
@@ -202,6 +203,7 @@ while [[ $# > 0 ]]; do
 			popd > /dev/null
 		;;
 		--bootstrap) BOOTSTRAPING=yes ;;
+		--bootstrapall) BOOTSTRAPINGALL=yes ;;
 		--fetch-only) FETCH_MODE=yes ;;
 		--patch-on-fetch) FETCH_MODE=yes; FETCH_PATCH_MODE=yes ;;
 		--update-sources) UPDATE_SOURCES=yes ;;

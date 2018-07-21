@@ -93,12 +93,27 @@ function func_get_subtargets {
 		python-$python_version
 	)
 
+	local readonly BOOTSTRAP_SUBTARGETS=(
+		bootstrap
+		${SUBTARGETS_PART1[@]}
+		mingw-w64-runtime-post
+		binutils
+		binutils-post
+		$GCC_NAME
+		gcc-post
+	)
+
 	local readonly SUBTARGETS_PART2=(
 		mingw-w64-runtime-post
 		binutils
 		binutils-post
 		$GCC_NAME
 		gcc-post
+		$( \
+			[[ $BOOTSTRAPINGALL == yes ]] && { \
+				echo ${BOOTSTRAP_SUBTARGETS[@]}; \
+			} \
+		)
 		mingw-w64-libraries-libmangle
 		#mingw-w64-libraries-pseh
 		mingw-w64-tools-gendef
