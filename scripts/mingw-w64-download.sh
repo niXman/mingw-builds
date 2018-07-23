@@ -41,7 +41,7 @@ PKG_NAME=mingw-w64-${RUNTIME_VERSION}
 	MINGW_PKG_DIR_VERSION_SUFFIX="-${RUNTIME_VERSION}"
 	PKG_TYPE=.tar.bz2
 	PKG_URLS=(
-		"http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-${RUNTIME_VERSION}.tar.bz2"
+		"http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-${RUNTIME_VERSION}${PKG_TYPE}"
 	)
 } || {
 	MINGW_PKG_DIR_VERSION_SUFFIX=""
