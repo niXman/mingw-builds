@@ -33,13 +33,13 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
   --fetch-only`                      - only download all the sources without start building.
   --update-sources`                  - try to update sources from repositories before build.
   --exceptions=<model>`              - exceptions handling model.
-                                        Available: dwarf, seh(gcc>=4.8.0 only), sjlj.
+                                        Available: dwarf, seh(gcc>=4.8.0 only), sjlj, dwarfseh (picks by architecture).
   --use-lto`                         - building with using LTO.
   --no-strip`                        - don't strip executables during install.
   --no-multilib`                     - build GCC without multilib support (default for DWARF and SEH exception models).
   --static-gcc`                      - build static GCC.
   --dyn-deps`                        - build GCC with dynamically dependencies.
-  --rt-version=<v3|v4>`              - version of mingw-w64 runtime to build.
+  --rt-version=<v3|v4|v5>`              - version of mingw-w64 runtime to build.
   --rev=N`                           - number of the build revision.
   --with-testsuite`                  - run testsuite for packages that contain flags for it.
   --threads=<posix|win32>`           - used threads model.
