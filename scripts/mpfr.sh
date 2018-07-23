@@ -38,9 +38,9 @@
 PKG_VERSION=4.0.1
 PKG_NAME=$BUILD_ARCHITECTURE-mpfr-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=mpfr-${PKG_VERSION}
-PKG_TYPE=.tar.bz2
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"https://ftp.gnu.org/gnu/mpfr/mpfr-${PKG_VERSION}.tar.bz2"
+	"https://ftp.gnu.org/gnu/mpfr/mpfr-${PKG_VERSION}.tar.xz"
 )
 
 PKG_PRIORITY=prereq

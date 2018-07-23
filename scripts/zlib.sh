@@ -38,9 +38,9 @@
 PKG_VERSION=1.2.11
 PKG_NAME=$PKG_ARCHITECTURE-zlib-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=zlib-${PKG_VERSION}
-PKG_TYPE=.tar.gz
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"https://sourceforge.net/projects/libpng/files/zlib/${PKG_VERSION}/zlib-${PKG_VERSION}.tar.gz"
+	"https://sourceforge.net/projects/libpng/files/zlib/${PKG_VERSION}/zlib-${PKG_VERSION}.tar.xz"
 )
 
 PKG_PRIORITY=prereq

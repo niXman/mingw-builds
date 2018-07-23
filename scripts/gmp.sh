@@ -38,9 +38,9 @@
 PKG_VERSION=6.1.2
 PKG_NAME=$BUILD_ARCHITECTURE-gmp-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=gmp-${PKG_VERSION}
-PKG_TYPE=.tar.bz2
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"https://gmplib.org/download/gmp/gmp-${PKG_VERSION}.tar.bz2"
+	"https://gmplib.org/download/gmp/gmp-${PKG_VERSION}.tar.xz"
 )
 
 PKG_PRIORITY=prereq
