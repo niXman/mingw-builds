@@ -749,6 +749,21 @@ for rule in ${SUBTARGETS[@]}; do
 				$PKG_SUBDIR_NAME
 		}
 
+		[[ $PKG_RUN_TESTSUITE == yes ]] && {
+			[[ ${#PKG_TESTSUITE_FLAGS[@]} >0 ]] && {
+				testsuite_flags="$PKG_MAKE_PROG ${PKG_TESTSUITE_FLAGS[@]}"
+				func_make \
+					$PKG_NAME \
+					$PKG_DIR_NAME \
+					"$testsuite_flags" \
+					$TESTSUITE_LOG \
+					"run testsuite..." \
+					"tested" \
+					$CURR_BUILD_DIR \
+					$PKG_SUBDIR_NAME
+			}
+		}
+
 		[[ ${#PKG_INSTALL_FLAGS[@]} >0 ]] && {
 			install_flags="$PKG_MAKE_PROG ${PKG_INSTALL_FLAGS[@]}"
 			func_make \
@@ -785,21 +800,6 @@ for rule in ${SUBTARGETS[@]}; do
 			for test in "${!PKG_TESTS[@]}"; do
 				func_test $test ${PKG_TESTS[$test]} $TESTS_ROOT_DIR
 			done
-		}
-
-		[[ $PKG_RUN_TESTSUITE == yes ]] && {
-			[[ ${#PKG_TESTSUITE_FLAGS[@]} >0 ]] && {
-				testsuite_flags="$PKG_MAKE_PROG ${PKG_TESTSUITE_FLAGS[@]}"
-				func_make \
-					$PKG_NAME \
-					$PKG_DIR_NAME \
-					"$testsuite_flags" \
-					$TESTSUITE_LOG \
-					"run testsuite..." \
-					"tested" \
-					$CURR_BUILD_DIR \
-					$PKG_SUBDIR_NAME
-			}
 		}
 	}
 
