@@ -75,6 +75,12 @@ PKG_MAKE_FLAGS=(
 
 #
 
+PKG_TESTSUITE_FLAGS=(
+	check
+)
+
+#
+
 PKG_INSTALL_FLAGS=(
 	-j$JOBS
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )

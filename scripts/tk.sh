@@ -95,9 +95,15 @@ PKG_EXECUTE_AFTER_CONFIGURE=(
 #
 
 PKG_MAKE_FLAGS=(
-	-j1
+	-j$JOBS
 	TCL_LIBRARY=$LIBS_DIR/lib/tk8.6
 	all
+)
+
+#
+
+PKG_TESTSUITE_FLAGS=(
+	test
 )
 
 #

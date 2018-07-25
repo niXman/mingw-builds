@@ -1,0 +1,12 @@
+diff -urN expat-2.2.5_orig/run.sh.in expat-2.2.5/run.sh.in
+--- expat-2.2.5_orig/run.sh.in	2017-09-03 17:47:40.000000000 +0300
++++ expat-2.2.5/run.sh.in	2018-07-25 12:44:19.966587400 +0300
+@@ -4,7 +4,7 @@
+ 
+ case "@host@" in
+ *-mingw*)
+-    exec wine "$@"
++    exec "$@"
+     ;;
+ *)
+     exec "$@"
