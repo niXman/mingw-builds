@@ -47,7 +47,9 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	libffi/fix_return_size.patch
+)
 
 #
 
