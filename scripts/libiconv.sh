@@ -50,6 +50,7 @@ PKG_PRIORITY=prereq
 PKG_PATCHES=(
 	libiconv/0001-compile-relocatable-in-gnulib.mingw.patch
 	libiconv/0002-fix-cr-for-awk-in-configure.all.patch
+	libiconv/fix-pointer-buf.patch
 )
 
 #
