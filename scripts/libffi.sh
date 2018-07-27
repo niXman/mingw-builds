@@ -78,7 +78,8 @@ PKG_MAKE_FLAGS=(
 #
 
 PKG_TESTSUITE_FLAGS=(
-	#check
+	# -j$JOBS
+	# check
 )
 
 #
