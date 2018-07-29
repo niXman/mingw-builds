@@ -47,7 +47,9 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	expat/expat_mingw_tests_fix.patch
+)
 
 #
 
@@ -71,6 +73,13 @@ PKG_CONFIGURE_FLAGS=(
 PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
+)
+
+#
+
+PKG_TESTSUITE_FLAGS=(
+	-j$JOBS
+	check
 )
 
 #

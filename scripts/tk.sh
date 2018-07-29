@@ -41,7 +41,7 @@ PKG_DIR_NAME=tk${PKG_VERSION}
 PKG_SUBDIR_NAME=win
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://prdownloads.sourceforge.net/tcl/tk${PKG_VERSION}-src.tar.gz"
+	"http://prdownloads.sourceforge.net/tcl/tk${PKG_VERSION}-src${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
@@ -95,9 +95,16 @@ PKG_EXECUTE_AFTER_CONFIGURE=(
 #
 
 PKG_MAKE_FLAGS=(
-	-j1
+	-j$JOBS
 	TCL_LIBRARY=$LIBS_DIR/lib/tk8.6
 	all
+)
+
+#
+
+PKG_TESTSUITE_FLAGS=(
+	-j$JOBS
+	test
 )
 
 #

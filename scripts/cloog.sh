@@ -40,7 +40,7 @@ PKG_NAME=$BUILD_ARCHITECTURE-cloog-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=cloog-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://www.bastoul.net/cloog/pages/download/cloog-${PKG_VERSION}.tar.gz"
+	"http://www.bastoul.net/cloog/pages/download/cloog-${PKG_VERSION}${PKG_TYPE}"
 )
 PKG_PRIORITY=prereq
 

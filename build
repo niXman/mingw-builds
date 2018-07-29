@@ -60,15 +60,16 @@ readonly RUN_ARGS="$@"
 	echo "                                 available: dwarf, seh, sjlj, dwarfseh (picks by architecture)"
 	echo "    --use-lto                  - build with LTO using"
 	echo "    --bootstrap                - bootstraping GCC"
+	echo "    --bootstrapall             - bootstraping GCC & all prerequisites"
 	echo "    --no-multilib              - build GCC without multilib support"
 	echo "    --no-extras                - don't build extra packages, only build GCC/clang and the runtime"
 	echo "    --no-strip                 - don't strip dll's & executables on install"
 	echo "    --static-gcc               - build static GCC"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
 	echo "    --jobs=N                   - specifies number of parallel make threads"
-	echo "    --rt-version=<v3|v4|v5|trunk|<release>> - specifies mingw-w64 runtime version to build"
-	echo "                                 v3, v4, trunk specify specific branches in the git repo"
-	echo "                                 <release> is a specific release version, uses the tarball"
+	echo "    --rt-version=<v3|v4|v5|trunk|v3.3.0|v4.0.6|v5.0.4> - specifies mingw-w64 runtime version to build"
+	echo "                                 v3, v4, v5, trunk specifies specific branches in the git repo"
+	echo "                                 v3.3.0, v4.0.6, v5.0.4 is a specific release versions, uses the tarball"
 	echo "    --rev=N                    - specifies number of the build revision"
 	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++"
 	echo "                                 available: win32, posix"
@@ -140,7 +141,8 @@ readonly RUN_ARGS="$@"
 	echo "    gcc-7.3.0 (7.3.0 release)"
 	echo "    gcc-7-branch (currently 7.4.0-prerelease)"
 	echo "    gcc-8.1.0 (8.1.0 release)"
-	echo "    gcc-8-branch (currently 8.2.0-prerelease)"
+	echo "    gcc-8.2.0 (8.2.0 release)"
+	echo "    gcc-8-branch (currently 8.3.0-prerelease)"
 	echo "    gcc-trunk (currently 9-snapshot)"
 
 	exit 0
@@ -202,6 +204,7 @@ while [[ $# > 0 ]]; do
 			popd > /dev/null
 		;;
 		--bootstrap) BOOTSTRAPING=yes ;;
+		--bootstrapall) BOOTSTRAPINGALL=yes ;;
 		--fetch-only) FETCH_MODE=yes ;;
 		--patch-on-fetch) FETCH_MODE=yes; FETCH_PATCH_MODE=yes ;;
 		--update-sources) UPDATE_SOURCES=yes ;;
@@ -266,6 +269,18 @@ while [[ $# > 0 ]]; do
 				trunk)
 					RUNTIME_VERSION=v6
 					RUNTIME_BRANCH="master"
+				;;
+				v3.3.0)
+					RUNTIME_VERSION=v3.3.0
+					RUNTIME_BRANCH="release"
+				;;
+				v4.0.6)
+					RUNTIME_VERSION=v4.0.6
+					RUNTIME_BRANCH="release"
+				;;
+				v5.0.4)
+					RUNTIME_VERSION=v5.0.4
+					RUNTIME_BRANCH="release"
 				;;
 				*)
 					die "Unsupported runtime version $RUNTIME_VERSION."
@@ -513,12 +528,18 @@ case $BUILD_ARCHITECTURE in
 			die "gcc is not exists in the \"$i686_HOST_MINGW_PATH/bin\" directory. terminate."
 		}
 		export PATH=$LIBS_DIR/bin:$i686_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+		[[ $BOOTSTRAPINGALL == yes && -f $PREFIX/bin/gcc ]] && {
+			export PATH=$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+		}
 	;;
 	x86_64)
 		[[ ! -f $x86_64_HOST_MINGW_PATH/bin/gcc ]] && {
 			die "gcc is not exists in the \"$x86_64_HOST_MINGW_PATH/bin\" directory. terminate."
 		}
 		export PATH=$LIBS_DIR/bin:$x86_64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+		[[ $BOOTSTRAPINGALL == yes && -f $PREFIX/bin/gcc ]] && {
+			export PATH=$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+		}
 	;;
 esac
 
@@ -735,6 +756,21 @@ for rule in ${SUBTARGETS[@]}; do
 				$PKG_SUBDIR_NAME
 		}
 
+		[[ $PKG_RUN_TESTSUITE == yes ]] && {
+			[[ ${#PKG_TESTSUITE_FLAGS[@]} >0 ]] && {
+				testsuite_flags="$PKG_MAKE_PROG ${PKG_TESTSUITE_FLAGS[@]}"
+				func_make \
+					$PKG_NAME \
+					$PKG_DIR_NAME \
+					"$testsuite_flags" \
+					$TESTSUITE_LOG \
+					"run testsuite..." \
+					"tested" \
+					$CURR_BUILD_DIR \
+					$PKG_SUBDIR_NAME
+			}
+		}
+
 		[[ ${#PKG_INSTALL_FLAGS[@]} >0 ]] && {
 			install_flags="$PKG_MAKE_PROG ${PKG_INSTALL_FLAGS[@]}"
 			func_make \
@@ -771,21 +807,6 @@ for rule in ${SUBTARGETS[@]}; do
 			for test in "${!PKG_TESTS[@]}"; do
 				func_test $test ${PKG_TESTS[$test]} $TESTS_ROOT_DIR
 			done
-		}
-
-		[[ $PKG_RUN_TESTSUITE == yes ]] && {
-			[[ ${#PKG_TESTSUITE_FLAGS[@]} >0 ]] && {
-				testsuite_flags="$PKG_MAKE_PROG ${PKG_TESTSUITE_FLAGS[@]}"
-				func_make \
-					$PKG_NAME \
-					$PKG_DIR_NAME \
-					"$testsuite_flags" \
-					$TESTSUITE_LOG \
-					"run testsuite..." \
-					"tested" \
-					$CURR_BUILD_DIR \
-					$PKG_SUBDIR_NAME
-			}
 		}
 	}
 

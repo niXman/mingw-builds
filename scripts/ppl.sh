@@ -38,9 +38,9 @@
 PKG_VERSION=1.2
 PKG_NAME=$BUILD_ARCHITECTURE-ppl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=ppl-${PKG_VERSION}
-PKG_TYPE=.tar.bz2
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"http://bugseng.com/products/ppl/download/ftp/releases/${PKG_VERSION}/ppl-${PKG_VERSION}.tar.bz2"
+	"http://bugseng.com/products/ppl/download/ftp/releases/${PKG_VERSION}/ppl-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=prereq
@@ -79,6 +79,13 @@ PKG_CONFIGURE_FLAGS=(
 PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
+)
+
+#
+
+PKG_TESTSUITE_FLAGS=(
+	# -j$JOBS
+	# check
 )
 
 #

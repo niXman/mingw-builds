@@ -40,7 +40,7 @@ PKG_NAME=$BUILD_ARCHITECTURE-mpc-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=mpc-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://ftp.gnu.org/gnu/mpc/mpc-${PKG_VERSION}.tar.gz"
+	"https://ftp.gnu.org/gnu/mpc/mpc-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=prereq
@@ -74,6 +74,13 @@ PKG_CONFIGURE_FLAGS=(
 PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
+)
+
+#
+
+PKG_TESTSUITE_FLAGS=(
+	-j$JOBS
+	check
 )
 
 #

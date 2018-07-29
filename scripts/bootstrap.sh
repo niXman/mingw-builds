@@ -35,48 +35,22 @@
 
 # **************************************************************************
 
-PKG_VERSION=4.2.1
-PKG_NAME=make-${PKG_VERSION}
-PKG_DIR_NAME=make-${PKG_VERSION}
-PKG_TYPE=.tar.bz2
-PKG_URLS=(
-	"https://ftp.gnu.org/gnu/make/make-${PKG_VERSION}${PKG_TYPE}"
-)
+PKG_NAME=bootstrap
+PKG_DIR_NAME=bootstrap
+PKG_PRIORITY=main
 
-PKG_PRIORITY=extra
+PKG_MAKE_PROG=clean
+PKG_INSTALL_FLAGS=( dummy )
 
-#
+PKG_EXECUTE_AFTER_INSTALL=()
 
-PKG_PATCHES=(
-	make/make-linebuf-mingw.patch
-	make/make-getopt.patch
-)
-
-#
-
-PKG_CONFIGURE_FLAGS=(
-	--host=$HOST
-	--build=$TARGET
-	--prefix=$PREFIX
-	--program-prefix=mingw32-
-	--enable-job-server
-	--without-guile
-	CFLAGS="\"$COMMON_CFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS -L$LIBS_DIR/lib\""
-)
-
-#
-
-PKG_MAKE_FLAGS=(
-	-j$JOBS
-	all
-)
-
-#
-
-PKG_INSTALL_FLAGS=(
-	-j$JOBS
-	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
-)
+function clean {
+	find $RUNTIME_DIR -mindepth 1 -maxdepth 1 -type d -name $BUILD_ARCHITECTURE* -exec rm -rf {} \;
+	find $PREREQ_DIR -mindepth 1 -maxdepth 1 -type d -name $BUILD_ARCHITECTURE* -exec rm -rf {} \;
+	find $PREREQ_BUILD_DIR -mindepth 1 -maxdepth 1 -type d -name $BUILD_ARCHITECTURE* -exec rm -rf {} \;
+	# find $PREREQ_LOGS_DIR -mindepth 1 -maxdepth 1 -type d -name $BUILD_ARCHITECTURE* -exec rm -rf {} \;
+	find $ROOT_DIR -mindepth 1 -maxdepth 3 -type d -path "*/$BUILD_ARCHITECTURE*$GCC_PART_NAME*$THREADS_MODEL*$EXCEPTIONS_MODEL*$RUNTIME_VERSION*$REV_NUM*/build/*" ! -path "*/$PKG_NAME" -exec rm -rf {} \;
+	return 0
+}
 
 # **************************************************************************

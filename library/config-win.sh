@@ -96,6 +96,8 @@ function func_test_installed_packages {
 		wget
 		sshpass
 		texinfo
+		autogen
+		dejagnu
 	)
 	
 	local not_installed_packages=()

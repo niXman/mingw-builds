@@ -40,7 +40,7 @@ PKG_NAME=openssl-${PKG_VERSION}
 PKG_DIR_NAME=openssl-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://www.openssl.org/source/openssl-${PKG_VERSION}.tar.gz"
+	"https://www.openssl.org/source/openssl-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
@@ -81,6 +81,12 @@ PKG_MAKE_FLAGS=(
 	ZLIB_INCLUDE="\"-I$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/include\""
 	depend
 	all
+)
+
+#
+
+PKG_TESTSUITE_FLAGS=(
+	test
 )
 
 #

@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.31
+PKG_VERSION=2.31.1
 PKG_NAME=binutils-${PKG_VERSION}
 [[ $USE_MULTILIB == yes ]] && {
 	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
@@ -43,9 +43,9 @@ PKG_NAME=binutils-${PKG_VERSION}
 	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-nomulti
 }
 PKG_DIR_NAME=binutils-${PKG_VERSION}
-PKG_TYPE=.tar.bz2
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"https://ftp.gnu.org/gnu/binutils/binutils-${PKG_VERSION}.tar.bz2"
+	"https://ftp.gnu.org/gnu/binutils/binutils-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=prereq

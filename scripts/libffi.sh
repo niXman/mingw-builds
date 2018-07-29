@@ -40,14 +40,16 @@ PKG_NAME=libffi-${PKG_VERSION}
 PKG_DIR_NAME=libffi-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"ftp://sourceware.org/pub/libffi/libffi-${PKG_VERSION}.tar.gz"
+	"ftp://sourceware.org/pub/libffi/libffi-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	libffi/fix_return_size.patch
+)
 
 #
 
@@ -71,6 +73,13 @@ PKG_CONFIGURE_FLAGS=(
 PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
+)
+
+#
+
+PKG_TESTSUITE_FLAGS=(
+	# -j$JOBS
+	# check
 )
 
 #

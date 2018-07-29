@@ -40,7 +40,7 @@ PKG_NAME=$PKG_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=libiconv-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PKG_VERSION}.tar.gz"
+	"https://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=prereq
@@ -50,6 +50,7 @@ PKG_PRIORITY=prereq
 PKG_PATCHES=(
 	libiconv/0001-compile-relocatable-in-gnulib.mingw.patch
 	libiconv/0002-fix-cr-for-awk-in-configure.all.patch
+	libiconv/fix-pointer-buf.patch
 )
 
 #
@@ -74,6 +75,13 @@ PKG_CONFIGURE_FLAGS=(
 PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
+)
+
+#
+
+PKG_TESTSUITE_FLAGS=(
+	-j$JOBS
+	check
 )
 
 #

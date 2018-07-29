@@ -35,19 +35,19 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.15
+PKG_VERSION=1.16
 PKG_NAME=gdbm-${PKG_VERSION}
 PKG_DIR_NAME=gdbm-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://ftp.gnu.org/gnu/gdbm/gdbm-${PKG_VERSION}.tar.gz"
+	"https://ftp.gnu.org/gnu/gdbm/gdbm-${PKG_VERSION}${PKG_TYPE}"
 )
 PKG_PRIORITY=extra
 
 #
 
 PKG_PATCHES=(
-	gdbm/gdbm_1.15-win32-support.patch
+	gdbm/gdbm_1.16-win32-support.patch
 )
 
 #
@@ -78,6 +78,13 @@ PKG_CONFIGURE_FLAGS=(
 PKG_MAKE_FLAGS=(
 	-j$JOBS
 	all
+)
+
+#
+
+PKG_TESTSUITE_FLAGS=(
+	-j$JOBS
+	check
 )
 
 #

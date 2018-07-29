@@ -42,7 +42,9 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	$([[ ${RUNTIME_VERSION} == v5.0.4 ]] && echo "mingw-w64/gendef-Silence-warnings-about-casting-function-point.patch")
+)
 
 #
 

@@ -40,7 +40,7 @@ PKG_NAME=bzip2-${PKG_VERSION}
 PKG_DIR_NAME=bzip2-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://www.bzip.org/${PKG_VERSION}/${PKG_DIR_NAME}.tar.gz"
+	"http://www.bzip.org/${PKG_VERSION}/${PKG_DIR_NAME}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
