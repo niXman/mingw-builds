@@ -41,8 +41,11 @@ if [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 8 ]] || [[ ${BUILD_V
 elif [[ ${BUILD_VERSION:0:1} == 4 ]] || [[ ${BUILD_VERSION:0:1} == 5 && ${BUILD_VERSION:2:1} -le 2 ]]; then
    PKG_VERSION=0.14.1
    PKG_TYPE=.tar.xz
-else
+elif [[ ${BUILD_VERSION:0:1} -le 7 ]]; then
    PKG_VERSION=0.19
+   PKG_TYPE=.tar.xz
+else
+   PKG_VERSION=0.20
    PKG_TYPE=.tar.xz
 fi
 PKG_NAME=$BUILD_ARCHITECTURE-isl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
@@ -61,7 +64,7 @@ PKG_PATCHES=(
 
 #
 
-if [[ ${PKG_VERSION} == 0.18 || ${PKG_VERSION} == 0.19 ]]; then
+if [[  ${PKG_VERSION:2:2} -ge 18 ]]; then
 	PKG_EXECUTE_AFTER_PATCH=(
 		"aclocal"
 		"automake"
