@@ -1,0 +1,13 @@
+Index: gcc/graphite.h
+===================================================================
+--- gcc/graphite.h	(revision 263193)
++++ gcc/graphite.h	(revision 263194)
+@@ -37,6 +37,8 @@
+ #include <isl/schedule.h>
+ #include <isl/ast_build.h>
+ #include <isl/schedule_node.h>
++#include <isl/id.h>
++#include <isl/space.h>
+ 
+ typedef struct poly_dr *poly_dr_p;
+ 

@@ -61,6 +61,7 @@ PKG_PATCHES=(
 	gcc/gcc-6-ktietz-libgomp.patch
 	gcc/gcc-libgomp-ftime64.patch
 	gcc/gcc-8-branch-Backport-patches-for-std-filesystem-from-master.patch
+	gcc/gcc-8-isl-0.20-support.patch
 )
 
 #
