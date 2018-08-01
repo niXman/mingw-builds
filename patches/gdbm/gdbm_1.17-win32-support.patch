@@ -1,6 +1,6 @@
-diff -urN gdbm-1.16_orig/compat/dbmopen.c gdbm-1.16/compat/dbmopen.c
---- gdbm-1.16_orig/compat/dbmopen.c	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/compat/dbmopen.c	2018-07-20 18:15:22.458385800 +0300
+diff -urN gdbm-1.17_orig/compat/dbmopen.c gdbm-1.17/compat/dbmopen.c
+--- gdbm-1.17_orig/compat/dbmopen.c	2018-02-10 08:05:11.000000000 +0200
++++ gdbm-1.17/compat/dbmopen.c	2018-08-01 12:33:23.113974400 +0300
 @@ -58,13 +58,17 @@
  
  /* FIXME: revise return codes */
@@ -122,9 +122,9 @@ diff -urN gdbm-1.16_orig/compat/dbmopen.c gdbm-1.16/compat/dbmopen.c
        if (dbm->dirfd == -1)
  	{
  	  gdbm_close (dbm->file);
-diff -urN gdbm-1.16_orig/compat/Makefile.am gdbm-1.16/compat/Makefile.am
---- gdbm-1.16_orig/compat/Makefile.am	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/compat/Makefile.am	2018-07-20 18:15:22.473985800 +0300
+diff -urN gdbm-1.17_orig/compat/Makefile.am gdbm-1.17/compat/Makefile.am
+--- gdbm-1.17_orig/compat/Makefile.am	2018-02-10 08:05:11.000000000 +0200
++++ gdbm-1.17/compat/Makefile.am	2018-08-01 12:33:23.115974500 +0300
 @@ -52,5 +52,5 @@
  
  libgdbm_compat_la_SOURCES = $(DBM_CF) $(NDBM_CF)
@@ -132,9 +132,9 @@ diff -urN gdbm-1.16_orig/compat/Makefile.am gdbm-1.16/compat/Makefile.am
 -libgdbm_compat_la_LDFLAGS = -version-info $(VI_CURRENT):$(VI_REVISION):$(VI_AGE)
 +libgdbm_compat_la_LDFLAGS = -no-undefined -version-info $(VI_CURRENT):$(VI_REVISION):$(VI_AGE)
  
-diff -urN gdbm-1.16_orig/compat/Makefile.in gdbm-1.16/compat/Makefile.in
---- gdbm-1.16_orig/compat/Makefile.in	2018-06-27 21:39:11.000000000 +0300
-+++ gdbm-1.16/compat/Makefile.in	2018-07-20 18:15:22.473985800 +0300
+diff -urN gdbm-1.17_orig/compat/Makefile.in gdbm-1.17/compat/Makefile.in
+--- gdbm-1.17_orig/compat/Makefile.in	2018-07-30 23:44:42.000000000 +0300
++++ gdbm-1.17/compat/Makefile.in	2018-08-01 12:33:23.118974600 +0300
 @@ -417,7 +417,7 @@
   dbmrdonly.c
  
@@ -144,9 +144,9 @@ diff -urN gdbm-1.16_orig/compat/Makefile.in gdbm-1.16/compat/Makefile.in
  all: all-am
  
  .SUFFIXES:
-diff -urN gdbm-1.16_orig/configure gdbm-1.16/configure
---- gdbm-1.16_orig/configure	2018-06-27 21:39:10.000000000 +0300
-+++ gdbm-1.16/configure	2018-07-20 18:15:22.489585900 +0300
+diff -urN gdbm-1.17_orig/configure gdbm-1.17/configure
+--- gdbm-1.17_orig/configure	2018-07-30 23:44:42.000000000 +0300
++++ gdbm-1.17/configure	2018-08-01 12:33:23.131975400 +0300
 @@ -639,6 +639,8 @@
  LTLIBOBJS
  LIBOBJS
@@ -199,9 +199,9 @@ diff -urN gdbm-1.16_orig/configure gdbm-1.16/configure
  
  : "${CONFIG_STATUS=./config.status}"
  ac_write_fail=0
-diff -urN gdbm-1.16_orig/configure.ac gdbm-1.16/configure.ac
---- gdbm-1.16_orig/configure.ac	2018-06-27 20:56:25.000000000 +0300
-+++ gdbm-1.16/configure.ac	2018-07-20 18:15:22.520785900 +0300
+diff -urN gdbm-1.17_orig/configure.ac gdbm-1.17/configure.ac
+--- gdbm-1.17_orig/configure.ac	2018-07-30 23:43:13.000000000 +0300
++++ gdbm-1.17/configure.ac	2018-08-01 12:33:23.135975600 +0300
 @@ -192,6 +192,13 @@
  
  AM_CONDITIONAL([COND_GDBMTOOL_DEBUG], [test "$want_gdbmtool_debug" = yes])
@@ -216,9 +216,9 @@ diff -urN gdbm-1.16_orig/configure.ac gdbm-1.16/configure.ac
  # Initialize the test suite.
  AC_CONFIG_TESTDIR(tests)
  AC_CONFIG_FILES([tests/Makefile tests/atlocal po/Makefile.in])
-diff -urN gdbm-1.16_orig/src/fullio.c gdbm-1.16/src/fullio.c
---- gdbm-1.16_orig/src/fullio.c	2018-05-30 14:04:21.000000000 +0300
-+++ gdbm-1.16/src/fullio.c	2018-07-20 18:15:22.520785900 +0300
+diff -urN gdbm-1.17_orig/src/fullio.c gdbm-1.17/src/fullio.c
+--- gdbm-1.17_orig/src/fullio.c	2018-05-30 14:04:21.000000000 +0300
++++ gdbm-1.17/src/fullio.c	2018-08-01 12:33:23.137975700 +0300
 @@ -81,7 +81,13 @@
  int
  _gdbm_file_extend (GDBM_FILE dbf, off_t size)
@@ -233,9 +233,9 @@ diff -urN gdbm-1.16_orig/src/fullio.c gdbm-1.16/src/fullio.c
    char *buf;
    off_t file_end;
  
-diff -urN gdbm-1.16_orig/src/gdbm_load.c gdbm-1.16/src/gdbm_load.c
---- gdbm-1.16_orig/src/gdbm_load.c	2018-05-30 12:39:15.000000000 +0300
-+++ gdbm-1.16/src/gdbm_load.c	2018-07-20 18:15:22.520785900 +0300
+diff -urN gdbm-1.17_orig/src/gdbm_load.c gdbm-1.17/src/gdbm_load.c
+--- gdbm-1.17_orig/src/gdbm_load.c	2018-05-30 12:39:15.000000000 +0300
++++ gdbm-1.17/src/gdbm_load.c	2018-08-01 12:33:23.140975900 +0300
 @@ -18,16 +18,12 @@
  # include "gdbm.h"
  # include "gdbmapp.h"
@@ -285,9 +285,9 @@ diff -urN gdbm-1.16_orig/src/gdbm_load.c gdbm-1.16/src/gdbm_load.c
  	  
        case 'r':
  	replace = 1;
-diff -urN gdbm-1.16_orig/src/gdbmdump.c gdbm-1.16/src/gdbmdump.c
---- gdbm-1.16_orig/src/gdbmdump.c	2018-05-30 12:39:15.000000000 +0300
-+++ gdbm-1.16/src/gdbmdump.c	2018-07-20 18:15:22.520785900 +0300
+diff -urN gdbm-1.17_orig/src/gdbmdump.c gdbm-1.17/src/gdbmdump.c
+--- gdbm-1.17_orig/src/gdbmdump.c	2018-05-30 12:39:15.000000000 +0300
++++ gdbm-1.17/src/gdbmdump.c	2018-08-01 12:33:23.143976100 +0300
 @@ -17,8 +17,6 @@
  # include "autoconf.h"
  # include "gdbmdefs.h"
@@ -338,9 +338,9 @@ diff -urN gdbm-1.16_orig/src/gdbmdump.c gdbm-1.16/src/gdbmdump.c
        if (nfd == -1)
  	{
  	  GDBM_SET_ERRNO (NULL, GDBM_FILE_OPEN_ERROR, FALSE);
-diff -urN gdbm-1.16_orig/src/gdbmexp.c gdbm-1.16/src/gdbmexp.c
---- gdbm-1.16_orig/src/gdbmexp.c	2018-05-30 12:39:15.000000000 +0300
-+++ gdbm-1.16/src/gdbmexp.c	2018-07-20 18:15:22.536385900 +0300
+diff -urN gdbm-1.17_orig/src/gdbmexp.c gdbm-1.17/src/gdbmexp.c
+--- gdbm-1.17_orig/src/gdbmexp.c	2018-05-30 12:39:15.000000000 +0300
++++ gdbm-1.17/src/gdbmexp.c	2018-08-01 12:33:23.145976200 +0300
 @@ -19,7 +19,11 @@
  
  /* Include system configuration before all else. */
@@ -380,9 +380,9 @@ diff -urN gdbm-1.16_orig/src/gdbmexp.c gdbm-1.16/src/gdbmexp.c
    if (!fp)
      {
        close (nfd);
-diff -urN gdbm-1.16_orig/src/gdbmimp.c gdbm-1.16/src/gdbmimp.c
---- gdbm-1.16_orig/src/gdbmimp.c	2018-05-30 12:39:15.000000000 +0300
-+++ gdbm-1.16/src/gdbmimp.c	2018-07-20 18:15:22.536385900 +0300
+diff -urN gdbm-1.17_orig/src/gdbmimp.c gdbm-1.17/src/gdbmimp.c
+--- gdbm-1.17_orig/src/gdbmimp.c	2018-05-30 12:39:15.000000000 +0300
++++ gdbm-1.17/src/gdbmimp.c	2018-08-01 12:33:23.146976200 +0300
 @@ -18,7 +18,11 @@
     along with GDBM. If not, see <http://www.gnu.org/licenses/>.   */
  
@@ -395,9 +395,9 @@ diff -urN gdbm-1.16_orig/src/gdbmimp.c gdbm-1.16/src/gdbmimp.c
  # include <limits.h>
  
  # include "gdbmdefs.h"
-diff -urN gdbm-1.16_orig/src/gdbmload.c gdbm-1.16/src/gdbmload.c
---- gdbm-1.16_orig/src/gdbmload.c	2018-05-30 12:39:15.000000000 +0300
-+++ gdbm-1.16/src/gdbmload.c	2018-07-20 18:15:22.536385900 +0300
+diff -urN gdbm-1.17_orig/src/gdbmload.c gdbm-1.17/src/gdbmload.c
+--- gdbm-1.17_orig/src/gdbmload.c	2018-05-30 12:39:15.000000000 +0300
++++ gdbm-1.17/src/gdbmload.c	2018-08-01 12:33:23.148976400 +0300
 @@ -18,8 +18,6 @@
  # include "gdbmdefs.h"
  # include "gdbm.h"
@@ -446,9 +446,9 @@ diff -urN gdbm-1.16_orig/src/gdbmload.c gdbm-1.16/src/gdbmload.c
    return 0;
  }
  
-diff -urN gdbm-1.16_orig/src/gdbmopen.c gdbm-1.16/src/gdbmopen.c
---- gdbm-1.16_orig/src/gdbmopen.c	2018-06-23 12:48:00.000000000 +0300
-+++ gdbm-1.16/src/gdbmopen.c	2018-07-20 18:15:22.551986000 +0300
+diff -urN gdbm-1.17_orig/src/gdbmopen.c gdbm-1.17/src/gdbmopen.c
+--- gdbm-1.17_orig/src/gdbmopen.c	2018-06-28 18:36:10.000000000 +0300
++++ gdbm-1.17/src/gdbmopen.c	2018-08-01 12:33:23.149976400 +0300
 @@ -33,7 +33,7 @@
  #endif
  
@@ -486,9 +486,9 @@ diff -urN gdbm-1.16_orig/src/gdbmopen.c gdbm-1.16/src/gdbmopen.c
            if ((dbf->bucket_cache[index]).ca_bucket == NULL)
  	    {
                GDBM_SET_ERRNO (dbf, GDBM_MALLOC_ERROR, TRUE);
-diff -urN gdbm-1.16_orig/src/gdbmtool.c gdbm-1.16/src/gdbmtool.c
---- gdbm-1.16_orig/src/gdbmtool.c	2018-06-27 15:54:59.000000000 +0300
-+++ gdbm-1.16/src/gdbmtool.c	2018-07-20 18:15:22.551986000 +0300
+diff -urN gdbm-1.17_orig/src/gdbmtool.c gdbm-1.17/src/gdbmtool.c
+--- gdbm-1.17_orig/src/gdbmtool.c	2018-07-02 19:45:26.000000000 +0300
++++ gdbm-1.17/src/gdbmtool.c	2018-08-01 12:33:23.152976600 +0300
 @@ -22,8 +22,6 @@
  #include <errno.h>
  #include <ctype.h>
@@ -498,7 +498,7 @@ diff -urN gdbm-1.16_orig/src/gdbmtool.c gdbm-1.16/src/gdbmtool.c
  #ifdef HAVE_SYS_TERMIOS_H
  # include <sys/termios.h>
  #endif
-@@ -1997,6 +1995,7 @@
+@@ -2001,6 +1999,7 @@
      {
        istr = instream_file_create (GDBMTOOLRC);
      }
@@ -506,7 +506,7 @@ diff -urN gdbm-1.16_orig/src/gdbmtool.c gdbm-1.16/src/gdbmtool.c
    else
      {
        char *fname;
-@@ -2025,6 +2024,7 @@
+@@ -2029,6 +2028,7 @@
  	exit (EXIT_FATAL);
        yyparse ();
      }
@@ -514,7 +514,7 @@ diff -urN gdbm-1.16_orig/src/gdbmtool.c gdbm-1.16/src/gdbmtool.c
  }
  
  #if GDBM_DEBUG_ENABLE
-@@ -2167,8 +2167,6 @@
+@@ -2171,8 +2171,6 @@
  	}
      }
  
@@ -523,9 +523,9 @@ diff -urN gdbm-1.16_orig/src/gdbmtool.c gdbm-1.16/src/gdbmtool.c
    memset (&param, 0, sizeof (param));
    argmax = 0;
  
-diff -urN gdbm-1.16_orig/src/lock.c gdbm-1.16/src/lock.c
---- gdbm-1.16_orig/src/lock.c	2018-05-30 12:39:15.000000000 +0300
-+++ gdbm-1.16/src/lock.c	2018-07-20 18:15:22.567586000 +0300
+diff -urN gdbm-1.17_orig/src/lock.c gdbm-1.17/src/lock.c
+--- gdbm-1.17_orig/src/lock.c	2018-05-30 12:39:15.000000000 +0300
++++ gdbm-1.17/src/lock.c	2018-08-01 12:33:23.153976600 +0300
 @@ -24,7 +24,7 @@
  
  #include <errno.h>
@@ -637,9 +637,9 @@ diff -urN gdbm-1.16_orig/src/lock.c gdbm-1.16/src/lock.c
    if (dbf->read_write == GDBM_READER)
      lock_val = flock (dbf->desc, LOCK_SH + LOCK_NB);
    else
-diff -urN gdbm-1.16_orig/src/Makefile.am gdbm-1.16/src/Makefile.am
---- gdbm-1.16_orig/src/Makefile.am	2018-06-15 23:11:53.000000000 +0300
-+++ gdbm-1.16/src/Makefile.am	2018-07-20 18:15:22.614386100 +0300
+diff -urN gdbm-1.17_orig/src/Makefile.am gdbm-1.17/src/Makefile.am
+--- gdbm-1.17_orig/src/Makefile.am	2018-06-15 23:11:53.000000000 +0300
++++ gdbm-1.17/src/Makefile.am	2018-08-01 12:33:23.155976800 +0300
 @@ -74,7 +74,7 @@
    libgdbm_la_SOURCES += debug.c
  endif
@@ -649,9 +649,9 @@ diff -urN gdbm-1.16_orig/src/Makefile.am gdbm-1.16/src/Makefile.am
  
  noinst_LIBRARIES = libgdbmapp.a
  
-diff -urN gdbm-1.16_orig/src/Makefile.in gdbm-1.16/src/Makefile.in
---- gdbm-1.16_orig/src/Makefile.in	2018-06-27 21:39:11.000000000 +0300
-+++ gdbm-1.16/src/Makefile.in	2018-07-20 18:15:22.629986100 +0300
+diff -urN gdbm-1.17_orig/src/Makefile.in gdbm-1.17/src/Makefile.in
+--- gdbm-1.17_orig/src/Makefile.in	2018-07-30 23:44:42.000000000 +0300
++++ gdbm-1.17/src/Makefile.in	2018-08-01 12:33:23.157976900 +0300
 @@ -474,7 +474,7 @@
  	gdbmsetopt.c gdbmstore.c gdbmsync.c base64.c bucket.c falloc.c \
  	findkey.c fullio.c hash.c lock.c mmap.c recover.c update.c \
@@ -661,9 +661,9 @@ diff -urN gdbm-1.16_orig/src/Makefile.in gdbm-1.16/src/Makefile.in
  noinst_LIBRARIES = libgdbmapp.a
  libgdbmapp_a_SOURCES = \
   err.c\
-diff -urN gdbm-1.16_orig/src/mem.c gdbm-1.16/src/mem.c
---- gdbm-1.16_orig/src/mem.c	2018-05-30 12:39:15.000000000 +0300
-+++ gdbm-1.16/src/mem.c	2018-07-20 18:15:22.629986100 +0300
+diff -urN gdbm-1.17_orig/src/mem.c gdbm-1.17/src/mem.c
+--- gdbm-1.17_orig/src/mem.c	2018-05-30 12:39:15.000000000 +0300
++++ gdbm-1.17/src/mem.c	2018-08-01 12:33:23.158976900 +0300
 @@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with GDBM. If not, see <http://www.gnu.org/licenses/>.   */
@@ -673,9 +673,9 @@ diff -urN gdbm-1.16_orig/src/mem.c gdbm-1.16/src/mem.c
  # include "gdbm.h"
  # include "gdbmapp.h"
  # include "gdbmdefs.h"
-diff -urN gdbm-1.16_orig/src/parseopt.c gdbm-1.16/src/parseopt.c
---- gdbm-1.16_orig/src/parseopt.c	2018-05-30 12:39:15.000000000 +0300
-+++ gdbm-1.16/src/parseopt.c	2018-07-20 18:15:22.707986200 +0300
+diff -urN gdbm-1.17_orig/src/parseopt.c gdbm-1.17/src/parseopt.c
+--- gdbm-1.17_orig/src/parseopt.c	2018-05-30 12:39:15.000000000 +0300
++++ gdbm-1.17/src/parseopt.c	2018-08-01 12:33:23.160977000 +0300
 @@ -14,10 +14,11 @@
     You should have received a copy of the GNU General Public License
     along with GDBM. If not, see <http://www.gnu.org/licenses/>.   */
@@ -689,9 +689,9 @@ diff -urN gdbm-1.16_orig/src/parseopt.c gdbm-1.16/src/parseopt.c
  # include <stdio.h>
  # include <stdarg.h>
  # include <errno.h>
-diff -urN gdbm-1.16_orig/src/progname.c gdbm-1.16/src/progname.c
---- gdbm-1.16_orig/src/progname.c	2018-05-30 12:39:15.000000000 +0300
-+++ gdbm-1.16/src/progname.c	2018-07-20 18:15:22.910786600 +0300
+diff -urN gdbm-1.17_orig/src/progname.c gdbm-1.17/src/progname.c
+--- gdbm-1.17_orig/src/progname.c	2018-05-30 12:39:15.000000000 +0300
++++ gdbm-1.17/src/progname.c	2018-08-01 12:33:23.161977100 +0300
 @@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with GDBM. If not, see <http://www.gnu.org/licenses/>.   */
@@ -701,21 +701,21 @@ diff -urN gdbm-1.16_orig/src/progname.c gdbm-1.16/src/progname.c
  # include "gdbm.h"
  # include "gdbmapp.h"
  # include <string.h>
-diff -urN gdbm-1.16_orig/src/proto.h gdbm-1.16/src/proto.h
---- gdbm-1.16_orig/src/proto.h	2018-06-23 13:33:59.000000000 +0300
-+++ gdbm-1.16/src/proto.h	2018-07-20 18:15:22.926386600 +0300
-@@ -122,6 +122,8 @@
-   _gdbm_mapped_sync (dbf);
- #elif HAVE_FSYNC
-   fsync (dbf->desc);
+diff -urN gdbm-1.17_orig/src/proto.h gdbm-1.17/src/proto.h
+--- gdbm-1.17_orig/src/proto.h	2018-06-30 19:59:36.000000000 +0300
++++ gdbm-1.17/src/proto.h	2018-08-01 12:33:23.163977200 +0300
+@@ -126,6 +126,8 @@
+       GDBM_SET_ERRNO (dbf, GDBM_FILE_SYNC_ERROR, TRUE);
+       return 1;
+     }
 +#elif _WIN32
 +  FlushFileBuffers(dbf);
  #else
    sync ();
    sync ();
-diff -urN gdbm-1.16_orig/src/recover.c gdbm-1.16/src/recover.c
---- gdbm-1.16_orig/src/recover.c	2018-05-30 12:39:15.000000000 +0300
-+++ gdbm-1.16/src/recover.c	2018-07-20 18:15:22.926386600 +0300
+diff -urN gdbm-1.17_orig/src/recover.c gdbm-1.17/src/recover.c
+--- gdbm-1.17_orig/src/recover.c	2018-07-02 19:43:17.000000000 +0300
++++ gdbm-1.17/src/recover.c	2018-08-01 12:33:23.164977300 +0300
 @@ -19,6 +19,20 @@
  
  #define TMPSUF ".XXXXXX"
@@ -793,9 +793,9 @@ diff -urN gdbm-1.16_orig/src/recover.c gdbm-1.16/src/recover.c
    free (dbf->header);
    free (dbf->dir);
  
-diff -urN gdbm-1.16_orig/src/systems.h gdbm-1.16/src/systems.h
---- gdbm-1.16_orig/src/systems.h	2018-05-30 12:43:12.000000000 +0300
-+++ gdbm-1.16/src/systems.h	2018-07-20 18:15:22.941986700 +0300
+diff -urN gdbm-1.17_orig/src/systems.h gdbm-1.17/src/systems.h
+--- gdbm-1.17_orig/src/systems.h	2018-05-30 12:43:12.000000000 +0300
++++ gdbm-1.17/src/systems.h	2018-08-01 12:33:23.166977400 +0300
 @@ -18,6 +18,11 @@
     along with GDBM. If not, see <http://www.gnu.org/licenses/>.    */
  
@@ -836,9 +836,9 @@ diff -urN gdbm-1.16_orig/src/systems.h gdbm-1.16/src/systems.h
 +#ifdef _WIN32
 +extern int flock(int fd, int oper);
 +#endif
-diff -urN gdbm-1.16_orig/src/util.c gdbm-1.16/src/util.c
---- gdbm-1.16_orig/src/util.c	2018-05-30 12:39:15.000000000 +0300
-+++ gdbm-1.16/src/util.c	2018-07-20 18:15:22.941986700 +0300
+diff -urN gdbm-1.17_orig/src/util.c gdbm-1.17/src/util.c
+--- gdbm-1.17_orig/src/util.c	2018-05-30 12:39:15.000000000 +0300
++++ gdbm-1.17/src/util.c	2018-08-01 12:33:23.167977400 +0300
 @@ -16,7 +16,6 @@
     along with GDBM. If not, see <http://www.gnu.org/licenses/>.    */
  
@@ -863,9 +863,9 @@ diff -urN gdbm-1.16_orig/src/util.c gdbm-1.16/src/util.c
    return estrdup (s);
  }
  
-diff -urN gdbm-1.16_orig/tests/blocksize02.at gdbm-1.16/tests/blocksize02.at
---- gdbm-1.16_orig/tests/blocksize02.at	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/blocksize02.at	2018-07-20 18:15:22.957586700 +0300
+diff -urN gdbm-1.17_orig/tests/blocksize02.at gdbm-1.17/tests/blocksize02.at
+--- gdbm-1.17_orig/tests/blocksize02.at	2018-02-10 08:05:11.000000000 +0200
++++ gdbm-1.17/tests/blocksize02.at	2018-08-01 12:33:23.169977600 +0300
 @@ -22,7 +22,6 @@
  ],
  [1],
@@ -875,9 +875,20 @@ diff -urN gdbm-1.16_orig/tests/blocksize02.at gdbm-1.16/tests/blocksize02.at
 +[gdbm_open failed: Block size error])
  
  AT_CLEANUP
-diff -urN gdbm-1.16_orig/tests/dbmdel01.at gdbm-1.16/tests/dbmdel01.at
---- gdbm-1.16_orig/tests/dbmdel01.at	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/dbmdel01.at	2018-07-20 18:15:23.019986800 +0300
+diff -urN gdbm-1.17_orig/tests/closerr.c gdbm-1.17/tests/closerr.c
+--- gdbm-1.17_orig/tests/closerr.c	2018-07-01 10:07:35.000000000 +0300
++++ gdbm-1.17/tests/closerr.c	2018-08-01 12:33:44.710209600 +0300
+@@ -21,6 +21,7 @@
+ #include <string.h>
+ #include <errno.h>
+ #include <assert.h>
++#include <unistd.h>
+ #include "gdbm.h"
+ 
+ int
+diff -urN gdbm-1.17_orig/tests/dbmdel01.at gdbm-1.17/tests/dbmdel01.at
+--- gdbm-1.17_orig/tests/dbmdel01.at	2018-02-10 08:05:11.000000000 +0200
++++ gdbm-1.17/tests/dbmdel01.at	2018-08-01 12:33:23.170977600 +0300
 @@ -25,7 +25,7 @@
  ],
  [2],
@@ -887,9 +898,9 @@ diff -urN gdbm-1.16_orig/tests/dbmdel01.at gdbm-1.16/tests/dbmdel01.at
  ])
  
  AT_CLEANUP
-diff -urN gdbm-1.16_orig/tests/dbmfetch01.at gdbm-1.16/tests/dbmfetch01.at
---- gdbm-1.16_orig/tests/dbmfetch01.at	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/dbmfetch01.at	2018-07-20 18:15:23.238387200 +0300
+diff -urN gdbm-1.17_orig/tests/dbmfetch01.at gdbm-1.17/tests/dbmfetch01.at
+--- gdbm-1.17_orig/tests/dbmfetch01.at	2018-02-10 08:05:11.000000000 +0200
++++ gdbm-1.17/tests/dbmfetch01.at	2018-08-01 12:33:23.172977700 +0300
 @@ -24,7 +24,7 @@
  ],
  [2],
@@ -899,9 +910,9 @@ diff -urN gdbm-1.16_orig/tests/dbmfetch01.at gdbm-1.16/tests/dbmfetch01.at
  ])
  
  AT_CLEANUP
-diff -urN gdbm-1.16_orig/tests/delete01.at gdbm-1.16/tests/delete01.at
---- gdbm-1.16_orig/tests/delete01.at	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/delete01.at	2018-07-20 18:15:23.300787300 +0300
+diff -urN gdbm-1.17_orig/tests/delete01.at gdbm-1.17/tests/delete01.at
+--- gdbm-1.17_orig/tests/delete01.at	2018-02-10 08:05:11.000000000 +0200
++++ gdbm-1.17/tests/delete01.at	2018-08-01 12:33:23.173977800 +0300
 @@ -24,7 +24,7 @@
  ],
  [2],
@@ -911,9 +922,9 @@ diff -urN gdbm-1.16_orig/tests/delete01.at gdbm-1.16/tests/delete01.at
  ])
  
  AT_CLEANUP
-diff -urN gdbm-1.16_orig/tests/dtdel.c gdbm-1.16/tests/dtdel.c
---- gdbm-1.16_orig/tests/dtdel.c	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/dtdel.c	2018-07-20 18:15:23.363187400 +0300
+diff -urN gdbm-1.17_orig/tests/dtdel.c gdbm-1.17/tests/dtdel.c
+--- gdbm-1.17_orig/tests/dtdel.c	2018-02-10 08:05:11.000000000 +0200
++++ gdbm-1.17/tests/dtdel.c	2018-08-01 12:33:23.174977800 +0300
 @@ -16,6 +16,7 @@
  */
  #include "autoconf.h"
@@ -936,9 +947,9 @@ diff -urN gdbm-1.16_orig/tests/dtdel.c gdbm-1.16/tests/dtdel.c
    while (--argc)
      {
        char *arg = *++argv;
-diff -urN gdbm-1.16_orig/tests/dtdump.c gdbm-1.16/tests/dtdump.c
---- gdbm-1.16_orig/tests/dtdump.c	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/dtdump.c	2018-07-20 18:15:23.378787400 +0300
+diff -urN gdbm-1.17_orig/tests/dtdump.c gdbm-1.17/tests/dtdump.c
+--- gdbm-1.17_orig/tests/dtdump.c	2018-02-10 08:05:11.000000000 +0200
++++ gdbm-1.17/tests/dtdump.c	2018-08-01 12:33:23.175977900 +0300
 @@ -16,10 +16,13 @@
  */
  #include "autoconf.h"
@@ -967,9 +978,9 @@ diff -urN gdbm-1.16_orig/tests/dtdump.c gdbm-1.16/tests/dtdump.c
    while (--argc)
      {
        char *arg = *++argv;
-diff -urN gdbm-1.16_orig/tests/dtfetch.c gdbm-1.16/tests/dtfetch.c
---- gdbm-1.16_orig/tests/dtfetch.c	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/dtfetch.c	2018-07-20 18:15:23.409987500 +0300
+diff -urN gdbm-1.17_orig/tests/dtfetch.c gdbm-1.17/tests/dtfetch.c
+--- gdbm-1.17_orig/tests/dtfetch.c	2018-02-10 08:05:11.000000000 +0200
++++ gdbm-1.17/tests/dtfetch.c	2018-08-01 12:33:23.176978000 +0300
 @@ -16,6 +16,7 @@
  */
  #include "autoconf.h"
@@ -992,9 +1003,9 @@ diff -urN gdbm-1.16_orig/tests/dtfetch.c gdbm-1.16/tests/dtfetch.c
    while (--argc)
      {
        char *arg = *++argv;
-diff -urN gdbm-1.16_orig/tests/dtload.c gdbm-1.16/tests/dtload.c
---- gdbm-1.16_orig/tests/dtload.c	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/dtload.c	2018-07-20 18:15:23.425587500 +0300
+diff -urN gdbm-1.17_orig/tests/dtload.c gdbm-1.17/tests/dtload.c
+--- gdbm-1.17_orig/tests/dtload.c	2018-02-10 08:05:11.000000000 +0200
++++ gdbm-1.17/tests/dtload.c	2018-08-01 12:33:23.177978000 +0300
 @@ -16,6 +16,7 @@
  */
  #include "autoconf.h"
@@ -1018,9 +1029,9 @@ diff -urN gdbm-1.16_orig/tests/dtload.c gdbm-1.16/tests/dtload.c
    while (--argc)
      {
        char *arg = *++argv;
-diff -urN gdbm-1.16_orig/tests/fetch01.at gdbm-1.16/tests/fetch01.at
---- gdbm-1.16_orig/tests/fetch01.at	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/fetch01.at	2018-07-20 18:15:23.425587500 +0300
+diff -urN gdbm-1.17_orig/tests/fetch01.at gdbm-1.17/tests/fetch01.at
+--- gdbm-1.17_orig/tests/fetch01.at	2018-02-10 08:05:11.000000000 +0200
++++ gdbm-1.17/tests/fetch01.at	2018-08-01 12:33:23.178978100 +0300
 @@ -23,7 +23,7 @@
  ],
  [2],
@@ -1030,9 +1041,9 @@ diff -urN gdbm-1.16_orig/tests/fetch01.at gdbm-1.16/tests/fetch01.at
  ])
  
  AT_CLEANUP
-diff -urN gdbm-1.16_orig/tests/gdbmtool03.at gdbm-1.16/tests/gdbmtool03.at
---- gdbm-1.16_orig/tests/gdbmtool03.at	2018-05-24 07:15:19.000000000 +0300
-+++ gdbm-1.16/tests/gdbmtool03.at	2018-07-20 18:15:23.425587500 +0300
+diff -urN gdbm-1.17_orig/tests/gdbmtool03.at gdbm-1.17/tests/gdbmtool03.at
+--- gdbm-1.17_orig/tests/gdbmtool03.at	2018-05-24 07:15:19.000000000 +0300
++++ gdbm-1.17/tests/gdbmtool03.at	2018-08-01 12:33:23.179978100 +0300
 @@ -17,12 +17,13 @@
  AT_SETUP([Initialization file])
  AT_KEYWORDS([gdbmtool])
@@ -1051,9 +1062,9 @@ diff -urN gdbm-1.16_orig/tests/gdbmtool03.at gdbm-1.16/tests/gdbmtool03.at
  ],
  [0],
  [Database file: t.db
-diff -urN gdbm-1.16_orig/tests/gtdel.c gdbm-1.16/tests/gtdel.c
---- gdbm-1.16_orig/tests/gtdel.c	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/gtdel.c	2018-07-20 18:15:23.441187500 +0300
+diff -urN gdbm-1.17_orig/tests/gtdel.c gdbm-1.17/tests/gtdel.c
+--- gdbm-1.17_orig/tests/gtdel.c	2018-07-01 09:33:36.000000000 +0300
++++ gdbm-1.17/tests/gtdel.c	2018-08-01 12:33:23.180978200 +0300
 @@ -16,6 +16,7 @@
  */
  #include "autoconf.h"
@@ -1061,8 +1072,8 @@ diff -urN gdbm-1.16_orig/tests/gtdel.c gdbm-1.16/tests/gtdel.c
 +#include <fcntl.h>
  #include <stdlib.h>
  #include <string.h>
- #include "gdbm.h"
-@@ -31,7 +32,12 @@
+ #include <errno.h>
+@@ -32,7 +33,12 @@
    GDBM_FILE dbf;
    int data_z = 0;
    int rc = 0;
@@ -1076,18 +1087,18 @@ diff -urN gdbm-1.16_orig/tests/gtdel.c gdbm-1.16/tests/gtdel.c
    while (--argc)
      {
        char *arg = *++argv;
-diff -urN gdbm-1.16_orig/tests/gtdump.c gdbm-1.16/tests/gtdump.c
---- gdbm-1.16_orig/tests/gtdump.c	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/gtdump.c	2018-07-20 18:15:23.441187500 +0300
+diff -urN gdbm-1.17_orig/tests/gtdump.c gdbm-1.17/tests/gtdump.c
+--- gdbm-1.17_orig/tests/gtdump.c	2018-07-01 09:33:36.000000000 +0300
++++ gdbm-1.17/tests/gtdump.c	2018-08-01 12:33:23.181978200 +0300
 @@ -17,6 +17,7 @@
  #include "autoconf.h"
  #include <stdio.h>
  #include <stdlib.h>
 +#include <fcntl.h>
  #include <string.h>
+ #include <errno.h>
  #include "gdbm.h"
- #include "progname.h"
-@@ -31,7 +32,12 @@
+@@ -32,7 +33,12 @@
    int flags = 0;
    GDBM_FILE dbf;
    int delim = '\t';
@@ -1101,9 +1112,9 @@ diff -urN gdbm-1.16_orig/tests/gtdump.c gdbm-1.16/tests/gtdump.c
    while (--argc)
      {
        char *arg = *++argv;
-diff -urN gdbm-1.16_orig/tests/gtfetch.c gdbm-1.16/tests/gtfetch.c
---- gdbm-1.16_orig/tests/gtfetch.c	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/gtfetch.c	2018-07-20 18:15:23.441187500 +0300
+diff -urN gdbm-1.17_orig/tests/gtfetch.c gdbm-1.17/tests/gtfetch.c
+--- gdbm-1.17_orig/tests/gtfetch.c	2018-07-01 09:33:36.000000000 +0300
++++ gdbm-1.17/tests/gtfetch.c	2018-08-01 12:33:23.181978200 +0300
 @@ -16,6 +16,7 @@
  */
  #include "autoconf.h"
@@ -1111,8 +1122,8 @@ diff -urN gdbm-1.16_orig/tests/gtfetch.c gdbm-1.16/tests/gtfetch.c
 +#include <fcntl.h>
  #include <stdlib.h>
  #include <string.h>
- #include "gdbm.h"
-@@ -46,7 +47,12 @@
+ #include <errno.h>
+@@ -47,7 +48,12 @@
    int data_z = 0;
    int delim = 0;
    int rc = 0;
@@ -1126,9 +1137,9 @@ diff -urN gdbm-1.16_orig/tests/gtfetch.c gdbm-1.16/tests/gtfetch.c
    while (--argc)
      {
        char *arg = *++argv;
-diff -urN gdbm-1.16_orig/tests/gtload.c gdbm-1.16/tests/gtload.c
---- gdbm-1.16_orig/tests/gtload.c	2018-05-30 12:16:40.000000000 +0300
-+++ gdbm-1.16/tests/gtload.c	2018-07-20 18:15:23.456787600 +0300
+diff -urN gdbm-1.17_orig/tests/gtload.c gdbm-1.17/tests/gtload.c
+--- gdbm-1.17_orig/tests/gtload.c	2018-07-01 09:32:20.000000000 +0300
++++ gdbm-1.17/tests/gtload.c	2018-08-01 12:33:23.182978300 +0300
 @@ -16,6 +16,7 @@
  */
  #include "autoconf.h"
@@ -1158,9 +1169,9 @@ diff -urN gdbm-1.16_orig/tests/gtload.c gdbm-1.16/tests/gtload.c
        exit (1);
      }
  
-diff -urN gdbm-1.16_orig/tests/gtopt.c gdbm-1.16/tests/gtopt.c
---- gdbm-1.16_orig/tests/gtopt.c	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/gtopt.c	2018-07-20 18:15:23.456787600 +0300
+diff -urN gdbm-1.17_orig/tests/gtopt.c gdbm-1.17/tests/gtopt.c
+--- gdbm-1.17_orig/tests/gtopt.c	2018-07-01 09:32:20.000000000 +0300
++++ gdbm-1.17/tests/gtopt.c	2018-08-01 12:33:23.183978400 +0300
 @@ -178,7 +178,11 @@
  int
  test_maxmapsize (void *valptr)
@@ -1186,9 +1197,9 @@ diff -urN gdbm-1.16_orig/tests/gtopt.c gdbm-1.16/tests/gtopt.c
    progname = canonical_progname (argv[0]);
    while (--argc)
      {
-diff -urN gdbm-1.16_orig/tests/gtver.c gdbm-1.16/tests/gtver.c
---- gdbm-1.16_orig/tests/gtver.c	2018-02-10 08:05:11.000000000 +0200
-+++ gdbm-1.16/tests/gtver.c	2018-07-20 18:15:23.456787600 +0300
+diff -urN gdbm-1.17_orig/tests/gtver.c gdbm-1.17/tests/gtver.c
+--- gdbm-1.17_orig/tests/gtver.c	2018-02-10 08:05:11.000000000 +0200
++++ gdbm-1.17/tests/gtver.c	2018-08-01 12:33:23.184978400 +0300
 @@ -17,6 +17,7 @@
  #include "autoconf.h"
  #include <stdlib.h>
@@ -1208,9 +1219,9 @@ diff -urN gdbm-1.16_orig/tests/gtver.c gdbm-1.16/tests/gtver.c
    if (argc == 1)
      {
        printf ("%s\n", gdbm_version);
-diff -urN gdbm-1.16_orig/tests/num2word.c gdbm-1.16/tests/num2word.c
---- gdbm-1.16_orig/tests/num2word.c	2018-05-29 10:11:50.000000000 +0300
-+++ gdbm-1.16/tests/num2word.c	2018-07-20 18:15:23.487987600 +0300
+diff -urN gdbm-1.17_orig/tests/num2word.c gdbm-1.17/tests/num2word.c
+--- gdbm-1.17_orig/tests/num2word.c	2018-05-29 10:11:50.000000000 +0300
++++ gdbm-1.17/tests/num2word.c	2018-08-01 12:33:23.185978500 +0300
 @@ -17,6 +17,7 @@
  #include "autoconf.h"
  #include <stdlib.h>
@@ -1243,10 +1254,10 @@ diff -urN gdbm-1.16_orig/tests/num2word.c gdbm-1.16/tests/num2word.c
  	  print_number (n);
  	}
      }
-diff -urN gdbm-1.16_orig/tests/testsuite gdbm-1.16/tests/testsuite
---- gdbm-1.16_orig/tests/testsuite	2018-06-27 20:57:15.000000000 +0300
-+++ gdbm-1.16/tests/testsuite	2018-07-20 18:15:23.503587600 +0300
-@@ -2166,7 +2166,7 @@
+diff -urN gdbm-1.17_orig/tests/testsuite gdbm-1.17/tests/testsuite
+--- gdbm-1.17_orig/tests/testsuite	2018-07-30 23:46:03.000000000 +0300
++++ gdbm-1.17/tests/testsuite	2018-08-01 12:33:23.187978600 +0300
+@@ -2167,7 +2167,7 @@
  ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
  at_status=$? at_failed=false
  $at_check_filter
@@ -1255,7 +1266,7 @@ diff -urN gdbm-1.16_orig/tests/testsuite gdbm-1.16/tests/testsuite
  " | \
    $at_diff - "$at_stderr" || at_failed=:
  at_fn_diff_devnull "$at_stdout" || at_failed=:
-@@ -2262,7 +2262,7 @@
+@@ -2263,7 +2263,7 @@
  ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
  at_status=$? at_failed=false
  $at_check_filter
@@ -1264,7 +1275,7 @@ diff -urN gdbm-1.16_orig/tests/testsuite gdbm-1.16/tests/testsuite
  " | \
    $at_diff - "$at_stderr" || at_failed=:
  at_fn_diff_devnull "$at_stdout" || at_failed=:
-@@ -2627,7 +2627,7 @@
+@@ -2655,7 +2655,7 @@
  ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
  at_status=$? at_failed=false
  $at_check_filter
@@ -1273,7 +1284,7 @@ diff -urN gdbm-1.16_orig/tests/testsuite gdbm-1.16/tests/testsuite
  " | \
    $at_diff - "$at_stderr" || at_failed=:
  at_fn_diff_devnull "$at_stdout" || at_failed=:
-@@ -2835,7 +2835,7 @@
+@@ -2863,7 +2863,7 @@
  ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
  at_status=$? at_failed=false
  $at_check_filter
