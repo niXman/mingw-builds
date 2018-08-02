@@ -230,7 +230,7 @@ while [[ $# > 0 ]]; do
 			BASE_LDFLAGS="$BASE_LDFLAGS -flto -fuse-linker-plugin"
 		;;
 		--no-multilib) USE_MULTILIB=no ;;
-		--no-extras) BUILD_EXTRAS=no ;;
+		--no-extras) [[ $BUILD_MODE != python ]] && { BUILD_EXTRAS=no; };;
 		--no-strip) STRIP_ON_INSTALL=no ;;
 		--static-gcc)
 			BOOTSTRAPING=yes
