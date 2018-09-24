@@ -35,13 +35,13 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.7.0
+PKG_VERSION=2.8.0
 PKG_NAME=libgnurx-${PKG_VERSION}
-PKG_DIR_NAME=libgnurx-libgnurx-${PKG_VERSION}
-PKG_TYPE=.tar.gz
+PKG_DIR_NAME=libgnurx-${PKG_VERSION}
+PKG_TYPE=.tar.xz
 PKG_URLS=(
 	# "https://sourceforge.net/projects/mingw/files/Other/UserContributed/regex/mingw-regex-${PKG_VERSION}/mingw-libgnurx-${PKG_VERSION}-src.tar.gz"
-	"https://github.com/Furniel/libgnurx/archive/libgnurx-${PKG_VERSION}${PKG_TYPE}"
+	"https://github.com/Furniel/libgnurx/releases/download/${PKG_VERSION}/${PKG_NAME}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
