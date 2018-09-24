@@ -67,9 +67,9 @@ readonly RUN_ARGS="$@"
 	echo "    --static-gcc               - build static GCC"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
 	echo "    --jobs=N                   - specifies number of parallel make threads"
-	echo "    --rt-version=<v3|v4|v5|trunk|v3.3.0|v4.0.6|v5.0.4> - specifies mingw-w64 runtime version to build"
-	echo "                                 v3, v4, v5, trunk specifies specific branches in the git repo"
-	echo "                                 v3.3.0, v4.0.6, v5.0.4 is a specific release versions, uses the tarball"
+	echo "    --rt-version=<v3|v4|v5|v6|trunk|v3.3.0|v4.0.6|v5.0.4|v6.0.0> - specifies mingw-w64 runtime version to build"
+	echo "                                 v3, v4, v5, v6, trunk specifies specific branches in the git repo"
+	echo "                                 v3.3.0, v4.0.6, v5.0.4, v6.0.0 is a specific release versions, uses the tarball"
 	echo "    --rev=N                    - specifies number of the build revision"
 	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++"
 	echo "                                 available: win32, posix"
@@ -266,8 +266,12 @@ while [[ $# > 0 ]]; do
 					RUNTIME_VERSION=v5
 					RUNTIME_BRANCH="v5.x"
 				;;
-				trunk)
+				v6)
 					RUNTIME_VERSION=v6
+					RUNTIME_BRANCH="v6.x"
+				;;
+				trunk)
+					RUNTIME_VERSION=v7
 					RUNTIME_BRANCH="master"
 				;;
 				v3.3.0)
@@ -280,6 +284,10 @@ while [[ $# > 0 ]]; do
 				;;
 				v5.0.4)
 					RUNTIME_VERSION=v5.0.4
+					RUNTIME_BRANCH="release"
+				;;
+				v6.0.0)
+					RUNTIME_VERSION=v6.0.0
 					RUNTIME_BRANCH="release"
 				;;
 				*)
