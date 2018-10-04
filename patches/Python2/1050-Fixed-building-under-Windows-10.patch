@@ -1,0 +1,25 @@
+From dbe2935b577c3121ca2bf335fd8ff3ac2100b288 Mon Sep 17 00:00:00 2001
+From: Furniel <furniel@mail.ru>
+Date: Thu, 4 Oct 2018 10:49:27 +0300
+Subject: [PATCH] Fixed building under Windows 10
+
+---
+ Lib/platform.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Lib/platform.py b/Lib/platform.py
+index 62a5476a8f..6c7d7deedf 100755
+--- a/Lib/platform.py
++++ b/Lib/platform.py
+@@ -664,7 +664,7 @@ def win32_ver(release='', version='', csd='', ptype=''):
+         from _winreg import OpenKeyEx, QueryValueEx, CloseKey, HKEY_LOCAL_MACHINE
+ 
+     winver = getwindowsversion()
+-    maj, min, build = _get_real_winver(*winver[:3])
++    maj, min, build = winver[:3]
+     version = '{0}.{1}.{2}'.format(maj, min, build)
+ 
+     release = (_WIN32_CLIENT_RELEASES.get((maj, min)) or
+-- 
+2.19.0.windows.1
+
