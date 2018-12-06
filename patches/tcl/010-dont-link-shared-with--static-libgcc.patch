@@ -1,7 +1,7 @@
-diff -urN tcl8.6.8_orig/pkgs/itcl4.1.1/tclconfig/tcl.m4 tcl8.6.8/pkgs/itcl4.1.1/tclconfig/tcl.m4
---- tcl8.6.8_orig/pkgs/itcl4.1.1/tclconfig/tcl.m4	2017-12-21 20:16:24.000000000 +0200
-+++ tcl8.6.8/pkgs/itcl4.1.1/tclconfig/tcl.m4	2018-02-14 14:51:37.701603400 +0200
-@@ -3413,9 +3413,6 @@
+diff -urN tcl8.6.9_orig/pkgs/itcl4.1.2/tclconfig/tcl.m4 tcl8.6.9/pkgs/itcl4.1.2/tclconfig/tcl.m4
+--- tcl8.6.9_orig/pkgs/itcl4.1.2/tclconfig/tcl.m4	2018-11-01 17:59:24.000000000 +0200
++++ tcl8.6.9/pkgs/itcl4.1.2/tclconfig/tcl.m4	2018-12-10 08:30:46.610518700 +0200
+@@ -3222,9 +3222,6 @@
  		SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TK_BIN_DIR}/${TK_STUB_LIB_FILE}`\""
  	    fi
  	    SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TCL_BIN_DIR}/${TCL_STUB_LIB_FILE}`\""
@@ -11,10 +11,10 @@ diff -urN tcl8.6.8_orig/pkgs/itcl4.1.1/tclconfig/tcl.m4 tcl8.6.8/pkgs/itcl4.1.1/
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${SHARED_LIB_SUFFIX}"
  	else
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${UNSHARED_LIB_SUFFIX}"
-diff -urN tcl8.6.8_orig/pkgs/sqlite3.21.0/configure tcl8.6.8/pkgs/sqlite3.21.0/configure
---- tcl8.6.8_orig/pkgs/sqlite3.21.0/configure	2017-12-21 15:58:19.000000000 +0200
-+++ tcl8.6.8/pkgs/sqlite3.21.0/configure	2018-02-14 14:51:37.717214700 +0200
-@@ -8880,9 +8880,6 @@
+diff -urN tcl8.6.9_orig/pkgs/sqlite3.25.3/configure tcl8.6.9/pkgs/sqlite3.25.3/configure
+--- tcl8.6.9_orig/pkgs/sqlite3.25.3/configure	2018-11-12 20:03:27.000000000 +0200
++++ tcl8.6.9/pkgs/sqlite3.25.3/configure	2018-12-10 08:30:46.610518700 +0200
+@@ -8455,9 +8455,6 @@
  		SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TK_BIN_DIR}/${TK_STUB_LIB_FILE}`\""
  	    fi
  	    SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TCL_BIN_DIR}/${TCL_STUB_LIB_FILE}`\""
@@ -24,10 +24,10 @@ diff -urN tcl8.6.8_orig/pkgs/sqlite3.21.0/configure tcl8.6.8/pkgs/sqlite3.21.0/c
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${SHARED_LIB_SUFFIX}"
  	else
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${UNSHARED_LIB_SUFFIX}"
-diff -urN tcl8.6.8_orig/pkgs/sqlite3.21.0/tclconfig/tcl.m4 tcl8.6.8/pkgs/sqlite3.21.0/tclconfig/tcl.m4
---- tcl8.6.8_orig/pkgs/sqlite3.21.0/tclconfig/tcl.m4	2017-12-21 20:16:24.000000000 +0200
-+++ tcl8.6.8/pkgs/sqlite3.21.0/tclconfig/tcl.m4	2018-02-14 14:51:37.717214700 +0200
-@@ -3427,9 +3427,6 @@
+diff -urN tcl8.6.9_orig/pkgs/sqlite3.25.3/tclconfig/tcl.m4 tcl8.6.9/pkgs/sqlite3.25.3/tclconfig/tcl.m4
+--- tcl8.6.9_orig/pkgs/sqlite3.25.3/tclconfig/tcl.m4	2018-11-16 21:01:50.000000000 +0200
++++ tcl8.6.9/pkgs/sqlite3.25.3/tclconfig/tcl.m4	2018-12-10 08:30:46.610518700 +0200
+@@ -3222,9 +3222,6 @@
  		SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TK_BIN_DIR}/${TK_STUB_LIB_FILE}`\""
  	    fi
  	    SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TCL_BIN_DIR}/${TCL_STUB_LIB_FILE}`\""
@@ -37,10 +37,10 @@ diff -urN tcl8.6.8_orig/pkgs/sqlite3.21.0/tclconfig/tcl.m4 tcl8.6.8/pkgs/sqlite3
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${SHARED_LIB_SUFFIX}"
  	else
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${UNSHARED_LIB_SUFFIX}"
-diff -urN tcl8.6.8_orig/pkgs/tdbc1.0.6/tclconfig/tcl.m4 tcl8.6.8/pkgs/tdbc1.0.6/tclconfig/tcl.m4
---- tcl8.6.8_orig/pkgs/tdbc1.0.6/tclconfig/tcl.m4	2017-12-14 15:33:28.000000000 +0200
-+++ tcl8.6.8/pkgs/tdbc1.0.6/tclconfig/tcl.m4	2018-02-14 14:51:37.717214700 +0200
-@@ -3413,9 +3413,6 @@
+diff -urN tcl8.6.9_orig/pkgs/tdbc1.1.0/tclconfig/tcl.m4 tcl8.6.9/pkgs/tdbc1.1.0/tclconfig/tcl.m4
+--- tcl8.6.9_orig/pkgs/tdbc1.1.0/tclconfig/tcl.m4	2018-11-01 18:02:25.000000000 +0200
++++ tcl8.6.9/pkgs/tdbc1.1.0/tclconfig/tcl.m4	2018-12-10 08:30:46.610518700 +0200
+@@ -3222,9 +3222,6 @@
  		SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TK_BIN_DIR}/${TK_STUB_LIB_FILE}`\""
  	    fi
  	    SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TCL_BIN_DIR}/${TCL_STUB_LIB_FILE}`\""
@@ -50,10 +50,10 @@ diff -urN tcl8.6.8_orig/pkgs/tdbc1.0.6/tclconfig/tcl.m4 tcl8.6.8/pkgs/tdbc1.0.6/
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${SHARED_LIB_SUFFIX}"
  	else
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${UNSHARED_LIB_SUFFIX}"
-diff -urN tcl8.6.8_orig/pkgs/tdbcmysql1.0.6/tclconfig/tcl.m4 tcl8.6.8/pkgs/tdbcmysql1.0.6/tclconfig/tcl.m4
---- tcl8.6.8_orig/pkgs/tdbcmysql1.0.6/tclconfig/tcl.m4	2017-12-14 15:33:48.000000000 +0200
-+++ tcl8.6.8/pkgs/tdbcmysql1.0.6/tclconfig/tcl.m4	2018-02-14 14:51:37.717214700 +0200
-@@ -3413,9 +3413,6 @@
+diff -urN tcl8.6.9_orig/pkgs/tdbcmysql1.1.0/tclconfig/tcl.m4 tcl8.6.9/pkgs/tdbcmysql1.1.0/tclconfig/tcl.m4
+--- tcl8.6.9_orig/pkgs/tdbcmysql1.1.0/tclconfig/tcl.m4	2018-11-01 18:08:20.000000000 +0200
++++ tcl8.6.9/pkgs/tdbcmysql1.1.0/tclconfig/tcl.m4	2018-12-10 08:30:46.610518700 +0200
+@@ -3222,9 +3222,6 @@
  		SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TK_BIN_DIR}/${TK_STUB_LIB_FILE}`\""
  	    fi
  	    SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TCL_BIN_DIR}/${TCL_STUB_LIB_FILE}`\""
@@ -63,10 +63,10 @@ diff -urN tcl8.6.8_orig/pkgs/tdbcmysql1.0.6/tclconfig/tcl.m4 tcl8.6.8/pkgs/tdbcm
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${SHARED_LIB_SUFFIX}"
  	else
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${UNSHARED_LIB_SUFFIX}"
-diff -urN tcl8.6.8_orig/pkgs/tdbcodbc1.0.6/tclconfig/tcl.m4 tcl8.6.8/pkgs/tdbcodbc1.0.6/tclconfig/tcl.m4
---- tcl8.6.8_orig/pkgs/tdbcodbc1.0.6/tclconfig/tcl.m4	2017-12-21 20:16:24.000000000 +0200
-+++ tcl8.6.8/pkgs/tdbcodbc1.0.6/tclconfig/tcl.m4	2018-02-14 14:51:37.717214700 +0200
-@@ -3413,9 +3413,6 @@
+diff -urN tcl8.6.9_orig/pkgs/tdbcodbc1.1.0/tclconfig/tcl.m4 tcl8.6.9/pkgs/tdbcodbc1.1.0/tclconfig/tcl.m4
+--- tcl8.6.9_orig/pkgs/tdbcodbc1.1.0/tclconfig/tcl.m4	2018-11-01 18:09:16.000000000 +0200
++++ tcl8.6.9/pkgs/tdbcodbc1.1.0/tclconfig/tcl.m4	2018-12-10 08:30:46.626141400 +0200
+@@ -3222,9 +3222,6 @@
  		SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TK_BIN_DIR}/${TK_STUB_LIB_FILE}`\""
  	    fi
  	    SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TCL_BIN_DIR}/${TCL_STUB_LIB_FILE}`\""
@@ -76,10 +76,10 @@ diff -urN tcl8.6.8_orig/pkgs/tdbcodbc1.0.6/tclconfig/tcl.m4 tcl8.6.8/pkgs/tdbcod
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${SHARED_LIB_SUFFIX}"
  	else
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${UNSHARED_LIB_SUFFIX}"
-diff -urN tcl8.6.8_orig/pkgs/tdbcpostgres1.0.6/configure tcl8.6.8/pkgs/tdbcpostgres1.0.6/configure
---- tcl8.6.8_orig/pkgs/tdbcpostgres1.0.6/configure	2017-12-21 20:16:25.000000000 +0200
-+++ tcl8.6.8/pkgs/tdbcpostgres1.0.6/configure	2018-02-14 14:51:37.717214700 +0200
-@@ -9418,9 +9418,6 @@
+diff -urN tcl8.6.9_orig/pkgs/tdbcpostgres1.1.0/configure tcl8.6.9/pkgs/tdbcpostgres1.1.0/configure
+--- tcl8.6.9_orig/pkgs/tdbcpostgres1.1.0/configure	2018-11-01 18:09:49.000000000 +0200
++++ tcl8.6.9/pkgs/tdbcpostgres1.1.0/configure	2018-12-10 08:30:46.626141400 +0200
+@@ -8910,9 +8910,6 @@
  		SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TK_BIN_DIR}/${TK_STUB_LIB_FILE}`\""
  	    fi
  	    SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TCL_BIN_DIR}/${TCL_STUB_LIB_FILE}`\""
@@ -89,10 +89,10 @@ diff -urN tcl8.6.8_orig/pkgs/tdbcpostgres1.0.6/configure tcl8.6.8/pkgs/tdbcpostg
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${SHARED_LIB_SUFFIX}"
  	else
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${UNSHARED_LIB_SUFFIX}"
-diff -urN tcl8.6.8_orig/pkgs/tdbcpostgres1.0.6/tclconfig/tcl.m4 tcl8.6.8/pkgs/tdbcpostgres1.0.6/tclconfig/tcl.m4
---- tcl8.6.8_orig/pkgs/tdbcpostgres1.0.6/tclconfig/tcl.m4	2017-12-21 20:16:25.000000000 +0200
-+++ tcl8.6.8/pkgs/tdbcpostgres1.0.6/tclconfig/tcl.m4	2018-02-14 14:51:37.732840400 +0200
-@@ -3413,9 +3413,6 @@
+diff -urN tcl8.6.9_orig/pkgs/tdbcpostgres1.1.0/tclconfig/tcl.m4 tcl8.6.9/pkgs/tdbcpostgres1.1.0/tclconfig/tcl.m4
+--- tcl8.6.9_orig/pkgs/tdbcpostgres1.1.0/tclconfig/tcl.m4	2018-11-01 18:09:45.000000000 +0200
++++ tcl8.6.9/pkgs/tdbcpostgres1.1.0/tclconfig/tcl.m4	2018-12-10 08:30:46.626141400 +0200
+@@ -3222,9 +3222,6 @@
  		SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TK_BIN_DIR}/${TK_STUB_LIB_FILE}`\""
  	    fi
  	    SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TCL_BIN_DIR}/${TCL_STUB_LIB_FILE}`\""
@@ -102,10 +102,10 @@ diff -urN tcl8.6.8_orig/pkgs/tdbcpostgres1.0.6/tclconfig/tcl.m4 tcl8.6.8/pkgs/td
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${SHARED_LIB_SUFFIX}"
  	else
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${UNSHARED_LIB_SUFFIX}"
-diff -urN tcl8.6.8_orig/pkgs/tdbcsqlite3-1.0.6/tclconfig/tcl.m4 tcl8.6.8/pkgs/tdbcsqlite3-1.0.6/tclconfig/tcl.m4
---- tcl8.6.8_orig/pkgs/tdbcsqlite3-1.0.6/tclconfig/tcl.m4	2017-12-21 20:16:25.000000000 +0200
-+++ tcl8.6.8/pkgs/tdbcsqlite3-1.0.6/tclconfig/tcl.m4	2018-02-14 14:51:37.732840400 +0200
-@@ -3413,9 +3413,6 @@
+diff -urN tcl8.6.9_orig/pkgs/tdbcsqlite3-1.1.0/tclconfig/tcl.m4 tcl8.6.9/pkgs/tdbcsqlite3-1.1.0/tclconfig/tcl.m4
+--- tcl8.6.9_orig/pkgs/tdbcsqlite3-1.1.0/tclconfig/tcl.m4	2018-11-01 18:10:23.000000000 +0200
++++ tcl8.6.9/pkgs/tdbcsqlite3-1.1.0/tclconfig/tcl.m4	2018-12-10 08:30:46.626141400 +0200
+@@ -3222,9 +3222,6 @@
  		SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TK_BIN_DIR}/${TK_STUB_LIB_FILE}`\""
  	    fi
  	    SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TCL_BIN_DIR}/${TCL_STUB_LIB_FILE}`\""
@@ -115,10 +115,10 @@ diff -urN tcl8.6.8_orig/pkgs/tdbcsqlite3-1.0.6/tclconfig/tcl.m4 tcl8.6.8/pkgs/td
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${SHARED_LIB_SUFFIX}"
  	else
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${UNSHARED_LIB_SUFFIX}"
-diff -urN tcl8.6.8_orig/pkgs/thread2.8.2/tclconfig/tcl.m4 tcl8.6.8/pkgs/thread2.8.2/tclconfig/tcl.m4
---- tcl8.6.8_orig/pkgs/thread2.8.2/tclconfig/tcl.m4	2017-12-21 20:16:25.000000000 +0200
-+++ tcl8.6.8/pkgs/thread2.8.2/tclconfig/tcl.m4	2018-02-14 14:51:37.732840400 +0200
-@@ -3413,9 +3413,6 @@
+diff -urN tcl8.6.9_orig/pkgs/thread2.8.4/tclconfig/tcl.m4 tcl8.6.9/pkgs/thread2.8.4/tclconfig/tcl.m4
+--- tcl8.6.9_orig/pkgs/thread2.8.4/tclconfig/tcl.m4	2018-11-01 18:11:01.000000000 +0200
++++ tcl8.6.9/pkgs/thread2.8.4/tclconfig/tcl.m4	2018-12-10 08:30:46.626141400 +0200
+@@ -3222,9 +3222,6 @@
  		SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TK_BIN_DIR}/${TK_STUB_LIB_FILE}`\""
  	    fi
  	    SHLIB_LD_LIBS="${SHLIB_LD_LIBS} \"`${CYGPATH} ${TCL_BIN_DIR}/${TCL_STUB_LIB_FILE}`\""
@@ -128,9 +128,9 @@ diff -urN tcl8.6.8_orig/pkgs/thread2.8.2/tclconfig/tcl.m4 tcl8.6.8/pkgs/thread2.
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${SHARED_LIB_SUFFIX}"
  	else
  	    eval eval "PKG_LIB_FILE=${PACKAGE_LIB_PREFIX}${PACKAGE_NAME}${UNSHARED_LIB_SUFFIX}"
-diff -urN tcl8.6.8_orig/win/tcl.m4 tcl8.6.8/win/tcl.m4
---- tcl8.6.8_orig/win/tcl.m4	2017-12-21 20:16:25.000000000 +0200
-+++ tcl8.6.8/win/tcl.m4	2018-02-14 14:51:37.732840400 +0200
+diff -urN tcl8.6.9_orig/win/tcl.m4 tcl8.6.9/win/tcl.m4
+--- tcl8.6.9_orig/win/tcl.m4	2018-12-10 08:21:40.537254700 +0200
++++ tcl8.6.9/win/tcl.m4	2018-12-10 08:30:46.626141400 +0200
 @@ -635,7 +635,6 @@
  
      if test "${GCC}" = "yes" ; then
