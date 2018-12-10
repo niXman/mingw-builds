@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.18
+PKG_VERSION=1.18.1
 PKG_NAME=gdbm-${PKG_VERSION}
 PKG_DIR_NAME=gdbm-${PKG_VERSION}
 PKG_TYPE=.tar.gz
@@ -47,7 +47,7 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
-	gdbm/gdbm_1.17-win32-support.patch
+	gdbm/gdbm_1.18.1-win32-support.patch
 )
 
 #

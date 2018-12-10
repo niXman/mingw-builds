@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.6.8
+PKG_VERSION=8.6.9
 PKG_NAME=tk${PKG_VERSION}
 PKG_DIR_NAME=tk${PKG_VERSION}
 PKG_SUBDIR_NAME=win

@@ -130,6 +130,7 @@ PKG_PATCHES=(
 	Python2/1020-gdbm-module-includes.patch
 	Python2/1030-use-gnu_printf-in-format.patch
 	Python2/1040-install-msilib.patch
+	Python2/1050-Fixed-building-under-Windows-10.patch
 )
 
 #
@@ -184,6 +185,7 @@ PKG_CONFIGURE_FLAGS=(
 	--with-threads
 	--with-system-expat
 	--with-system-ffi
+	--enable-optimizations
 	#
 	LIBFFI_INCLUDEDIR="$LIBSW_DIR/lib/libffi-$LIBFFI_VERSION/include"
 	OPT=""
