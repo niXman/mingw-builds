@@ -83,6 +83,9 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-threads=$THREADS_MODEL
 	--enable-libgomp
 	--enable-libatomic
+	$( [[ "$MSVCRT_PHOBOS_OK" == yes && "$D_LANG_ENABLED" == yes ]] \
+		&& echo "--enable-libphobos"
+	)
 	--enable-lto
 	--enable-graphite
 	--enable-checking=release
