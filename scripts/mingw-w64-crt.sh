@@ -74,6 +74,9 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	$LIBCONF
 	--enable-wildcard
+	$( [[ -n "$MSVCRT_VERSION" ]] \
+		&& echo "--with-default-msvcrt=$MSVCRT_VERSION"
+	)
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""

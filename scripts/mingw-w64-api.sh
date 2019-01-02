@@ -66,6 +66,9 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--enable-sdk=all
 	--enable-secure-api
+	$( [[ -n "$MSVCRT_VERSION" ]] \
+		&& echo "--with-default-msvcrt=$MSVCRT_VERSION"
+	)
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
