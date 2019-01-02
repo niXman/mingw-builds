@@ -1085,3 +1085,18 @@ function func_create_repository_file_upload_cmd {
 }
 
 # **************************************************************************
+
+function func_dbg_hook {
+	# $1 - subtarget name
+	# $2 - hook name
+
+	for hook in $DBG_HOOKS; do
+		[[ $hook == "$1|$2|"* ]] && {
+			local hook_script=${hook/$1|$2|/}
+			echo "--> Calling hook $1|$2 => $hook_script"
+			source $hook_script
+		}
+	done
+}
+
+# **************************************************************************

@@ -99,6 +99,8 @@ readonly RUN_ARGS="$@"
 	echo "    --logviewer-command        - use this command for the log viewer"
 	echo "    --no-colors                - disable colorized output, useful when logging to a file"
 	echo "    --wait-for-logviewer       - wait until after logviewer completes, e.g. for echo"
+	echo "    --debug-hooks=<string>     - Hooks for debugging. string is a colon (:) separated"
+	echo "                                 list of subtarget|hook|script entries."
 	echo "  available Python versions: 2, 3"
 	echo "  available clang versions: 3.4, git"
 	echo "  available gcc versions:"
@@ -324,6 +326,10 @@ while [[ $# > 0 ]]; do
 			COLOR_RESET=""
 			COLOR_PKG_NAME=""
 			COLOR_STATUS=""
+		;;
+		--debug-hooks=*)
+			HOOK_STRING=${1/--debug-hooks=/}
+			DBG_HOOKS=$(echo $HOOK_STRING | tr ":" "\n")
 		;;
 		--wait-for-logviewer) LOGVIEWER_WAIT=yes ;;
 		*)
@@ -682,9 +688,11 @@ for rule in ${SUBTARGETS[@]}; do
 		[[ -n $PKG_SUBDIR_NAME ]] && { mkdir -p $CURR_BUILD_DIR/$PKG_NAME/$PKG_SUBDIR_NAME; }
 	}
 
+	func_dbg_hook $sub "download"
 	func_download \
 		PKG_URLS[@]
 
+	func_dbg_hook $sub "download-exe"
 	[[ ${#PKG_EXECUTE_AFTER_DOWNLOAD[@]} >0 ]] && {
 		func_execute \
 			$SRCS_DIR \
@@ -695,9 +703,11 @@ for rule in ${SUBTARGETS[@]}; do
 			PKG_EXECUTE_AFTER_DOWNLOAD[@]
 	}
 
+	func_dbg_hook $sub "uncompress"
 	func_uncompress \
 		PKG_URLS[@]
 
+	func_dbg_hook $sub "uncompress-exe"
 	[[ ${#PKG_EXECUTE_AFTER_UNCOMPRESS[@]} >0 ]] && {
 		func_execute \
 			$SRCS_DIR \
@@ -708,6 +718,7 @@ for rule in ${SUBTARGETS[@]}; do
 	}
 
 	[[ $FETCH_MODE == no || $FETCH_PATCH_MODE == yes ]] && {
+		func_dbg_hook $sub "patch"
 		[[ ${#PKG_PATCHES[@]} >0 ]] && {
 			func_apply_patches \
 				$SRCS_DIR \
@@ -716,6 +727,7 @@ for rule in ${SUBTARGETS[@]}; do
 				PKG_PATCHES[@]
 		}
 
+		func_dbg_hook $sub "patch-exe"
 		[[ ${#PKG_EXECUTE_AFTER_PATCH[@]} >0 ]] && {
 			func_execute \
 				$SRCS_DIR \
@@ -732,6 +744,7 @@ for rule in ${SUBTARGETS[@]}; do
 		[[ -z $PKG_MAKE_PROG ]] && { PKG_MAKE_PROG=/bin/make; }
 		[[ -z $PKG_CONFIGURE_PROG ]] && { PKG_CONFIGURE_PROG=/bin/sh; }
 
+		func_dbg_hook $sub "configure"
 		[[ ${#PKG_CONFIGURE_FLAGS[@]} >0 ]] && {
 			configure_flags="${PKG_CONFIGURE_FLAGS[@]}"
 			func_configure \
@@ -744,6 +757,7 @@ for rule in ${SUBTARGETS[@]}; do
 				$PKG_SUBDIR_NAME
 		}
 
+		func_dbg_hook $sub "configure-exe"
 		[[ ${#PKG_EXECUTE_AFTER_CONFIGURE[@]} >0 ]] && {
 			func_execute \
 				$CURR_BUILD_DIR \
@@ -753,6 +767,7 @@ for rule in ${SUBTARGETS[@]}; do
 				PKG_EXECUTE_AFTER_CONFIGURE[@]
 		}
 
+		func_dbg_hook $sub "make"
 		[[ ${#PKG_MAKE_FLAGS[@]} >0 ]] && {
 			make_flags="$PKG_MAKE_PROG ${PKG_MAKE_FLAGS[@]}"
 			func_make \
@@ -766,6 +781,7 @@ for rule in ${SUBTARGETS[@]}; do
 				$PKG_SUBDIR_NAME
 		}
 
+		func_dbg_hook $sub "testsuite"
 		[[ $PKG_RUN_TESTSUITE == yes ]] && {
 			[[ ${#PKG_TESTSUITE_FLAGS[@]} >0 ]] && {
 				testsuite_flags="$PKG_MAKE_PROG ${PKG_TESTSUITE_FLAGS[@]}"
@@ -781,6 +797,7 @@ for rule in ${SUBTARGETS[@]}; do
 			}
 		}
 
+		func_dbg_hook $sub "install"
 		[[ ${#PKG_INSTALL_FLAGS[@]} >0 ]] && {
 			install_flags="$PKG_MAKE_PROG ${PKG_INSTALL_FLAGS[@]}"
 			func_make \
@@ -794,6 +811,7 @@ for rule in ${SUBTARGETS[@]}; do
 				$PKG_SUBDIR_NAME
 		}
 
+		func_dbg_hook $sub "install-exe"
 		[[ ${#PKG_EXECUTE_AFTER_INSTALL[@]} >0 ]] && {
 			func_execute \
 				$CURR_BUILD_DIR \
@@ -802,7 +820,8 @@ for rule in ${SUBTARGETS[@]}; do
 				"after_install" \
 				PKG_EXECUTE_AFTER_INSTALL[@]
 		}
-		
+
+		func_dbg_hook $sub "test"
 		[[ ${#PKG_TESTS[@]} >0 ]] && {
 			mkdir -p $TESTS_ROOT_DIR/$BUILD_ARCHITECTURE
 			[[ $USE_MULTILIB == yes ]] && {
@@ -818,6 +837,8 @@ for rule in ${SUBTARGETS[@]}; do
 				func_test $test ${PKG_TESTS[$test]} $TESTS_ROOT_DIR
 			done
 		}
+
+		func_dbg_hook $sub "finish"
 	}
 
 	[[ "$PKG_ARCHITECTURE" == "$REVERSE_ARCHITECTURE" ]] && {
