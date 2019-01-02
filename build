@@ -303,6 +303,11 @@ while [[ $# > 0 ]]; do
 		;;
 		--with-default-msvcrt=*)
 			MSVCRT_VERSION=${1/--with-default-msvcrt=/}
+			case $MSVCRT_VERSION in
+				msvcr120*|ucrt*)
+					MSVCRT_PHOBOS_OK="yes"
+				;;
+			esac
 		;;
 		--threads=*)
 			THREADS_MODEL=${1/--threads=/}

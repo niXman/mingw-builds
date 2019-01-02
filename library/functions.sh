@@ -208,6 +208,7 @@ function func_check_languages {
 		for lang in ${langs[@]}; do
 			case $lang in
 				ada|c|c++|fortran|objc|obj-c++) ;;
+				d) D_LANG_ENABLED="yes" ;;
 				*) _lang_err+=" \"$lang\"" ;;
 			esac
 		done
