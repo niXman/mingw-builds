@@ -134,6 +134,7 @@ PKG_CONFIGURE_FLAGS=(
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
+	LD_FOR_TARGET=$PREFIX/bin/ld.exe
 )
 
 #
