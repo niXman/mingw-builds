@@ -128,6 +128,7 @@ PKG_CONFIGURE_FLAGS=(
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
 	MAKEINFO=missing
+	LD_FOR_TARGET=$PREFIX/bin/ld.exe
 )
 
 #
