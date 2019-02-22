@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=3260000
+PKG_VERSION=3270100
 PKG_NAME=sqlite-${PKG_VERSION}
 PKG_DIR_NAME=sqlite-autoconf-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://www.sqlite.org/2018/sqlite-autoconf-${PKG_VERSION}${PKG_TYPE}"
+	"https://www.sqlite.org/2019/sqlite-autoconf-${PKG_VERSION}${PKG_TYPE}"
 )
 PKG_PRIORITY=extra
 
