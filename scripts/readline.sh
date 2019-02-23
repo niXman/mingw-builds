@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=7.0
+PKG_VERSION=8.0
 PKG_NAME=readline-${PKG_VERSION}
 PKG_DIR_NAME=readline-${PKG_VERSION}
 PKG_TYPE=.tar.gz
@@ -47,14 +47,7 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=(
-	readline/readline-7.0-mingw.patch
-	readline/readline70-001
-	readline/readline70-002
-	readline/readline70-003
-	readline/readline70-004
-	readline/readline70-005
-)
+PKG_PATCHES=()
 
 #
 
