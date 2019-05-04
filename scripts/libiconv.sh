@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.15
+PKG_VERSION=1.16
 PKG_NAME=$PKG_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=libiconv-${PKG_VERSION}
 PKG_TYPE=.tar.gz
