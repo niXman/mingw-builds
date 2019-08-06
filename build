@@ -237,6 +237,9 @@ while [[ $# > 0 ]]; do
 			BASE_CFLAGS="$BASE_CFLAGS -flto -fuse-linker-plugin"
 			BASE_CXXFLAGS="$BASE_CXXFLAGS -flto -fuse-linker-plugin"
 			BASE_LDFLAGS="$BASE_LDFLAGS -flto -fuse-linker-plugin"
+			export AR=gcc-ar
+			export RANLIB=gcc-ranlib
+			export NM=gcc-nm
 		;;
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-extras) [[ $BUILD_MODE != python ]] && { BUILD_EXTRAS=no; };;
