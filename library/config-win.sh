@@ -72,7 +72,7 @@ readonly LOGVIEWERS=(
 	-n $(which "i686-w64-mingw32-gcc.exe" 2>/dev/null) || \
 	-n $(which "x86_64-w64-mingw32-gcc.exe" 2>/dev/null) \
 ]] && {
-	die "remove from PATH any existing MinGW directory. terminate."
+	die "remove from PATH any gcc.exe or MingW gcc.exe. terminate."
 }
 
 # **************************************************************************
