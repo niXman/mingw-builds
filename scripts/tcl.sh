@@ -56,12 +56,16 @@ PKG_PATCHES=(
 	tcl/007-install.mingw.patch
 	tcl/008-tcl-8.5.14-hidden.patch
 	tcl/009-fix-using-gnu-print.patch
-	tcl/010-dont-link-shared-with--static-libgcc.patch
 )
 
 #
 
 PKG_EXECUTE_AFTER_PATCH=(
+	# Using the static libgcc library is problematic when sharing
+	# resources across dynamic link libraries, so we must use
+	# libgcc*.dll everywhere:
+	"find "$SRCS_DIR/$PKG_DIR_NAME" -type f \( -name "tcl.m4" -o -name "configure*" \) -print0 | xargs -0 sed -i 's/-static-libgcc//g'"
+
 	"cd win && autoreconf -fi"
 )
 
