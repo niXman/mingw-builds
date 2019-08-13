@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.7.15
+PKG_VERSION=2.7.16
 PKG_NAME=Python-${PKG_VERSION}
 PKG_DIR_NAME=Python-${PKG_VERSION}
 PKG_TYPE=.tar.xz
@@ -131,6 +131,7 @@ PKG_PATCHES=(
 	Python2/1030-use-gnu_printf-in-format.patch
 	Python2/1040-install-msilib.patch
 	Python2/1050-Fixed-building-under-Windows-10.patch
+	Python2/1900-ctypes-dont-depend-on-internal-libffi.patch
 )
 
 #
