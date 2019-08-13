@@ -41,6 +41,9 @@ if [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 8 ]] || [[ ${BUILD_V
 elif [[ ${BUILD_VERSION:0:1} == 4 ]] || [[ ${BUILD_VERSION:0:1} == 5 && ${BUILD_VERSION:2:1} -le 2 ]]; then
    PKG_VERSION=0.14.1
    PKG_TYPE=.tar.xz
+elif [[ ${BUILD_VERSION:0:1} == 5 ]]; then
+   PKG_VERSION=0.18
+   PKG_TYPE=.tar.xz
 elif [[ ${BUILD_VERSION:0:1} -le 7 ]]; then
    PKG_VERSION=0.19
    PKG_TYPE=.tar.xz
