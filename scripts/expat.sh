@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.2.7
+PKG_VERSION=2.2.8
 PKG_NAME=expat-${PKG_VERSION}
 PKG_DIR_NAME=expat-${PKG_VERSION}
-PKG_TYPE=.tar.bz2
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"http://sourceforge.net/projects/expat/files/expat/${PKG_VERSION}/expat-${PKG_VERSION}${PKG_TYPE}"
+	"http://sourceforge.net/projects/expat/files/expat/${PKG_VERSION}/${PKG_NAME}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
