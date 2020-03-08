@@ -39,7 +39,7 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
   --no-multilib`                     - build GCC without multilib support (default for DWARF and SEH exception models).
   --static-gcc`                      - build static GCC.
   --dyn-deps`                        - build GCC with dynamically dependencies.
-  --rt-version=<v3|v4|v5|v6>`        - version of mingw-w64 runtime to build.
+  --rt-version=<v3|v4|v5|v6|v7>`     - version of mingw-w64 runtime to build.
   --rev=N`                           - number of the build revision.
   --with-testsuite`                  - run testsuite for packages that contain flags for it.
   --threads=<posix|win32>`           - used threads model.
