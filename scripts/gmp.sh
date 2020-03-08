@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=6.1.2
+PKG_VERSION=6.2.0
 PKG_NAME=$BUILD_ARCHITECTURE-gmp-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=gmp-${PKG_VERSION}
 PKG_TYPE=.tar.xz
