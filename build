@@ -68,7 +68,7 @@ readonly RUN_ARGS="$@"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
 	echo "    --jobs=N                   - specifies number of parallel make threads"
 	echo "    --rt-version=<v3|v4|v5|v6|trunk|v3.3.0|v4.0.6|v5.0.4|v6.0.0|v7.0.0> - specifies mingw-w64 runtime version to build"
-	echo "                                 v3, v4, v5, v6, trunk specifies specific branches in the git repo"
+	echo "                                 v3, v4, v5, v6, v7, trunk specifies specific branches in the git repo"
 	echo "                                 v3.3.0, v4.0.6, v5.0.4, v6.0.0, v7.0.0 is a specific release versions, uses the tarball"
 	echo "    --with-default-msvcrt=     - specifies msvc version the toolchain will target"
 	echo "                                 <msvcrt|msvcr80|msvcr90|msvcr100|msvcr110|msvcr120|ucrt>"
@@ -145,11 +145,13 @@ readonly RUN_ARGS="$@"
 	echo "    gcc-7.2.0 (7.2.0 release)"
 	echo "    gcc-7.3.0 (7.3.0 release)"
 	echo "    gcc-7.4.0 (7.4.0 release)"
-	echo "    gcc-7-branch (currently 7.5.0-prerelease)"
+	echo "    gcc-7.5.0 (7.5.0 release)"
+	echo "    gcc-7-branch (currently 7.6.0-prerelease)"
 	echo "    gcc-8.1.0 (8.1.0 release)"
 	echo "    gcc-8.2.0 (8.2.0 release)"
 	echo "    gcc-8.3.0 (8.3.0 release)"
-	echo "    gcc-8-branch (currently 8.4.0-prerelease)"
+	echo "    gcc-8.4.0 (8.4.0 release)"
+	echo "    gcc-8-branch (currently 8.5.0-prerelease)"
 	echo "    gcc-9.1.0 (9.1.0 release)"
 	echo "    gcc-9.2.0 (9.2.0 release)"
 	echo "    gcc-9-branch (currently 9.3.0-prerelease)"
@@ -282,6 +284,10 @@ while [[ $# > 0 ]]; do
 				v6)
 					RUNTIME_VERSION=v6
 					RUNTIME_BRANCH="v6.x"
+				;;
+				v7)
+					RUNTIME_VERSION=v7
+					RUNTIME_BRANCH="v7.x"
 				;;
 				trunk)
 					RUNTIME_VERSION=v7

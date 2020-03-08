@@ -39,7 +39,7 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
   --no-multilib`                     - build GCC without multilib support (default for DWARF and SEH exception models).
   --static-gcc`                      - build static GCC.
   --dyn-deps`                        - build GCC with dynamically dependencies.
-  --rt-version=<v3|v4|v5|v6>`        - version of mingw-w64 runtime to build.
+  --rt-version=<v3|v4|v5|v6|v7>`     - version of mingw-w64 runtime to build.
   --rev=N`                           - number of the build revision.
   --with-testsuite`                  - run testsuite for packages that contain flags for it.
   --threads=<posix|win32>`           - used threads model.
@@ -110,9 +110,11 @@ At the moment, successfully building the following versions:
   gcc-7.2.0
   gcc-7.3.0
   gcc-7.4.0
+  gcc-7.5.0
   gcc-8.1.0
   gcc-8.2.0
   gcc-8.3.0
+  gcc-8.4.0
   gcc-9.1.0
   gcc-9.2.0
   gcc-4_6-branch (currently 4.6.5 prerelease)
@@ -121,8 +123,8 @@ At the moment, successfully building the following versions:
   gcc-4_9-branch (currently 4.9.5 prerelease)
   gcc-5-branch (currently 5.6.0 prerelease)
   gcc-6-branch (currently 6.6.0 prerelease)
-  gcc-7-branch (currently 7.5.0 prerelease)
-  gcc-8-branch (currently 8.4.0 prerelease)
+  gcc-7-branch (currently 7.6.0 prerelease)
+  gcc-8-branch (currently 8.5.0 prerelease)
   gcc-9-branch (currently 9.3.0-prerelease)
   gcc-trunk (currently 10.0.0 snapshot)
 ```

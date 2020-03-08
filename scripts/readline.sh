@@ -47,7 +47,12 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	readline/readline80-001.patch
+	readline/readline80-002.patch
+	readline/readline80-003.patch
+	readline/readline80-004.patch
+)
 
 #
 

@@ -1,20 +1,20 @@
-diff -urN binutils-2.33.1_orig/bfd/bfd-in.h binutils-2.33.1/bfd/bfd-in.h
---- binutils-2.33.1_orig/bfd/bfd-in.h	2019-09-09 21:19:43.000000000 +0800
-+++ binutils-2.33.1/bfd/bfd-in.h	2019-11-24 11:46:10.000000000 +0800
-@@ -158,7 +158,7 @@
- 
+diff -urN binutils-2.27.orig/bfd/bfd-in.h binutils-2.27/bfd/bfd-in.h
+--- binutils-2.27.orig/bfd/bfd-in.h	2016-08-03 09:36:50.000000000 +0200
++++ binutils-2.27/bfd/bfd-in.h	2016-09-21 21:13:49.177148600 +0200
+@@ -137,7 +137,7 @@
+
  #if BFD_HOST_64BIT_LONG
  #define BFD_VMA_FMT "l"
 -#elif defined (__MSVCRT__)
-+#elif defined (__MSVCRT__) && !defined( __USE_MINGW_ANSI_STDIO)
++#elif defined(__MSVCRT__) && !defined( __USE_MINGW_ANSI_STDIO)
  #define BFD_VMA_FMT "I64"
  #else
  #define BFD_VMA_FMT "ll"
-diff -urN binutils-2.33.1_orig/bfd/bfd-in2.h binutils-2.33.1/bfd/bfd-in2.h
---- binutils-2.33.1_orig/bfd/bfd-in2.h	2019-09-09 21:19:43.000000000 +0800
-+++ binutils-2.33.1/bfd/bfd-in2.h	2019-11-24 11:46:10.000000000 +0800
-@@ -165,7 +165,7 @@
- 
+diff -urN binutils-2.27.orig/bfd/bfd-in2.h binutils-2.27/bfd/bfd-in2.h
+--- binutils-2.27.orig/bfd/bfd-in2.h	2016-08-03 09:36:50.000000000 +0200
++++ binutils-2.27/bfd/bfd-in2.h	2016-09-21 21:13:49.185161800 +0200
+@@ -144,7 +144,7 @@
+
  #if BFD_HOST_64BIT_LONG
  #define BFD_VMA_FMT "l"
 -#elif defined (__MSVCRT__)
@@ -22,21 +22,21 @@ diff -urN binutils-2.33.1_orig/bfd/bfd-in2.h binutils-2.33.1/bfd/bfd-in2.h
  #define BFD_VMA_FMT "I64"
  #else
  #define BFD_VMA_FMT "ll"
-diff -urN binutils-2.33.1_orig/binutils/dwarf.c binutils-2.33.1/binutils/dwarf.c
---- binutils-2.33.1_orig/binutils/dwarf.c	2019-09-25 15:50:50.000000000 +0800
-+++ binutils-2.33.1/binutils/dwarf.c	2019-11-24 11:46:10.000000000 +0800
-@@ -201,7 +201,7 @@
+diff -urN binutils-2.27.orig/binutils/dwarf.c binutils-2.27/binutils/dwarf.c
+--- binutils-2.27.orig/binutils/dwarf.c	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/binutils/dwarf.c	2016-09-21 21:13:49.210178100 +0200
+@@ -164,7 +164,7 @@
  }
- 
+
  #if defined HAVE_LONG_LONG && SIZEOF_LONG_LONG > SIZEOF_LONG
 -# ifndef __MINGW32__
 +#if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
  #  define DWARF_VMA_FMT		"ll"
  #  define DWARF_VMA_FMT_LONG	"%16.16llx"
  # else
-diff -urN binutils-2.33.1_orig/binutils/nm.c binutils-2.33.1/binutils/nm.c
---- binutils-2.33.1_orig/binutils/nm.c	2019-09-25 15:50:50.000000000 +0800
-+++ binutils-2.33.1/binutils/nm.c	2019-11-24 11:46:10.000000000 +0800
+diff -urN binutils-2.27.orig/binutils/nm.c binutils-2.27/binutils/nm.c
+--- binutils-2.27.orig/binutils/nm.c	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/binutils/nm.c	2016-09-21 21:13:49.221191400 +0200
 @@ -1243,7 +1243,7 @@
  #if BFD_HOST_64BIT_LONG
        ;
@@ -46,10 +46,10 @@ diff -urN binutils-2.33.1_orig/binutils/nm.c binutils-2.33.1/binutils/nm.c
        length = "ll";
  #else
        length = "I64";
-diff -urN binutils-2.33.1_orig/binutils/prdbg.c binutils-2.33.1/binutils/prdbg.c
---- binutils-2.33.1_orig/binutils/prdbg.c	2019-09-09 21:19:43.000000000 +0800
-+++ binutils-2.33.1/binutils/prdbg.c	2019-11-24 11:46:10.000000000 +0800
-@@ -504,7 +504,7 @@
+diff -urN binutils-2.27.orig/binutils/prdbg.c binutils-2.27/binutils/prdbg.c
+--- binutils-2.27.orig/binutils/prdbg.c	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/binutils/prdbg.c	2016-09-21 21:13:49.229194100 +0200
+@@ -502,7 +502,7 @@
  #if BFD_HOST_64BIT_LONG_LONG
    else if (sizeof (vma) <= sizeof (unsigned long long))
      {
@@ -58,10 +58,10 @@ diff -urN binutils-2.33.1_orig/binutils/prdbg.c binutils-2.33.1/binutils/prdbg.c
        if (hexp)
  	sprintf (buf, "0x%llx", (unsigned long long) vma);
        else if (unsignedp)
-diff -urN binutils-2.33.1_orig/binutils/readelf.c binutils-2.33.1/binutils/readelf.c
---- binutils-2.33.1_orig/binutils/readelf.c	2019-10-09 15:16:05.000000000 +0800
-+++ binutils-2.33.1/binutils/readelf.c	2019-11-24 11:46:10.000000000 +0800
-@@ -1243,7 +1243,7 @@
+diff -urN binutils-2.27.orig/binutils/readelf.c binutils-2.27/binutils/readelf.c
+--- binutils-2.27.orig/binutils/readelf.c	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/binutils/readelf.c	2016-09-21 21:13:49.240194700 +0200
+@@ -1154,7 +1154,7 @@
  		  : "%12.12lx  %12.12lx ",
  		  offset, inf);
  #elif BFD_HOST_64BIT_LONG_LONG
@@ -70,24 +70,24 @@ diff -urN binutils-2.33.1_orig/binutils/readelf.c binutils-2.33.1/binutils/reade
  	  printf (do_wide
  		  ? "%16.16llx  %16.16llx "
  		  : "%12.12llx  %12.12llx ",
-@@ -13706,7 +13706,7 @@
+@@ -12372,7 +12372,7 @@
  	{
  	  size_t maxlen = end - data;
- 
+
 -#ifndef __MSVCRT__
 +#if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
  	  /* PR 11128: Use two separate invocations in order to work
               around bugs in the Solaris 8 implementation of printf.  */
  	  printf ("  [%6tx]  ", data - start);
-diff -urN binutils-2.33.1_orig/binutils/strings.c binutils-2.33.1/binutils/strings.c
---- binutils-2.33.1_orig/binutils/strings.c	2019-09-09 21:19:43.000000000 +0800
-+++ binutils-2.33.1/binutils/strings.c	2019-11-24 11:46:10.000000000 +0800
+diff -urN binutils-2.27.orig/binutils/strings.c binutils-2.27/binutils/strings.c
+--- binutils-2.27.orig/binutils/strings.c	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/binutils/strings.c	2016-09-21 21:13:49.251195600 +0200
 @@ -613,7 +613,7 @@
  #ifdef HAVE_LONG_LONG
  	    if (sizeof (start) > sizeof (long))
  	      {
 -# ifndef __MSVCRT__
-+#if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
++# if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
  		printf ("%7llo ", (unsigned long long) start);
  # else
  		printf ("%7I64o ", (unsigned long long) start);
@@ -105,15 +105,15 @@ diff -urN binutils-2.33.1_orig/binutils/strings.c binutils-2.33.1/binutils/strin
  	    if (sizeof (start) > sizeof (long))
  	      {
 -# ifndef __MSVCRT__
-+#if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
++# if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
  		printf ("%7llx ", (unsigned long long) start);
  # else
  		printf ("%7I64x ", (unsigned long long) start);
-diff -urN binutils-2.33.1_orig/gas/as.h binutils-2.33.1/gas/as.h
---- binutils-2.33.1_orig/gas/as.h	2019-09-09 21:19:43.000000000 +0800
-+++ binutils-2.33.1/gas/as.h	2019-11-24 11:46:10.000000000 +0800
-@@ -447,10 +447,10 @@
- 
+diff -urN binutils-2.27.orig/gas/as.h binutils-2.27/gas/as.h
+--- binutils-2.27.orig/gas/as.h	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/gas/as.h	2016-09-21 21:25:33.955958500 +0200
+@@ -438,10 +438,10 @@
+
  #define PRINTF_LIKE(FCN) \
    void FCN (const char *format, ...) \
 -    __attribute__ ((__format__ (__printf__, 1, 2)))
@@ -122,13 +122,13 @@ diff -urN binutils-2.33.1_orig/gas/as.h binutils-2.33.1/gas/as.h
    void FCN (const char *file, unsigned int line, const char *format, ...) \
 -    __attribute__ ((__format__ (__printf__, 3, 4)))
 +    __attribute__ ((__format__ (gnu_printf, 3, 4)))
- 
+
  #else /* __GNUC__ < 2 || defined(VMS) */
- 
-diff -urN binutils-2.33.1_orig/gas/read.c binutils-2.33.1/gas/read.c
---- binutils-2.33.1_orig/gas/read.c	2019-09-09 21:19:43.000000000 +0800
-+++ binutils-2.33.1/gas/read.c	2019-11-24 11:46:10.000000000 +0800
-@@ -4414,7 +4414,7 @@
+
+diff -urN binutils-2.27.orig/gas/read.c binutils-2.27/gas/read.c
+--- binutils-2.27.orig/gas/read.c	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/gas/read.c	2016-09-21 21:13:49.262196200 +0200
+@@ -4415,7 +4415,7 @@
  	{
  	  /* Leading bits contain both 0s & 1s.  */
  #if defined (BFD64) && BFD_HOST_64BIT_LONG_LONG
@@ -137,33 +137,33 @@ diff -urN binutils-2.33.1_orig/gas/read.c binutils-2.33.1/gas/read.c
  	  as_warn (_("value 0x%llx truncated to 0x%llx"),
  		   (unsigned long long) get, (unsigned long long) use);
  #else
-diff -urN binutils-2.33.1_orig/gold/configure binutils-2.33.1/gold/configure
---- binutils-2.33.1_orig/gold/configure	2019-10-12 22:02:00.000000000 +0800
-+++ binutils-2.33.1/gold/configure	2019-11-24 11:46:10.000000000 +0800
-@@ -10052,7 +10052,7 @@
+diff -urN binutils-2.27.orig/gold/configure binutils-2.27/gold/configure
+--- binutils-2.27.orig/gold/configure	2016-08-03 09:36:53.000000000 +0200
++++ binutils-2.27/gold/configure	2016-09-21 21:13:49.306197900 +0200
+@@ -7558,7 +7558,7 @@
  /* end confdefs.h.  */
- 
+
  template<typename T> extern void foo(const char*, ...)
 -  __attribute__ ((__format__ (__printf__, 1, 2)));
 +  __attribute__ ((__format__ (gnu_printf, 1, 2)));
  template<typename T> void foo(const char* format, ...) {}
  void bar() { foo<int>("%s\n", "foo"); }
- 
-diff -urN binutils-2.33.1_orig/gold/configure.ac binutils-2.33.1/gold/configure.ac
---- binutils-2.33.1_orig/gold/configure.ac	2019-09-09 21:19:44.000000000 +0800
-+++ binutils-2.33.1/gold/configure.ac	2019-11-24 11:46:10.000000000 +0800
-@@ -655,7 +655,7 @@
+
+diff -urN binutils-2.27.orig/gold/configure.ac binutils-2.27/gold/configure.ac
+--- binutils-2.27.orig/gold/configure.ac	2016-08-03 09:36:53.000000000 +0200
++++ binutils-2.27/gold/configure.ac	2016-09-21 21:13:49.317584300 +0200
+@@ -635,7 +635,7 @@
  [gold_cv_template_attribute],
- [AC_COMPILE_IFELSE([AC_LANG_SOURCE([
+ [AC_COMPILE_IFELSE([
  template<typename T> extern void foo(const char*, ...)
 -  __attribute__ ((__format__ (__printf__, 1, 2)));
 +  __attribute__ ((__format__ (gnu_printf, 1, 2)));
  template<typename T> void foo(const char* format, ...) {}
  void bar() { foo<int>("%s\n", "foo"); }
- ])], [gold_cv_template_attribute=yes], [gold_cv_template_attribute=no])])
-diff -urN binutils-2.33.1_orig/include/ansidecl.h binutils-2.33.1/include/ansidecl.h
---- binutils-2.33.1_orig/include/ansidecl.h	2019-09-09 21:19:44.000000000 +0800
-+++ binutils-2.33.1/include/ansidecl.h	2019-11-24 11:46:10.000000000 +0800
+ ], [gold_cv_template_attribute=yes], [gold_cv_template_attribute=no])])
+diff -urN binutils-2.27.orig/include/ansidecl.h binutils-2.27/include/ansidecl.h
+--- binutils-2.27.orig/include/ansidecl.h	2016-08-03 09:36:53.000000000 +0200
++++ binutils-2.27/include/ansidecl.h	2016-09-21 21:13:49.327082000 +0200
 @@ -195,7 +195,7 @@
     before GCC 3.3, but as of 3.3 we need to add the `nonnull'
     attribute to retain this behavior.  */
