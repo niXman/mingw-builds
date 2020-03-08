@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.7.16
+PKG_VERSION=2.7.17
 PKG_NAME=Python-${PKG_VERSION}
 PKG_DIR_NAME=Python-${PKG_VERSION}
 PKG_TYPE=.tar.xz
