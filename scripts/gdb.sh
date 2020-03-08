@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=$( [[ ${BUILD_VERSION:0:1} == 4 || ${BUILD_VERSION:0:1} == 5 ]] && { echo 7.12; } || { echo 8.3.1; } )
+PKG_VERSION=$( [[ ${BUILD_VERSION:0:1} == 4 || ${BUILD_VERSION:0:1} == 5 ]] && { echo 7.12; } || { echo 9.1; } )
 PKG_NAME=gdb-${PKG_VERSION}
 PKG_DIR_NAME=gdb-${PKG_VERSION}
 PKG_TYPE=.tar.xz
@@ -52,7 +52,7 @@ PKG_PATCHES=(
 	#gdb/gdb-7.9-mingw-gcc-4.7.patch
 	# http://sourceware.org/bugzilla/show_bug.cgi?id=15412
 	gdb/gdb-perfomance.patch
-	gdb/gdb-fix-using-gnu-print.patch
+	$( [[ ${PKG_VERSION} == 7.12 ]] && { echo "gdb/gdb-7.12-fix-using-gnu-print.patch"; } || { echo "gdb/gdb-fix-using-gnu-print.patch"; } )
 	$( [[ ${PKG_VERSION} == 7.12 ]] && { echo "gdb/gdb-7.12-dynamic-libs.patch"; } || { echo "gdb/gdb-8.3.1-dynamic-libs.patch"; } )
 )
 
