@@ -44,7 +44,7 @@ elif [[ ${BUILD_VERSION:0:1} == 4 ]] || [[ ${BUILD_VERSION:0:1} == 5 && ${BUILD_
 elif [[ ${BUILD_VERSION:0:1} == 5 ]]; then
    PKG_VERSION=0.18
    PKG_TYPE=.tar.xz
-elif [[ ${BUILD_VERSION:0:1} -le 7 ]]; then
+elif [[ ${BUILD_VERSION:0:1} -le 7 && ${BUILD_VERSION} != trunk ]]; then
    PKG_VERSION=0.19
    PKG_TYPE=.tar.xz
 else
