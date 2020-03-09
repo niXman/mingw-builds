@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=4.8
-PKG_NAME=gcc-${PKG_VERSION}
+PKG_VERSION=4.7
+PKG_NAME=gcc-${PKG_VERSION}-branch
 PKG_DIR_NAME=gcc-${PKG_VERSION}-branch
 PKG_TYPE=git
 PKG_URLS=(
-	"git://gcc.gnu.org/git/gcc.git|branch:releases/$PKG_NAME|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
+	"git://gcc.gnu.org/git/gcc.git|branch:releases/gcc-$PKG_VERSION|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
 )
 
 PKG_PRIORITY=main
@@ -49,15 +49,8 @@ PKG_PRIORITY=main
 
 PKG_PATCHES=(
 	gcc/gcc-4.7-stdthreads.patch
-	gcc/gcc-4.8-iconv.patch
-	gcc/gcc-4.8-libstdc++export.patch
-	#gcc/gcc-4.8-filename-output.patch
-	#gcc/gcc-4.8-lambda-ICE.patch
-	gcc/gcc-4.8.3-libatomic-cygwin.patch
-	gcc/gcc-4.8.2-build-more-gnattools.mingw.patch
-	gcc/gcc-4.8.2-dont-escape-arguments-that-dont-need-it-in-pex-win32.c.patch
-	gcc/gcc-4.8.2-fix-for-windows-not-minding-non-existant-parent-dirs.patch
-	gcc/gcc-4.8.2-windows-lrealpath-no-force-lowercase-nor-backslash.patch
+	gcc/gcc-4.7-iconv.patch
+	gcc/gcc-4.7-vswprintf.patch
 	gcc/lto-plugin-use-static-libgcc.patch
 	gcc/gcc-4.6-fix_mismatch_in_gnu_inline_attributes.patch
 )
@@ -85,6 +78,7 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-libgomp
 	--enable-lto
 	--enable-graphite
+	--enable-cloog-backend=isl
 	--enable-checking=release
 	--enable-fully-dynamic-string
 	--enable-version-specific-runtime-libs
@@ -95,6 +89,8 @@ PKG_CONFIGURE_FLAGS=(
 		&& echo "--enable-sjlj-exceptions" \
 	)
 	#
+	--disable-ppl-version-check
+	--disable-cloog-version-check
 	--disable-libstdcxx-pch
 	--disable-libstdcxx-debug
 	$( [[ $BOOTSTRAPING == yes ]] \
@@ -113,10 +109,12 @@ PKG_CONFIGURE_FLAGS=(
 	$PROCESSOR_OPTIMIZATION
 	$PROCESSOR_TUNE
 	#
+	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
+		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
+	)
 	--with-libiconv
 	--with-system-zlib
-	--with-{gmp,mpfr,mpc,isl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
-	--enable-cloog-backend=isl
+	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}, $MINGW_W64_PKG_STRING\""
 	--with-bugurl=$BUG_URL
 	#
