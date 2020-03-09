@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=5-branch
+PKG_VERSION=5
 PKG_NAME=gcc-${PKG_VERSION}
-PKG_DIR_NAME=gcc-${PKG_VERSION}
-PKG_TYPE=svn
+PKG_DIR_NAME=gcc-${PKG_VERSION}-branch
+PKG_TYPE=git
 PKG_URLS=(
-	"svn://gcc.gnu.org/svn/gcc/branches/${PKG_NAME}|repo:$PKG_TYPE"
+	"git://gcc.gnu.org/git/gcc.git|branch:releases/$PKG_NAME|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
 )
 
 PKG_PRIORITY=main
