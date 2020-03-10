@@ -959,7 +959,11 @@ function func_map_gcc_name_to_gcc_build_name {
 	[[ $_gcc_type != release ]] && {
 		case $2 in
 			gcc-*-branch|gcc-trunk)
-				local _gcc_rev="rev$(cd $1/$2 && svn info | grep 'Revision: ' | sed 's|Revision: ||')"
+				if [ -d "$1/$2/.git" ]; then
+					local _gcc_rev="rev$(cd $1/$2 && git log --pretty=format:'%h' -n 1)"
+				else
+					local _gcc_rev="rev$(cd $1/$2 && svn info | grep 'Revision: ' | sed 's|Revision: ||')"
+				fi
 			;;
 			*) local _gcc_rev="" ;;
 		esac
