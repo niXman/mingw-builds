@@ -35,39 +35,41 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.0.2u
+PKG_VERSION=1.1.1f
 PKG_NAME=openssl-${PKG_VERSION}
 PKG_DIR_NAME=openssl-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://www.openssl.org/source/old/1.0.2/openssl-${PKG_VERSION}${PKG_TYPE}"
+	"https://www.openssl.org/source/openssl-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
 PKG_LNDIR=yes
+PKG_CONFIGURE_PROG=perl
 PKG_CONFIGURE_SCRIPT=Configure
 #
 
 PKG_PATCHES=(
-	openssl/openssl-0.9.6-x509.patch
-	openssl/openssl-1.0.0a-ldflags.patch
-	openssl/openssl-1.0.1-x32.patch
-	# openssl/openssl-1.0.2a-parallel-build.patch
+	openssl/openssl-1.1.1-relocation.patch
 )
 
 #
 
 PKG_CONFIGURE_FLAGS=(
 	--prefix=$LIBS_DIR
+	--openssldir=$LIBS_DIR/ssl
 	#
 	shared
 	threads
 	zlib
 	enable-camellia
-	enable-idea
-	enable-mdc2
-	enable-tlsext
-	enable-rfc3779
+    enable-capieng
+    enable-idea
+    enable-mdc2
+    enable-rc5
+    enable-rfc3779
+    -D__MINGW_USE_VC2005_COMPAT
+    -DOPENSSLBIN="\\\"\\\\\\\"${LIBS_DIR}/bin\\\\\\\"\\\""
 	$( [[ $BUILD_ARCHITECTURE == i686 ]] \
 		&& echo "mingw" \
 		|| echo "mingw64" \
@@ -77,7 +79,7 @@ PKG_CONFIGURE_FLAGS=(
 #
 
 PKG_MAKE_FLAGS=(
-	# -j$JOBS
+	-j$JOBS
 	ZLIB_INCLUDE="\"-I$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/include\""
 	depend
 	all
