@@ -313,7 +313,7 @@ function func_download {
 		return 0
 	}
 
-	local _WGET_TIMEOUT=5
+	local _WGET_TIMEOUT=60
 	local _WGET_TRIES=10
 	local _WGET_WAIT=2
 	local _result=0
