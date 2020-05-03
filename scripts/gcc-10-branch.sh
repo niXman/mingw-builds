@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=trunk
-PKG_NAME=gcc-${PKG_VERSION}
-PKG_DIR_NAME=gcc-${PKG_VERSION}
+PKG_VERSION=10
+PKG_NAME=gcc-${PKG_VERSION}-branch
+PKG_DIR_NAME=gcc-${PKG_VERSION}-branch
 PKG_TYPE=git
 PKG_URLS=(
-	"git://gcc.gnu.org/git/gcc.git|branch:master|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
+	"git://gcc.gnu.org/git/gcc.git|branch:releases/gcc-$PKG_VERSION|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
 )
 
 PKG_PRIORITY=main
