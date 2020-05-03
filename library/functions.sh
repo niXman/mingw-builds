@@ -313,7 +313,7 @@ function func_download {
 		return 0
 	}
 
-	local _WGET_TIMEOUT=5
+	local _WGET_TIMEOUT=60
 	local _WGET_TRIES=10
 	local _WGET_WAIT=2
 	local _result=0
@@ -937,7 +937,8 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-7-branch)	echo "7.6.0" ;;
 		gcc-8-branch)	echo "8.5.0" ;;
 		gcc-9-branch)	echo "9.4.0" ;;
-		gcc-trunk)		echo "10.0.0" ;;
+		gcc-10-branch)	echo "10.1.0" ;;
+		gcc-trunk)		echo "11.0.0" ;;
 		*) die "gcc name error: $1. terminate." ;;
 	esac
 }
