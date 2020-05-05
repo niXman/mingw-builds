@@ -84,7 +84,7 @@ readonly RUN_ARGS="$@"
 	echo "    --mingw-upload             - upload toolchain archives to sf-project"
 	echo "    --src-upload               - upload sources archive to sf-project"
 	echo "    --sf-user=<username>       - username to upload to sf-project"
-	echo "    --sf-pass=<user_pass>  - password to upload to sf-project"
+	echo "    --sf-pass=<user_pass>      - password to upload to sf-project"
 	echo "    --cflags='<flags>'         - additional CFLAGS"
 	echo "    --cxxflags='<flags>'       - additional CXXFLAGS"
 	echo "    --cppflags='<flags>'       - additional CPPFLAGS"
@@ -106,8 +106,6 @@ readonly RUN_ARGS="$@"
 	echo "  available Python versions: 2, 3"
 	echo "  available clang versions: 3.4, git"
 	echo "  available gcc versions:"
-	#echo "    gcc-4.6.2 (4.6.2 release)"
-	#echo "    gcc-4.6.3 (4.6.3 release)"
 	echo "    gcc-4.6.4 (4.6.4 release)"
 	echo "    gcc-4.6-branch (currently 4.6.5-prerelease)"
 	echo "    gcc-4.7.0 (4.7.0 release)"
@@ -474,17 +472,19 @@ esac
 # **************************************************************************
 # Install host toolchains
 
-mkdir -p $TOOLCHAINS_DIR
-[[ $? != 0 ]] && {
-	die "can't create toolchains directory. terminate."
-}
+[[ $CROSS_BUILDS == no ]] && {
+	mkdir -p $TOOLCHAINS_DIR
+	[[ $? != 0 ]] && {
+		die "can't create toolchains directory. terminate."
+	}
 
-func_install_toolchain \
-	$TOOLCHAINS_DIR \
-	$i686_HOST_MINGW_PATH \
-	$x86_64_HOST_MINGW_PATH \
-	${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_I686} \
-	${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_X86_64}
+	func_install_toolchain \
+		$TOOLCHAINS_DIR \
+		$i686_HOST_MINGW_PATH \
+		$x86_64_HOST_MINGW_PATH \
+		${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_I686} \
+		${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_X86_64}
+}
 
 # **************************************************************************
 # Creating necessary directories
@@ -567,29 +567,31 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 
 # **************************************************************************
 
-case $BUILD_ARCHITECTURE in
-	i686)
-		[[ ! -f $i686_HOST_MINGW_PATH/bin/gcc ]] && {
-			die "gcc is not exists in the \"$i686_HOST_MINGW_PATH/bin\" directory. terminate."
-		}
-		export PATH=$LIBS_DIR/bin:$i686_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-		[[ $BOOTSTRAPINGALL == yes && -f $PREFIX/bin/gcc ]] && {
-			export PATH=$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
-		}
-	;;
-	x86_64)
-		[[ ! -f $x86_64_HOST_MINGW_PATH/bin/gcc ]] && {
-			die "gcc is not exists in the \"$x86_64_HOST_MINGW_PATH/bin\" directory. terminate."
-		}
-		export PATH=$LIBS_DIR/bin:$x86_64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
-		[[ $BOOTSTRAPINGALL == yes && -f $PREFIX/bin/gcc ]] && {
-			export PATH=$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
-		}
-	;;
-esac
+[[ $CROSS_BUILDS == no ]] && {
+	case $BUILD_ARCHITECTURE in
+		i686)
+			[[ ! -f $i686_HOST_MINGW_PATH/bin/gcc ]] && {
+				die "gcc is not exists in the \"$i686_HOST_MINGW_PATH/bin\" directory. terminate."
+			}
+			export PATH=$LIBS_DIR/bin:$i686_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+			[[ $BOOTSTRAPINGALL == yes && -f $PREFIX/bin/gcc ]] && {
+				export PATH=$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+			}
+		;;
+		x86_64)
+			[[ ! -f $x86_64_HOST_MINGW_PATH/bin/gcc ]] && {
+				die "gcc is not exists in the \"$x86_64_HOST_MINGW_PATH/bin\" directory. terminate."
+			}
+			export PATH=$LIBS_DIR/bin:$x86_64_HOST_MINGW_PATH/bin:$ORIGINAL_PATH
+			[[ $BOOTSTRAPINGALL == yes && -f $PREFIX/bin/gcc ]] && {
+				export PATH=$PREFIX/bin:$LIBS_DIR/bin:$ORIGINAL_PATH
+			}
+		;;
+	esac
 
-[[ $LINK_TYPE_SUFFIX == shared ]] && {
-	export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/bin:$PATH
+	[[ $LINK_TYPE_SUFFIX == shared ]] && {
+		export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/bin:$PATH
+	}
 }
 
 # **************************************************************************
@@ -770,7 +772,7 @@ for rule in ${SUBTARGETS[@]}; do
 	[[ $FETCH_MODE == no ]] && {
 		[[ -z $PKG_LNDIR ]] && { PKG_LNDIR=no; }
 		[[ -z $PKG_CONFIGURE_SCRIPT ]] && { PKG_CONFIGURE_SCRIPT=configure; }
-		[[ -z $PKG_MAKE_PROG ]] && { PKG_MAKE_PROG=/bin/make; }
+		[[ -z $PKG_MAKE_PROG ]] && { PKG_MAKE_PROG=make; }
 		[[ -z $PKG_CONFIGURE_PROG ]] && { PKG_CONFIGURE_PROG=/bin/sh; }
 
 		func_dbg_hook $sub "configure"

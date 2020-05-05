@@ -36,11 +36,11 @@
 # **************************************************************************
 
 MINGW_W64_BUILDS_VERSION="MinGW-W64-builds-5.0.0"
-MINGW_W64_PKG_STRING="Built by MinGW-W64 project"
+MINGW_W64_PKG_STRING="Built by MinGW-builds project"
 
 # **************************************************************************
 
-PROJECT_ROOT_URL=https://sourceforge.net/projects/mingw-w64
+PROJECT_ROOT_URL=https://github.com/niXman/mingw-builds
 BUG_URL=$PROJECT_ROOT_URL
 PROJECT_FS_ROOT_DIR=/home/frs/project/mingw-w64
 
@@ -66,10 +66,6 @@ COLOR_STATUS=$COLOR_BLUE
 readonly PATCHES_DIR=$TOP_DIR/patches
 readonly SOURCES_DIR=$TOP_DIR/sources
 readonly TESTS_DIR=$TOP_DIR/tests
-readonly TOOLCHAINS_DIR=$TOP_DIR/toolchains
-
-readonly i686_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
-readonly x86_64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
 
 ROOT_DIR=
 

@@ -35,14 +35,21 @@
 
 # **************************************************************************
 
+readonly HOST_MINGW_VERSION=
+readonly HOST_MINGW_RT_VERSION=
+readonly HOST_MINGW_BUILD_REV=
 readonly i686_HOST_MINGW_PATH_URL=
 readonly x86_64_HOST_MINGW_PATH_URL=
 
+readonly TOOLCHAINS_DIR=/usr/bin
+readonly i686_HOST_MINGW_PATH=$TOOLCHAINS_DIR
+readonly x86_64_HOST_MINGW_PATH=$TOOLCHAINS_DIR
+
 # **************************************************************************
 
-HOST=$(gcc -dumpmachine)
-BUILD=$(gcc -dumpmachine)
-TARGET=$BUILD_ARCHITECTURE-w64-mingw32
+function func_get_host { echo "$1-w64-mingw32"; }
+function func_get_build { echo "$1-linux-gnu"; }
+function func_get_target { echo "$1-w64-mingw32"; }
 
 readonly CROSS_BUILDS=yes
 readonly PKG_RUN_TESTSUITE=no
@@ -61,3 +68,7 @@ readonly LOGVIEWERS=(
 )
 
 # **************************************************************************
+
+function func_test_installed_packages {
+	return 0
+}

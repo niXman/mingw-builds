@@ -67,6 +67,9 @@ PKG_CONFIGURE_FLAGS=(
 #
 
 PKG_MAKE_FLAGS=(
+	$([[ $CROSS_BUILDS == yes ]] && {
+		echo "CC=$HOST-gcc AR=$HOST-ar RANLIB=$HOST-ranlib"
+	})
 	-j$JOBS
 	STRIP=true
 	all

@@ -687,8 +687,6 @@ function func_configure {
 	}
 
 	[[ ! -f $_marker ]] && {
-		#echo "CFLAGS=\"$CFLAGS\", CXXFLAGS=\"$CXXFLAGS\", CPPFLAGS=\"$CPPFLAGS\", LDFLAGS=\"$LDFLAGS\""
-		#echo "ARGS=\"${3}\""
 		echo -n "--> configure..."
 		pushd $5/$_subbuilddir > /dev/null
 		[[ $6 == yes ]] && {
@@ -696,6 +694,11 @@ function func_configure {
 		} || {
 			local _rel_dir=$( func_absolute_to_relative $5/$_subbuilddir $SRCS_DIR/$_subsrcdir )
 		}
+		#echo "CWD=$PWD"
+		#echo "CFLAGS=\"$CFLAGS\", CXXFLAGS=\"$CXXFLAGS\", CPPFLAGS=\"$CPPFLAGS\", LDFLAGS=\"$LDFLAGS\""
+		#echo "ARGS=\"${3}\""
+		#echo "CMDLINE: $PKG_CONFIGURE_PROG $_rel_dir/$PKG_CONFIGURE_SCRIPT "${3}" > $4"
+
 		eval $PKG_CONFIGURE_PROG $_rel_dir/$PKG_CONFIGURE_SCRIPT "${3}" > $4 2>&1
 		_result=$?
 		popd > /dev/null
