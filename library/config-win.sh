@@ -79,7 +79,7 @@ readonly LOGVIEWERS=(
 
 function func_test_installed_packages {
 	local required_packages=(
-	    lndir
+		lndir
 		git
 		subversion
 		tar
@@ -100,7 +100,7 @@ function func_test_installed_packages {
 		autogen
 		dejagnu
 	)
-	
+
 	local not_installed_packages=()
 
 	for it in ${required_packages[@]}; do
