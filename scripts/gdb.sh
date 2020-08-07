@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=$( [[ ${BUILD_VERSION:0:1} == 4 || ${BUILD_VERSION:0:1} == 5 ]] && { echo 7.12; } || { echo 9.1; } )
+PKG_VERSION=$( [[ ${BUILD_VERSION:0:1} == 4 || ${BUILD_VERSION:0:1} == 5 ]] && { echo 7.12; } || { echo 9.2; } )
 PKG_NAME=gdb-${PKG_VERSION}
 PKG_DIR_NAME=gdb-${PKG_VERSION}
 PKG_TYPE=.tar.xz
