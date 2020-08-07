@@ -35,75 +35,100 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.35
-PKG_NAME=binutils-${PKG_VERSION}
-[[ $USE_MULTILIB == yes ]] && {
-	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
-} || {
-	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-nomulti
-}
-PKG_DIR_NAME=binutils-${PKG_VERSION}
+PKG_VERSION=10.2.0
+PKG_NAME=gcc-${PKG_VERSION}
+PKG_DIR_NAME=gcc-${PKG_VERSION}
 PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"https://ftp.gnu.org/gnu/binutils/binutils-${PKG_VERSION}${PKG_TYPE}"
+	"https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
 )
 
-PKG_PRIORITY=prereq
+PKG_PRIORITY=main
 
 #
 
 PKG_PATCHES=(
-	binutils/0001-enable-gold-on.mingw32.patch
-	binutils/0002-check-for-unusual-file-harder.patch
-	binutils/0008-fix-libiberty-makefile.mingw.patch
-	binutils/0009-fix-libiberty-configure.mingw.patch
-	binutils/0110-binutils-mingw-gnu-print.patch
+	gcc/gcc-4.7-stdthreads.patch
+	gcc/gcc-5.1-iconv.patch
+	gcc/gcc-4.8-libstdc++export.patch
+	gcc/gcc-4.8.2-fix-for-windows-not-minding-non-existant-parent-dirs.patch
+	gcc/gcc-4.8.2-windows-lrealpath-no-force-lowercase-nor-backslash.patch
+	gcc/gcc-4.9.1-enable-shared-gnat-implib.mingw.patch
+	gcc/gcc-5.1.0-make-xmmintrin-header-cplusplus-compatible.patch
+	gcc/gcc-5.2-fix-mingw-pch.patch
+	gcc/gcc-5-dwarf-regression.patch
+	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch
+	gcc/gcc-10-ktietz-libgomp.patch
+	gcc/gcc-libgomp-ftime64.patch
 )
 
 #
-
-[[ $USE_MULTILIB == yes ]] && {
-	BINUTILSPREFIX=$PREREQ_DIR/$BUILD_ARCHITECTURE-binutils-multi
-	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-multi
-} || {
-	BINUTILSPREFIX=$PREREQ_DIR/$BUILD_ARCHITECTURE-binutils-nomulti
-	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-nomulti
-}
 
 PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
 	--target=$TARGET
 	#
-	--prefix=$BINUTILSPREFIX
-	--with-sysroot=$RUNTIMEPREFIX
-	#
-	$( [[ $USE_MULTILIB == yes ]] \
-		&& echo "--enable-targets=$ENABLE_TARGETS --enable-multilib --enable-64-bit-bfd" \
-		|| echo "--disable-multilib"
-	)
-	#
-	$( [[ $ARCHITECTURE == x86_64 ]] \
-		&& echo "--enable-64-bit-bfd" \
-	)
-	#
-	--enable-lto
-	--enable-plugins
-	--enable-gold
-	--enable-install-libiberty
-	#
-	--with-libiconv-prefix=$PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX
-	#
-	--disable-rpath
-	--disable-nls
-	--disable-shared
+	--prefix=$MINGWPREFIX
+	--with-sysroot=$PREFIX
+	#--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
 	#
 	$LINK_TYPE_GCC
+	#
+	$( [[ $USE_MULTILIB == yes ]] \
+		&& echo "--enable-targets=all --enable-multilib" \
+		|| echo "--disable-multilib" \
+	)
+	--enable-languages=$ENABLE_LANGUAGES,lto
+	--enable-libstdcxx-time=yes
+	--enable-threads=$THREADS_MODEL
+	--enable-libgomp
+	--enable-libatomic
+	$( [[ "$MSVCRT_PHOBOS_OK" == yes && "$D_LANG_ENABLED" == yes ]] \
+		&& echo "--enable-libphobos"
+	)
+	--enable-lto
+	--enable-graphite
+	--enable-checking=release
+	--enable-fully-dynamic-string
+	--enable-version-specific-runtime-libs
+	--enable-libstdcxx-filesystem-ts=yes
+	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
+		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
+	)
+	$( [[ $EXCEPTIONS_MODEL == sjlj ]] \
+		&& echo "--enable-sjlj-exceptions" \
+	)
+	#
+	--disable-libstdcxx-pch
+	--disable-libstdcxx-debug
+	$( [[ $BOOTSTRAPING == yes ]] \
+		&& echo "--enable-bootstrap" \
+		|| echo "--disable-bootstrap" \
+	)
+	--disable-rpath
+	--disable-win32-registry
+	--disable-nls
+	--disable-werror
+	--disable-symvers
+	#
+	--with-gnu-as
+	--with-gnu-ld
+	#
+	$PROCESSOR_OPTIMIZATION
+	$PROCESSOR_TUNE
+	#
+	--with-libiconv
+	--with-system-zlib
+	--with-{gmp,mpfr,mpc,isl}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}, $MINGW_W64_PKG_STRING\""
+	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
+	LD_FOR_TARGET=$PREFIX/bin/ld.exe
 )
 
 #
@@ -116,7 +141,8 @@ PKG_MAKE_FLAGS=(
 #
 
 PKG_INSTALL_FLAGS=(
-	-j$JOBS
+	-j1
+	DESTDIR=$BASE_BUILD_DIR
 	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
