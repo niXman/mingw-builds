@@ -16,7 +16,7 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
   (see the diff between the 'master' and 'develop' branches, maybe you need
    the 'develop' branch exactly)
 
-4. In the MSYS2 file structure delete the `/MinGW` directory.
+4. In the MSYS2 file structure delete or rename the `/mingw32` and `/mingw64` directory.
 
 5. Delete the paths pointing to any preinstalled MinGW from the `PATH`
   environment variable.
