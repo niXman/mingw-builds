@@ -35,16 +35,16 @@
 
 # **************************************************************************
 
-if [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 8 ]] || [[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} == 9 && ${BUILD_VERSION:4:1} -le 2 ]]; then
+if [[ `echo $BUILD_VERSION | cut -d. -f1` == 4 && `echo $BUILD_VERSION | cut -d. -f2` -le 8 ]] || [[ `echo $BUILD_VERSION | cut -d. -f1` == 4 && `echo $BUILD_VERSION | cut -d. -f2` == 9 && `echo $BUILD_VERSION | cut -d. -f3` -le 2 ]]; then
    PKG_VERSION=0.12.2
    PKG_TYPE=.tar.lzma
-elif [[ ${BUILD_VERSION:0:1} == 4 ]] || [[ ${BUILD_VERSION:0:1} == 5 && ${BUILD_VERSION:2:1} -le 2 ]]; then
+elif [[ `echo $BUILD_VERSION | cut -d. -f1` == 4 ]] || [[ `echo $BUILD_VERSION | cut -d. -f1` == 5 && `echo $BUILD_VERSION | cut -d. -f2` -le 2 ]]; then
    PKG_VERSION=0.14.1
    PKG_TYPE=.tar.xz
-elif [[ ${BUILD_VERSION:0:1} == 5 ]]; then
+elif [[ `echo $BUILD_VERSION | cut -d. -f1` == 5 ]]; then
    PKG_VERSION=0.18
    PKG_TYPE=.tar.xz
-elif [[ ${BUILD_VERSION:0:1} -le 7 && ${BUILD_VERSION} != trunk ]]; then
+elif [[ `echo $BUILD_VERSION | cut -d. -f1` -le 7 && ${BUILD_VERSION} != trunk ]]; then
    PKG_VERSION=0.19
    PKG_TYPE=.tar.xz
 else
