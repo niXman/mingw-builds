@@ -9,14 +9,14 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
 
 2. Install MSYS2 from:
   `http://sourceforge.net/projects/msys2/`
-  (MSYS2 wiki: https://github.com/msys2/msys2/wiki/MSYS2-installation)
+  (MSYS2 wiki: https://www.msys2.org/wiki/MSYS2-installation/)
 
 3. Get the scripts into `<msys root>/home/<user>/mingw-builds`:
   `cd && git clone <paste correct url>`
   (see the diff between the 'master' and 'develop' branches, maybe you need
    the 'develop' branch exactly)
 
-4. In the MSYS2 file structure delete the `/MinGW` directory.
+4. In the MSYS2 file structure delete or rename the `/mingw32` and `/mingw64` directory.
 
 5. Delete the paths pointing to any preinstalled MinGW from the `PATH`
   environment variable.
@@ -141,4 +141,5 @@ Big thanks for these patches to:
 ```
 
 [1] http://sourceforge.net/projects/mingw-w64/
+
 [2] http://www.opensource.org/licenses/BSD-3-Clause
