@@ -59,14 +59,14 @@ readonly RUN_ARGS="$@"
 	echo "    --exceptions=<type>        - specifies exceptions model for GCC"
 	echo "                                 available: dwarf, seh, sjlj, dwarfseh (picks by architecture)"
 	echo "    --use-lto                  - build with LTO using"
-	echo "    --bootstrap                - bootstraping GCC"
+	echo "    --no-bootstrap             - do not bootstrap GCC"
 	echo "    --bootstrapall             - bootstraping GCC & all prerequisites"
 	echo "    --no-multilib              - build GCC without multilib support"
 	echo "    --no-extras                - don't build extra packages, only build GCC/clang and the runtime"
 	echo "    --no-strip                 - don't strip dll's & executables on install"
 	echo "    --static-gcc               - build static GCC"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
-	echo "    --jobs=N                   - specifies number of parallel make threads"
+	echo "    --jobs=N                   - specifies number of parallel make threads (defaults to 4)"
 	echo "    --rt-version=<v3|v4|v5|v6|v7|trunk|v3.3.0|v4.0.6|v5.0.4|v6.0.0|v7.0.0> - specifies mingw-w64 runtime version to build"
 	echo "                                 v3, v4, v5, v6, v7, trunk specifies specific branches in the git repo"
 	echo "                                 v3.3.0, v4.0.6, v5.0.4, v6.0.0, v7.0.0 is a specific release versions, uses the tarball"
@@ -219,7 +219,7 @@ while [[ $# > 0 ]]; do
 			ROOT_DIR=$PWD
 			popd > /dev/null
 		;;
-		--bootstrap) BOOTSTRAPING=yes ;;
+		--no-bootstrap) BOOTSTRAPING=no ;;
 		--bootstrapall) BOOTSTRAPINGALL=yes ;;
 		--fetch-only) FETCH_MODE=yes ;;
 		--patch-on-fetch) FETCH_MODE=yes; FETCH_PATCH_MODE=yes ;;
