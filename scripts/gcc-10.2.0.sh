@@ -60,6 +60,7 @@ PKG_PATCHES=(
 	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch
 	gcc/gcc-10-ktietz-libgomp.patch
 	gcc/gcc-libgomp-ftime64.patch
+	gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch
 )
 
 #
