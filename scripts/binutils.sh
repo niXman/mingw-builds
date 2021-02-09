@@ -57,6 +57,7 @@ PKG_PATCHES=(
 	binutils/0002-check-for-unusual-file-harder.patch
 	binutils/0008-fix-libiberty-makefile.mingw.patch
 	binutils/0009-fix-libiberty-configure.mingw.patch
+	binutils/0021-msys2-64kb-heredoc-limit.patch
 	binutils/0110-binutils-mingw-gnu-print.patch
 )
 
