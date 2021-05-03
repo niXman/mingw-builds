@@ -47,6 +47,9 @@ elif [[ `echo $BUILD_VERSION | cut -d. -f1` == 5 ]]; then
 elif [[ `echo $BUILD_VERSION | cut -d. -f1` -le 7 && ${BUILD_VERSION} != trunk ]]; then
    PKG_VERSION=0.19
    PKG_TYPE=.tar.xz
+elif [[ `echo $BUILD_VERSION | cut -d. -f1` -le 10 && ${BUILD_VERSION} != trunk ]]; then
+   PKG_VERSION=0.23
+   PKG_TYPE=.tar.xz
 else
    PKG_VERSION=0.24
    PKG_TYPE=.tar.xz
