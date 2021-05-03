@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.0
+PKG_VERSION=8.1
 PKG_NAME=readline-${PKG_VERSION}
 PKG_DIR_NAME=readline-${PKG_VERSION}
 PKG_TYPE=.tar.gz
@@ -48,10 +48,7 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
-	readline/readline80-001.patch
-	readline/readline80-002.patch
-	readline/readline80-003.patch
-	readline/readline80-004.patch
+	readline/Fixed-missing-POSIX_SIGNALS-check.patch
 )
 
 #
