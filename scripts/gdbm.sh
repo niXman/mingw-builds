@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.18.1
+PKG_VERSION=1.19
 PKG_NAME=gdbm-${PKG_VERSION}
 PKG_DIR_NAME=gdbm-${PKG_VERSION}
 PKG_TYPE=.tar.gz
