@@ -1,9 +1,8 @@
-diff --git a/bfd/bfd-in.h b/bfd/bfd-in.h
-index 76b17bf7..f0a5be08 100644
---- a/bfd/bfd-in.h
-+++ b/bfd/bfd-in.h
-@@ -158,7 +158,7 @@ typedef BFD_HOST_U_64_BIT symvalue;
- 
+diff -urN binutils-2.27.orig/bfd/bfd-in.h binutils-2.27/bfd/bfd-in.h
+--- binutils-2.27.orig/bfd/bfd-in.h	2016-08-03 09:36:50.000000000 +0200
++++ binutils-2.27/bfd/bfd-in.h	2016-09-21 21:13:49.177148600 +0200
+@@ -137,7 +137,7 @@
+
  #if BFD_HOST_64BIT_LONG
  #define BFD_VMA_FMT "l"
 -#elif defined (__MSVCRT__)
@@ -11,12 +10,11 @@ index 76b17bf7..f0a5be08 100644
  #define BFD_VMA_FMT "I64"
  #else
  #define BFD_VMA_FMT "ll"
-diff --git a/bfd/bfd-in2.h b/bfd/bfd-in2.h
-index 35ef4d75..f4a74ff7 100644
---- a/bfd/bfd-in2.h
-+++ b/bfd/bfd-in2.h
-@@ -165,7 +165,7 @@ typedef BFD_HOST_U_64_BIT symvalue;
- 
+diff -urN binutils-2.27.orig/bfd/bfd-in2.h binutils-2.27/bfd/bfd-in2.h
+--- binutils-2.27.orig/bfd/bfd-in2.h	2016-08-03 09:36:50.000000000 +0200
++++ binutils-2.27/bfd/bfd-in2.h	2016-09-21 21:13:49.185161800 +0200
+@@ -144,7 +144,7 @@
+
  #if BFD_HOST_64BIT_LONG
  #define BFD_VMA_FMT "l"
 -#elif defined (__MSVCRT__)
@@ -24,24 +22,22 @@ index 35ef4d75..f4a74ff7 100644
  #define BFD_VMA_FMT "I64"
  #else
  #define BFD_VMA_FMT "ll"
-diff --git a/binutils/dwarf.c b/binutils/dwarf.c
-index bdabd9c4..eed73a92 100644
---- a/binutils/dwarf.c
-+++ b/binutils/dwarf.c
-@@ -208,7 +208,7 @@ get_encoded_value (unsigned char **pdata,
+diff -urN binutils-2.27.orig/binutils/dwarf.c binutils-2.27/binutils/dwarf.c
+--- binutils-2.27.orig/binutils/dwarf.c	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/binutils/dwarf.c	2016-09-21 21:13:49.210178100 +0200
+@@ -164,7 +164,7 @@
  }
- 
+
  #if defined HAVE_LONG_LONG && SIZEOF_LONG_LONG > SIZEOF_LONG
 -# ifndef __MINGW32__
 +#if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
  #  define DWARF_VMA_FMT		"ll"
  #  define DWARF_VMA_FMT_LONG	"%16.16llx"
  # else
-diff --git a/binutils/nm.c b/binutils/nm.c
-index 1b5122d5..44f0f23f 100644
---- a/binutils/nm.c
-+++ b/binutils/nm.c
-@@ -1259,7 +1259,7 @@ get_print_format (void)
+diff -urN binutils-2.27.orig/binutils/nm.c binutils-2.27/binutils/nm.c
+--- binutils-2.27.orig/binutils/nm.c	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/binutils/nm.c	2016-09-21 21:13:49.221191400 +0200
+@@ -1243,7 +1243,7 @@
  #if BFD_HOST_64BIT_LONG
        ;
  #elif BFD_HOST_64BIT_LONG_LONG
@@ -50,11 +46,10 @@ index 1b5122d5..44f0f23f 100644
        length = "ll";
  #else
        length = "I64";
-diff --git a/binutils/prdbg.c b/binutils/prdbg.c
-index 1b376f48..8926a663 100644
---- a/binutils/prdbg.c
-+++ b/binutils/prdbg.c
-@@ -504,7 +504,7 @@ print_vma (bfd_vma vma, char *buf, bfd_boolean unsignedp, bfd_boolean hexp)
+diff -urN binutils-2.27.orig/binutils/prdbg.c binutils-2.27/binutils/prdbg.c
+--- binutils-2.27.orig/binutils/prdbg.c	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/binutils/prdbg.c	2016-09-21 21:13:49.229194100 +0200
+@@ -502,7 +502,7 @@
  #if BFD_HOST_64BIT_LONG_LONG
    else if (sizeof (vma) <= sizeof (unsigned long long))
      {
@@ -63,33 +58,10 @@ index 1b376f48..8926a663 100644
        if (hexp)
  	sprintf (buf, "0x%llx", (unsigned long long) vma);
        else if (unsignedp)
-diff --git a/binutils/readelf.c b/binutils/readelf.c
-index 6057515a..b5194a9b 100644
---- a/binutils/readelf.c
-+++ b/binutils/readelf.c
-@@ -1274,7 +1274,7 @@ dump_relocations (Filedata *          filedata,
- 		  : "%12.12lx  %12.12lx ",
- 		  offset, inf);
- #elif BFD_HOST_64BIT_LONG_LONG
--#ifndef __MSVCRT__
-+#if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
- 	  printf (do_wide
- 		  ? "%16.16llx  %16.16llx "
- 		  : "%12.12llx  %12.12llx ",
-@@ -13927,7 +13927,7 @@ dump_section_as_strings (Elf_Internal_Shdr * section, Filedata * filedata)
- 	    }
- 	  else
- 	    {
--#ifndef __MSVCRT__
-+#if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
- 	      /* PR 11128: Use two separate invocations in order to work
- 		 around bugs in the Solaris 8 implementation of printf.  */
- 	      printf ("  [%6tx]  ", data - start);
-diff --git a/binutils/strings.c b/binutils/strings.c
-index dc42a6f2..a2a7b658 100644
---- a/binutils/strings.c
-+++ b/binutils/strings.c
-@@ -613,7 +613,7 @@ print_strings (const char *filename, FILE *stream, file_ptr address,
+diff -urN binutils-2.27.orig/binutils/strings.c binutils-2.27/binutils/strings.c
+--- binutils-2.27.orig/binutils/strings.c	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/binutils/strings.c	2016-09-21 21:13:49.251195600 +0200
+@@ -613,7 +613,7 @@
  #ifdef HAVE_LONG_LONG
  	    if (sizeof (start) > sizeof (long))
  	      {
@@ -98,7 +70,7 @@ index dc42a6f2..a2a7b658 100644
  		printf ("%7llo ", (unsigned long long) start);
  # else
  		printf ("%7I64o ", (unsigned long long) start);
-@@ -632,7 +632,7 @@ print_strings (const char *filename, FILE *stream, file_ptr address,
+@@ -632,7 +632,7 @@
  #ifdef HAVE_LONG_LONG
  	    if (sizeof (start) > sizeof (long))
  	      {
@@ -107,7 +79,7 @@ index dc42a6f2..a2a7b658 100644
  		printf ("%7llu ", (unsigned long long) start);
  # else
  		printf ("%7I64d ", (unsigned long long) start);
-@@ -651,7 +651,7 @@ print_strings (const char *filename, FILE *stream, file_ptr address,
+@@ -651,7 +651,7 @@
  #ifdef HAVE_LONG_LONG
  	    if (sizeof (start) > sizeof (long))
  	      {
@@ -116,12 +88,11 @@ index dc42a6f2..a2a7b658 100644
  		printf ("%7llx ", (unsigned long long) start);
  # else
  		printf ("%7I64x ", (unsigned long long) start);
-diff --git a/gas/as.h b/gas/as.h
-index 7a72239d..f2c9be22 100644
---- a/gas/as.h
-+++ b/gas/as.h
-@@ -449,10 +449,10 @@ typedef struct _pseudo_type pseudo_typeS;
- 
+diff -urN binutils-2.27.orig/gas/as.h binutils-2.27/gas/as.h
+--- binutils-2.27.orig/gas/as.h	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/gas/as.h	2016-09-21 21:25:33.955958500 +0200
+@@ -438,10 +438,10 @@
+
  #define PRINTF_LIKE(FCN) \
    void FCN (const char *format, ...) \
 -    __attribute__ ((__format__ (__printf__, 1, 2)))
@@ -130,14 +101,13 @@ index 7a72239d..f2c9be22 100644
    void FCN (const char *file, unsigned int line, const char *format, ...) \
 -    __attribute__ ((__format__ (__printf__, 3, 4)))
 +    __attribute__ ((__format__ (gnu_printf, 3, 4)))
- 
+
  #else /* __GNUC__ < 2 || defined(VMS) */
- 
-diff --git a/gas/read.c b/gas/read.c
-index 8f93c2ba..643af0c2 100644
---- a/gas/read.c
-+++ b/gas/read.c
-@@ -4412,7 +4412,7 @@ emit_expr_with_reloc (expressionS *exp,
+
+diff -urN binutils-2.27.orig/gas/read.c binutils-2.27/gas/read.c
+--- binutils-2.27.orig/gas/read.c	2016-08-03 09:36:51.000000000 +0200
++++ binutils-2.27/gas/read.c	2016-09-21 21:13:49.262196200 +0200
+@@ -4415,7 +4415,7 @@
  	{
  	  /* Leading bits contain both 0s & 1s.  */
  #if defined (BFD64) && BFD_HOST_64BIT_LONG_LONG
@@ -146,37 +116,34 @@ index 8f93c2ba..643af0c2 100644
  	  as_warn (_("value 0x%llx truncated to 0x%llx"),
  		   (unsigned long long) get, (unsigned long long) use);
  #else
-diff --git a/gold/configure b/gold/configure
-index 199a739e..bf860046 100644
---- a/gold/configure
-+++ b/gold/configure
-@@ -10087,7 +10087,7 @@ else
+diff -urN binutils-2.27.orig/gold/configure binutils-2.27/gold/configure
+--- binutils-2.27.orig/gold/configure	2016-08-03 09:36:53.000000000 +0200
++++ binutils-2.27/gold/configure	2016-09-21 21:13:49.306197900 +0200
+@@ -7558,7 +7558,7 @@
  /* end confdefs.h.  */
- 
+
  template<typename T> extern void foo(const char*, ...)
 -  __attribute__ ((__format__ (__printf__, 1, 2)));
 +  __attribute__ ((__format__ (gnu_printf, 1, 2)));
  template<typename T> void foo(const char* format, ...) {}
  void bar() { foo<int>("%s\n", "foo"); }
- 
-diff --git a/gold/configure.ac b/gold/configure.ac
-index eca4f01c..60e8bd41 100644
---- a/gold/configure.ac
-+++ b/gold/configure.ac
-@@ -658,7 +658,7 @@ AC_CACHE_CHECK([whether we can use attributes with template functions],
+
+diff -urN binutils-2.27.orig/gold/configure.ac binutils-2.27/gold/configure.ac
+--- binutils-2.27.orig/gold/configure.ac	2016-08-03 09:36:53.000000000 +0200
++++ binutils-2.27/gold/configure.ac	2016-09-21 21:13:49.317584300 +0200
+@@ -635,7 +635,7 @@
  [gold_cv_template_attribute],
- [AC_COMPILE_IFELSE([AC_LANG_SOURCE([
+ [AC_COMPILE_IFELSE([
  template<typename T> extern void foo(const char*, ...)
 -  __attribute__ ((__format__ (__printf__, 1, 2)));
 +  __attribute__ ((__format__ (gnu_printf, 1, 2)));
  template<typename T> void foo(const char* format, ...) {}
  void bar() { foo<int>("%s\n", "foo"); }
- ])], [gold_cv_template_attribute=yes], [gold_cv_template_attribute=no])])
-diff --git a/include/ansidecl.h b/include/ansidecl.h
-index ec7a13f0..2cbc3b64 100644
---- a/include/ansidecl.h
-+++ b/include/ansidecl.h
-@@ -195,7 +195,7 @@ So instead we use the macro below and test it against specific values.  */
+ ], [gold_cv_template_attribute=yes], [gold_cv_template_attribute=no])])
+diff -urN binutils-2.27.orig/include/ansidecl.h binutils-2.27/include/ansidecl.h
+--- binutils-2.27.orig/include/ansidecl.h	2016-08-03 09:36:53.000000000 +0200
++++ binutils-2.27/include/ansidecl.h	2016-09-21 21:13:49.327082000 +0200
+@@ -195,7 +195,7 @@
     before GCC 3.3, but as of 3.3 we need to add the `nonnull'
     attribute to retain this behavior.  */
  #ifndef ATTRIBUTE_PRINTF
@@ -185,7 +152,7 @@ index ec7a13f0..2cbc3b64 100644
  #define ATTRIBUTE_PRINTF_1 ATTRIBUTE_PRINTF(1, 2)
  #define ATTRIBUTE_PRINTF_2 ATTRIBUTE_PRINTF(2, 3)
  #define ATTRIBUTE_PRINTF_3 ATTRIBUTE_PRINTF(3, 4)
-@@ -223,7 +223,7 @@ So instead we use the macro below and test it against specific values.  */
+@@ -223,7 +223,7 @@
     NULL format specifier was allowed as of gcc 3.3.  */
  #ifndef ATTRIBUTE_NULL_PRINTF
  # if (GCC_VERSION >= 3003)
