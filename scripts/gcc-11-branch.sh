@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=10
+PKG_VERSION=11
 PKG_NAME=gcc-${PKG_VERSION}-branch
 PKG_DIR_NAME=gcc-${PKG_VERSION}-branch
 PKG_TYPE=git

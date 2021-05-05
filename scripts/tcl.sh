@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.6.10
+PKG_VERSION=8.6.11
 PKG_NAME=tcl${PKG_VERSION}
 PKG_DIR_NAME=tcl${PKG_VERSION}
 PKG_SUBDIR_NAME=win
@@ -52,7 +52,6 @@ PKG_PATCHES=(
 	tcl/002-fix-forbidden-colon-in-paths.mingw.patch
 	tcl/004-use-system-zlib.mingw.patch
 	tcl/005-no-xc.mingw.patch
-	tcl/006-proper-implib-name.mingw.patch
 	tcl/007-install.mingw.patch
 	tcl/008-tcl-8.5.14-hidden.patch
 	tcl/009-fix-using-gnu-print.patch

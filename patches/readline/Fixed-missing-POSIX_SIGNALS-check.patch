@@ -1,0 +1,20 @@
+diff --git a/signals.c b/signals.c
+index f9174ab..9bf56db 100644
+--- a/signals.c
++++ b/signals.c
+@@ -265,10 +265,10 @@ _rl_handle_signal (int sig)
+ #if defined (SIGQUIT)
+     case SIGQUIT:
+ #endif
+-
++#if defined (HAVE_POSIX_SIGNALS)
+       if (block_sig)
+ 	sigprocmask (SIG_BLOCK, &set, &oset);
+-
++#endif
+       rl_echo_signal_char (sig);
+       rl_cleanup_after_signal ();
+ 
+-- 
+2.31.1.windows.1
+

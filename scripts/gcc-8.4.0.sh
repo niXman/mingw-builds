@@ -60,7 +60,7 @@ PKG_PATCHES=(
 	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch
 	gcc/gcc-6-ktietz-libgomp.patch
 	gcc/gcc-libgomp-ftime64.patch
-	gcc/gcc-8-branch-Backport-patches-for-std-filesystem-from-master.patch
+	gcc/gcc-8.4.0-Backport-patches-for-std-filesystem-from-master.patch
 )
 
 #
