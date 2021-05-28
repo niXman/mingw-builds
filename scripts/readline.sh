@@ -48,6 +48,7 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
+	readline/readline81-001.patch
 	readline/Fixed-missing-POSIX_SIGNALS-check.patch
 )
 
