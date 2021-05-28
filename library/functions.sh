@@ -935,7 +935,7 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-5-branch)	echo "5.6.0" ;;
 		gcc-6-branch)	echo "6.5.0" ;;
 		gcc-7-branch)	echo "7.6.0" ;;
-		gcc-8-branch)	echo "8.5.0" ;;
+		gcc-8-branch)	echo "8.6.0" ;;
 		gcc-9-branch)	echo "9.4.0" ;;
 		gcc-10-branch)	echo "10.4.0" ;;
 		gcc-11-branch)	echo "11.2.0" ;;
