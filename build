@@ -302,7 +302,6 @@ while [[ $# > 0 ]]; do
 					RUNTIME_BRANCH="v8.x"
 				;;
 				v9)
-				;;
 					RUNTIME_VERSION=v9
 					RUNTIME_BRANCH="v9.x"
 				;;
