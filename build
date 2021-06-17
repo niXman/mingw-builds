@@ -304,7 +304,7 @@ while [[ $# > 0 ]]; do
 				v9)
 				;;
 					RUNTIME_VERSION=v9
-					RUNTIME_BRANCH=v9.x
+					RUNTIME_BRANCH="v9.x"
 				;;
 				trunk)
 					RUNTIME_VERSION=v8
