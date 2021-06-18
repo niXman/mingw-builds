@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=3.4.3
+PKG_VERSION=3.9.5
 PKG_NAME=Python-${PKG_VERSION}
 PKG_DIR_NAME=Python-${PKG_VERSION}
 PKG_TYPE=.tar.xz

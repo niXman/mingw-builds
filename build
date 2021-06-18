@@ -301,8 +301,12 @@ while [[ $# > 0 ]]; do
 					RUNTIME_VERSION=v8
 					RUNTIME_BRANCH="v8.x"
 				;;
+				v9)
+					RUNTIME_VERSION=v9
+					RUNTIME_BRANCH="v9.x"
+				;;
 				trunk)
-					RUNTIME_VERSION=v8
+					RUNTIME_VERSION=v9
 					RUNTIME_BRANCH="master"
 				;;
 				v3.3.0)
@@ -327,6 +331,10 @@ while [[ $# > 0 ]]; do
 				;;
 				v8.0.0)
 					RUNTIME_VERSION=v8.0.0
+					RUNTIME_BRANCH="release"
+				;;
+				v9.0.0)
+					RUNTIME_VERSION=v9.0.0
 					RUNTIME_BRANCH="release"
 				;;
 				*)
