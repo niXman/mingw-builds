@@ -119,6 +119,7 @@ At the moment, successfully building the following versions:
   gcc-9.1.0
   gcc-9.2.0
   gcc-9.3.0
+  gcc-9.4.0
   gcc-10.1.0
   gcc-10.2.0
   gcc-10.3.0
@@ -131,7 +132,7 @@ At the moment, successfully building the following versions:
   gcc-6-branch (currently 6.6.0 prerelease)
   gcc-7-branch (currently 7.6.0 prerelease)
   gcc-8-branch (currently 8.6.0 prerelease)
-  gcc-9-branch (currently 9.4.0-prerelease)
+  gcc-9-branch (currently 9.5.0-prerelease)
   gcc-10-branch (currently 10.4.0-prerelease)
   gcc-11-branch (currently 11.2.0-prerelease)
   gcc-trunk (currently 12.0.0 snapshot)
