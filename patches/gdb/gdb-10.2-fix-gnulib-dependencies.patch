@@ -1,0 +1,271 @@
+Joseph Brill changes to the original patch below:
+    The 3 Changelog diffs were removed.
+
+From: Andrew Burgess <andrew.burgess@embecosm.com>
+Date: Tue, 6 Oct 2020 09:09:06 +0000 (+0100)
+Subject: gnulib: Ensure all libraries are used when building gdb/gdbserver
+X-Git-Tag: binutils-2_36~971
+X-Git-Url: https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff_plain;h=361cb219351d8b7e39e1962fe77f40aa80657b27;ds=sidebyside
+
+gnulib: Ensure all libraries are used when building gdb/gdbserver
+
+An issue was reported here related to building GDB on MinGW:
+
+  https://sourceware.org/pipermail/gdb/2020-September/048927.html
+
+It was suggested here:
+
+  https://sourceware.org/pipermail/gdb/2020-September/048931.html
+
+that the solution might be to make use of $(LIB_GETRANDOM), a variable
+defined in the gnulib makefile, when linking GDB.
+
+In fact I think the issue is bigger than just LIB_GETRANDOM.  When
+using the script binutils-gdb/gnulib/update-gnulib.sh to reimport
+gnulib there is a lot of output from gnulib's gnulib-tool.  Part of
+that output is this:
+
+  You may need to use the following makefile variables when linking.
+  Use them in <program>_LDADD when linking a program, or
+  in <library>_a_LDFLAGS or <library>_la_LDFLAGS when linking a library.
+    $(FREXPL_LIBM)
+    $(FREXP_LIBM)
+    $(INET_NTOP_LIB)
+    $(LIBTHREAD)
+    $(LIB_GETLOGIN)
+    $(LIB_GETRANDOM)
+    $(LIB_HARD_LOCALE)
+    $(LIB_MBRTOWC)
+    $(LIB_SETLOCALE_NULL)
+    $(LTLIBINTL) when linking with libtool, $(LIBINTL) otherwise
+
+What I think this is telling us is that we should be including the
+value of all these variables on the link line for gdb and gdbserver.
+
+The problem though is that these variables are define in gnulib's
+makefile, but are not (necessarily) defined in GDB's makefile.
+
+One solution would be to recreate the checks that gnulib performs in
+order to recreate these variables in both gdb's and gdbserver's
+makefile.  Though this shouldn't be too hard, most (if not all) of
+these checks are in the form macros defined in m4 files in the gnulib
+tree, so we could just reference these as needed.  However, in this
+commit I propose a different solution.
+
+Currently, in the top level makefile, we give gdb and gdbserver a
+dependency on gnulib.  Once gnulib has finished building gdb and
+gdbserver can start, these projects then have a hard coded (relative)
+path to the compiled gnulib library in their makefiles.
+
+In this commit I extend the gnulib configure script to install a new
+makefile fragment in the gnulib build directory.  This new file will
+have the usual variable substitutions applied to it, and so can
+include the complete list (see above) of all the extra libraries that
+are needed when linking against gnulib.
+
+In fact the new makefile fragment defines three variables, these are:
+
+LIBGNU: The path to the archive containing gnulib.  Can be used as a
+       dependency as when this file changes gdb/gdbserver should be
+       relinked.
+
+LIBGNU_EXTRA_LIBS: A list of linker -l.... flags that should be
+       included in the link line of gdb/gdbserver.  These are
+       libraries that $(LIBGNU) depends on.  This list is taken from
+       the output of gnulib-tool, which is run by our
+       gnulib/update-gnulib.sh script.
+
+INCGNU: A list of -I.... include paths that should be passed to the
+       compiler, these are where the gnulib headers can be found.
+
+Now both gdb and gdbserver can include the makefile fragment and make
+use of these variables.
+
+The makefile fragment relies on the variable GNULIB_BUILDDIR being
+defined.  This is checked for in the fragment, and was already defined
+in the makefiles of gdb and gdbserver.
+
+gdb/ChangeLog:
+
+	* Makefile.in: Include Makefile.gnulib.inc.  Don't define LIBGNU
+	or INCGNU.  Make use of LIBGNU_EXTRA_LIBS when linking.
+
+gdbserver/ChangeLog:
+
+	* Makefile.in: Include Makefile.gnulib.inc.  Don't define LIBGNU
+	or INCGNU.  Make use of LIBGNU_EXTRA_LIBS when linking.
+
+gnulib/ChangeLog:
+
+	* Makefile.gnulib.inc.in: New file.
+	* Makefile.in: Regenerate.
+	* configure: Regenerate.
+	* configure.ac: Install the new file.
+---
+
+diff --git a/gdb/Makefile.in b/gdb/Makefile.in
+index 80b788cdff9..5f92e8781e7 100644
+--- a/gdb/Makefile.in
++++ b/gdb/Makefile.in
+@@ -243,8 +243,7 @@ GDBFLAGS =
+ 
+ # Helper code from gnulib.
+ GNULIB_BUILDDIR = ../gnulib
+-LIBGNU = $(GNULIB_BUILDDIR)/import/libgnu.a
+-INCGNU = -I$(srcdir)/../gnulib/import -I$(GNULIB_BUILDDIR)/import
++include $(GNULIB_BUILDDIR)/Makefile.gnulib.inc
+ 
+ SUPPORT = ../gdbsupport
+ LIBSUPPORT = $(SUPPORT)/libgdbsupport.a
+@@ -632,7 +631,7 @@ CLIBS = $(SIM) $(READLINE) $(OPCODES) $(LIBCTF) $(BFD) $(ZLIB) \
+ 	$(XM_CLIBS) $(GDBTKLIBS) \
+ 	@LIBS@ @GUILE_LIBS@ @PYTHON_LIBS@ \
+ 	$(LIBEXPAT) $(LIBLZMA) $(LIBBABELTRACE) $(LIBIPT) \
+-	$(WIN32LIBS) $(LIBGNU) $(LIBICONV) \
++	$(WIN32LIBS) $(LIBGNU) $(LIBGNU_EXTRA_LIBS) $(LIBICONV) \
+ 	$(LIBMPFR) $(SRCHIGH_LIBS) $(LIBXXHASH) $(PTHREAD_LIBS) \
+ 	$(DEBUGINFOD_LIBS)
+ CDEPS = $(NAT_CDEPS) $(SIM) $(BFD) $(READLINE_DEPS) $(CTF_DEPS) \
+diff --git a/gdbserver/Makefile.in b/gdbserver/Makefile.in
+index c8cfed4819b..1969ed0ec37 100644
+--- a/gdbserver/Makefile.in
++++ b/gdbserver/Makefile.in
+@@ -114,8 +114,7 @@ ustinc = @ustinc@
+ 
+ # gnulib
+ GNULIB_BUILDDIR = ../gnulib
+-LIBGNU = $(GNULIB_BUILDDIR)/import/libgnu.a
+-INCGNU = -I$(srcdir)/../gnulib/import -I$(GNULIB_BUILDDIR)/import
++include $(GNULIB_BUILDDIR)/Makefile.gnulib.inc
+ 
+ # Where is the INTL library?  Typically in ../intl.
+ INTL = @LIBINTL@
+@@ -360,8 +359,8 @@ gdbserver$(EXEEXT): $(sort $(OBS)) ${CDEPS} $(LIBGNU) $(LIBIBERTY) \
+ 	$(ECHO_CXXLD) $(CC_LD) $(INTERNAL_CFLAGS) $(INTERNAL_LDFLAGS) \
+ 		$(CXXFLAGS) \
+ 		-o gdbserver$(EXEEXT) $(OBS) $(GDBSUPPORT) $(LIBGNU) \
+-		$(LIBIBERTY) $(INTL) $(GDBSERVER_LIBS) $(XM_CLIBS) \
+-		$(WIN32APILIBS)
++		$(LIBGNU_EXTRA_LIBS) $(LIBIBERTY) $(INTL) \
++		$(GDBSERVER_LIBS) $(XM_CLIBS) $(WIN32APILIBS)
+ 
+ gdbreplay$(EXEEXT): $(sort $(GDBREPLAY_OBS)) $(LIBGNU) $(LIBIBERTY) \
+ 		$(INTL_DEPS) $(GDBSUPPORT)
+@@ -369,8 +368,8 @@ gdbreplay$(EXEEXT): $(sort $(GDBREPLAY_OBS)) $(LIBGNU) $(LIBIBERTY) \
+ 	$(ECHO_CXXLD) $(CC_LD) $(INTERNAL_CFLAGS) $(INTERNAL_LDFLAGS) \
+ 		$(CXXFLAGS) \
+ 		-o gdbreplay$(EXEEXT) $(GDBREPLAY_OBS) $(XM_CLIBS) \
+-		$(GDBSUPPORT) $(LIBGNU) $(LIBIBERTY) $(INTL) \
+-		$(WIN32APILIBS)
++		$(GDBSUPPORT) $(LIBGNU) $(LIBGNU_EXTRA_LIBS) \
++		$(LIBIBERTY) $(INTL) $(WIN32APILIBS)
+ 
+ IPA_OBJS = \
+ 	alloc-ipa.o \
+diff --git a/gnulib/Makefile.gnulib.inc.in b/gnulib/Makefile.gnulib.inc.in
+new file mode 100644
+index 00000000000..f3fd72b5781
+--- /dev/null
++++ b/gnulib/Makefile.gnulib.inc.in
+@@ -0,0 +1,44 @@
++# Copyright (C) 2020 Free Software Foundation, Inc.
++
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 3 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program.  If not, see <http://www.gnu.org/licenses/>.
++
++# A makefile snippet that lists all of the libraries that should be
++# pulled in when linking against gnulib.  Both GDB and GDBSERVER will
++# include this snippet.
++#
++# The defined variables are:
++#
++# LIBGNU: The path to the archive containing gnulib.  Can be used as a
++#        dependency as when this file changes gdb/gdbserver should be
++#        relinked.
++#
++# LIBGNU_EXTRA_LIBS: A list of linker -l.... flags that should be
++#        included in the link line of gdb/gdbserver.  These are
++#        libraries that $(LIBGNU) depends on.  This list is taken from
++#        the output of gnulib-tool, which is run by our
++#        gnulib/update-gnulib.sh script.
++#
++# INCGNU: A list of -I.... include paths that should be passed to the
++#        compiler, these are where the gnulib headers can be found.
++
++ifndef GNULIB_BUILDDIR
++$(error missing GNULIB_BUILDDIR)
++endif
++
++LIBGNU = $(GNULIB_BUILDDIR)/import/libgnu.a
++LIBGNU_EXTRA_LIBS = @FREXPL_LIBM@ @FREXP_LIBM@ @INET_NTOP_LIB@ \
++                    @LIBTHREAD@ @LIB_GETLOGIN@ @LIB_GETRANDOM@ \
++                    @LIB_HARD_LOCALE@ @LIB_MBRTOWC@ \
++                    @LIB_SETLOCALE_NULL@ @LIBINTL@
++INCGNU = -I$(srcdir)/../gnulib/import -I$(GNULIB_BUILDDIR)/import
+diff --git a/gnulib/Makefile.in b/gnulib/Makefile.in
+index bdd3c3f3fbc..c1c21680944 100644
+--- a/gnulib/Makefile.in
++++ b/gnulib/Makefile.in
+@@ -277,7 +277,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
+  configure.lineno config.status.lineno
+ mkinstalldirs = $(SHELL) $(top_srcdir)/../mkinstalldirs
+ CONFIG_HEADER = config.h
+-CONFIG_CLEAN_FILES =
++CONFIG_CLEAN_FILES = Makefile.gnulib.inc
+ CONFIG_CLEAN_VPATH_FILES =
+ AM_V_P = $(am__v_P_@AM_V@)
+ am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
+@@ -1642,6 +1642,8 @@ $(srcdir)/config.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 
+ distclean-hdr:
+ 	-rm -f config.h stamp-h1
++Makefile.gnulib.inc: $(top_builddir)/config.status $(srcdir)/Makefile.gnulib.inc.in
++	cd $(top_builddir) && $(SHELL) ./config.status $@
+ 
+ # This directory's subdirectories are mostly independent; you can cd
+ # into them and run 'make' without going through this Makefile.
+diff --git a/gnulib/configure b/gnulib/configure
+index 5c6add6e371..6c58a46e42e 100644
+--- a/gnulib/configure
++++ b/gnulib/configure
+@@ -30802,6 +30802,9 @@ fi
+ # Checks for libraries.  #
+ # ---------------------- #
+ 
++ac_config_files="$ac_config_files Makefile.gnulib.inc"
++
++
+ ac_config_files="$ac_config_files Makefile import/Makefile"
+ 
+ ac_config_commands="$ac_config_commands default"
+@@ -31634,6 +31637,7 @@ do
+   case $ac_config_target in
+     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h:config.in" ;;
+     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
++    "Makefile.gnulib.inc") CONFIG_FILES="$CONFIG_FILES Makefile.gnulib.inc" ;;
+     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+     "import/Makefile") CONFIG_FILES="$CONFIG_FILES import/Makefile" ;;
+     "default") CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;
+diff --git a/gnulib/configure.ac b/gnulib/configure.ac
+index acc1b1a322e..052b8bd8dc5 100644
+--- a/gnulib/configure.ac
++++ b/gnulib/configure.ac
+@@ -56,6 +56,8 @@ AC_CHECK_TOOL(AR, ar)
+ # Checks for libraries.  #
+ # ---------------------- #
+ 
++AC_CONFIG_FILES(Makefile.gnulib.inc)
++
+ AC_OUTPUT(Makefile import/Makefile,
+ [
+ case x$CONFIG_HEADERS in
