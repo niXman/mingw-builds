@@ -35,55 +35,101 @@
 
 # **************************************************************************
 
-PKG_VERSION=$( [[ `echo $BUILD_VERSION | cut -d. -f1` == 4 || `echo $BUILD_VERSION | cut -d. -f1` == 5 ]] && { echo 7.12; } || { echo 10.2; } )
-PKG_NAME=gdb-${PKG_VERSION}
-PKG_DIR_NAME=gdb-${PKG_VERSION}
+PKG_VERSION=9.4.0
+PKG_NAME=gcc-${PKG_VERSION}
+PKG_DIR_NAME=gcc-${PKG_VERSION}
 PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"https://ftp.gnu.org/gnu/gdb/gdb-${PKG_VERSION}${PKG_TYPE}"
+	"https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
 )
 
-PKG_PRIORITY=extra
+PKG_PRIORITY=main
 
 #
 
 PKG_PATCHES=(
-	# https://sourceware.org/bugzilla/show_bug.cgi?id=15559
-	#gdb/gdb-7.9-mingw-gcc-4.7.patch
-	# http://sourceware.org/bugzilla/show_bug.cgi?id=15412
-	gdb/gdb-perfomance.patch
-	$( [[ ${PKG_VERSION} == 7.12 ]] && { echo "gdb/gdb-7.12-fix-using-gnu-print.patch"; } || { echo "gdb/gdb-fix-using-gnu-print.patch"; } )
-	$( [[ ${PKG_VERSION} == 7.12 ]] && { echo "gdb/gdb-7.12-dynamic-libs.patch"; } || { echo "gdb/gdb-8.3.1-dynamic-libs.patch"; } )
-	$( [[ ${PKG_VERSION} == 10.2 ]] && { echo "gdb/gdb-10.2-fix-gnulib-dependencies.patch"; } )
+	gcc/gcc-4.7-stdthreads.patch
+	gcc/gcc-5.1-iconv.patch
+	gcc/gcc-4.8-libstdc++export.patch
+	gcc/gcc-4.8.2-fix-for-windows-not-minding-non-existant-parent-dirs.patch
+	gcc/gcc-4.8.2-windows-lrealpath-no-force-lowercase-nor-backslash.patch
+	gcc/gcc-4.9.1-enable-shared-gnat-implib.mingw.patch
+	gcc/gcc-5.1.0-make-xmmintrin-header-cplusplus-compatible.patch
+	gcc/gcc-5.2-fix-mingw-pch.patch
+	gcc/gcc-5-dwarf-regression.patch
+	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch
+	gcc/gcc-9-ktietz-libgomp.patch
+	gcc/gcc-libgomp-ftime64.patch
+	gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch
 )
 
 #
 
 PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
-	--build=$TARGET
-	--prefix=$PREFIX
+	--build=$BUILD
+	--target=$TARGET
 	#
-	--enable-targets=$ENABLE_TARGETS
-	--enable-64-bit-bfd
+	--prefix=$MINGWPREFIX
+	--with-sysroot=$PREFIX
+	#--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
 	#
+	$LINK_TYPE_GCC
+	#
+	$( [[ $USE_MULTILIB == yes ]] \
+		&& echo "--enable-targets=all --enable-multilib" \
+		|| echo "--disable-multilib" \
+	)
+	--enable-languages=$ENABLE_LANGUAGES,lto
+	--enable-libstdcxx-time=yes
+	--enable-threads=$THREADS_MODEL
+	--enable-libgomp
+	--enable-libatomic
+	$( [[ "$MSVCRT_PHOBOS_OK" == yes && "$D_LANG_ENABLED" == yes ]] \
+		&& echo "--enable-libphobos"
+	)
+	--enable-lto
+	--enable-graphite
+	--enable-checking=release
+	--enable-fully-dynamic-string
+	--enable-version-specific-runtime-libs
+	--enable-libstdcxx-filesystem-ts=yes
+	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
+		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
+	)
+	$( [[ $EXCEPTIONS_MODEL == sjlj ]] \
+		&& echo "--enable-sjlj-exceptions" \
+	)
+	#
+	--disable-libstdcxx-pch
+	--disable-libstdcxx-debug
+	$( [[ $BOOTSTRAPING == yes ]] \
+		&& echo "--enable-bootstrap" \
+		|| echo "--disable-bootstrap" \
+	)
+	--disable-rpath
+	--disable-win32-registry
 	--disable-nls
 	--disable-werror
-	--disable-win32-registry
-	--disable-rpath
+	--disable-symvers
 	#
-	--with-system-gdbinit=$PREFIX/etc/gdbinit
-	--with-python=$PREFIX/opt/bin/python-config-u.sh
-	--with-expat
+	--with-gnu-as
+	--with-gnu-ld
+	#
+	$PROCESSOR_OPTIMIZATION
+	$PROCESSOR_TUNE
+	#
 	--with-libiconv
-	--with-zlib
-	--disable-tui
-	--disable-gdbtk
+	--with-system-zlib
+	--with-{gmp,mpfr,mpc,isl}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}, $MINGW_W64_PKG_STRING\""
+	--with-bugurl=$BUG_URL
 	#
-	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -fcommon\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
+	CFLAGS="\"$COMMON_CFLAGS\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
+	LD_FOR_TARGET=$PREFIX/bin/ld.exe
 )
 
 #
@@ -96,8 +142,9 @@ PKG_MAKE_FLAGS=(
 #
 
 PKG_INSTALL_FLAGS=(
-	-j$JOBS
-	install
+	-j1
+	DESTDIR=$BASE_BUILD_DIR
+	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
 # **************************************************************************
