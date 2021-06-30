@@ -4,7 +4,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -106,8 +106,6 @@ readonly RUN_ARGS="$@"
 	echo "  available Python versions: 2, 3"
 	echo "  available clang versions: 3.4, git"
 	echo "  available gcc versions:"
-	#echo "    gcc-4.6.2 (4.6.2 release)"
-	#echo "    gcc-4.6.3 (4.6.3 release)"
 	echo "    gcc-4.6.4 (4.6.4 release)"
 	echo "    gcc-4.6-branch (currently 4.6.5-prerelease)"
 	echo "    gcc-4.7.0 (4.7.0 release)"
