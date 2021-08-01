@@ -1,0 +1,12 @@
+diff -urN binutils-2.37.orig/libiberty/rust-demangle.c binutils-2.37/libiberty/rust-demangle.c
+--- binutils-2.37.orig/libiberty/rust-demangle.c	2021-07-15 22:19:46.000000000 +0800
++++ binutils-2.37/libiberty/rust-demangle.c	2021-08-01 17:13:45.147442300 +0800
+@@ -51,6 +51,8 @@
+ #include <demangle.h>
+ #include "libiberty.h"
+ 
++typedef unsigned int uint;
++
+ struct rust_demangler
+ {
+   const char *sym;

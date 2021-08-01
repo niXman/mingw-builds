@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.36.1
+PKG_VERSION=2.37
 PKG_NAME=binutils-${PKG_VERSION}
 [[ $USE_MULTILIB == yes ]] && {
 	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
@@ -57,6 +57,7 @@ PKG_PATCHES=(
 	binutils/0002-check-for-unusual-file-harder.patch
 	binutils/0008-fix-libiberty-makefile.mingw.patch
 	binutils/0009-fix-libiberty-configure.mingw.patch
+	binutils/0022-libiberty-missing-typedef.patch
 	binutils/0110-binutils-mingw-gnu-print.patch
 )
 
