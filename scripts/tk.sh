@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.6.10
+PKG_VERSION=8.6.11
 PKG_NAME=tk${PKG_VERSION}
 PKG_DIR_NAME=tk${PKG_VERSION}
 PKG_SUBDIR_NAME=win
@@ -49,7 +49,6 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
-	tk/002-implib-name.mingw.patch
 	tk/003-fix-forbidden-colon-in-paths.mingw.patch
 	tk/004-install-man.mingw.patch
 	tk/006-prevent-tclStubsPtr-segfault.patch

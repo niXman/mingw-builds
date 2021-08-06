@@ -38,8 +38,8 @@ index 6f3e41da37..54e9c7a56d 100644
  #define BFD_VMA_FMT "ll"
 diff --git a/gdb/gdbsupport/format.h b/gdb/gdbsupport/format.h
 index 80f012a41a..17a5560283 100644
---- a/gdb/gdbsupport/format.h
-+++ b/gdb/gdbsupport/format.h
+--- a/gdbsupport/format.h
++++ b/gdbsupport/format.h
 @@ -23,7 +23,11 @@
  #include "gdbsupport/gdb_string_view.h"
  

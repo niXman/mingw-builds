@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -97,9 +97,9 @@ ENABLE_LANGUAGES='c,c++,fortran'
 
 SHOW_LOG_ON_ERROR=yes
 
-JOBS=1
+JOBS=4
 
-RUNTIME_VERSION=v5
+RUNTIME_VERSION=v7
 RUNTIME_BRANCH="master"
 
 CLANG_GCC_VERSION=gcc-4.9.3
@@ -112,7 +112,7 @@ BUILD_ARCHITECTURE=
 EXCEPTIONS_MODEL=sjlj
 USE_MULTILIB=yes
 STRIP_ON_INSTALL=yes
-BOOTSTRAPING=no
+BOOTSTRAPING=yes
 BOOTSTRAPINGALL=no
 THREADS_MODEL=posix
 REV_NUM=

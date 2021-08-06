@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -79,6 +79,7 @@ readonly LOGVIEWERS=(
 
 function func_test_installed_packages {
 	local required_packages=(
+		lndir
 		git
 		subversion
 		tar
@@ -99,7 +100,7 @@ function func_test_installed_packages {
 		autogen
 		dejagnu
 	)
-	
+
 	local not_installed_packages=()
 
 	for it in ${required_packages[@]}; do

@@ -9,14 +9,14 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
 
 2. Install MSYS2 from:
   `http://sourceforge.net/projects/msys2/`
-  (MSYS2 wiki: https://github.com/msys2/msys2/wiki/MSYS2-installation), make sure the MSYS2 installation path doesn't contain spaces, as they can cause build errors.
+  (MSYS2 wiki: https://www.msys2.org/wiki/MSYS2-installation/), make sure the MSYS2 installation path doesn't contain spaces, as they can cause build errors.
 
 3. Get the scripts into `<msys root>/home/<user>/mingw-builds`:
   `cd && git clone <paste correct url>`
   (see the diff between the 'master' and 'develop' branches, maybe you need
    the 'develop' branch exactly)
 
-4. In the MSYS2 file structure delete the `/MinGW` directory.
+4. In the MSYS2 file structure delete or rename the `/mingw32` and `/mingw64` directory.
 
 5. Delete the paths pointing to any preinstalled MinGW from the `PATH`
   environment variable.
@@ -39,7 +39,7 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
   --no-multilib                       - build GCC without multilib support (default for DWARF and SEH exception models).
   --static-gcc                        - build static GCC.
   --dyn-deps                          - build GCC with dynamically dependencies.
-  --rt-version=<v3|v4|v5|v6|v7>       - version of mingw-w64 runtime to build.
+  --rt-version=<v3|v4|v5|v6|v7|v8|v9> - version of mingw-w64 runtime to build.
   --rev=N                             - number of the build revision.
   --with-testsuite                    - run testsuite for packages that contain flags for it.
   --threads=<posix|win32>             - used threads model.
@@ -115,9 +115,16 @@ At the moment, successfully building the following versions:
   gcc-8.2.0
   gcc-8.3.0
   gcc-8.4.0
+  gcc-8.5.0
   gcc-9.1.0
   gcc-9.2.0
   gcc-9.3.0
+  gcc-9.4.0
+  gcc-10.1.0
+  gcc-10.2.0
+  gcc-10.3.0
+  gcc-11.1.0
+  gcc-11.2.0
   gcc-4.6-branch (currently 4.6.5 prerelease)
   gcc-4.7-branch (currently 4.7.5 prerelease)
   gcc-4.8-branch (currently 4.8.6 prerelease)
@@ -125,10 +132,11 @@ At the moment, successfully building the following versions:
   gcc-5-branch (currently 5.6.0 prerelease)
   gcc-6-branch (currently 6.6.0 prerelease)
   gcc-7-branch (currently 7.6.0 prerelease)
-  gcc-8-branch (currently 8.5.0 prerelease)
-  gcc-9-branch (currently 9.4.0-prerelease)
-  gcc-10-branch (currently 10.1.0-prerelease)
-  gcc-trunk (currently 11.0.0 snapshot)
+  gcc-8-branch (currently 8.6.0 prerelease)
+  gcc-9-branch (currently 9.5.0-prerelease)
+  gcc-10-branch (currently 10.4.0-prerelease)
+  gcc-11-branch (currently 11.3.0-prerelease)
+  gcc-trunk (currently 12.0.0 snapshot)
 ```
 
 Builds also contains patches for building Python 2.7.9 and 3.4.3 versions for support gdb pretty printers.
@@ -139,4 +147,5 @@ Big thanks for these patches to:
 ```
 
 [1] http://sourceforge.net/projects/mingw-w64/
+
 [2] http://www.opensource.org/licenses/BSD-3-Clause

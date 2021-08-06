@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -914,7 +914,7 @@ function func_map_gcc_name_to_gcc_type {
 	# $1 - gcc name
 
 	case $1 in
-		gcc-?.?.?) echo release ;;
+		gcc-*.?.?) echo release ;;
 		gcc-*-branch) echo prerelease ;;
 		gcc-trunk) echo snapshot ;;
 		*) echo "gcc name error: $1. terminate."; exit 1 ;;
@@ -927,7 +927,7 @@ function func_map_gcc_name_to_gcc_version {
 	# $1 - gcc name
 
 	case $1 in
-		gcc-?.?.?)		echo "${1/gcc-/}" ;;
+		gcc-*.?.?)		echo "${1/gcc-/}" ;;
 		gcc-4_6-branch)	echo "4.6.5" ;;
 		gcc-4_7-branch)	echo "4.7.5" ;;
 		gcc-4_8-branch)	echo "4.8.6" ;;
@@ -935,10 +935,11 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-5-branch)	echo "5.6.0" ;;
 		gcc-6-branch)	echo "6.5.0" ;;
 		gcc-7-branch)	echo "7.6.0" ;;
-		gcc-8-branch)	echo "8.5.0" ;;
+		gcc-8-branch)	echo "8.6.0" ;;
 		gcc-9-branch)	echo "9.4.0" ;;
-		gcc-10-branch)	echo "10.1.0" ;;
-		gcc-trunk)		echo "11.0.0" ;;
+		gcc-10-branch)	echo "10.4.0" ;;
+		gcc-11-branch)	echo "11.3.0" ;;
+		gcc-trunk)		echo "12.0.0" ;;
 		*) die "gcc name error: $1. terminate." ;;
 	esac
 }

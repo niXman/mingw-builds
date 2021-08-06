@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -35,10 +35,10 @@
 
 # **************************************************************************
 
-PKG_VERSION=4.6.3
+PKG_VERSION=10.3.0
 PKG_NAME=gcc-${PKG_VERSION}
 PKG_DIR_NAME=gcc-${PKG_VERSION}
-PKG_TYPE=.tar.bz2
+PKG_TYPE=.tar.xz
 PKG_URLS=(
 	"https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
 )
@@ -48,11 +48,19 @@ PKG_PRIORITY=main
 #
 
 PKG_PATCHES=(
-	gcc/gcc-4.6-cloog_lang_c.patch
-	gcc/gcc-4.6-stdthreads.patch
-	gcc/gcc-4.6-iconv.patch
-	gcc/gcc-4.6-vswprintf.patch
-	gcc/gcc-4.6-fix_mismatch_in_gnu_inline_attributes.patch
+	gcc/gcc-4.7-stdthreads.patch
+	gcc/gcc-5.1-iconv.patch
+	gcc/gcc-4.8-libstdc++export.patch
+	gcc/gcc-4.8.2-fix-for-windows-not-minding-non-existant-parent-dirs.patch
+	gcc/gcc-4.8.2-windows-lrealpath-no-force-lowercase-nor-backslash.patch
+	gcc/gcc-4.9.1-enable-shared-gnat-implib.mingw.patch
+	gcc/gcc-5.1.0-make-xmmintrin-header-cplusplus-compatible.patch
+	gcc/gcc-5.2-fix-mingw-pch.patch
+	gcc/gcc-5-dwarf-regression.patch
+	gcc/gcc-5.1.0-fix-libatomic-building-for-threads=win32.patch
+	gcc/gcc-10-ktietz-libgomp.patch
+	gcc/gcc-libgomp-ftime64.patch
+	gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch
 )
 
 #
@@ -64,7 +72,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$MINGWPREFIX
 	--with-sysroot=$PREFIX
-	--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
+	#--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
 	#
 	$LINK_TYPE_GCC
 	#
@@ -76,12 +84,16 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-libstdcxx-time=yes
 	--enable-threads=$THREADS_MODEL
 	--enable-libgomp
+	--enable-libatomic
+	$( [[ "$MSVCRT_PHOBOS_OK" == yes && "$D_LANG_ENABLED" == yes ]] \
+		&& echo "--enable-libphobos"
+	)
 	--enable-lto
 	--enable-graphite
-	--enable-cloog-backend=isl
 	--enable-checking=release
 	--enable-fully-dynamic-string
 	--enable-version-specific-runtime-libs
+	--enable-libstdcxx-filesystem-ts=yes
 	$( [[ $EXCEPTIONS_MODEL == dwarf ]] \
 		&& echo "--disable-sjlj-exceptions --with-dwarf2" \
 	)
@@ -89,8 +101,6 @@ PKG_CONFIGURE_FLAGS=(
 		&& echo "--enable-sjlj-exceptions" \
 	)
 	#
-	--disable-ppl-version-check
-	--disable-cloog-version-check
 	--disable-libstdcxx-pch
 	--disable-libstdcxx-debug
 	$( [[ $BOOTSTRAPING == yes ]] \
@@ -109,20 +119,16 @@ PKG_CONFIGURE_FLAGS=(
 	$PROCESSOR_OPTIMIZATION
 	$PROCESSOR_TUNE
 	#
-	$( [[ $GCC_DEPS_LINK_TYPE == *--disable-shared* ]] \
-		&& echo "--with-host-libstdcxx='-static -lstdc++'" \
-	)
 	--with-libiconv
 	--with-system-zlib
-	--with-{gmp,mpfr,mpc,ppl,cloog}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
+	--with-{gmp,mpfr,mpc,isl}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
 	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}, $MINGW_W64_PKG_STRING\""
 	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS\""
-	MAKEINFO=missing
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
 	LD_FOR_TARGET=$PREFIX/bin/ld.exe
 )
 
