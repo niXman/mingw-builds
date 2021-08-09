@@ -13,7 +13,7 @@ shift
 
 VERNUM=$(echo $GCC_NAME | sed 's|gcc-||;s|\.||g')
 [[ $VERNUM == trunk ]] && {
-	VERNUM=1100
+	VERNUM=1200
 }
 
 BUILDROOT=/c/mingw${VERNUM}
