@@ -21,7 +21,7 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
 5. Delete the paths pointing to any preinstalled MinGW from the `PATH`
   environment variable.
 
-6. Go into the MinGW-builds root directory.
+6. Go into the MinGW-builds root directory:
   `cd && cd mingw-builds`
 
 7. Options:
