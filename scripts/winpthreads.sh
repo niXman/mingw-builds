@@ -58,7 +58,8 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$RUNTIME_DIR/$PKG_NAME
 	#
-	$LINK_TYPE_GCC
+	--enable-shared
+	--enable-static
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
