@@ -108,8 +108,8 @@ filesystem_list=(
 # **************************************************************************
 
 declare -A PKG_TESTS
-[[ $BUILD_SHARED_GCC == yes ]] && { PKG_TESTS["dll_test1"]=dll_test1_list[@]; }
-[[ $BUILD_SHARED_GCC == yes ]] && { PKG_TESTS["dll_test2"]=dll_test2_list[@]; }
+PKG_TESTS["dll_test1"]=dll_test1_list[@]
+PKG_TESTS["dll_test2"]=dll_test2_list[@]
 PKG_TESTS["lto_test"]=lto_test_list[@]
 PKG_TESTS["omp_test"]=omp_test_list[@]
 PKG_TESTS["pthread_test"]=pthread_test_list[@]
