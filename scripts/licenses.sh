@@ -65,6 +65,7 @@ function func_get_licenses {
 		mpfr
 		mpc
 		ppl
+		isl
 		cloog
 		libiconv
 		zlib

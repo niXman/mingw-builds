@@ -99,7 +99,10 @@ PKG_CONFIGURE_FLAGS=(
 	--disable-nls
 	--disable-shared
 	#
-	$LINK_TYPE_GCC
+	$( [[ $BUILD_SHARED_GCC == yes ]] \
+		&& echo "$LINK_TYPE_SHARED" \
+		|| echo "$LINK_TYPE_STATIC"
+	)
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""

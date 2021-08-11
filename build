@@ -257,7 +257,7 @@ while [[ $# > 0 ]]; do
 		--no-strip) STRIP_ON_INSTALL=no ;;
 		--static-gcc)
 			BOOTSTRAPING=yes
-			LINK_TYPE_GCC=$LINK_TYPE_STATIC
+			LINK_TYPE_GCC=$LINK_TYPE_GCC_STATIC
 			GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
 			BUILD_SHARED_GCC=no
 			LINK_TYPE_SUFFIX=static
@@ -879,10 +879,8 @@ for rule in ${SUBTARGETS[@]}; do
 				_reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
 				_reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
 				mkdir -p $TESTS_ROOT_DIR/${_reverse_arch}
-				[[ $BUILD_SHARED_GCC == yes ]] && {
-					cp -f $( find $PREFIX/$TARGET/lib${_reverse_bits} -type f \( -iname *.dll \) ) \
+				cp -f $( find $PREFIX/$TARGET/lib${_reverse_bits} -type f \( -iname *.dll \) ) \
 					$TESTS_ROOT_DIR/${_reverse_arch}/
-				}
 			}
 			for test in "${!PKG_TESTS[@]}"; do
 				func_test $test ${PKG_TESTS[$test]} $TESTS_ROOT_DIR
