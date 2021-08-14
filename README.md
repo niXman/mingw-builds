@@ -13,8 +13,6 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
 
 3. Get the scripts into `<msys root>/home/<user>/mingw-builds`:
   `cd && git clone <paste correct url>`
-  (see the diff between the 'master' and 'develop' branches, maybe you need
-   the 'develop' branch exactly)
 
 4. In the MSYS2 file structure delete or rename the `/mingw32` and `/mingw64` directory.
 

@@ -74,7 +74,6 @@ PKG_CONFIGURE_FLAGS=(
 	--with-sysroot=$PREFIX
 	#--with-gxx-include-dir=$MINGWPREFIX/$TARGET/include/c++
 	#
-	--enable-shared
 	$LINK_TYPE_GCC
 	#
 	$( [[ $USE_MULTILIB == yes ]] \
