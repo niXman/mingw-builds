@@ -78,6 +78,8 @@ readonly LOGVIEWERS=(
 # **************************************************************************
 
 function func_test_installed_packages {
+	local installed_packages=($(pacman -Qq))
+
 	local required_packages=(
 		lndir
 		git
@@ -87,7 +89,7 @@ function func_test_installed_packages {
 		p7zip
 		make
 		patch
-		automake
+		automake-wrapper
 		autoconf
 		libtool
 		flex
@@ -103,11 +105,9 @@ function func_test_installed_packages {
 
 	local not_installed_packages=()
 
-	for it in ${required_packages[@]}; do
-		$(pacman -Qs ^$it > /dev/null 2>&1)
-		[[ $? != 0 ]] && {
-			not_installed_packages=(${not_installed_packages[@]} $it)
-		}
+	for req in "${required_packages[@]}"; do
+		[[ ! "${installed_packages[*]}" =~ " $req " ]] &&
+			not_installed_packages=(${not_installed_packages[@]} $req)
 	done
 
 	[[ ${#not_installed_packages[@]} != 0 ]] && {
