@@ -111,13 +111,9 @@ function func_test_installed_packages {
 	done
 
 	[[ ${#not_installed_packages[@]} != 0 ]] && {
-		local packages_str=$(printf ",%s" "${not_installed_packages[@]}")
-		packages_str=${packages_str:1}
-		echo ""
-		echo "the following packages are not installed: $packages_str"
-		echo "you can install it using command:"
-		echo "   pacman -S$(printf " %s" "${not_installed_packages[@]}")"
-		return 1
+		echo "--> installing required packages..."
+		pacman -Sy$(printf " %s" "${not_installed_packages[@]}") ||
+			return 1
 	}
 
 	return 0
