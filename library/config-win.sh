@@ -78,8 +78,6 @@ readonly LOGVIEWERS=(
 # **************************************************************************
 
 function func_test_installed_packages {
-	local installed_packages=($(pacman -Qq))
-
 	local required_packages=(
 		lndir
 		git
@@ -103,22 +101,9 @@ function func_test_installed_packages {
 		dejagnu
 	)
 
-	local not_installed_packages=()
-
-	for req in "${required_packages[@]}"; do
-		[[ ! "${installed_packages[*]}" =~ " $req " ]] &&
-			not_installed_packages=(${not_installed_packages[@]} $req)
-	done
-
-	[[ ${#not_installed_packages[@]} != 0 ]] && {
-		local packages_str=$(printf ",%s" "${not_installed_packages[@]}")
-		packages_str=${packages_str:1}
-		echo ""
-		echo "the following packages are not installed: $packages_str"
-		echo "you can install it using command:"
-		echo "   pacman -S$(printf " %s" "${not_installed_packages[@]}")"
-		return 1
-	}
+    echo "--> installing required packages..."
+    pacman -Sy --needed$(printf " %s" "${required_packages[@]}") ||
+        return 1
 
 	return 0
 }
