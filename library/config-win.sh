@@ -101,9 +101,9 @@ function func_test_installed_packages {
 		dejagnu
 	)
 
-    echo "--> installing required packages..."
-    pacman -Sy --needed$(printf " %s" "${required_packages[@]}") ||
-        return 1
+	echo "--> installing required packages..."
+	pacman -Sy --noconfirm --needed$(printf " %s" "${required_packages[@]}") ||
+		return 1
 
 	return 0
 }
