@@ -61,6 +61,7 @@ PKG_PATCHES=(
 	gcc/gcc-10-ktietz-libgomp.patch
 	gcc/gcc-libgomp-ftime64.patch
 	gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch
+	gcc/gcc-10-libgcc-ldflags.patch
 )
 
 #
@@ -130,6 +131,7 @@ PKG_CONFIGURE_FLAGS=(
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
 	LD_FOR_TARGET=$PREFIX/bin/ld.exe
+	--with-boot-ldflags="\"$LDFLAGS -Wl,--disable-dynamicbase -static-libstdc++ -static-libgcc\""
 )
 
 #
