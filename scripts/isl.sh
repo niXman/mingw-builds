@@ -57,7 +57,7 @@ fi
 PKG_NAME=$BUILD_ARCHITECTURE-isl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=isl-${PKG_VERSION}
 PKG_URLS=(
-	"http://isl.gforge.inria.fr/isl-${PKG_VERSION}${PKG_TYPE}"
+	"https://libisl.sourceforge.io/isl-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=prereq
