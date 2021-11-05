@@ -1,3 +1,5 @@
+# MinGW Builds [![x86_64 and i686 release builds](https://github.com/niXman/mingw-builds/actions/workflows/build_cmake.yml/badge.svg)](https://github.com/niXman/mingw-builds/actions/workflows/build_cmake.yml)
+
 The scripts provided by the MinGW-W64 project[1] are designed
 for building the dual-target(i686/x86_64) MinGW-W64 compiler for i686/x86_64 hosts.
 
