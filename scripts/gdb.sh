@@ -73,7 +73,7 @@ PKG_CONFIGURE_FLAGS=(
 	--disable-rpath
 	#
 	--with-system-gdbinit=$PREFIX/etc/gdbinit
-	--with-python=$PREFIX/opt/bin/python-config-u.sh
+	--with-python=$PREFIX/opt/bin/python3.exe
 	--with-expat
 	--with-libiconv
 	--with-zlib
