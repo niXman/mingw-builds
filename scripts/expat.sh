@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.4.1
+PKG_VERSION=2.4.6
 PKG_NAME=expat-${PKG_VERSION}
 PKG_DIR_NAME=expat-${PKG_VERSION}
 PKG_TYPE=.tar.xz
