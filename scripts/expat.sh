@@ -47,9 +47,7 @@ PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=(
-	expat/expat_mingw_tests_fix.patch
-)
+PKG_PATCHES=()
 
 #
 
