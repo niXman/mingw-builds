@@ -908,6 +908,42 @@ function func_install_toolchain {
 	esac
 }
 
+function func_check_user_toolchain_exe {
+	# $1 - binary path
+	# $2 - executable
+	"$1/$2" --version > /dev/null 2>&1 || die "Could not execute $1/$2"
+}
+
+function func_check_user_toolchain {
+	# $1 - toolchains path
+
+	[[ $USE_MULTILIB == yes || -z ${BUILD_ARCHITECTURE} ]] && {
+		local _arch=both
+	} || {
+		local _arch=$BUILD_ARCHITECTURE
+	}
+	case $_arch in
+		i686)
+			func_check_user_toolchain_exe "$1/mingw32/bin" gcc
+			func_check_user_toolchain_exe "$1/mingw32/bin" ld
+			func_check_user_toolchain_exe "$1/mingw32/bin" mingw32-make
+			;;
+		x86_64)
+			func_check_user_toolchain_exe "$1/mingw64/bin" gcc
+			func_check_user_toolchain_exe "$1/mingw64/bin" ld
+			func_check_user_toolchain_exe "$1/mingw64/bin" mingw32-make
+			;;
+		both)
+			func_check_user_toolchain_exe "$1/mingw32/bin" gcc
+			func_check_user_toolchain_exe "$1/mingw32/bin" ld
+			func_check_user_toolchain_exe "$1/mingw32/bin" mingw32-make
+			func_check_user_toolchain_exe "$1/mingw64/bin" gcc
+			func_check_user_toolchain_exe "$1/mingw64/bin" ld
+			func_check_user_toolchain_exe "$1/mingw64/bin" mingw32-make
+			;;
+	esac
+}
+
 # **************************************************************************
 
 function func_map_gcc_name_to_gcc_type {

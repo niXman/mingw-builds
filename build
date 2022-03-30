@@ -383,6 +383,9 @@ while [[ $# > 0 ]]; do
 			DBG_HOOKS=$(echo $HOOK_STRING | tr ":" "\n")
 		;;
 		--wait-for-logviewer) LOGVIEWER_WAIT=yes ;;
+		--provided-toolchain=*)
+			PROVIDED_TOOLCHAIN=${1/--provided-toolchain=/}
+		;;
 		*)
 			die "bad command line: \"$1\". terminate."
 		;;
@@ -496,17 +499,35 @@ esac
 # **************************************************************************
 # Install host toolchains
 
-mkdir -p $TOOLCHAINS_DIR
-[[ $? != 0 ]] && {
-	die "can't create toolchains directory. terminate."
-}
+if ! [[ -z "$PROVIDED_TOOLCHAIN" ]] ; then
+	func_check_user_toolchain "$PROVIDED_TOOLCHAIN"
 
-func_install_toolchain \
-	$TOOLCHAINS_DIR \
-	$i686_HOST_MINGW_PATH \
-	$x86_64_HOST_MINGW_PATH \
-	${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_I686} \
-	${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_X86_64}
+	echo "Using provided toolchain: $PROVIDED_TOOLCHAIN"
+	unset TOOLCHAINS_DIR i686_HOST_MINGW_PATH x86_64_HOST_MINGW_PATH
+	TOOLCHAINS_DIR="$PROVIDED_TOOLCHAIN"
+	i686_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
+	x86_64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
+else
+	echo "Using downloaded toolchain"
+fi
+
+readonly TOOLCHAINS_DIR
+readonly i686_HOST_MINGW_PATH
+readonly x86_64_HOST_MINGW_PATH
+
+if [[ -z "$PROVIDED_TOOLCHAIN" ]] ; then
+	mkdir -p $TOOLCHAINS_DIR
+	[[ $? != 0 ]] && {
+		die "can't create toolchains directory. terminate."
+	}
+
+	func_install_toolchain \
+		$TOOLCHAINS_DIR \
+		$i686_HOST_MINGW_PATH \
+		$x86_64_HOST_MINGW_PATH \
+		${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_I686} \
+		${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_X86_64}
+fi
 
 # **************************************************************************
 # Creating necessary directories
