@@ -59,6 +59,7 @@ readonly RUN_ARGS="$@"
 	echo "    --exceptions=<type>        - specifies exceptions model for GCC"
 	echo "                                 available: dwarf, seh, sjlj, dwarfseh (picks by architecture)"
 	echo "    --use-lto                  - build with LTO using"
+	echo "    --no-gcc-lto               - disable LTO when building GCC"
 	echo "    --no-bootstrap             - do not bootstrap GCC"
 	echo "    --bootstrapall             - bootstraping GCC & all prerequisites"
 	echo "    --no-multilib              - build GCC without multilib support"
@@ -252,6 +253,7 @@ while [[ $# > 0 ]]; do
 			export RANLIB=gcc-ranlib
 			export NM=gcc-nm
 		;;
+		--no-gcc-lto) DISABLE_GCC_LTO=yes ;;
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-extras) [[ $BUILD_MODE != python ]] && { BUILD_EXTRAS=no; };;
 		--no-strip) STRIP_ON_INSTALL=no ;;

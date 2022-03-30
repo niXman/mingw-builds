@@ -72,11 +72,17 @@ PKG_CONFIGURE_FLAGS=(
 		&& echo "--enable-targets=all --enable-multilib" \
 		|| echo "--disable-multilib" \
 	)
-	--enable-languages=$ENABLE_LANGUAGES,lto
+	$( [[ "$DISABLE_GCC_LTO" == yes ]] \
+		&& echo "--enable-languages=$ENABLE_LANGUAGES" \
+		|| echo "--enable-languages=$ENABLE_LANGUAGES,lto"
+	)
 	--enable-libstdcxx-time=yes
 	--enable-threads=$THREADS_MODEL
 	--enable-libgomp
-	--enable-lto
+	$( [[ "$DISABLE_GCC_LTO" == yes ]] \
+		&& echo "--disable-lto" \
+		|| echo "--enable-lto"
+	)
 	--enable-graphite
 	--enable-cloog-backend=isl
 	--enable-checking=release
