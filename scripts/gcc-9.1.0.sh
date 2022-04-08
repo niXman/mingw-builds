@@ -79,7 +79,10 @@ PKG_CONFIGURE_FLAGS=(
 		&& echo "--enable-targets=all --enable-multilib" \
 		|| echo "--disable-multilib" \
 	)
-	--enable-languages=$ENABLE_LANGUAGES,lto
+	$( [[ "$DISABLE_GCC_LTO" == yes ]] \
+		&& echo "--enable-languages=$ENABLE_LANGUAGES" \
+		|| echo "--enable-languages=$ENABLE_LANGUAGES,lto"
+	)
 	--enable-libstdcxx-time=yes
 	--enable-threads=$THREADS_MODEL
 	--enable-libgomp
@@ -87,7 +90,10 @@ PKG_CONFIGURE_FLAGS=(
 	$( [[ "$MSVCRT_PHOBOS_OK" == yes && "$D_LANG_ENABLED" == yes ]] \
 		&& echo "--enable-libphobos"
 	)
-	--enable-lto
+	$( [[ "$DISABLE_GCC_LTO" == yes ]] \
+		&& echo "--disable-lto" \
+		|| echo "--enable-lto"
+	)
 	--enable-graphite
 	--enable-checking=release
 	--enable-fully-dynamic-string

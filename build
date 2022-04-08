@@ -59,6 +59,7 @@ readonly RUN_ARGS="$@"
 	echo "    --exceptions=<type>        - specifies exceptions model for GCC"
 	echo "                                 available: dwarf, seh, sjlj, dwarfseh (picks by architecture)"
 	echo "    --use-lto                  - build with LTO using"
+	echo "    --no-gcc-lto               - disable LTO when building GCC"
 	echo "    --no-bootstrap             - do not bootstrap GCC"
 	echo "    --bootstrapall             - bootstraping GCC & all prerequisites"
 	echo "    --no-multilib              - build GCC without multilib support"
@@ -252,6 +253,7 @@ while [[ $# > 0 ]]; do
 			export RANLIB=gcc-ranlib
 			export NM=gcc-nm
 		;;
+		--no-gcc-lto) DISABLE_GCC_LTO=yes ;;
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-extras) [[ $BUILD_MODE != python ]] && { BUILD_EXTRAS=no; };;
 		--no-strip) STRIP_ON_INSTALL=no ;;
@@ -383,6 +385,9 @@ while [[ $# > 0 ]]; do
 			DBG_HOOKS=$(echo $HOOK_STRING | tr ":" "\n")
 		;;
 		--wait-for-logviewer) LOGVIEWER_WAIT=yes ;;
+		--provided-toolchain=*)
+			PROVIDED_TOOLCHAIN=${1/--provided-toolchain=/}
+		;;
 		*)
 			die "bad command line: \"$1\". terminate."
 		;;
@@ -496,17 +501,35 @@ esac
 # **************************************************************************
 # Install host toolchains
 
-mkdir -p $TOOLCHAINS_DIR
-[[ $? != 0 ]] && {
-	die "can't create toolchains directory. terminate."
-}
+if ! [[ -z "$PROVIDED_TOOLCHAIN" ]] ; then
+	func_check_user_toolchain "$PROVIDED_TOOLCHAIN"
 
-func_install_toolchain \
-	$TOOLCHAINS_DIR \
-	$i686_HOST_MINGW_PATH \
-	$x86_64_HOST_MINGW_PATH \
-	${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_I686} \
-	${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_X86_64}
+	echo "Using provided toolchain: $PROVIDED_TOOLCHAIN"
+	unset TOOLCHAINS_DIR i686_HOST_MINGW_PATH x86_64_HOST_MINGW_PATH
+	TOOLCHAINS_DIR="$PROVIDED_TOOLCHAIN"
+	i686_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
+	x86_64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
+else
+	echo "Using downloaded toolchain"
+fi
+
+readonly TOOLCHAINS_DIR
+readonly i686_HOST_MINGW_PATH
+readonly x86_64_HOST_MINGW_PATH
+
+if [[ -z "$PROVIDED_TOOLCHAIN" ]] ; then
+	mkdir -p $TOOLCHAINS_DIR
+	[[ $? != 0 ]] && {
+		die "can't create toolchains directory. terminate."
+	}
+
+	func_install_toolchain \
+		$TOOLCHAINS_DIR \
+		$i686_HOST_MINGW_PATH \
+		$x86_64_HOST_MINGW_PATH \
+		${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_I686} \
+		${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_X86_64}
+fi
 
 # **************************************************************************
 # Creating necessary directories
