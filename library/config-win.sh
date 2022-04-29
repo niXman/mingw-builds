@@ -58,6 +58,7 @@ readonly REPOSITORY_FILE="$PROJECT_ROOT_URL/files/Toolchains targetting Win32/Pe
 readonly LOGVIEWERS=(
 	"c:/progra~2/notepad++/notepad++.exe"
 	"c:/progra~1/notepad++/notepad++.exe"
+	"$USERPROFILE/AppData/Local/Microsoft/WindowsApps/notepad"
 	"notepad"
 )
 
