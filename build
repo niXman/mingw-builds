@@ -163,7 +163,8 @@ readonly RUN_ARGS="$@"
 	echo "    gcc-10-branch (currently 10.4.0-prerelease)"
 	echo "    gcc-11.1.0 (11.1.0 release)"
 	echo "    gcc-11.2.0 (11.2.0 release)"
-	echo "    gcc-11-branch (currently 11.3.0-prerelease)"
+	echo "    gcc-11.3.0 (11.3.0 release)"
+	echo "    gcc-11-branch (currently 11.4.0-prerelease)"
 	echo "    gcc-trunk (currently 12.0.0-snapshot)"
 
 	exit 0
