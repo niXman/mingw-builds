@@ -100,7 +100,7 @@ random_device_list=(
 )
 
 filesystem_list=(
-    "filesystem.cpp -std=c++11 -lstdc++fs -o filesystem.exe"
+    "filesystem.cpp -std=c++17 -o filesystem.exe"
 )
 
 # **************************************************************************
@@ -119,4 +119,4 @@ PKG_TESTS["lasterror_test2"]=lasterror_test2_list[@]
 PKG_TESTS["time_test"]=time_test_list[@]
 [[ $THREADS_MODEL == posix ]] && { PKG_TESTS["sleep_test"]=sleep_test_list[@]; }
 [[ `echo $BUILD_VERSION | cut -d. -f1` -ge 6 ]] && { PKG_TESTS["random_device"]=random_device_list[@]; }
-[[ `echo $BUILD_VERSION | cut -d. -f1` -ge 7 ]] && { PKG_TESTS["filesystem"]=filesystem_list[@]; }
+[[ `echo $BUILD_VERSION | cut -d. -f1` -ge 8 ]] && { PKG_TESTS["filesystem"]=filesystem_list[@]; }
