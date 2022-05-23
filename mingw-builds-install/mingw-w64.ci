@@ -1,4 +1,4 @@
-﻿<project version = 9 civer = 7.8.0 winver = "2.12/6.2.9200" >
+<project version = 9 civer = 8.5.0 winver = "2.12/6.2.9200" >
    <autorun >1</>
    <autoclose >0</>
    <compname >MinGW-W64</>
@@ -600,6 +600,17 @@ macrox_setstr("urlapp", stemp )</>
                         <reqlist >
                            <rows ></>
                         </>
+                     </>
+                     <_ tag = 0 id = sources expanded = 2 disabled = 0 >
+                        <children >
+                           <_ tag = 0 id = empty ></>
+                        </>
+                        <desc ></>
+                        <ext >0</>
+                        <src >if $DEBUG$
+{
+  print(macrox_get("httpresult"))
+}</>
                      </>
                      <_ tag = 0 id = parse >
                         <desc ></>
