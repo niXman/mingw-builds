@@ -1,4 +1,4 @@
-<project version = 9 civer = 8.5.0 winver = "2.12/6.2.9200" >
+﻿<project version = 9 civer = 8.5.0 winver = "2.12/6.2.9200" >
    <autorun >1</>
    <autoclose >0</>
    <compname >MinGW-W64</>
@@ -9,7 +9,7 @@
    <dlgfont >verdana</>
    <headlogo >default - 1</>
    <dlgfontsize >s8</>
-   <output >C:\msys64\home\nixman</>
+   <output >$prjpath$</>
    <exename >mingw-w64-install.exe</>
    <beffile ></>
    <aftfile ></>
@@ -33,26 +33,84 @@
       <children >
          <install id = install expanded = 2 >
             <children >
-               <_ id = background disabled = 1 >
+               <_ tag = 0 id = varset color = 0 bkcolor = 65535 >
                   <desc ></>
-                  <head >#lcaption#</>
-                  <foot ></>
-                  <font >Times</>
-                  <height >36</>
-                  <bold >0</>
-                  <italic >0</>
-                  <backcol >0x0000FF</>
-                  <textcol >0xFFFFFF</>
-                  <shadecol >0x888888</>
-                  <uniform >0</>
-                  <backbmp ></>
-                  <stretchback >0</>
-               </>
-               <_ tag = 0 id = getuser disabled = 1 >
-                  <desc ></>
-                  <var >username</>
-                  <vars >appdata,apppath,userpath,desktop,progpath,startup</>
-                  <if ></>
+                  <varlist >
+                     <rows >
+                        <_ >
+                           <varname >DEBUG</>
+                           <value >1</>
+                           <if ></>
+                           <subst >0</>
+                           <super >0</>
+                           <comm ></>
+                        </>
+                        <_ >
+                           <varname >welcometext</>
+                           <value >Welcome to the MinGW-W64 online installer.</>
+                           <if ></>
+                           <subst ></>
+                           <super ></>
+                           <comm ></>
+                        </>
+                        <_ >
+                           <varname >repotxt</>
+                           <value >Getting repository description file...</>
+                           <if ></>
+                           <subst ></>
+                           <super ></>
+                           <comm ></>
+                        </>
+                        <_ >
+                           <varname >repourl</>
+                           <value >https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/repository.txt/download</>
+                           <if ></>
+                           <subst >0</>
+                           <super ></>
+                           <comm ></>
+                        </>
+                        <_ >
+                           <varname >repoerr</>
+                           <value >Cannot download repository.txt</>
+                           <if ></>
+                           <subst ></>
+                           <super ></>
+                           <comm ></>
+                        </>
+                        <_ >
+                           <varname >iscreatesh</>
+                           <value >1</>
+                           <if ></>
+                           <subst ></>
+                           <super ></>
+                           <comm ></>
+                        </>
+                        <_ >
+                           <varname >shgroup</>
+                           <value >MinGW-W64 project</>
+                           <if ></>
+                           <subst ></>
+                           <super ></>
+                           <comm ></>
+                        </>
+                        <_ >
+                           <varname >createsh</>
+                           <value >Create shortcuts in Start Menu</>
+                           <if ></>
+                           <subst ></>
+                           <super ></>
+                           <comm ></>
+                        </>
+                        <_ >
+                           <varname >urlerr</>
+                           <value >The file has been downloaded incorrectly!</>
+                           <if ></>
+                           <subst ></>
+                           <super ></>
+                           <comm ></>
+                        </>
+                     </>
+                  </>
                </>
                <_ tag = 0 id = sources expanded = 2 >
                   <children >
@@ -60,147 +118,13 @@
                   </>
                   <desc ></>
                   <ext >1</>
-                  <src >include : $"$prjpath$\mingw-w64.g"
-
-func uint mypathcmdproc( uint wnd )
-{
-   str path
-   macrox_getstr( "setuppath", path )
-   path.lower();
-   if path[1]== ':' && *path <= 3
-   {
-      msg_warning( "Enter the installation directory", "#lcaption#" )
-      return 0
-   }
-   return 1
-}</>
-               </>
-               <_ id = checkreq expanded = 0 disabled = 1 >
-                  <children >
-                     <_ id = empty ></>
-                  </>
-                  <desc ></>
-                  <checktype >admin</>
-                  <resvar >ischeck</>
-                  <not >0</>
-                  <msg ></>
-               </>
-               <_ tag = 0 id = varset >
-                  <desc ></>
-                  <varlist >
-                     <rows >
-                        <_ >
-                           <varname >loadrep</>
-                           <value >Getting repository description file...</>
-                           <if ></>
-                           <subst ></>
-                        </>
-                        <_ >
-                           <varname >repurl</>
-                           <value >http://netix.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/repository.txt</>
-                           <if ></>
-                           <subst >0</>
-                        </>
-                        <_ >
-                           <varname >isnetix</>
-                           <value >0</>
-                           <if ></>
-                           <subst >0</>
-                        </>
-                        <_ >
-                           <varname >addsize</>
-                           <value >70000</>
-                           <if ></>
-                           <subst ></>
-                        </>
-                        <_ >
-                           <varname >iscreatesh</>
-                           <value >1</>
-                           <if ></>
-                           <subst ></>
-                        </>
-                        <_ >
-                           <varname >welcometext</>
-                           <value >Welcome text must be here...</>
-                           <if ></>
-                           <subst ></>
-                        </>
-                        <_ >
-                           <varname >shgroup</>
-                           <value >MinGW-W64 project</>
-                           <if ></>
-                           <subst ></>
-                        </>
-                        <_ disabled = 1 >
-                           <varname >urlfile</>
-                           <value >[InternetShortcut]
-URL=https://sourceforge.net/projects/mingw-w64/</>
-                           <if ></>
-                           <subst ></>
-                        </>
-                        <_ >
-                           <varname >createsh</>
-                           <value >Create shortcuts in Start Menu</>
-                           <if ></>
-                           <subst ></>
-                        </>
-                        <_ >
-                           <varname >err_download</>
-                           <value >The file has been downloaded incorrectly!</>
-                           <if ></>
-                           <subst ></>
-                        </>
-                        <_ >
-                           <varname >err_repo</>
-                           <value >Cannot download repository.txt</>
-                           <if ></>
-                           <subst ></>
-                        </>
-                        <_ >
-                           <varname >err_dwn</>
-                           <value >Cannot download the release file</>
-                           <if ></>
-                           <subst ></>
-                        </>
-                        <_ >
-                           <varname >sourceforge</>
-                           <value >https://sourceforge.net/projects/mingw-w64/</>
-                           <if ></>
-                           <subst ></>
-                        </>
-                     </>
-                  </>
-               </>
-               <_ tag = 0 id = tempfiles >
-                  <desc ></>
-                  <templist >
-                     <rows >
-                        <_ >
-                           <filename >$prjpath$\index.html</>
-                           <varname ></>
-                           <if ></>
-                        </>
-                     </>
-                  </>
-               </>
-               <_ id = dlglang disabled = 1 >
-                  <desc ></>
-                  <buttons >nc</>
-                  <design >left</>
-                  <headlogo ></>
-                  <varlist >
-                     <rows ></>
-                  </>
-                  <head ></>
-                  <headtext ></>
-                  <dlgtext ></>
-                  <if ></>
+                  <src >include : $"$prjpath$\mingw-w64.g"</>
                </>
                <_ tag = 0 id = dlgwel >
                   <desc ></>
                   <head ></>
                   <headtext ></>
-                  <dlgtext >Welcome to the MinGW-W64 online installer.</>
+                  <dlgtext >#welcometext#</>
                   <headlogo ></>
                   <design >left</>
                   <buttons >auto</>
@@ -209,180 +133,92 @@ URL=https://sourceforge.net/projects/mingw-w64/</>
                      <rows ></>
                   </>
                </>
-               <_ id = dlglic disabled = 1 >
-                  <desc ></>
-                  <file ></>
-                  <print >1</>
-                  <iagree >radio</>
-                  <buttons >pnc</>
-                  <design >left</>
-                  <headlogo ></>
-                  <varlist >
-                     <rows >
-                        <_ >
-                           <varname >Liccolor</>
-                           <value >1</>
-                        </>
-                     </>
-                  </>
-                  <head ></>
-                  <headtext ></>
-                  <if ></>
-               </>
-               <_ tag = 0 id = tempfiles disabled = 1 >
-                  <desc ></>
-                  <templist >
-                     <rows >
-                        <_ >
-                           <filename >C:\temp\repfile.txt</>
-                           <varname >repfile</>
-                           <if ></>
-                        </>
-                     </>
-                  </>
-               </>
-               <_ tag = 0 id = readvar disabled = 1 >
-                  <desc ></>
-                  <varname >repo</>
-                  <path >custom</>
-                  <name >#repfile#</>
-                  <append >0</>
-               </>
-               <_ tag = 0 id = popup expanded = 0 disabled = 1 >
+               <_ tag = 0 id = popup expanded = 2 disabled = 0 >
                   <children >
-                     <_ tag = 0 id = download >
+                     <_ tag = 0 id = httprequest >
                         <desc ></>
-                        <url >#sourceforge#files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/</>
-                        <filelist >
-                           <rows >
-                              <_ >
-                                 <urlfile >repository.txt</>
-                                 <path >temp</>
-                                 <custpath ></>
-                                 <file >repository.txt</>
-                                 <if ></>
-                              </>
-                           </>
+                        <url >#repourl#</>
+                        <type >get</>
+                        <ssl >1</>
+                        <resvar >httpresult</>
+                        <utf >1</>
+                        <if ></>
+                        <reqlist >
+                           <rows ></>
                         </>
                      </>
-                     <_ tag = 0 id = readvar >
-                        <desc ></>
-                        <varname >reptext</>
-                        <path >temp</>
-                        <name >repository.txt</>
-                        <append >0</>
-                     </>
-                     <_ tag = 0 id = if expanded = 2 >
+                     <_ tag = 0 id = sources expanded = 2 >
                         <children >
-                           <_ tag = 0 id = sources expanded = 2 >
-                              <children >
-                                 <_ tag = 0 id = empty ></>
-                              </>
-                              <desc ></>
-                              <ext >0</>
-                              <src >macrox_setint("errcode", inet_error())
-$body$</>
-                           </>
-                           <_ tag = 0 id = exit >
-                              <desc ></>
-                              <extype >exit</>
-                              <code >1</>
-                              <msg >#err_repo# [#errcode#]</>
-                           </>
+                           <_ tag = 0 id = empty ></>
                         </>
                         <desc ></>
-                        <else ></>
-                        <condlist >
-                           <rows >
-                              <_ >
-                                 <varname >reptext</>
-                                 <iftype >empty</>
-                                 <not >0</>
-                                 <value ></>
-                                 <orand >and</>
-                              </>
-                           </>
-                        </>
+                        <ext >0</>
+                        <src >DEBUG("repourl") 
+//DEBUG("httpresult")</>
                      </>
                      <_ tag = 0 id = parse >
                         <desc ></>
-                        <varname >reptext</>
-                        <igncase >1</>
+                        <varname >httpresult</>
+                        <igncase >0</>
                         <ruleslist >
                            <rows >
                               <_ >
                                  <prefix >url=</>
-                                 <varname >redirurl</>
-                                 <postfix >"></>
-                              </>
-                              <_ >
-                                 <prefix >error></>
-                                 <varname >ERROR</>
-                                 <postfix >&x3c;/error></>
-                              </>
-                           </>
-                        </>
-                     </>
-                     <_ tag = 0 id = replacetext >
-                        <desc ></>
-                        <varname >redirurl</>
-                        <igncase >1</>
-                        <getval >0</>
-                        <replist >
-                           <rows >
-                              <_ >
-                                 <before >amp;</>
-                                 <after ></>
+                                 <varname >repofile</>
+                                 <postfix >#quote#</>
                                  <if ></>
+                                 <notrimsys ></>
+                                 <comm ></>
                               </>
                            </>
                         </>
                      </>
-                     <_ tag = 0 id = download >
+                     <_ tag = 0 id = sources expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = empty ></>
+                        </>
+                        <desc ></>
+                        <ext >0</>
+                        <src >DEBUG("repofile")</>
+                     </>
+                     <_ tag = 0 id = download disabled = 0 >
                         <desc ></>
                         <url ></>
                         <filelist >
                            <rows >
                               <_ >
-                                 <urlfile >#redirurl#</>
-                                 <path >temp</>
-                                 <custpath ></>
-                                 <file >repfile.txt</>
-                                 <if ></>
-                              </>
-                           </>
-                        </>
-                     </>
-                     <_ tag = 0 id = readvar >
-                        <desc ></>
-                        <varname >repo</>
-                        <path >temp</>
-                        <name >repfile.txt</>
-                        <append >0</>
-                     </>
-                  </>
-                  <desc ></>
-                  <poptype >text</>
-                  <name >#loadrep#</>
-                  <time >500</>
-                  <if ></>
-               </>
-               <_ tag = 0 id = popup expanded = 2 disabled = 0 >
-                  <children >
-                     <_ tag = 0 id = download >
-                        <desc ></>
-                        <url ></>
-                        <filelist >
-                           <rows >
-                              <_ >
-                                 <urlfile >#repurl#</>
+                                 <urlfile >#repofile#</>
                                  <path >temp</>
                                  <custpath ></>
                                  <file >repository.txt</>
                                  <if ></>
+                                 <ifexist ></>
+                                 <var >httpresult</>
+                                 <comm ></>
                               </>
                            </>
                         </>
+                        <ssl >1</>
+                     </>
+                     <_ tag = 0 id = sources expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = exit >
+                              <desc ></>
+                              <extype >exit</>
+                              <code >1</>
+                              <msg >#repoerr#</>
+                              <if ></>
+                           </>
+                        </>
+                        <desc ></>
+                        <ext >0</>
+                        <src >DEBUG("httpresult") 
+DEBUG("httpresult_file")
+
+if(macrox_getint("httpresult") == 0)
+{
+  $body$
+}</>
                      </>
                      <_ tag = 0 id = readvar >
                         <desc ></>
@@ -390,44 +226,42 @@ $body$</>
                         <path >temp</>
                         <name >repository.txt</>
                         <append >0</>
+                        <maxsize ></>
+                        <utf >0</>
+                        <bom >0</>
+                        <if ></>
+                     </>
+                     <_ tag = 0 id = sources expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = empty ></>
+                        </>
+                        <desc ></>
+                        <ext >0</>
+                        <src >//DEBUG("repo") 
+loadversions()</>
                      </>
                   </>
                   <desc ></>
                   <poptype >text</>
-                  <name >#loadrep#</>
+                  <name >#repotxt#</>
                   <time >500</>
                   <if ></>
-               </>
-               <_ tag = 0 id = sources expanded = 2 >
-                  <children >
-                     <_ tag = 0 id = empty ></>
-                  </>
-                  <desc ></>
-                  <ext >0</>
-                  <src >loadversions()
-$body$</>
-               </>
-               <_ tag = 0 id = if expanded = 2 >
-                  <children >
-                     <_ tag = 0 id = exit >
-                        <desc ></>
-                        <extype >exit</>
-                        <code >1</>
-                        <msg >#err_repo#</>
-                     </>
-                  </>
-                  <desc ></>
-                  <else ></>
-                  <condlist >
-                     <rows >
-                        <_ >
-                           <varname >repo</>
-                           <iftype >empty</>
-                           <not >0</>
-                           <value ></>
-                           <orand >and</>
-                        </>
-                     </>
+                  <popstyle >def</>
+                  <topmost >0</>
+                  <hidetaskbar >0</>
+                  <icofile ></>
+                  <hideicon >0</>
+                  <autoicon >0</>
+                  <popfont >def</>
+                  <custfont ></>
+                  <popfontsize >def</>
+                  <popcolor ></>
+                  <poptextcol ></>
+                  <alignh >0</>
+                  <alignv >0</>
+                  <autosize >off</>
+                  <varlist >
+                     <rows ></>
                   </>
                </>
                <_ tag = 0 id = dlgsets >
@@ -446,6 +280,7 @@ $body$</>
                            <varname >vers</>
                            <value >Version</>
                            <if ></>
+                           <comm ></>
                         </>
                         <_ >
                            <type >combo</>
@@ -454,6 +289,7 @@ $body$</>
                            <varname >arch</>
                            <value >Architecture</>
                            <if ></>
+                           <comm ></>
                         </>
                         <_ >
                            <type >combo</>
@@ -462,6 +298,7 @@ $body$</>
                            <varname >thread</>
                            <value >Threads</>
                            <if ></>
+                           <comm ></>
                         </>
                         <_ >
                            <type >combo</>
@@ -470,6 +307,7 @@ $body$</>
                            <varname >except</>
                            <value >Exception</>
                            <if ></>
+                           <comm ></>
                         </>
                         <_ >
                            <type >combo</>
@@ -478,6 +316,7 @@ $body$</>
                            <varname >build</>
                            <value >Build revision</>
                            <if ></>
+                           <comm ></>
                         </>
                      </>
                   </>
@@ -486,6 +325,8 @@ $body$</>
                         <_ >
                            <varname >Dfunc</>
                            <value >vercmdproc</>
+                           <if ></>
+                           <comm ></>
                         </>
                      </>
                   </>
@@ -497,25 +338,16 @@ $body$</>
                   <headlogo ></>
                   <chlist >
                      <rows >
-                        <_ >
+                        <_ disabled = 0 >
                            <varname >iscreatesh</>
                            <value >#createsh#</>
+                           <if ></>
+                           <comm ></>
                         </>
                      </>
                   </>
                   <varlist >
-                     <rows >
-                        <_ >
-                           <varname >H:2005</>
-                           <value >0</>
-                           <if ></>
-                        </>
-                        <_ >
-                           <varname >Dnextfunc</>
-                           <value >mypathcmdproc</>
-                           <if ></>
-                        </>
-                     </>
+                     <rows ></>
                   </>
                   <head ></>
                   <headtext ></>
@@ -523,19 +355,10 @@ $body$</>
                   <pathadd ></>
                   <enforce >0</>
                   <if ></>
-                  <savepath >0</>
+                  <savepath >1</>
                </>
                <_ id = dlgprog expanded = 2 >
                   <children >
-                     <_ tag = 0 id = sources expanded = 2 >
-                        <children >
-                           <_ tag = 0 id = empty ></>
-                        </>
-                        <desc ></>
-                        <ext >0</>
-                        <src >calcsize()
-$body$</>
-                     </>
                      <_ tag = 0 id = progset >
                         <desc ></>
                         <text ></>
@@ -543,51 +366,6 @@ $body$</>
                         <name >#originalfile#</>
                         <addsize ></>
                         <progper ></>
-                     </>
-                     <_ tag = 0 id = if expanded = 2 >
-                        <children >
-                           <_ tag = 0 id = replacetext >
-                              <desc ></>
-                              <varname >urlapp</>
-                              <igncase >0</>
-                              <getval >0</>
-                              <replist >
-                                 <rows >
-                                    <_ >
-                                       <before >downloads.sourceforge.net</>
-                                       <after >netix.dl.sourceforge.net</>
-                                       <if ></>
-                                    </>
-                                 </>
-                              </>
-                           </>
-                           <_ tag = 0 id = sources expanded = 2 >
-                              <children >
-                                 <_ tag = 0 id = empty ></>
-                              </>
-                              <desc ></>
-                              <ext >0</>
-                              <src >$body$
-
-str stemp
-macrox_getstr("urlapp", stemp )
-stemp.setlen( stemp.findchr( '?' ))
-macrox_setstr("urlapp", stemp )</>
-                           </>
-                        </>
-                        <desc ></>
-                        <else ></>
-                        <condlist >
-                           <rows >
-                              <_ >
-                                 <varname >isnetix</>
-                                 <iftype >check</>
-                                 <not >0</>
-                                 <value ></>
-                                 <orand >and</>
-                              </>
-                           </>
-                        </>
                      </>
                      <_ tag = 0 id = httprequest >
                         <desc ></>
@@ -607,10 +385,9 @@ macrox_setstr("urlapp", stemp )</>
                         </>
                         <desc ></>
                         <ext >0</>
-                        <src >if $DEBUG$
-{
-  print(macrox_get("httpresult"))
-}</>
+                        <src >DEBUG("originalfile")
+DEBUG("urlapp")
+//DEBUG("httpresult")</>
                      </>
                      <_ tag = 0 id = parse >
                         <desc ></>
@@ -623,9 +400,19 @@ macrox_setstr("urlapp", stemp )</>
                                  <varname >urlfile</>
                                  <postfix >#quote#</>
                                  <if ></>
+                                 <notrimsys ></>
+                                 <comm ></>
                               </>
                            </>
                         </>
+                     </>
+                     <_ tag = 0 id = sources expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = empty ></>
+                        </>
+                        <desc ></>
+                        <ext >0</>
+                        <src >DEBUG("urlfile")</>
                      </>
                      <_ tag = 0 id = download disabled = 0 >
                         <desc ></>
@@ -638,148 +425,32 @@ macrox_setstr("urlapp", stemp )</>
                                  <custpath ></>
                                  <file >#originalfile#</>
                                  <if ></>
-                                 <ifexist ></>
+                                 <ifexist >over</>
+                                 <var >httpresult</>
+                                 <comm ></>
                               </>
                            </>
                         </>
                         <ssl >1</>
                      </>
-                     <_ tag = 0 id = download disabled = 1 >
-                        <desc ></>
-                        <url ></>
-                        <filelist >
-                           <rows >
-                              <_ >
-                                 <urlfile >#urlapp#</>
-                                 <path >temp</>
-                                 <custpath ></>
-                                 <file >down.txt</>
-                                 <if ></>
-                                 <ifexist ></>
-                              </>
-                           </>
-                        </>
-                        <ssl >0</>
-                     </>
-                     <_ tag = 0 id = readvar disabled = 1 >
-                        <desc ></>
-                        <varname >downtext</>
-                        <path >temp</>
-                        <name >down.txt</>
-                        <append >0</>
-                     </>
-                     <_ tag = 0 id = parse disabled = 1 >
-                        <desc ></>
-                        <varname >downtext</>
-                        <igncase >1</>
-                        <ruleslist >
-                           <rows >
-                              <_ >
-                                 <prefix >url=</>
-                                 <varname >redirurl</>
-                                 <postfix >"></>
-                              </>
-                           </>
-                        </>
-                     </>
-                     <_ tag = 0 id = replacetext disabled = 1 >
-                        <desc ></>
-                        <varname >redirurl</>
-                        <igncase >1</>
-                        <getval >0</>
-                        <replist >
-                           <rows >
-                              <_ >
-                                 <before >amp;</>
-                                 <after ></>
-                                 <if ></>
-                              </>
-                           </>
-                        </>
-                     </>
-                     <_ tag = 0 id = if expanded = 2 disabled = 1 >
+                     <_ tag = 0 id = sources expanded = 2 >
                         <children >
                            <_ tag = 0 id = exit >
                               <desc ></>
                               <extype >exit</>
                               <code >1</>
-                              <msg >#err_dwn#</>
-                           </>
-                        </>
-                        <desc ></>
-                        <else ></>
-                        <condlist >
-                           <rows >
-                              <_ >
-                                 <varname >redirurl</>
-                                 <iftype >empty</>
-                                 <not >0</>
-                                 <value ></>
-                                 <orand >and</>
-                              </>
-                           </>
-                        </>
-                     </>
-                     <_ tag = 0 id = sources expanded = 2 disabled = 1 >
-                        <children >
-                           <_ tag = 0 id = empty ></>
-                        </>
-                        <desc ></>
-                        <ext >0</>
-                        <src >finfo fi
-str sfile
-macrox_do(  sfile = "#tempinstpath#\\#originalfile#" )
-
-//dwnflag = $HTTPF_CONTINUE
-//label againdwn
-$body$
-//congetch("\( fi.sizelo)==\(dwnsize)== \(dwnallsize )\l")
-if !getfileinfo ( macrox_do( "#tempinstpath#\\#originalfile#" ), fi ) || fi.sizelo != dwnallsize
-{
-     msg_error( "#err_download#", "#lcaption#")
-//    goto againdwn
-}
-//print("OOPSS=\( fi.sizelo)==\(dwnsize)\l")</>
-                     </>
-                     <_ tag = 0 id = download disabled = 1 >
-                        <desc ></>
-                        <url ></>
-                        <filelist >
-                           <rows >
-                              <_ >
-                                 <urlfile >#redirurl#</>
-                                 <path >temp</>
-                                 <custpath ></>
-                                 <file >#originalfile#</>
-                                 <if ></>
-                              </>
-                           </>
-                        </>
-                     </>
-                     <_ tag = 0 id = sources expanded = 2 disabled = 0 >
-                        <children >
-                           <_ tag = 0 id = exit >
-                              <desc ></>
-                              <extype >exit</>
-                              <code >1</>
-                              <msg ></>
+                              <msg >#repoerr#</>
+                              <if ></>
                            </>
                         </>
                         <desc ></>
                         <ext >0</>
-                        <src >finfo fi
+                        <src >DEBUG("httpresult") 
+DEBUG("httpresult_file")
 
-//str sfile
-
-//macrox_do(  sfile = "#tempinstpath#\\#originalfile#" )
-
-if !getfileinfo ( macrox_do( "#tempinstpath#\\#originalfile#" ), fi ) // || fi.sizelo != dwnallsize
+if(macrox_getint("httpresult") == 0)
 {
-    
-   msg_error( "#err_download#", "#lcaption#")
-     
-   $body$
-
+  $body$
 }</>
                      </>
                      <_ tag = 0 id = progset >
@@ -789,28 +460,6 @@ if !getfileinfo ( macrox_do( "#tempinstpath#\\#originalfile#" ), fi ) // || fi.s
                         <name ></>
                         <addsize ></>
                         <progper ></>
-                     </>
-                     <_ tag = 0 id = if expanded = 2 >
-                        <children >
-                           <_ tag = 0 id = redir64 >
-                              <desc ></>
-                              <redir >off</>
-                              <var >progfiles64</>
-                           </>
-                        </>
-                        <desc ></>
-                        <else ></>
-                        <condlist >
-                           <rows >
-                              <_ >
-                                 <varname >arch</>
-                                 <iftype >equali</>
-                                 <not >0</>
-                                 <value >x64</>
-                                 <orand >and</>
-                              </>
-                           </>
-                        </>
                      </>
                      <_ tag = 0 id = decomp7z disabled = 0 >
                         <desc ></>
@@ -823,59 +472,118 @@ if !getfileinfo ( macrox_do( "#tempinstpath#\\#originalfile#" ), fi ) // || fi.s
                         <ignwild ></>
                         <if ></>
                      </>
-                     <_ tag = 0 id = unpack >
-                        <desc ></>
-                        <comptype >default</>
-                        <ratio >r5</>
-                        <solid >1</>
-                        <path >inst</>
-                        <custpath ></>
-                        <ifexist >over</>
-                        <if ></>
-                        <srclist >
-                           <rows >
-                              <_ >
-                                 <filename >$prjpath$\mingw-w64.url</>
-                                 <recurse >0</>
-                                 <justfile >0</>
-                                 <emptydir >0</>
-                                 <exclude ></>
-                              </>
-                              <_ >
-                                 <filename >$prjpath$\mingw-w64.bat</>
-                                 <recurse >0</>
-                                 <justfile >0</>
-                                 <emptydir >0</>
-                                 <exclude ></>
-                              </>
-                           </>
-                        </>
-                        <varlist >
-                           <rows ></>
-                        </>
-                     </>
                      <_ tag = 0 id = sources expanded = 2 >
                         <children >
-                           <_ tag = 0 id = empty ></>
+                           <_ tag = 0 id = unpack >
+                              <desc ></>
+                              <comptype >default</>
+                              <ratio >r5</>
+                              <solid >1</>
+                              <path >inst</>
+                              <custpath ></>
+                              <ifexist >over</>
+                              <if ></>
+                              <srclist >
+                                 <rows >
+                                    <_ >
+                                       <filename >$prjpath$\mingw-w64.url</>
+                                       <recurse >0</>
+                                       <justfile >0</>
+                                       <emptydir >0</>
+                                       <exclude ></>
+                                       <comm ></>
+                                    </>
+                                    <_ >
+                                       <filename >$prjpath$\mingw-w32.bat</>
+                                       <recurse >0</>
+                                       <justfile >0</>
+                                       <emptydir >0</>
+                                       <exclude ></>
+                                       <comm ></>
+                                    </>
+                                 </>
+                              </>
+                              <varlist >
+                                 <rows ></>
+                              </>
+                           </>
+                           <_ tag = 0 id = substvar >
+                              <desc ></>
+                              <path >inst</>
+                              <name >mingw-w32.bat</>
+                              <syschar >#</>
+                              <if ></>
+                              <recurse >2</>
+                              <utf >0</>
+                              <bom >0</>
+                           </>
                         </>
                         <desc ></>
                         <ext >0</>
-                        <src >getdirname()
-$body$</>
+                        <src >if(garch == "i686")
+{
+  $body$
+}</>
                      </>
-                     <_ tag = 0 id = substvar >
+                     <_ tag = 0 id = sources expanded = 2 >
+                        <children >
+                           <_ tag = 0 id = unpack >
+                              <desc ></>
+                              <comptype >default</>
+                              <ratio >r5</>
+                              <solid >1</>
+                              <path >inst</>
+                              <custpath ></>
+                              <ifexist >over</>
+                              <if ></>
+                              <srclist >
+                                 <rows >
+                                    <_ >
+                                       <filename >$prjpath$\mingw-w64.url</>
+                                       <recurse >0</>
+                                       <justfile >0</>
+                                       <emptydir >0</>
+                                       <exclude ></>
+                                       <comm ></>
+                                    </>
+                                    <_ >
+                                       <filename >$prjpath$\mingw-w64.bat</>
+                                       <recurse >0</>
+                                       <justfile >0</>
+                                       <emptydir >0</>
+                                       <exclude ></>
+                                       <comm ></>
+                                    </>
+                                 </>
+                              </>
+                              <varlist >
+                                 <rows ></>
+                              </>
+                           </>
+                           <_ tag = 0 id = substvar >
+                              <desc ></>
+                              <path >inst</>
+                              <name >mingw-w64.bat</>
+                              <syschar >#</>
+                              <if ></>
+                              <recurse >2</>
+                              <utf >0</>
+                              <bom >0</>
+                           </>
+                        </>
                         <desc ></>
-                        <path >inst</>
-                        <name >mingw-w64.bat</>
-                        <syschar >#</>
-                        <if ></>
+                        <ext >0</>
+                        <src >if(garch == "x86_64")
+{
+  $body$
+}</>
                      </>
                      <_ tag = 0 id = if expanded = 2 >
                         <children >
                            <_ id = shcut >
                               <desc ></>
                               <shpath >prog</>
-                              <shfile >#lunname#</>
+                              <shfile >Uninstall</>
                               <path >inst</>
                               <file >uninstall.exe</>
                               <icon ></>
@@ -885,6 +593,7 @@ $body$</>
                               <defwork ></>
                               <runas >norm</>
                               <runasadmin >0</>
+                              <if ></>
                            </>
                            <_ id = shcut >
                               <desc ></>
@@ -899,6 +608,7 @@ $body$</>
                               <defwork ></>
                               <runas >norm</>
                               <runasadmin >0</>
+                              <if ></>
                            </>
                            <_ tag = 0 id = shcut >
                               <desc ></>
@@ -913,6 +623,7 @@ $body$</>
                               <defwork ></>
                               <runas >norm</>
                               <runasadmin >0</>
+                              <if ></>
                            </>
                         </>
                         <desc ></>
@@ -925,6 +636,7 @@ $body$</>
                                  <not >0</>
                                  <value ></>
                                  <orand >and</>
+                                 <comm ></>
                               </>
                            </>
                         </>
@@ -937,9 +649,11 @@ $body$</>
                         <name ></>
                         <path >inst</>
                         <ifile ></>
+                        <estsize ></>
+                        <forcu >0</>
                      </>
                   </>
-                  <desc >Go into the item for viewing unpacking actions.</>
+                  <desc ></>
                   <auto >0</>
                   <buttons >nc</>
                   <design >left</>
@@ -966,6 +680,7 @@ $body$</>
                   <head ></>
                   <headtext ></>
                   <dlgtext ></>
+                  <if ></>
                </>
             </>
             <icofile >default</>
@@ -991,6 +706,10 @@ $body$</>
                   <varlist >
                      <rows ></>
                   </>
+                  <head ></>
+                  <headtext ></>
+                  <dlgtext ></>
+                  <if ></>
                </>
                <_ id = dlguprog expanded = 2 >
                   <children >
@@ -1005,6 +724,11 @@ $body$</>
                   <varlist >
                      <rows ></>
                   </>
+                  <auto >1</>
+                  <head ></>
+                  <headtext ></>
+                  <dlgtext ></>
+                  <if ></>
                </>
                <_ id = dlgundel >
                   <desc ></>
@@ -1014,6 +738,10 @@ $body$</>
                   <varlist >
                      <rows ></>
                   </>
+                  <head ></>
+                  <headtext ></>
+                  <dlgtext ></>
+                  <if ></>
                </>
                <_ id = dlgufin >
                   <desc ></>
@@ -1023,6 +751,11 @@ $body$</>
                   <varlist >
                      <rows ></>
                   </>
+                  <head ></>
+                  <headtext ></>
+                  <dlgtext ></>
+                  <feedback ></>
+                  <if ></>
                </>
             </>
             <unicon >uninstall</>
@@ -1268,4 +1001,6 @@ $body$</>
          </>
       </>
    </>
+   <tozip >0</>
+   <zipfile ></>
 </>

@@ -1,4 +1,4 @@
 echo off
-set PATH=#setuppath#\mingw64\bin;%PATH%
+set PATH=#setuppath#\mingw32\bin;%PATH%
 rem echo %PATH%
 "#syspath#\cmd.exe"

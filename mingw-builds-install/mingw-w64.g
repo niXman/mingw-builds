@@ -26,15 +26,59 @@ global {
    str garch
 }
 
+
+func DEBUG(str name)
+{
+	if macrox_getint("DEBUG") == 1
+	{
+		print(macrox_get(name) + "\n")
+	}
+}
+
+
 func int versort( uint left right )
 {
-   left as str
-   right as str
+	left as str
+	right as str
 
-   if left < right: return 1
-   if left > right: return -1
-   return 0
+	if left < right: return 1
+	if left > right: return -1
+	return 0
 }
+
+
+func loadversions()
+{
+	str repolines
+	macrox_getstr("repo", repolines)
+	repolines.lines(lines, 1)
+
+	arrstr items
+	uint i
+	fornum i, *lines
+	{
+		lines[i].split(items, '|', $SPLIT_EMPTY | $SPLIT_NOSYS)
+		if *items < 6 : continue
+		if !vers.find(items[0])
+		{
+			//print(items[0] + "\n")
+			vers.create(items[0])
+			versions += items[0]
+		}
+		vers[items[0]][vers[items[0]].expand(1)] = i	
+	}
+
+	versions->arr.sort(&versort)
+	
+	str ver_list
+	fornum i=0, *versions
+	{
+		ver_list += "\(versions[i])=\(versions[i])\n"
+	}
+	macrox_setstr("vers_list", ver_list)
+	//print(ver_list + "\n")
+}
+
 
 func int buildsort( uint left right )
 {
@@ -46,46 +90,6 @@ func int buildsort( uint left right )
    return 0
 }
 
-func loadversions()
-{
-   str in
-   uint i
-   
-   macrox_getstr( "repo", in )
-   in.lines( lines, 1 )
-    
-   fornum i, *lines
-   {
-      arrstr items
-      lines[i].split( items, '|', $SPLIT_EMPTY | $SPLIT_NOSYS )
-      if *items < 6 : continue
-      if !vers.find( items[0] )
-      {
-         vers.create( items[0] )
-         versions += items[0]
-      }
-      vers[ items[0] ][ vers[items[0]].expand(1) ] = i      
-   }
-   versions->arr.sort( &versort )
-   str ver_list
-   fornum i=0, *versions
-   {
-      ver_list += "\(versions[i])=\(versions[i])\l"
-   }
-   macrox_setstr( "vers_list", ver_list )  
-
-   str progfiles progfiles64
-   uint off
-
-   macrox_do( progfiles="#progfiles#")
-   off = progfiles.findchr('(')
-   if ( off < *progfiles )
-   {
-      progfiles64.substr( progfiles, 0, off-1 )
-      macrox_setstr( "progfiles64", progfiles64 )
-   }
-   else : macrox_setstr( "progfiles64", progfiles )
-}
 
 func load_combo( uint combo, arrstr alist )
 {
@@ -95,6 +99,7 @@ func load_combo( uint combo, arrstr alist )
    fornum  i, *alist : SendMessage( combo, $CB_ADDSTRING, 0, alist[i].ptr() )
    SendMessage( combo, $CB_SETCURSEL, 0, 0 )
 }
+
 
 func load_hash( uint combo, arrstr alist, hash ahash of arr, arr alines, uint num )
 {
@@ -120,6 +125,7 @@ func load_hash( uint combo, arrstr alist, hash ahash of arr, arr alines, uint nu
    }
 }
 
+
 func buildchange( uint wnd )
 {
    uint cursel = SendMessage( GetDlgItem( wnd, $IDBUILD ), $CB_GETCURSEL, 0, 0 )
@@ -136,32 +142,12 @@ func buildchange( uint wnd )
    macrox_setstr("progname", filename )
    macrox_setstr("shfolder", "#shgroup#\\\(filename)" )
    
-
-   if garch %== "x86_64" : macrox_setstr("setuppath", "#progfiles64#\\mingw-w64\\\(filename)" )
-   else : macrox_setstr("setuppath", "#progfiles#\\mingw-w64\\\(filename)" )
-
-/*   str stemp = items[5].replace("sourceforge","downloads.sourceforge", $QS_IGNCASE )
-   stemp += "?r=&ts=1367578968&use_mirror=garr"
-   stemp.replace("/i686/","/32-bit/", $QS_IGNCASE )
-   stemp.replace("/x86_64/","/64-bit/", $QS_IGNCASE )
-   stemp.replace("files/","", $QS_IGNCASE )
-   stemp.replace("projects/","project/", $QS_IGNCASE )
-   stemp.replace("release/","releases/", $QS_IGNCASE )*/
    str stemp = items[5]
-//   macrox_setstr("urlapp", items[5].replace("sourceforge","garr.dl.sourceforge", $QS_IGNCASE ) )
    macrox_setstr("urlapp", stemp )
    macrox_setstr("originalfile", original )
-//   print("\(filename) == \(original)")
-   
-/*   print( stemp )
-   print("\l 
-http://downloads.sourceforge.net/project/mingwbuilds/host-windows/releases/4.6.2/32-bit/threads-posix/dwarf/x32-4.6.2-release-posix-dwarf-rev0.7z?r=&ts=1367578968&use_mirror=garr")*/
-//   macrox_setstr("urlapp", "http://downloads.sourceforge.net/project/mingwbuilds/host-windows/releases/4.6.2/32-bit/threads-posix/dwarf/x32-4.6.2-release-posix-dwarf-rev0.7z?r=&ts=1367578968&use_mirror=garr" )
-/*  http://downloads.sourceforge.net/project/mingwbuilds/host-windows/releases/4.8.0/64-bit/threads-posix/seh/x64-4.8.0-release-posix-seh-rev2.7z?r=&ts=1367579123&use_mirror=kaz*/
-//   macrox_setstr("urlapp", "\(items[5])/download?use_mirror=garr" )
-//   macrox_setstr("urlapp", items[5] )
-      
+   //print("\(filename) == \(original)\n")
 }
+
 
 func exceptchange( uint wnd )
 {
@@ -175,6 +161,7 @@ func exceptchange( uint wnd )
    buildchange( wnd )        
 }
 
+
 func threadchange( uint wnd )
 {
    uint combo = GetDlgItem( wnd, $IDEXCEPT )
@@ -186,64 +173,45 @@ func threadchange( uint wnd )
    exceptchange( wnd )        
 }
 
+
 func archchange( uint wnd )
 {
    uint combo = GetDlgItem( wnd, $IDTHREAD )
    uint cursel = SendMessage( GetDlgItem( wnd, $IDARCH ), $CB_GETCURSEL, 0, 0 )
    str curver = archis[cursel]
-/*   uint i
+/* 
+   uint i
    fornum i, *archs[ curver ]
    {
-      print("\( lines[ archs[ curver ][i]])\l")
-   }   */
+      print("\( lines[ archs[ curver ][i]])\n")
+   }
+*/
    garch = curver
    load_hash( combo, threadis, threads, archs[curver], 2 )
    load_combo( combo, threadis )
    threadchange( wnd )        
 }
 
+
 func verchange( uint wnd )
 {
    uint combo = GetDlgItem( wnd, $IDARCH )
    str  curver
-    
    uint cursel = SendMessage( GetDlgItem( wnd, $IDVER ), $CB_GETCURSEL, 0, 0 )
    curver = versions[cursel]
-/*   uint i
+/*   
+   uint i
    fornum i, *vers[ curver ]
    {
-      print("\( lines[ vers[ curver ][i]])\l")
-   }*/   
+      print("\( lines[ vers[ curver ][i]])\n")
+   }
+*/   
 
    load_hash( combo, archis, archs, vers[curver], 1 )
    load_combo( combo, archis )
    archchange( wnd )        
 }
 
-func calcsize()
-{
-/*   uint ret
-   str  head
-   httpinfo hi
-
-   head.reserve( 1024 )   
-   ret = http_head( macrox_do("#redirurl#"), head, hi )
-   macrox_setint("filesize", uint( hi.size ))
-   print( hi.size )
-   print( head )
-   print("ret = \( ret )")*/
-   macrox_setint( "dwn_nofile", 1 )
-   macrox_setint( "dwn_progsize", 1 )
-   /*   cmn_progsize += long( hi.size )
-   percent = cmn_progcursize * 100L / cmn_progsize
-   cmn_percent = percent
-   wprogress_setpos( cmn_progress, uint( percent ))*/ 
-
-   str stemp sdir
-   macrox_getstr("setuppath", stemp )
-   sdir.fgetdir( stemp ) 
-   verifypath( sdir, 0->arrstr )
-}
 
 func uint vercmdproc( uint wnd id ctl codedlg )
 {
@@ -251,7 +219,8 @@ func uint vercmdproc( uint wnd id ctl codedlg )
 //   print("\(id)=\( $IDVER)=\(ctl)=\(codedlg)\n")
    if codedlg == $CBN_SELCHANGE
    {
-      switch id {
+      switch id 
+	  {
          case $IDVER : verchange( wnd )
          case $IDARCH : archchange( wnd )
          case $IDTHREAD : threadchange( wnd )
@@ -260,27 +229,11 @@ func uint vercmdproc( uint wnd id ctl codedlg )
       }
    }
    ret = dlgsetscmdproc( wnd, id, ctl, codedlg )
-   switch id {
+   switch id 
+   {
       case $DLGINIT : verchange( wnd )
 //      case $IDC_PREV : print("Press Prev\n")
 //      case $IDC_NEXT : print("Press Next\n")
    }
-   
    return ret
-}
-
-func getdirname()
-{
-   str dirname
-   ffind fd
-
-   macrox_getstr("setuppath", dirname)
-   fd.init( "\(dirname)\\*.*", $FIND_DIR )
-   foreach finfo cur,fd
-   {
-      if cur.name == "." && cur.name == ".." : continue
-      dirname = cur.name
-      break
-   }
-   macrox_setstr("dirname", dirname )
 }
