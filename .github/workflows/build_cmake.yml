@@ -58,6 +58,12 @@ jobs:
       with:
         update: true
 
+    - name: Compress working directory
+      shell: msys2 {0}
+      run: |
+        export MSYS2_ARG_CONV_EXCL=*
+        compact /c /s:`pwd -W`
+
     - name: Build
       shell: msys2 {0}
       run: ./build ${{ matrix.config.build_cmd }}
