@@ -1,4 +1,4 @@
-﻿<project version = 9 civer = 8.5.0 winver = "2.12/6.2.9200" >
+<project version = 9 civer = 8.5.0 winver = "2.12/6.2.9200" >
    <autorun >1</>
    <autoclose >0</>
    <compname >MinGW-W64</>
@@ -39,7 +39,7 @@
                      <rows >
                         <_ >
                            <varname >DEBUG</>
-                           <value >1</>
+                           <value >0</>
                            <if ></>
                            <subst >0</>
                            <super >0</>
