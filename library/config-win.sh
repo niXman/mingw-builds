@@ -90,6 +90,7 @@ function func_test_installed_packages {
 		patch
 		automake-wrapper
 		autoconf
+		autoconf-archive
 		libtool
 		flex
 		bison
