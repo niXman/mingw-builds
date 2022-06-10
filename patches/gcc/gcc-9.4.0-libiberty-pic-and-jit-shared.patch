@@ -1,0 +1,233 @@
+diff -Nuarp gcc-9.4.0.a/configure gcc-9.4.0.b/configure
+--- gcc-9.4.0.a/configure	2022-05-18 23:00:21.183404100 -0400
++++ gcc-9.4.0.b/configure	2022-05-18 23:11:42.491872700 -0400
+@@ -6383,9 +6383,13 @@ $as_echo "$as_me: WARNING: GNAT is requi
+         esac
+ 
+         # Disable jit if -enable-host-shared not specified
+-        case ${add_this_lang}:${language}:${host_shared} in
+-          yes:jit:no)
+-	    # PR jit/64780: explicitly specify --enable-host-shared
++        # but not if building for Mingw
++        case $target in
++          *mingw*) ;;
++          *)
++          case ${add_this_lang}:${language}:${host_shared} in
++            yes:jit:no)
++                  # PR jit/64780: explicitly specify --enable-host-shared
+ 	    as_fn_error $? "
+ Enabling language \"jit\" requires --enable-host-shared.
+ 
+@@ -6396,17 +6400,19 @@ If you want to build both the jit and th
+ best to do this via two separate configure/builds, in separate
+ directories, to avoid imposing the performance cost of
+ --enable-host-shared on the regular compiler." "$LINENO" 5
+-	    ;;
+-          all:jit:no)
+-	    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --enable-host-shared required to build $language" >&5
++                   ;;
++            all:jit:no)
++             { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --enable-host-shared required to build $language" >&5
+ $as_echo "$as_me: WARNING: --enable-host-shared required to build $language" >&2;}
+-            add_this_lang=unsupported
+-            ;;
+-          *:jit:no)
+-            # Silently disable.
+-            add_this_lang=unsupported
+-            ;;
+-	esac
++              add_this_lang=unsupported
++              ;;
++            *:jit:no)
++              # Silently disable.
++              add_this_lang=unsupported
++              ;;
++               esac
++          ;;
++        esac
+ 
+         # Disable a language that is unsupported by the target.
+ 	case "${add_this_lang}: $unsupported_languages " in
+diff -Nuarp gcc-9.4.0.a/configure.ac gcc-9.4.0.b/configure.ac
+--- gcc-9.4.0.a/configure.ac	2022-05-18 23:00:21.527152000 -0400
++++ gcc-9.4.0.b/configure.ac	2022-05-18 23:13:51.737062400 -0400
+@@ -1984,9 +1984,14 @@ if test -d ${srcdir}/gcc; then
+         esac
+ 
+         # Disable jit if -enable-host-shared not specified
+-        case ${add_this_lang}:${language}:${host_shared} in
+-          yes:jit:no)
+-	    # PR jit/64780: explicitly specify --enable-host-shared
++        # but not if building for Mingw. All code in Windows
++        # is position independent code (PIC).
++        case $target in
++          *mingw*) ;;
++          *)
++          case ${add_this_lang}:${language}:${host_shared} in
++            yes:jit:no)
++                  # PR jit/64780: explicitly specify --enable-host-shared
+ 	    AC_MSG_ERROR([
+ Enabling language "jit" requires --enable-host-shared.
+ 
+@@ -1997,16 +2002,18 @@ If you want to build both the jit and th
+ best to do this via two separate configure/builds, in separate
+ directories, to avoid imposing the performance cost of
+ --enable-host-shared on the regular compiler.])
+-	    ;;
+-          all:jit:no)
+-	    AC_MSG_WARN([--enable-host-shared required to build $language])
+-            add_this_lang=unsupported
+-            ;;
+-          *:jit:no)
+-            # Silently disable.
+-            add_this_lang=unsupported
+-            ;;
+-	esac
++                   ;;
++            all:jit:no)
++             AC_MSG_WARN([--enable-host-shared required to build $language])
++              add_this_lang=unsupported
++              ;;
++            *:jit:no)
++              # Silently disable.
++              add_this_lang=unsupported
++              ;;
++               esac
++          ;;
++        esac
+ 
+         # Disable a language that is unsupported by the target.
+ 	case "${add_this_lang}: $unsupported_languages " in
+diff -Nuarp gcc-9.4.0.a/gcc/Makefile.in gcc-9.4.0.b/gcc/Makefile.in
+--- gcc-9.4.0.a/gcc/Makefile.in	2022-05-18 23:04:04.219679600 -0400
++++ gcc-9.4.0.b/gcc/Makefile.in	2022-05-18 23:25:59.778405000 -0400
+@@ -1043,10 +1043,12 @@ ALL_LINKERFLAGS = $(ALL_CXXFLAGS)
+ 
+ # Build and host support libraries.
+ 
+-# Use the "pic" build of libiberty if --enable-host-shared.
++# Use the "pic" build of libiberty if --enable-host-shared, unless we are
++# building for mingw.
++LIBIBERTY_PICDIR=$(if $(findstring mingw,$(target)),,pic)
+ ifeq ($(enable_host_shared),yes)
+-LIBIBERTY = ../libiberty/pic/libiberty.a
+-BUILD_LIBIBERTY = $(build_libobjdir)/libiberty/pic/libiberty.a
++LIBIBERTY = ../libiberty/$(LIBIBERTY_PICDIR)/libiberty.a
++BUILD_LIBIBERTY = $(build_libobjdir)/libiberty/$(LIBIBERTY_PICDIR)/libiberty.a
+ else
+ LIBIBERTY = ../libiberty/libiberty.a
+ BUILD_LIBIBERTY = $(build_libobjdir)/libiberty/libiberty.a
+@@ -1682,7 +1684,7 @@ MOSTLYCLEANFILES = insn-flags.h insn-con
+ # This symlink makes the full installation name of the driver be available
+ # from within the *build* directory, for use when running the JIT library
+ # from there (e.g. when running its testsuite).
+-$(FULL_DRIVER_NAME): ./xgcc
++$(FULL_DRIVER_NAME): ./xgcc$(exeext)
+ 	rm -f $@
+ 	$(LN_S) $< $@
+ 
+diff -Nuarp gcc-9.4.0.a/gcc/jit/Make-lang.in gcc-9.4.0.b/gcc/jit/Make-lang.in
+--- gcc-9.4.0.a/gcc/jit/Make-lang.in	2022-05-18 23:04:16.053514400 -0400
++++ gcc-9.4.0.b/gcc/jit/Make-lang.in	2022-05-18 23:23:42.067635900 -0400
+@@ -40,10 +40,19 @@
+ # into the jit rule, but that needs a little bit of work
+ # to do the right thing within all.cross.
+ 
++ifneq (,$(findstring mingw,$(target)))
++LIBGCCJIT_FILENAME = libgccjit-0.dll
++
++jit: $(LIBGCCJIT_FILENAME) \
++       $(FULL_DRIVER_NAME)
++
++else
++
+ LIBGCCJIT_LINKER_NAME = libgccjit.so
+ LIBGCCJIT_VERSION_NUM = 0
+ LIBGCCJIT_MINOR_NUM = 0
+ LIBGCCJIT_RELEASE_NUM = 1
++
+ LIBGCCJIT_SONAME = $(LIBGCCJIT_LINKER_NAME).$(LIBGCCJIT_VERSION_NUM)
+ LIBGCCJIT_FILENAME = \
+   $(LIBGCCJIT_SONAME).$(LIBGCCJIT_MINOR_NUM).$(LIBGCCJIT_RELEASE_NUM)
+@@ -68,6 +77,7 @@ jit: $(LIBGCCJIT_FILENAME) \
+ 	$(LIBGCCJIT_SYMLINK) \
+ 	$(LIBGCCJIT_LINKER_NAME_SYMLINK) \
+ 	$(FULL_DRIVER_NAME)
++endif
+ 
+ # Tell GNU make to ignore these if they exist.
+ .PHONY: jit
+@@ -87,6 +97,14 @@ jit_OBJS = attribs.o \
+ # Use strict warnings for this front end.
+ jit-warn = $(STRICT_WARN)
+ 
++ifneq (,$(findstring mingw,$(target)))
++# Create import library libgccjit.dll.a
++LIBGCCJIT_EXTRA_OPTS = -Wl,--out-implib,$(LIBGCCJIT_FILENAME).a
++else
++LIBGCCJIT_EXTRA_OPTS = $(LIBGCCJIT_VERSION_SCRIPT_OPTION) \
++       $(LIBGCCJIT_SONAME_OPTION)
++endif
++
+ # We avoid using $(BACKEND) from Makefile.in in order to avoid pulling
+ # in main.o
+ $(LIBGCCJIT_FILENAME): $(jit_OBJS) \
+@@ -98,14 +116,16 @@ $(LIBGCCJIT_FILENAME): $(jit_OBJS) \
+ 	     $(jit_OBJS) libbackend.a libcommon-target.a libcommon.a \
+ 	     $(CPPLIB) $(LIBDECNUMBER) $(EXTRA_GCC_LIBS) $(LIBS) $(BACKENDLIBS) \
+ 	     $(EXTRA_GCC_OBJS) \
+-	     $(LIBGCCJIT_VERSION_SCRIPT_OPTION) \
+-	     $(LIBGCCJIT_SONAME_OPTION)
++         $(LIBGCCJIT_EXTRA_OPTS)
+ 
++# Create symlinks when not building for Windows
++ifeq (,$(findstring mingw,$(target)))
+ $(LIBGCCJIT_SONAME_SYMLINK): $(LIBGCCJIT_FILENAME)
+ 	ln -sf $(LIBGCCJIT_FILENAME) $(LIBGCCJIT_SONAME_SYMLINK)
+ 
+ $(LIBGCCJIT_LINKER_NAME_SYMLINK): $(LIBGCCJIT_SONAME_SYMLINK)
+ 	ln -sf $(LIBGCCJIT_SONAME_SYMLINK) $(LIBGCCJIT_LINKER_NAME_SYMLINK)
++endif
+ 
+ #
+ # Build hooks:
+@@ -275,19 +295,31 @@ selftest-jit:
+ 
+ #
+ # Install hooks:
+-jit.install-common: installdirs
++jit.install-headers:
++	$(INSTALL_DATA) $(srcdir)/jit/libgccjit.h \
++	  $(DESTDIR)$(includedir)/libgccjit.h
++	$(INSTALL_DATA) $(srcdir)/jit/libgccjit++.h \
++	  $(DESTDIR)$(includedir)/libgccjit++.h
++
++ifneq (,$(findstring mingw,$(target)))
++jit.install-common: installdirs jit.install-headers
++# Install import library
++	$(INSTALL_PROGRAM) $(LIBGCCJIT_FILENAME).a \
++	  $(DESTDIR)$(libdir)/$(LIBGCCJIT_FILENAME).a
++# Install DLL file
+ 	$(INSTALL_PROGRAM) $(LIBGCCJIT_FILENAME) \
+-	  $(DESTDIR)/$(libdir)/$(LIBGCCJIT_FILENAME)
++	  $(DESTDIR)/$(bindir)/$(LIBGCCJIT_FILENAME)
++else
++jit.install-common: installdirs jit.install-headers
++	$(INSTALL_PROGRAM) $(LIBGCCJIT_FILENAME) \
++	  $(DESTDIR)$(libdir)/$(LIBGCCJIT_FILENAME)
+ 	ln -sf \
+ 	  $(LIBGCCJIT_FILENAME) \
+-	  $(DESTDIR)/$(libdir)/$(LIBGCCJIT_SONAME_SYMLINK)
++	  $(DESTDIR)$(libdir)/$(LIBGCCJIT_SONAME_SYMLINK)
+ 	ln -sf \
+ 	  $(LIBGCCJIT_SONAME_SYMLINK)\
+-	  $(DESTDIR)/$(libdir)/$(LIBGCCJIT_LINKER_NAME_SYMLINK)
+-	$(INSTALL_DATA) $(srcdir)/jit/libgccjit.h \
+-	  $(DESTDIR)/$(includedir)/libgccjit.h
+-	$(INSTALL_DATA) $(srcdir)/jit/libgccjit++.h \
+-	  $(DESTDIR)/$(includedir)/libgccjit++.h
++      $(DESTDIR)$(libdir)/$(LIBGCCJIT_LINKER_NAME_SYMLINK)
++endif
+ 
+ jit.install-man:
+ 
