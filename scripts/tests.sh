@@ -100,7 +100,7 @@ random_device_list=(
 )
 
 filesystem_list=(
-    "filesystem.cpp -std=c++17 -o filesystem.exe"
+    "filesystem.cpp -std=c++17 -lstdc++fs -o filesystem.exe"
 )
 
 # **************************************************************************
