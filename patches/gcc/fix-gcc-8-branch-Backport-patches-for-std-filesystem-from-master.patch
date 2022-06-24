@@ -1,0 +1,28 @@
+diff -Nuarp gcc-8.5.0/libstdc++-v3/src/filesystem/std-ops.cc gcc-8.5.0.b/libstdc++-v3/src/filesystem/std-ops.cc
+--- gcc-8.5.0/libstdc++-v3/src/filesystem/std-ops.cc	2022-06-17 01:13:32.137484100 -0400
++++ gcc-8.5.0.b/libstdc++-v3/src/filesystem/std-ops.cc	2022-06-16 18:29:56.009348200 -0400
+@@ -1563,7 +1563,7 @@ fs::path fs::temp_directory_path()
+ {
+   error_code ec;
+   path tmp = temp_directory_path(ec);
+-  if (ec)
++  if (ec.value())
+     _GLIBCXX_THROW_OR_ABORT(filesystem_error("temp_directory_path", ec));
+   return tmp;
+ }
+@@ -1593,7 +1593,6 @@ fs::path fs::temp_directory_path(error_c
+   for (auto e = env; tmpdir == nullptr && *e != nullptr; ++e)
+     tmpdir = ::getenv(*e);
+   p = tmpdir ? tmpdir : "/tmp";
+-#endif
+   auto st = status(p, ec);
+   if (ec)
+     p.clear();
+@@ -1602,6 +1601,7 @@ fs::path fs::temp_directory_path(error_c
+       p.clear();
+       ec = std::make_error_code(std::errc::not_a_directory);
+     }
++#endif
+   return p;
+ }
+ 
