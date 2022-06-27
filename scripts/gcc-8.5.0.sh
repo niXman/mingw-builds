@@ -63,6 +63,9 @@ PKG_PATCHES=(
 	gcc/gcc-8-branch-Backport-patches-for-std-filesystem-from-master.patch
 	gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch
 	gcc/gcc-8.5.0-r11-702-gcc-bz67275-git-c83027f32d9cca84959c7d6a1e519a0129731501.patch
+	$( [[ $RUNTIME_MAJOR_VERSION -ge 10 ]] \
+		&& echo "gcc/0001-gcc-config-i386-mingw32.h-Ensure-lmsvcrt-precede-lke.patch" \
+	)
 )
 
 #
