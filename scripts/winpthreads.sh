@@ -61,6 +61,10 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-shared
 	--enable-static
 	#
+	$( [[ $MSVCRT_VERSION == ucrt ]] && \
+		[[ $BOOTSTRAPING == no ]] && \
+			[[ $RUNTIME_MAJOR_VERSION -ge 10 ]] && \
+				echo "LIBS=\"-lucrtbase\"" )
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
