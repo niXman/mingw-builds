@@ -43,7 +43,10 @@ PKG_URLS=(
 	"https://ftp.gnu.org/gnu/make/make-${PKG_VERSION}${PKG_TYPE}"
 )
 
-PKG_PRIORITY=extra
+#
+
+# needed when building ucrt bootstraps; mingw-builds requires mingw32-make.exe
+PKG_PRIORITY=main
 
 #
 

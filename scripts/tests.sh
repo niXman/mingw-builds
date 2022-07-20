@@ -81,8 +81,14 @@ lasterror_test2_list=(
 	"lasterror_test2.cpp -o lasterror_test2.exe"
 )
 
-time_test_list=(
-	"time_test.c -lpthread -o time_test.exe"
+[[ $MSVCRT_VERSION == ucrt ]] && (
+	time_test_list=(
+		"time_test.c -lpthread -lucrt -o time_test.exe"
+	)
+) || (
+	time_test_list=(
+		"time_test.c -lpthread -o time_test.exe"
+	)
 )
 
 [[ `echo $BUILD_VERSION | cut -d. -f1` == 4 && `echo $BUILD_VERSION | cut -d. -f2` -le 6 ]] && (
