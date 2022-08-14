@@ -51,7 +51,7 @@ elif [[ `echo $BUILD_VERSION | cut -d. -f1` -le 10 && ${BUILD_VERSION} != trunk 
    PKG_VERSION=0.23
    PKG_TYPE=.tar.xz
 else
-   PKG_VERSION=0.24
+   PKG_VERSION=0.25
    PKG_TYPE=.tar.xz
 fi
 PKG_NAME=$BUILD_ARCHITECTURE-isl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
