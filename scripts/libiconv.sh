@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.16
+PKG_VERSION=1.17
 PKG_NAME=$PKG_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=libiconv-${PKG_VERSION}
 PKG_TYPE=.tar.gz
@@ -48,7 +48,6 @@ PKG_PRIORITY=prereq
 #
 
 PKG_PATCHES=(
-	libiconv/0001-compile-relocatable-in-gnulib.mingw.patch
 	libiconv/0002-fix-cr-for-awk-in-configure.all.patch
 	libiconv/fix-pointer-buf.patch
 )
@@ -61,7 +60,11 @@ PKG_CONFIGURE_FLAGS=(
 	--target=$TARGET
 	#
 	--prefix=$PREREQ_DIR/$PKG_NAME
-	#
+    --enable-relocatable
+    --disable-rpath
+    --disable-silent-rules
+    --enable-nls
+    #
 	$GCC_DEPS_LINK_TYPE
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
