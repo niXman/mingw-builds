@@ -42,7 +42,7 @@ PKG_TYPE=.tar.gz
 PKG_URLS=(
 	# Original website is gone.
 	#"http://www.bzip.org/${PKG_VERSION}/${PKG_DIR_NAME}${PKG_TYPE}"
-	"https://sources.archlinux.org/other/packages/bzip2/${PKG_DIR_NAME}${PKG_TYPE}"
+	"https://sourceware.org/pub/bzip2/${PKG_DIR_NAME}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
