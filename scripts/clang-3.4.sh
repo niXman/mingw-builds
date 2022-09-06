@@ -40,9 +40,9 @@ PKG_NAME=llvm-${PKG_VERSION}
 PKG_DIR_NAME=llvm-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://llvm.org/releases/${PKG_VERSION}/llvm-${PKG_VERSION}.src${PKG_TYPE}"
-	"http://llvm.org/releases/${PKG_VERSION}/clang-${PKG_VERSION}.src${PKG_TYPE}|dir:$PKG_NAME/tools"
-	"http://llvm.org/releases/${PKG_VERSION}/compiler-rt-${PKG_VERSION}.src${PKG_TYPE}|dir:$PKG_NAME/projects"
+	"https://llvm.org/releases/${PKG_VERSION}/llvm-${PKG_VERSION}.src${PKG_TYPE}"
+	"https://llvm.org/releases/${PKG_VERSION}/clang-${PKG_VERSION}.src${PKG_TYPE}|dir:$PKG_NAME/tools"
+	"https://llvm.org/releases/${PKG_VERSION}/compiler-rt-${PKG_VERSION}.src${PKG_TYPE}|dir:$PKG_NAME/projects"
 )
 
 #

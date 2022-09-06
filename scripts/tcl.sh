@@ -41,7 +41,7 @@ PKG_DIR_NAME=tcl${PKG_VERSION}
 PKG_SUBDIR_NAME=win
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://prdownloads.sourceforge.net/tcl/tcl${PKG_VERSION}-src${PKG_TYPE}"
+	"https://prdownloads.sourceforge.net/tcl/tcl${PKG_VERSION}-src${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra

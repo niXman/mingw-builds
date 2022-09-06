@@ -40,7 +40,7 @@ PKG_NAME=libffi-${PKG_VERSION}
 PKG_DIR_NAME=libffi-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"ftp://sourceware.org/pub/libffi/libffi-${PKG_VERSION}${PKG_TYPE}"
+	"https://sourceware.org/pub/libffi/libffi-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
