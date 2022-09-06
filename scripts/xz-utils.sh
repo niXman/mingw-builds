@@ -40,7 +40,7 @@ PKG_NAME=xz-${PKG_VERSION}
 PKG_DIR_NAME=xz-${PKG_VERSION}
 PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"http://tukaani.org/xz/xz-${PKG_VERSION}${PKG_TYPE}"
+	"https://tukaani.org/xz/xz-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra

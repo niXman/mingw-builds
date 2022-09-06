@@ -41,13 +41,13 @@ PKG_NAME=mingw-w64-${RUNTIME_VERSION}
 	MINGW_PKG_DIR_VERSION_SUFFIX="-${RUNTIME_VERSION}"
 	PKG_TYPE=.tar.bz2
 	PKG_URLS=(
-		"http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-${RUNTIME_VERSION}${PKG_TYPE}"
+		"https://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-${RUNTIME_VERSION}${PKG_TYPE}"
 	)
 } || {
 	MINGW_PKG_DIR_VERSION_SUFFIX=""
 	PKG_TYPE=git
 	PKG_URLS=(
-		"git://git.code.sf.net/p/mingw-w64/mingw-w64|branch:$RUNTIME_BRANCH|repo:$PKG_TYPE"
+		"https://git.code.sf.net/p/mingw-w64/mingw-w64|branch:$RUNTIME_BRANCH|repo:$PKG_TYPE"
 	)
 }
 

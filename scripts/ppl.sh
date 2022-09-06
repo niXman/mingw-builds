@@ -40,7 +40,7 @@ PKG_NAME=$BUILD_ARCHITECTURE-ppl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=ppl-${PKG_VERSION}
 PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"http://bugseng.com/products/ppl/download/ftp/releases/${PKG_VERSION}/ppl-${PKG_VERSION}${PKG_TYPE}"
+	"https://bugseng.com/products/ppl/download/ftp/releases/${PKG_VERSION}/ppl-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=prereq

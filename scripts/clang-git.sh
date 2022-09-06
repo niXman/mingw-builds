@@ -40,10 +40,10 @@ PKG_DIR_NAME=llvm-git
 PKG_TYPE=git
 
 PKG_URLS=(
-	"http://llvm.org/git/llvm.git|repo:$PKG_TYPE|module:$PKG_NAME"
-	"http://llvm.org/git/clang.git|repo:$PKG_TYPE|dir:$PKG_NAME/tools|module:clang"
-	"http://llvm.org/git/compiler-rt.git|repo:$PKG_TYPE|dir:$PKG_NAME/projects|module:compiler-rt"
-	"http://llvm.org/git/test-suite.git|repo:$PKG_TYPE|dir:$PKG_NAME/projects|module:test-suite"
+	"https://llvm.org/git/llvm.git|repo:$PKG_TYPE|module:$PKG_NAME"
+	"https://llvm.org/git/clang.git|repo:$PKG_TYPE|dir:$PKG_NAME/tools|module:clang"
+	"https://llvm.org/git/compiler-rt.git|repo:$PKG_TYPE|dir:$PKG_NAME/projects|module:compiler-rt"
+	"https://llvm.org/git/test-suite.git|repo:$PKG_TYPE|dir:$PKG_NAME/projects|module:test-suite"
 )
 
 PKG_PRIORITY=main

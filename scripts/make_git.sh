@@ -39,7 +39,7 @@ PKG_NAME=make_git
 PKG_DIR_NAME=make_git
 PKG_TYPE=git
 PKG_URLS=(
-	"http://git.savannah.gnu.org/cgit/make.git|repo:$PKG_TYPE|module:$PKG_NAME"
+	"https://git.savannah.gnu.org/cgit/make.git|repo:$PKG_TYPE|module:$PKG_NAME"
 )
 
 PKG_PRIORITY=extra
