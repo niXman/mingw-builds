@@ -63,6 +63,7 @@ readonly REPOSITORY_FILE=$PROJECT_ROOT_URL/files/host-linux/repository.txt
 readonly LOGVIEWERS=(
 	"kate"
 	"gedit"
+	"subl"
 	"nano"
 	"mcview"
 )
@@ -70,5 +71,74 @@ readonly LOGVIEWERS=(
 # **************************************************************************
 
 function func_test_installed_packages {
+	declare -A osInfo
+	osInfo["/etc/redhat-release"]=yum
+	osInfo["/etc/arch-release"]=pacman
+	osInfo["/etc/gentoo-release"]=emerge
+	osInfo["/etc/SuSE-release"]=zypp
+	osInfo["/etc/debian_version"]=apt-get
+	osInfo["/etc/alpine-release"]=apk
+
+	local package_man=
+	for f in ${!osInfo[@]}; do
+	    if [[ -f $f ]]; then
+	        package_man="${osInfo[$f]}"
+	    fi
+	done
+
+	local common_packages=(
+		git
+		tar
+		zip
+		p7zip
+		make
+		patch
+		automake
+		autoconf
+		autoconf-archive
+		libtool
+		flex
+		bison
+		gettext
+		wget
+		texinfo
+		autogen
+		dejagnu
+	)
+
+	local package_install=""
+	case $package_man in
+		yum)
+			die "support for the YUM package manager is not implemented!"
+		;;
+		pacman)
+			die "support for the PACMAN package manager is not implemented!"
+		;;
+		emerge)
+			die "support for the EMERGE package manager is not implemented!"
+		;;
+		zypp)
+			die "support for the ZYPP package manager is not implemented!"
+		;;
+		apt-get)
+			local deb_packages=(
+				xutils-dev
+			)
+			package_install="sudo $package_man -y install $(printf " %s" "${common_packages[@]}") $(printf " %s" "${deb_packages[@]}")"
+		;;
+		aptk)
+			die "support for the APK package manager is not implemented!"
+		;;
+		*)
+			die "unknown OS distribution!"
+		;;
+	esac
+
+	#echo "package_install=${package_install}"
+	echo "--> installing required packages..."
+	eval "${package_install}" || return 1
+
 	return 0
 }
+
+# **************************************************************************

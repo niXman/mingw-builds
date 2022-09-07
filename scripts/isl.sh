@@ -70,12 +70,9 @@ PKG_PATCHES=(
 
 #
 
-if [[  ${PKG_VERSION:2:2} -ge 18 ]]; then
-	PKG_EXECUTE_AFTER_PATCH=(
-		"aclocal"
-		"automake"
-	)
-fi
+PKG_EXECUTE_AFTER_PATCH=(
+	"autoreconf -vfi"
+)
 
 PKG_CONFIGURE_FLAGS=(
 	--host=$HOST

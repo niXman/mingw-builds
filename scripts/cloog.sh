@@ -40,9 +40,15 @@ PKG_NAME=$BUILD_ARCHITECTURE-cloog-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=cloog-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://www.bastoul.net/cloog/pages/download/cloog-${PKG_VERSION}${PKG_TYPE}"
+	"https://download.nus.edu.sg/mirror/ubuntu/pool/main/c/cloog/cloog_${PKG_VERSION}.orig.${PKG_TYPE}"
 )
 PKG_PRIORITY=prereq
+
+#
+
+PKG_EXECUTE_AFTER_DOWNLOAD=(
+	"mv cloog_${PKG_VERSION}.orig.${PKG_TYPE} cloog-${PKG_VERSION}${PKG_TYPE}"
+)
 
 #
 

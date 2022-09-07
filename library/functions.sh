@@ -673,8 +673,14 @@ function func_configure {
 	[[ $6 == yes ]] && {
 		mkdir -p $5/$1
 		[[ ! -f $5/$1/lndir.marker ]] && {
-			lndir $SRCS_DIR/$2 $5/$1 > /dev/null
-			touch $5/$1/lndir.marker
+			lndir $SRCS_DIR/$2 $5/$1 > $4 2>&1
+			_result=$?
+			[[ $_result != 0 ]] && {
+				func_show_log $4
+				die " error!" $_result
+			}
+
+			touch $5/$1/lndir.marker > $4 2>&1
 		}
 	}
 	local _marker=$5/$1/_configure.marker
