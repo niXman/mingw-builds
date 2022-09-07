@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=$( [[ ${BUILD_VERSION:0:1} == 4 || ${BUILD_VERSION:0:1} == 5 ]] && { echo 7.12; } || { echo 9.1; } )
+PKG_VERSION=$( [[ `echo $BUILD_VERSION | cut -d. -f1` == 4 || `echo $BUILD_VERSION | cut -d. -f1` == 5 ]] && { echo 7.12; } || { echo 11.2; } )
 PKG_NAME=gdb-${PKG_VERSION}
 PKG_DIR_NAME=gdb-${PKG_VERSION}
 PKG_TYPE=.tar.xz
@@ -54,6 +54,7 @@ PKG_PATCHES=(
 	gdb/gdb-perfomance.patch
 	$( [[ ${PKG_VERSION} == 7.12 ]] && { echo "gdb/gdb-7.12-fix-using-gnu-print.patch"; } || { echo "gdb/gdb-fix-using-gnu-print.patch"; } )
 	$( [[ ${PKG_VERSION} == 7.12 ]] && { echo "gdb/gdb-7.12-dynamic-libs.patch"; } || { echo "gdb/gdb-8.3.1-dynamic-libs.patch"; } )
+	$( [[ ${PKG_VERSION} == 10.2 ]] && { echo "gdb/gdb-10.2-fix-gnulib-dependencies.patch"; } )
 )
 
 #
@@ -72,7 +73,7 @@ PKG_CONFIGURE_FLAGS=(
 	--disable-rpath
 	#
 	--with-system-gdbinit=$PREFIX/etc/gdbinit
-	--with-python=$PREFIX/opt/bin/python-config-u.sh
+	--with-python=$PREFIX/opt/bin/python3.exe
 	--with-expat
 	--with-libiconv
 	--with-zlib

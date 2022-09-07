@@ -36,7 +36,7 @@ Signed-off-by: Liu Hao <lh_mouse@126.com>
  19 files changed, 942 insertions(+), 461 deletions(-)
 
 diff --git a/libstdc++-v3/config.h.in b/libstdc++-v3/config.h.in
-index 19510e5cf..09760d37a 100644
+index 19510e5cff8..09760d37adc 100644
 --- a/libstdc++-v3/config.h.in
 +++ b/libstdc++-v3/config.h.in
 @@ -264,6 +264,9 @@
@@ -80,7 +80,7 @@ index 19510e5cf..09760d37a 100644
  #undef HAVE___CXA_THREAD_ATEXIT
  
 diff --git a/libstdc++-v3/config/io/basic_file_stdio.cc b/libstdc++-v3/config/io/basic_file_stdio.cc
-index a46814802..09ccd6a47 100644
+index a46814802cd..09ccd6a4788 100644
 --- a/libstdc++-v3/config/io/basic_file_stdio.cc
 +++ b/libstdc++-v3/config/io/basic_file_stdio.cc
 @@ -249,6 +249,39 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
@@ -124,7 +124,7 @@ index a46814802..09ccd6a47 100644
    __basic_file<char>::is_open() const throw ()
    { return _M_cfile != 0; }
 diff --git a/libstdc++-v3/config/io/basic_file_stdio.h b/libstdc++-v3/config/io/basic_file_stdio.h
-index 58f24f670..3c857272c 100644
+index 58f24f670f6..3c857272c57 100644
 --- a/libstdc++-v3/config/io/basic_file_stdio.h
 +++ b/libstdc++-v3/config/io/basic_file_stdio.h
 @@ -84,6 +84,11 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
@@ -140,7 +140,7 @@ index 58f24f670..3c857272c 100644
        sys_open(__c_file* __file, ios_base::openmode);
  
 diff --git a/libstdc++-v3/configure b/libstdc++-v3/configure
-index 61457e940..431a59056 100644
+index 61457e940ec..431a59056bc 100755
 --- a/libstdc++-v3/configure
 +++ b/libstdc++-v3/configure
 @@ -28353,6 +28353,17 @@ eval as_val=\$$as_ac_var
@@ -200,7 +200,7 @@ index 61457e940..431a59056 100644
  
  
 diff --git a/libstdc++-v3/configure.ac b/libstdc++-v3/configure.ac
-index 5600cf38a..0603ae7b1 100644
+index 5600cf38a31..0603ae7b1b8 100644
 --- a/libstdc++-v3/configure.ac
 +++ b/libstdc++-v3/configure.ac
 @@ -265,6 +265,7 @@ if $GLIBCXX_IS_NATIVE; then
@@ -220,7 +220,7 @@ index 5600cf38a..0603ae7b1 100644
  GLIBCXX_CHECK_FILESYSTEM_DEPS
  
 diff --git a/libstdc++-v3/crossconfig.m4 b/libstdc++-v3/crossconfig.m4
-index cb6e3afff..669d87f76 100644
+index cb6e3afff3d..669d87f7602 100644
 --- a/libstdc++-v3/crossconfig.m4
 +++ b/libstdc++-v3/crossconfig.m4
 @@ -199,6 +199,7 @@ case "${host}" in
@@ -232,7 +232,7 @@ index cb6e3afff..669d87f76 100644
    *-netbsd*)
      SECTION_FLAGS='-ffunction-sections -fdata-sections'
 diff --git a/libstdc++-v3/include/bits/fs_dir.h b/libstdc++-v3/include/bits/fs_dir.h
-index 9ee1cb66b..6b332e171 100644
+index 9ee1cb66b61..6b332e171cf 100644
 --- a/libstdc++-v3/include/bits/fs_dir.h
 +++ b/libstdc++-v3/include/bits/fs_dir.h
 @@ -138,13 +138,8 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
@@ -264,7 +264,7 @@ index 9ee1cb66b..6b332e171 100644
      }
  
 diff --git a/libstdc++-v3/include/bits/fs_path.h b/libstdc++-v3/include/bits/fs_path.h
-index 7ae68f623..0bd663dd9 100644
+index f121d82c032..536c5b38a49 100644
 --- a/libstdc++-v3/include/bits/fs_path.h
 +++ b/libstdc++-v3/include/bits/fs_path.h
 @@ -37,11 +37,11 @@
@@ -566,7 +566,7 @@ index 7ae68f623..0bd663dd9 100644
  #endif
      }
  
-@@ -920,11 +881,16 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
+@@ -921,11 +882,16 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
      path::string(const _Allocator& __a) const
      {
        if constexpr (is_same_v<_CharT, value_type>)
@@ -585,7 +585,7 @@ index 7ae68f623..0bd663dd9 100644
        else
  	return _S_str_convert<_CharT, _Traits>(_M_pathname, __a);
      }
-@@ -1076,6 +1042,16 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
+@@ -1079,6 +1045,16 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
      return ext.first && ext.second != string_type::npos;
    }
  
@@ -602,7 +602,7 @@ index 7ae68f623..0bd663dd9 100644
    inline path::iterator
    path::begin() const
    {
-@@ -1092,6 +1068,38 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
+@@ -1095,6 +1071,38 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
      return iterator(this, true);
    }
  
@@ -642,7 +642,7 @@ index 7ae68f623..0bd663dd9 100644
    path::iterator::operator++()
    {
 diff --git a/libstdc++-v3/include/bits/fstream.tcc b/libstdc++-v3/include/bits/fstream.tcc
-index f23ff7af4..d9eff0082 100644
+index f23ff7af4eb..d9eff00823a 100644
 --- a/libstdc++-v3/include/bits/fstream.tcc
 +++ b/libstdc++-v3/include/bits/fstream.tcc
 @@ -207,6 +207,42 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
@@ -689,7 +689,7 @@ index f23ff7af4..d9eff0082 100644
      typename basic_filebuf<_CharT, _Traits>::__filebuf_type*
      basic_filebuf<_CharT, _Traits>::
 diff --git a/libstdc++-v3/include/experimental/bits/fs_path.h b/libstdc++-v3/include/experimental/bits/fs_path.h
-index 705f76331..873804b09 100644
+index c212670b6ca..3297eab96f2 100644
 --- a/libstdc++-v3/include/experimental/bits/fs_path.h
 +++ b/libstdc++-v3/include/experimental/bits/fs_path.h
 @@ -79,8 +79,11 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
@@ -819,7 +819,7 @@ index 705f76331..873804b09 100644
    struct path::_Cmpt : path
    {
      _Cmpt(string_type __s, _Type __t, size_t __pos)
-@@ -1003,6 +997,16 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
+@@ -1025,6 +1019,16 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
      return ext.first && ext.second != string_type::npos;
    }
  
@@ -837,7 +837,7 @@ index 705f76331..873804b09 100644
    path::begin() const
    {
 diff --git a/libstdc++-v3/include/std/fstream b/libstdc++-v3/include/std/fstream
-index 3a5895d68..740d12d3b 100644
+index 3a5895d68b0..740d12d3bb6 100644
 --- a/libstdc++-v3/include/std/fstream
 +++ b/libstdc++-v3/include/std/fstream
 @@ -304,6 +304,17 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
@@ -1009,7 +1009,7 @@ index 3a5895d68..740d12d3b 100644
        /**
         *  @brief  Opens an external file.
 diff --git a/libstdc++-v3/src/filesystem/dir-common.h b/libstdc++-v3/src/filesystem/dir-common.h
-index 21ba01ca9..03875819d 100644
+index 21ba01ca970..03875819d04 100644
 --- a/libstdc++-v3/src/filesystem/dir-common.h
 +++ b/libstdc++-v3/src/filesystem/dir-common.h
 @@ -26,6 +26,9 @@
@@ -1128,7 +1128,7 @@ index 21ba01ca9..03875819d 100644
  #ifdef _GLIBCXX_HAVE_STRUCT_DIRENT_D_TYPE
    switch (d.d_type)
 diff --git a/libstdc++-v3/src/filesystem/dir.cc b/libstdc++-v3/src/filesystem/dir.cc
-index 8b1b98dba..4213ff58a 100644
+index 9db295dcb44..2b9c839712a 100644
 --- a/libstdc++-v3/src/filesystem/dir.cc
 +++ b/libstdc++-v3/src/filesystem/dir.cc
 @@ -38,6 +38,7 @@
@@ -1148,17 +1148,17 @@ index 8b1b98dba..4213ff58a 100644
  
    _Dir(_Dir&&) = default;
  
-@@ -186,7 +187,7 @@ recursive_directory_iterator(const path& p, directory_options options,
+@@ -184,7 +185,7 @@ recursive_directory_iterator(const path& p, directory_options options,
+                              error_code* ecptr)
+ : _M_options(options), _M_pending(true)
  {
-   if (ec)
-     ec->clear();
 -  if (DIR* dirp = ::opendir(p.c_str()))
 +  if (posix::DIR* dirp = posix::opendir(p.c_str()))
      {
-       auto sp = std::make_shared<_Dir_stack>();
-       sp->push(_Dir{ dirp, p });
+       if (ecptr)
+ 	ecptr->clear();
 diff --git a/libstdc++-v3/src/filesystem/ops-common.h b/libstdc++-v3/src/filesystem/ops-common.h
-index bc186836b..c1b817189 100644
+index bc186836bd4..c1b817189a9 100644
 --- a/libstdc++-v3/src/filesystem/ops-common.h
 +++ b/libstdc++-v3/src/filesystem/ops-common.h
 @@ -34,12 +34,103 @@
@@ -1314,7 +1314,7 @@ index bc186836b..c1b817189 100644
      else if (S_ISSOCK(st.st_mode))
        return file_type::socket;
 diff --git a/libstdc++-v3/src/filesystem/ops.cc b/libstdc++-v3/src/filesystem/ops.cc
-index f04b4c5fc..2e9fa6894 100644
+index 4a14251cfe8..4bdd896ae28 100644
 --- a/libstdc++-v3/src/filesystem/ops.cc
 +++ b/libstdc++-v3/src/filesystem/ops.cc
 @@ -48,20 +48,17 @@
@@ -1624,7 +1624,7 @@ index f04b4c5fc..2e9fa6894 100644
    stat_type st;
    if (::lstat(p.c_str(), &st))
      {
-@@ -1034,6 +1026,19 @@ fs::remove(const path& p)
+@@ -1040,6 +1032,19 @@ fs::remove(const path& p)
  bool
  fs::remove(const path& p, error_code& ec) noexcept
  {
@@ -1644,7 +1644,7 @@ index f04b4c5fc..2e9fa6894 100644
    if (::remove(p.c_str()) == 0)
      {
        ec.clear();
-@@ -1043,6 +1048,7 @@ fs::remove(const path& p, error_code& ec) noexcept
+@@ -1049,6 +1054,7 @@ fs::remove(const path& p, error_code& ec) noexcept
      ec.clear();
    else
      ec.assign(errno, std::generic_category());
@@ -1652,7 +1652,7 @@ index f04b4c5fc..2e9fa6894 100644
    return false;
  }
  
-@@ -1101,7 +1107,7 @@ fs::rename(const path& from, const path& to)
+@@ -1107,7 +1113,7 @@ fs::rename(const path& from, const path& to)
  void
  fs::rename(const path& from, const path& to, error_code& ec) noexcept
  {
@@ -1661,7 +1661,7 @@ index f04b4c5fc..2e9fa6894 100644
      ec.assign(errno, std::generic_category());
    else
      ec.clear();
-@@ -1122,7 +1128,7 @@ fs::resize_file(const path& p, uintmax_t size, error_code& ec) noexcept
+@@ -1128,7 +1134,7 @@ fs::resize_file(const path& p, uintmax_t size, error_code& ec) noexcept
  #ifdef _GLIBCXX_HAVE_UNISTD_H
    if (size > static_cast<uintmax_t>(std::numeric_limits<off_t>::max()))
      ec.assign(EINVAL, std::generic_category());
@@ -1670,7 +1670,7 @@ index f04b4c5fc..2e9fa6894 100644
      ec.assign(errno, std::generic_category());
    else
      ec.clear();
-@@ -1150,23 +1156,14 @@ fs::space(const path& p, error_code& ec) noexcept
+@@ -1156,23 +1162,14 @@ fs::space(const path& p, error_code& ec) noexcept
      static_cast<uintmax_t>(-1),
      static_cast<uintmax_t>(-1)
    };
@@ -1700,7 +1700,7 @@ index f04b4c5fc..2e9fa6894 100644
    return info;
  }
  
-@@ -1176,7 +1173,7 @@ fs::status(const fs::path& p, error_code& ec) noexcept
+@@ -1182,7 +1179,7 @@ fs::status(const fs::path& p, error_code& ec) noexcept
  {
    file_status status;
    stat_type st;
@@ -1709,7 +1709,7 @@ index f04b4c5fc..2e9fa6894 100644
      {
        int err = errno;
        ec.assign(err, std::generic_category());
-@@ -1200,7 +1197,7 @@ fs::symlink_status(const fs::path& p, std::error_code& ec) noexcept
+@@ -1206,7 +1203,7 @@ fs::symlink_status(const fs::path& p, std::error_code& ec) noexcept
  {
    file_status status;
    stat_type st;
@@ -1718,7 +1718,7 @@ index f04b4c5fc..2e9fa6894 100644
      {
        int err = errno;
        ec.assign(err, std::generic_category());
-@@ -1275,27 +1272,38 @@ fs::path fs::temp_directory_path()
+@@ -1281,27 +1278,38 @@ fs::path fs::temp_directory_path()
  
  fs::path fs::temp_directory_path(error_code& ec)
  {
@@ -1770,7 +1770,7 @@ index f04b4c5fc..2e9fa6894 100644
  }
  
 diff --git a/libstdc++-v3/src/filesystem/path.cc b/libstdc++-v3/src/filesystem/path.cc
-index e4d339a12..ddaa8c0ed 100644
+index e4d339a1208..ddaa8c0edcb 100644
 --- a/libstdc++-v3/src/filesystem/path.cc
 +++ b/libstdc++-v3/src/filesystem/path.cc
 @@ -61,6 +61,12 @@ path::replace_filename(const path& replacement)
@@ -1845,7 +1845,7 @@ index e4d339a12..ddaa8c0ed 100644
  
  _GLIBCXX_END_NAMESPACE_CXX11
 diff --git a/libstdc++-v3/src/filesystem/std-dir.cc b/libstdc++-v3/src/filesystem/std-dir.cc
-index 867c42bd1..805dd2a5e 100644
+index 867c42bd1fd..805dd2a5ef3 100644
 --- a/libstdc++-v3/src/filesystem/std-dir.cc
 +++ b/libstdc++-v3/src/filesystem/std-dir.cc
 @@ -38,6 +38,7 @@
@@ -1875,7 +1875,7 @@ index 867c42bd1..805dd2a5e 100644
        if (ecptr)
  	ecptr->clear();
 diff --git a/libstdc++-v3/src/filesystem/std-ops.cc b/libstdc++-v3/src/filesystem/std-ops.cc
-index 6d0bec48d..48d2c5d3d 100644
+index 8f3191c1a71..df2f03a74d4 100644
 --- a/libstdc++-v3/src/filesystem/std-ops.cc
 +++ b/libstdc++-v3/src/filesystem/std-ops.cc
 @@ -25,6 +25,7 @@
@@ -2336,7 +2336,7 @@ index 6d0bec48d..48d2c5d3d 100644
    stat_type st;
    if (::lstat(p.c_str(), &st))
      {
-@@ -1314,6 +1301,19 @@ fs::remove(const path& p)
+@@ -1320,6 +1307,19 @@ fs::remove(const path& p)
  bool
  fs::remove(const path& p, error_code& ec) noexcept
  {
@@ -2356,7 +2356,7 @@ index 6d0bec48d..48d2c5d3d 100644
    if (::remove(p.c_str()) == 0)
      {
        ec.clear();
-@@ -1323,6 +1323,7 @@ fs::remove(const path& p, error_code& ec) noexcept
+@@ -1329,6 +1329,7 @@ fs::remove(const path& p, error_code& ec) noexcept
      ec.clear();
    else
      ec.assign(errno, std::generic_category());
@@ -2364,7 +2364,7 @@ index 6d0bec48d..48d2c5d3d 100644
    return false;
  }
  
-@@ -1381,7 +1382,7 @@ fs::rename(const path& from, const path& to)
+@@ -1387,7 +1388,7 @@ fs::rename(const path& from, const path& to)
  void
  fs::rename(const path& from, const path& to, error_code& ec) noexcept
  {
@@ -2373,7 +2373,7 @@ index 6d0bec48d..48d2c5d3d 100644
      ec.assign(errno, std::generic_category());
    else
      ec.clear();
-@@ -1402,7 +1403,7 @@ fs::resize_file(const path& p, uintmax_t size, error_code& ec) noexcept
+@@ -1408,7 +1409,7 @@ fs::resize_file(const path& p, uintmax_t size, error_code& ec) noexcept
  #ifdef _GLIBCXX_HAVE_UNISTD_H
    if (size > static_cast<uintmax_t>(std::numeric_limits<off_t>::max()))
      ec.assign(EINVAL, std::generic_category());
@@ -2382,7 +2382,7 @@ index 6d0bec48d..48d2c5d3d 100644
      ec.assign(errno, std::generic_category());
    else
      ec.clear();
-@@ -1422,31 +1423,67 @@ fs::space(const path& p)
+@@ -1428,31 +1429,67 @@ fs::space(const path& p)
    return s;
  }
  
@@ -2464,7 +2464,7 @@ index 6d0bec48d..48d2c5d3d 100644
    return info;
  }
  
-@@ -1456,7 +1493,7 @@ fs::status(const fs::path& p, error_code& ec) noexcept
+@@ -1462,7 +1499,7 @@ fs::status(const fs::path& p, error_code& ec) noexcept
  {
    file_status status;
    stat_type st;
@@ -2473,7 +2473,7 @@ index 6d0bec48d..48d2c5d3d 100644
      {
        int err = errno;
        ec.assign(err, std::generic_category());
-@@ -1480,7 +1517,7 @@ fs::symlink_status(const fs::path& p, std::error_code& ec) noexcept
+@@ -1486,7 +1523,7 @@ fs::symlink_status(const fs::path& p, std::error_code& ec) noexcept
  {
    file_status status;
    stat_type st;
@@ -2482,7 +2482,7 @@ index 6d0bec48d..48d2c5d3d 100644
      {
        int err = errno;
        ec.assign(err, std::generic_category());
-@@ -1527,28 +1564,39 @@ fs::path fs::temp_directory_path()
+@@ -1533,28 +1570,39 @@ fs::path fs::temp_directory_path()
  
  fs::path fs::temp_directory_path(error_code& ec)
  {
@@ -2536,7 +2536,7 @@ index 6d0bec48d..48d2c5d3d 100644
  
  fs::path
 diff --git a/libstdc++-v3/src/filesystem/std-path.cc b/libstdc++-v3/src/filesystem/std-path.cc
-index ec8384340..66552d063 100644
+index ec8384340be..66552d06379 100644
 --- a/libstdc++-v3/src/filesystem/std-path.cc
 +++ b/libstdc++-v3/src/filesystem/std-path.cc
 @@ -38,6 +38,66 @@ fs::filesystem_error::~filesystem_error() = default;
@@ -2756,5 +2756,5 @@ index ec8384340..66552d063 100644
  
  _GLIBCXX_END_NAMESPACE_CXX11
 -- 
-2.26.0.windows.1
+2.31.1.windows.1
 

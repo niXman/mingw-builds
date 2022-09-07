@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=3310100
+PKG_VERSION=3350500
 PKG_NAME=sqlite-${PKG_VERSION}
 PKG_DIR_NAME=sqlite-autoconf-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://www.sqlite.org/2020/sqlite-autoconf-${PKG_VERSION}${PKG_TYPE}"
+	"https://www.sqlite.org/2021/sqlite-autoconf-${PKG_VERSION}${PKG_TYPE}"
 )
 PKG_PRIORITY=extra
 

@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -40,7 +40,7 @@ PKG_NAME=gcc-${PKG_VERSION}-branch
 PKG_DIR_NAME=gcc-${PKG_VERSION}-branch
 PKG_TYPE=git
 PKG_URLS=(
-	"git://gcc.gnu.org/git/gcc.git|branch:releases/gcc-$PKG_VERSION|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
+	"https://gcc.gnu.org/git/gcc.git|branch:releases/gcc-$PKG_VERSION|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
 )
 
 PKG_PRIORITY=main
@@ -72,11 +72,17 @@ PKG_CONFIGURE_FLAGS=(
 		&& echo "--enable-targets=all --enable-multilib" \
 		|| echo "--disable-multilib" \
 	)
-	--enable-languages=$ENABLE_LANGUAGES,lto
+	$( [[ "$DISABLE_GCC_LTO" == yes ]] \
+		&& echo "--enable-languages=$ENABLE_LANGUAGES" \
+		|| echo "--enable-languages=$ENABLE_LANGUAGES,lto"
+	)
 	--enable-libstdcxx-time=yes
 	--enable-threads=$THREADS_MODEL
 	--enable-libgomp
-	--enable-lto
+	$( [[ "$DISABLE_GCC_LTO" == yes ]] \
+		&& echo "--disable-lto" \
+		|| echo "--enable-lto"
+	)
 	--enable-graphite
 	--enable-cloog-backend=isl
 	--enable-checking=release

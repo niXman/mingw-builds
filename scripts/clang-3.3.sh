@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -40,9 +40,9 @@ PKG_NAME=llvm-${PKG_VERSION}.src
 PKG_DIR_NAME=llvm-${PKG_VERSION}.src
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"http://llvm.org/releases/${PKG_VERSION}/llvm-${PKG_VERSION}.src${PKG_TYPE}"
-	"http://llvm.org/releases/${PKG_VERSION}/cfe-${PKG_VERSION}.src${PKG_TYPE}|dir:$PKG_NAME/tools"
-	"http://llvm.org/releases/${PKG_VERSION}/compiler-rt-${PKG_VERSION}.src${PKG_TYPE}|dir:$PKG_NAME/projects"
+	"https://llvm.org/releases/${PKG_VERSION}/llvm-${PKG_VERSION}.src${PKG_TYPE}"
+	"https://llvm.org/releases/${PKG_VERSION}/cfe-${PKG_VERSION}.src${PKG_TYPE}|dir:$PKG_NAME/tools"
+	"https://llvm.org/releases/${PKG_VERSION}/compiler-rt-${PKG_VERSION}.src${PKG_TYPE}|dir:$PKG_NAME/projects"
 )
 
 #

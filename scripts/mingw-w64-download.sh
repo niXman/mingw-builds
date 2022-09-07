@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -41,13 +41,13 @@ PKG_NAME=mingw-w64-${RUNTIME_VERSION}
 	MINGW_PKG_DIR_VERSION_SUFFIX="-${RUNTIME_VERSION}"
 	PKG_TYPE=.tar.bz2
 	PKG_URLS=(
-		"http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-${RUNTIME_VERSION}${PKG_TYPE}"
+		"https://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-${RUNTIME_VERSION}${PKG_TYPE}"
 	)
 } || {
 	MINGW_PKG_DIR_VERSION_SUFFIX=""
 	PKG_TYPE=git
 	PKG_URLS=(
-		"git://git.code.sf.net/p/mingw-w64/mingw-w64|branch:$RUNTIME_BRANCH|repo:$PKG_TYPE"
+		"https://git.code.sf.net/p/mingw-w64/mingw-w64|branch:$RUNTIME_BRANCH|repo:$PKG_TYPE"
 	)
 }
 

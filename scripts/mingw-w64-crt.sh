@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -48,7 +48,14 @@ PKG_PRIORITY=runtime
 
 #
 
-PKG_PATCHES=()
+PKG_PATCHES=(
+	$( [[ $RUNTIME_VERSION == v10.0.0 ]] && \
+	    [[ $MSVCRT_VERSION == ucrt ]] && {
+	        echo "mingw-w64/89bacd2be60fa92dd74d3b5f2074b06a32d8c784.patch"
+		    echo "mingw-w64/bceadc54d8f32b3f14c69074892e2718eac08e3b.patch"
+		}
+	)
+)
 
 #
 

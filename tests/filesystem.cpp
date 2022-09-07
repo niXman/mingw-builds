@@ -3,7 +3,7 @@
 // The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 //
 // This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-// Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+// Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 // Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 // All rights reserved.
 //
@@ -35,9 +35,9 @@
 // **************************************************************************
 
 #include <iostream>
-#include <experimental/filesystem>
+#include <filesystem>
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 void demo_status(const fs::file_status s) {
     if(fs::is_regular_file(s)) std::cout << " is a regular file\n";

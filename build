@@ -4,7 +4,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -59,17 +59,18 @@ readonly RUN_ARGS="$@"
 	echo "    --exceptions=<type>        - specifies exceptions model for GCC"
 	echo "                                 available: dwarf, seh, sjlj, dwarfseh (picks by architecture)"
 	echo "    --use-lto                  - build with LTO using"
-	echo "    --bootstrap                - bootstraping GCC"
+	echo "    --no-gcc-lto               - disable LTO when building GCC"
+	echo "    --no-bootstrap             - do not bootstrap GCC"
 	echo "    --bootstrapall             - bootstraping GCC & all prerequisites"
 	echo "    --no-multilib              - build GCC without multilib support"
 	echo "    --no-extras                - don't build extra packages, only build GCC/clang and the runtime"
 	echo "    --no-strip                 - don't strip dll's & executables on install"
 	echo "    --static-gcc               - build static GCC"
 	echo "    --dyn-deps                 - build GCC with dynamically dependencies"
-	echo "    --jobs=N                   - specifies number of parallel make threads"
-	echo "    --rt-version=<v3|v4|v5|v6|trunk|v3.3.0|v4.0.6|v5.0.4|v6.0.0|v7.0.0> - specifies mingw-w64 runtime version to build"
-	echo "                                 v3, v4, v5, v6, v7, trunk specifies specific branches in the git repo"
-	echo "                                 v3.3.0, v4.0.6, v5.0.4, v6.0.0, v7.0.0 is a specific release versions, uses the tarball"
+	echo "    --jobs=N                   - specifies number of parallel make threads (defaults to 4)"
+	echo "    --rt-version=<version>     - specifies mingw-w64 runtime version to build"
+	echo "                                 v3, v4, v5, v6, v7, v8, v9, v10, trunk specifies specific branches in the git repo"
+	echo "                                 v3.3.0, v4.0.6, v5.0.4, v6.0.0, v7.0.0, v8.0.2, v9.0.0, v10.0.0 is a specific release versions, uses the tarball"
 	echo "    --with-default-msvcrt=     - specifies msvc version the toolchain will target"
 	echo "                                 <msvcrt|msvcr80|msvcr90|msvcr100|msvcr110|msvcr120|ucrt>"
 	echo "    --rev=N                    - specifies number of the build revision"
@@ -149,13 +150,27 @@ readonly RUN_ARGS="$@"
 	echo "    gcc-8.2.0 (8.2.0 release)"
 	echo "    gcc-8.3.0 (8.3.0 release)"
 	echo "    gcc-8.4.0 (8.4.0 release)"
-	echo "    gcc-8-branch (currently 8.5.0-prerelease)"
+	echo "    gcc-8.5.0 (8.5.0 release)"
+	echo "    gcc-8-branch (currently 8.6.0-prerelease)"
 	echo "    gcc-9.1.0 (9.1.0 release)"
 	echo "    gcc-9.2.0 (9.2.0 release)"
 	echo "    gcc-9.3.0 (9.3.0 release)"
-	echo "    gcc-9-branch (currently 9.4.0-prerelease)"
-	echo "    gcc-10-branch (currently 10.1.0-prerelease)"
-	echo "    gcc-trunk (currently 11.0.0-snapshot)"
+	echo "    gcc-9.4.0 (9.4.0 release)"
+	echo "    gcc-9.5.0 (9.5.0 release)"
+	echo "    gcc-9-branch (currently 9.6.0-prerelease)"
+	echo "    gcc-10.1.0 (10.1.0 release)"
+	echo "    gcc-10.2.0 (10.2.0 release)"
+	echo "    gcc-10.3.0 (10.3.0 release)"
+	echo "    gcc-10.4.0 (10.4.0 release)"
+	echo "    gcc-10-branch (currently 10.5.0-prerelease)"
+	echo "    gcc-11.1.0 (11.1.0 release)"
+	echo "    gcc-11.2.0 (11.2.0 release)"
+	echo "    gcc-11.3.0 (11.3.0 release)"
+	echo "    gcc-11-branch (currently 11.4.0-prerelease)"
+	echo "    gcc-12.1.0 (12.1.0 release)"
+	echo "    gcc-12.2.0 (12.2.0 release)"
+	echo "    gcc-12-branch (currently 12.3.0-prerelease)"
+	echo "    gcc-trunk (currently 13.0.0-snapshot)"
 
 	exit 0
 }
@@ -215,7 +230,7 @@ while [[ $# > 0 ]]; do
 			ROOT_DIR=$PWD
 			popd > /dev/null
 		;;
-		--bootstrap) BOOTSTRAPING=yes ;;
+		--no-bootstrap) BOOTSTRAPING=no ;;
 		--bootstrapall) BOOTSTRAPINGALL=yes ;;
 		--fetch-only) FETCH_MODE=yes ;;
 		--patch-on-fetch) FETCH_MODE=yes; FETCH_PATCH_MODE=yes ;;
@@ -244,12 +259,13 @@ while [[ $# > 0 ]]; do
 			export RANLIB=gcc-ranlib
 			export NM=gcc-nm
 		;;
+		--no-gcc-lto) DISABLE_GCC_LTO=yes ;;
 		--no-multilib) USE_MULTILIB=no ;;
 		--no-extras) [[ $BUILD_MODE != python ]] && { BUILD_EXTRAS=no; };;
 		--no-strip) STRIP_ON_INSTALL=no ;;
 		--static-gcc)
 			BOOTSTRAPING=yes
-			LINK_TYPE_GCC=$LINK_TYPE_STATIC
+			LINK_TYPE_GCC=$LINK_TYPE_GCC_STATIC
 			GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
 			BUILD_SHARED_GCC=no
 			LINK_TYPE_SUFFIX=static
@@ -289,8 +305,20 @@ while [[ $# > 0 ]]; do
 					RUNTIME_VERSION=v7
 					RUNTIME_BRANCH="v7.x"
 				;;
+				v8)
+					RUNTIME_VERSION=v8
+					RUNTIME_BRANCH="v8.x"
+				;;
+				v9)
+					RUNTIME_VERSION=v9
+					RUNTIME_BRANCH="v9.x"
+				;;
+                v10)
+                    RUNTIME_VERSION=v10
+                    RUNTIME_BRANCH="v10.x"
+                ;;
 				trunk)
-					RUNTIME_VERSION=v7
+					RUNTIME_VERSION=v9
 					RUNTIME_BRANCH="master"
 				;;
 				v3.3.0)
@@ -311,6 +339,18 @@ while [[ $# > 0 ]]; do
 				;;
 				v7.0.0)
 					RUNTIME_VERSION=v7.0.0
+					RUNTIME_BRANCH="release"
+				;;
+				v8.0.2)
+					RUNTIME_VERSION=v8.0.2
+					RUNTIME_BRANCH="release"
+				;;
+				v9.0.0)
+					RUNTIME_VERSION=v9.0.0
+					RUNTIME_BRANCH="release"
+				;;
+				v10.0.0)
+					RUNTIME_VERSION=v10.0.0
 					RUNTIME_BRANCH="release"
 				;;
 				*)
@@ -359,6 +399,9 @@ while [[ $# > 0 ]]; do
 			DBG_HOOKS=$(echo $HOOK_STRING | tr ":" "\n")
 		;;
 		--wait-for-logviewer) LOGVIEWER_WAIT=yes ;;
+		--provided-toolchain=*)
+			PROVIDED_TOOLCHAIN=${1/--provided-toolchain=/}
+		;;
 		*)
 			die "bad command line: \"$1\". terminate."
 		;;
@@ -472,19 +515,37 @@ esac
 # **************************************************************************
 # Install host toolchains
 
-[[ $CROSS_BUILDS == no ]] && {
-	mkdir -p $TOOLCHAINS_DIR
-	[[ $? != 0 ]] && {
-		die "can't create toolchains directory. terminate."
-	}
+if ! [[ -z "$PROVIDED_TOOLCHAIN" ]] ; then
+	func_check_user_toolchain "$PROVIDED_TOOLCHAIN"
 
-	func_install_toolchain \
-		$TOOLCHAINS_DIR \
-		$i686_HOST_MINGW_PATH \
-		$x86_64_HOST_MINGW_PATH \
-		${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_I686} \
-		${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_X86_64}
-}
+	echo "Using provided toolchain: $PROVIDED_TOOLCHAIN"
+	unset TOOLCHAINS_DIR i686_HOST_MINGW_PATH x86_64_HOST_MINGW_PATH
+	TOOLCHAINS_DIR="$PROVIDED_TOOLCHAIN"
+	i686_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
+	x86_64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
+else
+	echo "Using downloaded toolchain"
+fi
+
+readonly TOOLCHAINS_DIR
+readonly i686_HOST_MINGW_PATH
+readonly x86_64_HOST_MINGW_PATH
+
+if [[ -z "$PROVIDED_TOOLCHAIN" ]]; then
+	if [[ $CROSS_BUILDS == no ]]; then
+		mkdir -p $TOOLCHAINS_DIR
+		[[ $? != 0 ]] && {
+			die "can't create toolchains directory. terminate."
+		}
+
+		func_install_toolchain \
+			$TOOLCHAINS_DIR \
+			$i686_HOST_MINGW_PATH \
+			$x86_64_HOST_MINGW_PATH \
+			${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_I686} \
+			${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_X86_64}
+	fi
+fi
 
 # **************************************************************************
 # Creating necessary directories
@@ -501,6 +562,7 @@ esac
 		GCC_PART_NAME=${GCC_PART_NAME/-branch/b}
 		readonly GCC_PART_NAME=${GCC_PART_NAME//./}
 		readonly RUNTIME_PART_NAME=${RUNTIME_VERSION//./}
+		readonly RUNTIME_MAJOR_VERSION=$(echo $RUNTIME_VERSION | sed 's@^[^0-9]*\([0-9]\+\).*@\1@')
 		BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL-rt_${RUNTIME_PART_NAME}${REV_STRING}
 		MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
 		[[ $BUILD_SHARED_GCC == no ]] && {
@@ -859,10 +921,8 @@ for rule in ${SUBTARGETS[@]}; do
 				_reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
 				_reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
 				mkdir -p $TESTS_ROOT_DIR/${_reverse_arch}
-				[[ $BUILD_SHARED_GCC == yes ]] && {
-					cp -f $( find $PREFIX/$TARGET/lib${_reverse_bits} -type f \( -iname *.dll \) ) \
+				cp -f $( find $PREFIX/$TARGET/lib${_reverse_bits} -type f \( -iname *.dll \) ) \
 					$TESTS_ROOT_DIR/${_reverse_arch}/
-				}
 			}
 			for test in "${!PKG_TESTS[@]}"; do
 				func_test $test ${PKG_TESTS[$test]} $TESTS_ROOT_DIR

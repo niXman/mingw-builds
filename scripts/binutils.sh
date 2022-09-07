@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.34
+PKG_VERSION=2.38
 PKG_NAME=binutils-${PKG_VERSION}
 [[ $USE_MULTILIB == yes ]] && {
 	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
@@ -57,6 +57,7 @@ PKG_PATCHES=(
 	binutils/0002-check-for-unusual-file-harder.patch
 	binutils/0008-fix-libiberty-makefile.mingw.patch
 	binutils/0009-fix-libiberty-configure.mingw.patch
+	binutils/0022-libiberty-missing-typedef.patch
 	binutils/0110-binutils-mingw-gnu-print.patch
 )
 
@@ -98,7 +99,10 @@ PKG_CONFIGURE_FLAGS=(
 	--disable-nls
 	--disable-shared
 	#
-	$LINK_TYPE_GCC
+	$( [[ $BUILD_SHARED_GCC == yes ]] \
+		&& echo "$LINK_TYPE_SHARED" \
+		|| echo "$LINK_TYPE_STATIC"
+	)
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""

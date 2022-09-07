@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=8.0
+PKG_VERSION=8.1
 PKG_NAME=readline-${PKG_VERSION}
 PKG_DIR_NAME=readline-${PKG_VERSION}
 PKG_TYPE=.tar.gz
@@ -48,10 +48,8 @@ PKG_PRIORITY=extra
 #
 
 PKG_PATCHES=(
-	readline/readline80-001.patch
-	readline/readline80-002.patch
-	readline/readline80-003.patch
-	readline/readline80-004.patch
+	readline/readline81-001.patch
+	readline/Fixed-missing-POSIX_SIGNALS-check.patch
 )
 
 #

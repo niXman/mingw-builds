@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -40,10 +40,10 @@ PKG_DIR_NAME=llvm-git
 PKG_TYPE=git
 
 PKG_URLS=(
-	"http://llvm.org/git/llvm.git|repo:$PKG_TYPE|module:$PKG_NAME"
-	"http://llvm.org/git/clang.git|repo:$PKG_TYPE|dir:$PKG_NAME/tools|module:clang"
-	"http://llvm.org/git/compiler-rt.git|repo:$PKG_TYPE|dir:$PKG_NAME/projects|module:compiler-rt"
-	"http://llvm.org/git/test-suite.git|repo:$PKG_TYPE|dir:$PKG_NAME/projects|module:test-suite"
+	"https://llvm.org/git/llvm.git|repo:$PKG_TYPE|module:$PKG_NAME"
+	"https://llvm.org/git/clang.git|repo:$PKG_TYPE|dir:$PKG_NAME/tools|module:clang"
+	"https://llvm.org/git/compiler-rt.git|repo:$PKG_TYPE|dir:$PKG_NAME/projects|module:compiler-rt"
+	"https://llvm.org/git/test-suite.git|repo:$PKG_TYPE|dir:$PKG_NAME/projects|module:test-suite"
 )
 
 PKG_PRIORITY=main

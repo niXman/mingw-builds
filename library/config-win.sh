@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -35,9 +35,9 @@
 
 # **************************************************************************
 
-readonly HOST_MINGW_VERSION=7.2.0
-readonly HOST_MINGW_RT_VERSION=5
-readonly HOST_MINGW_BUILD_REV=1
+readonly HOST_MINGW_VERSION=8.1.0
+readonly HOST_MINGW_RT_VERSION=6
+readonly HOST_MINGW_BUILD_REV=0
 readonly i686_HOST_MINGW_PATH_URL="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/$HOST_MINGW_VERSION/threads-posix/{exceptions}/i686-$HOST_MINGW_VERSION-release-posix-{exceptions}-rt_v$HOST_MINGW_RT_VERSION-rev$HOST_MINGW_BUILD_REV.7z"
 readonly x86_64_HOST_MINGW_PATH_URL="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/$HOST_MINGW_VERSION/threads-posix/{exceptions}/x86_64-$HOST_MINGW_VERSION-release-posix-{exceptions}-rt_v$HOST_MINGW_RT_VERSION-rev$HOST_MINGW_BUILD_REV.7z"
 
@@ -62,6 +62,7 @@ readonly REPOSITORY_FILE="$PROJECT_ROOT_URL/files/Toolchains targetting Win32/Pe
 readonly LOGVIEWERS=(
 	"c:/progra~2/notepad++/notepad++.exe"
 	"c:/progra~1/notepad++/notepad++.exe"
+	"$USERPROFILE/AppData/Local/Microsoft/WindowsApps/notepad"
 	"notepad"
 )
 
@@ -83,6 +84,7 @@ readonly LOGVIEWERS=(
 
 function func_test_installed_packages {
 	local required_packages=(
+		lndir
 		git
 		subversion
 		tar
@@ -90,8 +92,9 @@ function func_test_installed_packages {
 		p7zip
 		make
 		patch
-		automake
+		automake-wrapper
 		autoconf
+		autoconf-archive
 		libtool
 		flex
 		bison
@@ -103,25 +106,10 @@ function func_test_installed_packages {
 		autogen
 		dejagnu
 	)
-	
-	local not_installed_packages=()
 
-	for it in ${required_packages[@]}; do
-		$(pacman -Qs ^$it > /dev/null 2>&1)
-		[[ $? != 0 ]] && {
-			not_installed_packages=(${not_installed_packages[@]} $it)
-		}
-	done
-
-	[[ ${#not_installed_packages[@]} != 0 ]] && {
-		local packages_str=$(printf ",%s" "${not_installed_packages[@]}")
-		packages_str=${packages_str:1}
-		echo ""
-		echo "the following packages are not installed: $packages_str"
-		echo "you can install it using command:"
-		echo "   pacman -S$(printf " %s" "${not_installed_packages[@]}")"
+	echo "--> installing required packages..."
+	pacman -Sy --noconfirm --needed$(printf " %s" "${required_packages[@]}") ||
 		return 1
-	}
 
 	return 0
 }

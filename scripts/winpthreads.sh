@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -58,8 +58,20 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$RUNTIME_DIR/$PKG_NAME
 	#
-	$LINK_TYPE_GCC
+	--enable-shared
+	--enable-static
 	#
+    # this linkage is only needed on the initial bootstrap of a ucrt mingw-build
+    # build using a non-ucrt toolchain, such as a mingw-builds gcc msvcrt (the default).
+    # when using the --provided-toolchain option (intended to be used with ucrt
+    # mingw-builds) with a first/initial bootstrap build of a toolchain with ucrt,
+    # this linkage isn't needed then either. so assume the first ucrt mingw-build
+    # toolchain would be built with a "--rev=0" arg.
+	$( [[ $MSVCRT_VERSION == ucrt ]] && \
+		[[ $BOOTSTRAPING == no ]] && \
+			[[ $RUNTIME_MAJOR_VERSION -ge 10 ]] && \
+                [[ $REV_NUM -eq 0 ]] && \
+                    echo "LIBS=\"-lucrtbase\"" )
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""

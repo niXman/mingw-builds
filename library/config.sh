@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -66,6 +66,10 @@ COLOR_STATUS=$COLOR_BLUE
 readonly PATCHES_DIR=$TOP_DIR/patches
 readonly SOURCES_DIR=$TOP_DIR/sources
 readonly TESTS_DIR=$TOP_DIR/tests
+TOOLCHAINS_DIR=$TOP_DIR/toolchains
+
+i686_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
+x86_64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
 
 ROOT_DIR=
 
@@ -83,19 +87,20 @@ PROCESSOR_OPTIMIZATION_ARCH_64='nocona'
 
 # **************************************************************************
 
-LINK_TYPE_BOTH="--enable-shared --enable-static"
 LINK_TYPE_SHARED="--enable-shared --disable-static"
 LINK_TYPE_STATIC="--enable-static --disable-shared"
-LINK_TYPE_GCC=$LINK_TYPE_BOTH
+LINK_TYPE_GCC_SHARED="--enable-host-shared"
+LINK_TYPE_GCC_STATIC="--disable-host-shared"
+LINK_TYPE_GCC=$LINK_TYPE_GCC_SHARED
 GCC_DEPS_LINK_TYPE=$LINK_TYPE_STATIC
 
 ENABLE_LANGUAGES='c,c++,fortran'
 
 SHOW_LOG_ON_ERROR=yes
 
-JOBS=1
+JOBS=4
 
-RUNTIME_VERSION=v5
+RUNTIME_VERSION=v9
 RUNTIME_BRANCH="master"
 
 CLANG_GCC_VERSION=gcc-4.9.3
@@ -108,7 +113,7 @@ BUILD_ARCHITECTURE=
 EXCEPTIONS_MODEL=sjlj
 USE_MULTILIB=yes
 STRIP_ON_INSTALL=yes
-BOOTSTRAPING=no
+BOOTSTRAPING=yes
 BOOTSTRAPINGALL=no
 THREADS_MODEL=posix
 REV_NUM=
@@ -128,8 +133,10 @@ BUILD_VERSION=
 BUILD_EXTRAS=yes
 GCC_NAME=
 SHORT_OUTPUT=no
+DISABLE_GCC_LTO=no
+PROVIDED_TOOLCHAIN=
 
-DEFAULT_PYTHON_VERSION=2
+DEFAULT_PYTHON_VERSION=3
 
 # **************************************************************************
 

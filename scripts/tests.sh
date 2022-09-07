@@ -3,7 +3,7 @@
 # The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
 #
 # This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
-# Copyright (c) 2011-2020 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2011-2021 by niXman (i dotty nixman doggy gmail dotty com)
 # Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 # All rights reserved.
 #
@@ -63,7 +63,7 @@ pthread_test_list=(
 	"pthread_test.c -mthreads -lpthread -o pthread_test.exe"
 )
 
-[[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 6 ]] && (
+[[ `echo $BUILD_VERSION | cut -d. -f1` == 4 && `echo $BUILD_VERSION | cut -d. -f2` -le 6 ]] && (
 	stdthread_test_list=(
 		"stdthread_test.cpp -std=c++0x -o stdthread_test.exe"
 	)
@@ -81,11 +81,17 @@ lasterror_test2_list=(
 	"lasterror_test2.cpp -o lasterror_test2.exe"
 )
 
-time_test_list=(
-	"time_test.c -lpthread -o time_test.exe"
+[[ $MSVCRT_VERSION == ucrt ]] && (
+	time_test_list=(
+		"time_test.c -lpthread -lucrt -o time_test.exe"
+	)
+) || (
+	time_test_list=(
+		"time_test.c -lpthread -o time_test.exe"
+	)
 )
 
-[[ ${BUILD_VERSION:0:1} == 4 && ${BUILD_VERSION:2:1} -le 6 ]] && (
+[[ `echo $BUILD_VERSION | cut -d. -f1` == 4 && `echo $BUILD_VERSION | cut -d. -f2` -le 6 ]] && (
 	sleep_test_list=(
 		"sleep_test.cpp -std=c++0x -o sleep_test.exe"
 	)
@@ -100,7 +106,7 @@ random_device_list=(
 )
 
 filesystem_list=(
-    "filesystem.cpp -std=c++11 -lstdc++fs -o filesystem.exe"
+    "filesystem.cpp -std=c++17 -lstdc++fs -o filesystem.exe"
 )
 
 # **************************************************************************
@@ -108,9 +114,9 @@ filesystem_list=(
 # **************************************************************************
 
 declare -A PKG_TESTS
-[[ $BUILD_SHARED_GCC == yes ]] && { PKG_TESTS["dll_test1"]=dll_test1_list[@]; }
-[[ $BUILD_SHARED_GCC == yes ]] && { PKG_TESTS["dll_test2"]=dll_test2_list[@]; }
-PKG_TESTS["lto_test"]=lto_test_list[@]
+PKG_TESTS["dll_test1"]=dll_test1_list[@]
+PKG_TESTS["dll_test2"]=dll_test2_list[@]
+[[ "$DISABLE_GCC_LTO" != yes ]] && { PKG_TESTS["lto_test"]=lto_test_list[@]; }
 PKG_TESTS["omp_test"]=omp_test_list[@]
 PKG_TESTS["pthread_test"]=pthread_test_list[@]
 [[ $THREADS_MODEL == posix ]] && { PKG_TESTS["stdthread_test"]=stdthread_test_list[@]; }
@@ -118,5 +124,5 @@ PKG_TESTS["lasterror_test1"]=lasterror_test1_list[@]
 PKG_TESTS["lasterror_test2"]=lasterror_test2_list[@]
 PKG_TESTS["time_test"]=time_test_list[@]
 [[ $THREADS_MODEL == posix ]] && { PKG_TESTS["sleep_test"]=sleep_test_list[@]; }
-[[ ${BUILD_VERSION:0:1} -ge 6 ]] && { PKG_TESTS["random_device"]=random_device_list[@]; }
-[[ ${BUILD_VERSION:0:1} -ge 7 ]] && { PKG_TESTS["filesystem"]=filesystem_list[@]; }
+[[ `echo $BUILD_VERSION | cut -d. -f1` -ge 6 ]] && { PKG_TESTS["random_device"]=random_device_list[@]; }
+[[ `echo $BUILD_VERSION | cut -d. -f1` -ge 8 ]] && { PKG_TESTS["filesystem"]=filesystem_list[@]; }
