@@ -62,6 +62,7 @@ PKG_PATCHES=(
 	gcc/gcc-libgomp-ftime64.patch
 	gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch
 	gcc/gcc-9.4.0-libiberty-pic-and-jit-shared.patch
+	gcc/gcc-9.5.0-vsnprintf_str.patch
 	$( [[ $RUNTIME_MAJOR_VERSION -ge 10 ]] \
 		&& echo "gcc/0001-gcc-config-i386-mingw32.h-Ensure-lmsvcrt-precede-lke.patch" \
 	)
