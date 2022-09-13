@@ -313,10 +313,10 @@ while [[ $# > 0 ]]; do
 					RUNTIME_VERSION=v9
 					RUNTIME_BRANCH="v9.x"
 				;;
-                v10)
-                    RUNTIME_VERSION=v10
-                    RUNTIME_BRANCH="v10.x"
-                ;;
+				v10)
+					RUNTIME_VERSION=v10
+					RUNTIME_BRANCH="v10.x"
+				;;
 				trunk)
 					RUNTIME_VERSION=v9
 					RUNTIME_BRANCH="master"
