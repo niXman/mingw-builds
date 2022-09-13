@@ -1,0 +1,88 @@
+#!/bin/bash
+
+#
+# The BSD 3-Clause License. http://www.opensource.org/licenses/BSD-3-Clause
+#
+# This file is part of MinGW-W64(mingw-builds: https://github.com/niXman/mingw-builds) project.
+# Copyright (c) 2011-2022 by niXman (i dotty nixman doggy gmail dotty com)
+# Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
+# All rights reserved.
+#
+# Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# - Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+# - Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the distribution.
+# - Neither the name of the 'MinGW-W64' nor the names of its contributors may
+#     be used to endorse or promote products derived from this software
+#     without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED.
+# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+# USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
+# **************************************************************************
+
+readonly ORIGINAL_PATH=$PATH
+readonly TOP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+# Loading functions
+source $TOP_DIR/library/functions.sh
+
+# Loading configuration
+source $TOP_DIR/library/config.sh
+
+# **************************************************************************
+
+USED_PATCHES=()
+
+for it in scripts/*.sh; do
+	if [[ -n $(grep 'PKG_PATCHES=' $it) ]]; then
+		source $it
+		USED_PATCHES=(${USED_PATCHES[@]} ${PKG_PATCHES[@]})
+		PKG_PATCHES=()
+	fi
+done
+
+USED_PATCHES=($(echo "${USED_PATCHES[@]}" | sed 's/\ /\n/g' | sort | sort -u))
+USED_PATCHES_NUM=${#USED_PATCHES[@]}
+
+echo "USED_PATCHES_NUM=$USED_PATCHES_NUM"
+
+AVAIL_PATCHES=($(find patches -type f -name "*.patch" | sed -e 's/^patches\///g' | sort))
+AVAIL_PATCHES_NUM=${#AVAIL_PATCHES[@]}
+echo "AVAIL_PATCHES_NUM=$AVAIL_PATCHES_NUM"
+echo "AVAIL_PATCHES=${AVAIL_PATCHES[@]}"
+
+[[ $AVAIL_PATCHES_NUM < $USED_PATCHES_NUM ]] && {
+	echo "the number of available patches are less than the number of used patches! terminate."
+	exit 1
+}
+
+for i in ${!USED_PATCHES[@]}; do
+	for j in ${!AVAIL_PATCHES[@]}; do
+		[[ ${AVAIL_PATCHES[$j]} == ${USED_PATCHES[$i]} ]] && {
+			unset AVAIL_PATCHES[$j]
+			break
+		}
+	done
+done
+
+UNUSED_PATCHES=(${AVAIL_PATCHES[@]})
+UNUSED_PATCHES_NUM=${#UNUSED_PATCHES[@]}
+
+echo "UNUSED_PATCHES_NUM=$UNUSED_PATCHES_NUM"
+echo "UNUSED_PATCHES=${UNUSED_PATCHES[@]}"

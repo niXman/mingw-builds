@@ -415,6 +415,17 @@ TARGET=$(func_get_target $BUILD_ARCHITECTURE)
 
 # **************************************************************************
 
+echo -n "-> Checking for installed packages... "
+func_test_installed_packages
+[[ $? != 0 ]] && {
+	echo "error!"
+	exit 1
+} || {
+	echo "done"
+}
+
+# **************************************************************************
+
 [[ -z $BUILD_MODE_VERSION ]] && {
 	die "--mode=<...> is required. terminate."
 }
