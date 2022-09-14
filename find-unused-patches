@@ -62,7 +62,7 @@ USED_PATCHES_NUM=${#USED_PATCHES[@]}
 
 echo "USED_PATCHES_NUM=$USED_PATCHES_NUM"
 
-AVAIL_PATCHES=($(find patches -type f -name "*.patch" | sed -e 's/^patches\///g' | sort))
+AVAIL_PATCHES=($(find patches -type f -name "*.patch" | sed -e 's/^patches\///g' | sort | sort -u))
 AVAIL_PATCHES_NUM=${#AVAIL_PATCHES[@]}
 echo "AVAIL_PATCHES_NUM=$AVAIL_PATCHES_NUM"
 echo "AVAIL_PATCHES=${AVAIL_PATCHES[@]}"
@@ -86,3 +86,9 @@ UNUSED_PATCHES_NUM=${#UNUSED_PATCHES[@]}
 
 echo "UNUSED_PATCHES_NUM=$UNUSED_PATCHES_NUM"
 echo "UNUSED_PATCHES=${UNUSED_PATCHES[@]}"
+
+if [[ $# == 1 && $1 == --rm ]]; then
+	for it in "${UNUSED_PATCHES[@]}"; do
+		rm "patches/$it"
+	done
+fi
