@@ -54,7 +54,7 @@ PKG_EXECUTE_AFTER_UNCOMPRESS=(
 #
 
 PKG_PATCHES=(
-	python3/0100-get-libraries-tuple-append-list.patch
+	Python3/0100-get-libraries-tuple-append-list.patch
 )
 
 #
