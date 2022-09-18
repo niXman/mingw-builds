@@ -68,8 +68,20 @@ echo "AVAIL_PATCHES_NUM=$AVAIL_PATCHES_NUM"
 echo "AVAIL_PATCHES=${AVAIL_PATCHES[@]}"
 
 [[ $AVAIL_PATCHES_NUM < $USED_PATCHES_NUM ]] && {
-	echo "the number of available patches are less than the number of used patches! terminate."
-	exit 1
+	echo -e "\nthe number of available patches are less than the number of used patches!"
+
+	for it in scripts/*.sh; do
+		if [[ -n $(grep 'PKG_PATCHES=' $it) ]]; then
+			PKG_PATCHES=()
+			source $it
+			for pit in ${PKG_PATCHES[@]}; do
+				pit="patches/$pit"
+				if [[ ! -e $pit ]]; then
+					echo "the patch \"$pit\" used by \"$it\" is not exists!"
+				fi
+			done
+		fi
+	done
 }
 
 for i in ${!USED_PATCHES[@]}; do
