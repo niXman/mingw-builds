@@ -49,26 +49,26 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
   For more options run: "./build --help"
 
 8. Run:
-*  `./build --mode=gcc-4.8.1 --arch=i686` for building i686-MinGW-w64
-*  `./build --mode=gcc-4.8.1 --arch=x86_64` for building x86_64-MinGW-w64
-*  `./build --mode=gcc-4.8.1 --arch=x86_64 --preload` for preload sources and building x86_64-MinGW-w64
-*  `./build --mode=gcc-4.8.1 --arch=i686 --exceptions=dwarf` for building i686-MinGW-w64 with DWARF exception handling
+*  `./build --mode=gcc-8.1.0 --arch=i686` for building i686-MinGW-w64
+*  `./build --mode=gcc-8.1.0 --arch=x86_64` for building x86_64-MinGW-w64
+*  `./build --mode=gcc-8.1.0 --arch=x86_64 --preload` for preload sources and building x86_64-MinGW-w64
+*  `./build --mode=gcc-8.1.0 --arch=i686 --exceptions=dwarf` for building i686-MinGW-w64 with DWARF exception handling
 
-For example, during the process of building of the i686-gcc-4.7.2 will
+For example, during the process of building of the i686-gcc-8.1.0 with SJLJ exceptions will
   be created the following directories:
 ```
-  <buildroot>/i686-4.7.2-release-posix-sjlj-rev1/build
-  <buildroot>/i686-4.7.2-release-posix-sjlj-rev1/libs
-  <buildroot>/i686-4.7.2-release-posix-sjlj-rev1/logs
-  <buildroot>/i686-4.7.2-release-posix-sjlj-rev1/prefix
+  <buildroot>/i686-8.1.0-release-posix-sjlj-rev1/build
+  <buildroot>/i686-8.1.0-release-posix-sjlj-rev1/libs
+  <buildroot>/i686-8.1.0-release-posix-sjlj-rev1/logs
+  <buildroot>/i686-8.1.0-release-posix-sjlj-rev1/prefix
 ```
 
 For x86_64:
 ```
-  <buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/build
-  <buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/libs
-  <buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/logs
-  <buildroot>/x86_64-4.7.2-release-posix-sjlj-rev1/prefix
+  <buildroot>/x86_64-8.1.0-release-posix-sjlj-rev1/build
+  <buildroot>/x86_64-8.1.0-release-posix-sjlj-rev1/libs
+  <buildroot>/x86_64-8.1.0-release-posix-sjlj-rev1/logs
+  <buildroot>/x86_64-8.1.0-release-posix-sjlj-rev1/prefix
 ```
 
 And the sources directory:
@@ -79,68 +79,29 @@ The archives with the built MinGW will be created in `<buildroot>/archives/`
 
 At the moment, successfully building the following versions:
 ```
-  gcc-4.6.4
-  gcc-4.7.0
-  gcc-4.7.1
-  gcc-4.7.2
-  gcc-4.7.3
-  gcc-4.7.4
-  gcc-4.8.0
-  gcc-4.8.1
-  gcc-4.8.2
-  gcc-4.8.3
-  gcc-4.8.4
-  gcc-4.8.5
-  gcc-4.9.0
-  gcc-4.9.1
-  gcc-4.9.2
-  gcc-4.9.3
-  gcc-4.9.4
-  gcc-5.1.0
-  gcc-5.2.0
-  gcc-5.3.0
-  gcc-5.4.0
-  gcc-5.5.0
-  gcc-6.1.0
-  gcc-6.2.0
-  gcc-6.3.0
-  gcc-6.4.0
-  gcc-6.5.0
-  gcc-7.1.0
-  gcc-7.2.0
-  gcc-7.3.0
-  gcc-7.4.0
-  gcc-7.5.0
   gcc-8.1.0
   gcc-8.2.0
   gcc-8.3.0
   gcc-8.4.0
   gcc-8.5.0
+  gcc-8-branch (currently 8.6.0 prerelease)
   gcc-9.1.0
   gcc-9.2.0
   gcc-9.3.0
   gcc-9.4.0
   gcc-9.5.0
+  gcc-9-branch (currently 9.6.0-prerelease)
   gcc-10.1.0
   gcc-10.2.0
   gcc-10.3.0
   gcc-10.4.0
+  gcc-10-branch (currently 10.5.0-prerelease)
   gcc-11.1.0
   gcc-11.2.0
   gcc-11.3.0
+  gcc-11-branch (currently 11.3.0-prerelease)
   gcc-12.1.0
   gcc-12.2.0
-  gcc-4.6-branch (currently 4.6.5 prerelease)
-  gcc-4.7-branch (currently 4.7.5 prerelease)
-  gcc-4.8-branch (currently 4.8.6 prerelease)
-  gcc-4.9-branch (currently 4.9.5 prerelease)
-  gcc-5-branch (currently 5.6.0 prerelease)
-  gcc-6-branch (currently 6.6.0 prerelease)
-  gcc-7-branch (currently 7.6.0 prerelease)
-  gcc-8-branch (currently 8.6.0 prerelease)
-  gcc-9-branch (currently 9.6.0-prerelease)
-  gcc-10-branch (currently 10.5.0-prerelease)
-  gcc-11-branch (currently 11.3.0-prerelease)
   gcc-12-branch (currently 12.3.0-prerelease)
   gcc-trunk (currently 13.0.0 snapshot)
 ```
