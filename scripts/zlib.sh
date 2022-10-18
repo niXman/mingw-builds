@@ -40,7 +40,7 @@ PKG_NAME=$PKG_ARCHITECTURE-zlib-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=zlib-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://zlib.net/current/zlib-${PKG_VERSION}${PKG_TYPE}"
+	"https://github.com/madler/zlib/archive/refs/tags/v${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=prereq
