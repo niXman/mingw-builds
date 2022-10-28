@@ -13,22 +13,22 @@ jobs:
         - {
             name: "x86_64 posix seh",
             artifact: "x86_64-12.2.0-release-posix-seh-rt_v10-rev0.7z",
-            build_cmd: "--mode=gcc-12.2.0 --buildroot=/c/buildroot --jobs=4 --rev=0 --rt-version=v10 --threads=posix --exceptions=seh --arch=x86_64 --cppflags='-D_WIN32_WINNT=0x0601' --bin-compress --enable-languages=c,c++,fortran"
+            build_cmd: "--mode=gcc-12.2.0 --buildroot=/c/buildroot --jobs=4 --rev=0 --rt-version=v10 --threads=posix --exceptions=seh --arch=x86_64 --bin-compress --enable-languages=c,c++,fortran"
           }
         - {
             name: "x86_64 win32 seh",
             artifact: "x86_64-12.2.0-release-win32-seh-rt_v10-rev0.7z",
-            build_cmd: "--mode=gcc-12.2.0 --buildroot=/c/buildroot --jobs=4 --rev=0 --rt-version=v10 --threads=win32 --exceptions=seh --arch=x86_64 --cppflags='-D_WIN32_WINNT=0x0601' --bin-compress --enable-languages=c,c++,fortran"
+            build_cmd: "--mode=gcc-12.2.0 --buildroot=/c/buildroot --jobs=4 --rev=0 --rt-version=v10 --threads=win32 --exceptions=seh --arch=x86_64 --bin-compress --enable-languages=c,c++,fortran"
           }
         - {
             name: "i686 posix dwarf",
             artifact: "i686-12.2.0-release-posix-dwarf-rt_v10-rev0.7z",
-            build_cmd: "--mode=gcc-12.2.0 --buildroot=/c/buildroot --jobs=4 --rev=0 --rt-version=v10 --threads=posix --exceptions=dwarf --arch=i686 --cppflags='-D_WIN32_WINNT=0x0601' --bin-compress --enable-languages=c,c++,fortran"
+            build_cmd: "--mode=gcc-12.2.0 --buildroot=/c/buildroot --jobs=4 --rev=0 --rt-version=v10 --threads=posix --exceptions=dwarf --arch=i686 --bin-compress --enable-languages=c,c++,fortran"
           }
         - {
             name: "i686 win32 dwarf",
             artifact: "i686-12.2.0-release-win32-dwarf-rt_v10-rev0.7z",
-            build_cmd: "--mode=gcc-12.2.0 --buildroot=/c/buildroot --jobs=4 --rev=0 --rt-version=v10 --threads=win32 --exceptions=dwarf --arch=i686 --cppflags='-D_WIN32_WINNT=0x0601' --bin-compress --enable-languages=c,c++,fortran"
+            build_cmd: "--mode=gcc-12.2.0 --buildroot=/c/buildroot --jobs=4 --rev=0 --rt-version=v10 --threads=win32 --exceptions=dwarf --arch=i686 --bin-compress --enable-languages=c,c++,fortran"
           }
 
     steps:
