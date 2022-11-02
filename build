@@ -73,6 +73,7 @@ readonly RUN_ARGS="$@"
 	echo "                                 v3.3.0, v4.0.6, v5.0.4, v6.0.0, v7.0.0, v8.0.2, v9.0.0, v10.0.0 is a specific release versions, uses the tarball"
 	echo "    --with-default-msvcrt=     - specifies msvc version the toolchain will target"
 	echo "                                 <msvcrt|msvcr80|msvcr90|msvcr100|msvcr110|msvcr120|ucrt>"
+	echo "    --with-default-win32-winnt=<ver>     - specifies default windows version the toolchain will target"
 	echo "    --rev=N                    - specifies number of the build revision"
 	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++"
 	echo "                                 available: win32, posix"
@@ -327,6 +328,7 @@ while [[ $# > 0 ]]; do
 				;;
 			esac
 		;;
+		--with-default-win32-winnt=*) WIN32_WINNT_VERSION=${1/--with-default-win32-winnt=/} ;;
 		--threads=*)
 			THREADS_MODEL=${1/--threads=/}
 			case $THREADS_MODEL in

@@ -45,6 +45,7 @@ In order to use the scripts provided by the MinGW-W64 project it is needed:
   --threads=<posix|win32>             - used threads model.
   --enable-languages=<langs>          - comma separated list(without spaces) of gcc supported languages.
                                         available languages: ada,c,c++,fortran,objc,obj-c++
+  --with-default-win32-winnt=<ver>    - default windows version the toolchain will target
 ```
   For more options run: "./build --help"
 

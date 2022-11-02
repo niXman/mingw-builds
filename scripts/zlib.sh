@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.2.12
+PKG_VERSION=1.2.13
 PKG_NAME=$PKG_ARCHITECTURE-zlib-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=zlib-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://zlib.net/current/zlib-${PKG_VERSION}${PKG_TYPE}"
+	"https://github.com/madler/zlib/archive/refs/tags/v${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=prereq
@@ -49,10 +49,10 @@ PKG_LNDIR=yes
 #
 
 PKG_PATCHES=(
-	zlib/01-zlib-1.2.11-1-buildsys.mingw.patch
+	zlib/01-zlib-1.2.13-buildsys.mingw.patch
 	zlib/03-dont-put-sodir-into-L.mingw.patch
 	zlib/04-fix-largefile-support.patch
-	zlib/607.patch
+	#zlib/607.patch
 )
 
 #
