@@ -60,11 +60,11 @@ PKG_CONFIGURE_FLAGS=(
 	--target=$TARGET
 	#
 	--prefix=$PREREQ_DIR/$PKG_NAME
-    --enable-relocatable
-    --disable-rpath
-    --disable-silent-rules
-    --enable-nls
-    #
+	--enable-relocatable
+	--disable-rpath
+	--disable-silent-rules
+	--enable-nls
+	#
 	$GCC_DEPS_LINK_TYPE
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""

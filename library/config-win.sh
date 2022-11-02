@@ -52,6 +52,7 @@ function func_get_build { echo "$1-w64-mingw32"; }
 function func_get_target { echo "$1-w64-mingw32"; }
 
 readonly CROSS_BUILDS=no
+readonly PKG_RUN_TESTSUITE=no
 
 # **************************************************************************
 
