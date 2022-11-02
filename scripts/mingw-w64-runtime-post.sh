@@ -93,6 +93,7 @@ function runtime_post_install {
 	cp -fv $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-$RUNTIME_VERSION/lib/libpthread.a $PREFIX/$TARGET/lib/ || { echo "18"; return 1; }
 	cp -fv $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-$RUNTIME_VERSION/include/*.h $PREFIX/$TARGET/include/ || { echo "19"; return 1; }
 
+
 	[[ $USE_MULTILIB == yes ]] && {
 		local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
 		local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)

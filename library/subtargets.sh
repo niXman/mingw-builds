@@ -65,7 +65,7 @@ function func_get_subtargets {
 				echo "winpthreads|$BUILD_ARCHITECTURE"; \
 				echo "winpthreads|$REVERSE_ARCHITECTURE"; \
 			} || { \
-				echo winpthreads; \
+				echo "winpthreads"; \
 			} \
 		)
 	)
