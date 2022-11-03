@@ -41,9 +41,9 @@ readonly HOST_MINGW_BUILD_REV=0
 readonly i686_HOST_MINGW_PATH_URL="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/$HOST_MINGW_VERSION/threads-posix/{exceptions}/i686-$HOST_MINGW_VERSION-release-posix-{exceptions}-rt_v$HOST_MINGW_RT_VERSION-rev$HOST_MINGW_BUILD_REV.7z"
 readonly x86_64_HOST_MINGW_PATH_URL="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/$HOST_MINGW_VERSION/threads-posix/{exceptions}/x86_64-$HOST_MINGW_VERSION-release-posix-{exceptions}-rt_v$HOST_MINGW_RT_VERSION-rev$HOST_MINGW_BUILD_REV.7z"
 
-readonly TOOLCHAINS_DIR=$TOP_DIR/toolchains
-readonly i686_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
-readonly x86_64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
+TOOLCHAINS_DIR=$TOP_DIR/toolchains
+i686_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
+x86_64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
 
 # **************************************************************************
 

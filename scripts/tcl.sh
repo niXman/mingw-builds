@@ -80,10 +80,13 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--enable-shared
 	#
-	$( [[ $BUILD_ARCHITECTURE == x86_64 ]] \
+	$( [[ $BUILD_ARCH == x86_64 ]] \
 		&& echo "--enable-64bit"
 	)
-	#
+	CFLAGS="\"$COMMON_CFLAGS\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS\""
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCH == i686 ]] && echo -Wl,--large-address-aware )\""
 )
 
 #

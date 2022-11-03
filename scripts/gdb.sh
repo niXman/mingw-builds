@@ -83,7 +83,7 @@ PKG_CONFIGURE_FLAGS=(
 	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -fcommon\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCH == i686 ]] && echo -Wl,--large-address-aware )\""
 )
 
 #

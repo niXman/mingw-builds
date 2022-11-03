@@ -74,7 +74,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--enable-shared
 	#
-	$( [[ $BUILD_ARCHITECTURE == x86_64 ]] \
+	$( [[ $BUILD_ARCH == x86_64 ]] \
 		&& echo "--enable-64bit"
 	)
 	#

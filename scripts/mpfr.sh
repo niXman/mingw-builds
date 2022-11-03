@@ -36,7 +36,7 @@
 # **************************************************************************
 
 PKG_VERSION=4.1.0
-PKG_NAME=$BUILD_ARCHITECTURE-mpfr-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_NAME=$BUILD_ARCH-mpfr-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=mpfr-${PKG_VERSION}
 PKG_TYPE=.tar.xz
 PKG_URLS=(

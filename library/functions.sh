@@ -789,10 +789,10 @@ function func_test {
 	local src_it=
 
 	[[ $USE_MULTILIB == no ]] && {
-		local -a _archs=($BUILD_ARCHITECTURE)
+		local -a _archs=($BUILD_ARCH)
 	} || {
-		local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
-		local -a _archs=($BUILD_ARCHITECTURE $_reverse_arch)
+		local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCH)
+		local -a _archs=($BUILD_ARCH $_reverse_arch)
 	}
 
 	for arch_it in ${_archs[@]}; do
@@ -895,10 +895,10 @@ function func_install_toolchain {
 	# $4 - i686-mingw URL
 	# $5 - x86_64-mingw URL
 
-	[[ $USE_MULTILIB == yes || -z ${BUILD_ARCHITECTURE} ]] && {
+	[[ $USE_MULTILIB == yes || -z ${BUILD_ARCH} ]] && {
 		local _arch=both
 	} || {
-		local _arch=$BUILD_ARCHITECTURE
+		local _arch=$BUILD_ARCH
 	}
 	case $_arch in
 		i686)
@@ -926,30 +926,46 @@ function func_check_user_toolchain_exe {
 function func_check_user_toolchain {
 	# $1 - toolchains path
 
-	[[ $USE_MULTILIB == yes || -z ${BUILD_ARCHITECTURE} ]] && {
-		local _arch=both
+	[[ $CROSS_BUILDS == no ]] && {
+		local gcc_name=gcc
+		local gxx_name=g++
+		local make_name=mingw32-make
+		local ld_name=ld
 	} || {
-		local _arch=$BUILD_ARCHITECTURE
+		local gcc_name=${TARGET}-gcc
+		local gxx_name=${TARGET}-g++
+		# I don't think it make sense to check for make on linux
+		local make_name=${TARGET}-gcc
+		local ld_name=${TARGET}-ld
 	}
-	case $_arch in
+	[[ $USE_MULTILIB == yes || -z ${BUILD_ARCH} ]] && {
+		local arch=both
+	} || {
+		local arch=$BUILD_ARCH
+	}
+	case $arch in
 		i686)
-			func_check_user_toolchain_exe "$1/mingw32/bin" gcc
-			func_check_user_toolchain_exe "$1/mingw32/bin" ld
-			func_check_user_toolchain_exe "$1/mingw32/bin" mingw32-make
-			;;
+			func_check_user_toolchain_exe "$1/mingw32/bin" $gcc_name
+			func_check_user_toolchain_exe "$1/mingw32/bin" $gxx_name
+			func_check_user_toolchain_exe "$1/mingw32/bin" $make_name
+			func_check_user_toolchain_exe "$1/mingw32/bin" $ld_name
+		;;
 		x86_64)
-			func_check_user_toolchain_exe "$1/mingw64/bin" gcc
-			func_check_user_toolchain_exe "$1/mingw64/bin" ld
-			func_check_user_toolchain_exe "$1/mingw64/bin" mingw32-make
-			;;
+			func_check_user_toolchain_exe "$1/mingw64/bin" $gcc_name
+			func_check_user_toolchain_exe "$1/mingw64/bin" $gxx_name
+			func_check_user_toolchain_exe "$1/mingw64/bin" $make_name
+			func_check_user_toolchain_exe "$1/mingw64/bin" $ld_name
+		;;
 		both)
-			func_check_user_toolchain_exe "$1/mingw32/bin" gcc
-			func_check_user_toolchain_exe "$1/mingw32/bin" ld
-			func_check_user_toolchain_exe "$1/mingw32/bin" mingw32-make
-			func_check_user_toolchain_exe "$1/mingw64/bin" gcc
-			func_check_user_toolchain_exe "$1/mingw64/bin" ld
-			func_check_user_toolchain_exe "$1/mingw64/bin" mingw32-make
-			;;
+			func_check_user_toolchain_exe "$1/mingw32/bin" $gcc_name
+			func_check_user_toolchain_exe "$1/mingw32/bin" $gxx_name
+			func_check_user_toolchain_exe "$1/mingw32/bin" $make_name
+			func_check_user_toolchain_exe "$1/mingw32/bin" $ld_name
+			func_check_user_toolchain_exe "$1/mingw64/bin" $gcc_name
+			func_check_user_toolchain_exe "$1/mingw64/bin" $gxx_name
+			func_check_user_toolchain_exe "$1/mingw64/bin" $make_name
+			func_check_user_toolchain_exe "$1/mingw64/bin" $ld_name
+		;;
 	esac
 }
 

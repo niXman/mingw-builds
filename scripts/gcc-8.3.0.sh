@@ -126,13 +126,13 @@ PKG_CONFIGURE_FLAGS=(
 	--with-libiconv
 	--with-system-zlib
 	--with-{gmp,mpfr,mpc,isl}=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX
-	--with-pkgversion="\"$BUILD_ARCHITECTURE-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}, $MINGW_W64_PKG_STRING\""
+	--with-pkgversion="\"$BUILD_ARCH-$THREADS_MODEL-$EXCEPTIONS_MODEL${REV_STRING}, $MINGW_W64_PKG_STRING\""
 	--with-bugurl=$BUG_URL
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCH == i686 ]] && echo -Wl,--large-address-aware )\""
 	LD_FOR_TARGET=$PREFIX/bin/ld.exe
 )
 

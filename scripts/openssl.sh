@@ -70,7 +70,7 @@ PKG_CONFIGURE_FLAGS=(
     enable-rfc3779
     -D__MINGW_USE_VC2005_COMPAT
     -DOPENSSLBIN="\\\"\\\\\\\"${LIBS_DIR}/bin\\\\\\\"\\\""
-	$( [[ $BUILD_ARCHITECTURE == i686 ]] \
+	$( [[ $BUILD_ARCH == i686 ]] \
 		&& echo "mingw" \
 		|| echo "mingw64" \
 	)
@@ -80,7 +80,7 @@ PKG_CONFIGURE_FLAGS=(
 
 PKG_MAKE_FLAGS=(
 	-j$JOBS
-	ZLIB_INCLUDE="\"-I$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/include\""
+	ZLIB_INCLUDE="\"-I$PREREQW_DIR/$BUILD_ARCH-zlib-$LINK_TYPE_SUFFIX/include\""
 	depend
 	all
 )

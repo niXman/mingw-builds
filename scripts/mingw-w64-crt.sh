@@ -39,9 +39,9 @@ PKG_NAME=mingw-w64-crt-${RUNTIME_VERSION}
 PKG_DIR_NAME=mingw-w64${MINGW_PKG_DIR_VERSION_SUFFIX}/mingw-w64-crt
 
 [[ $USE_MULTILIB == yes ]] && {
-	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
+	PKG_NAME=$BUILD_ARCH-$PKG_NAME-multi
 } || {
-	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-nomulti
+	PKG_NAME=$BUILD_ARCH-$PKG_NAME-nomulti
 }
 
 PKG_PRIORITY=runtime
@@ -61,10 +61,10 @@ PKG_PATCHES=(
 
 [[ $USE_MULTILIB == yes ]] && {
 	LIBCONF="--enable-lib32 --enable-lib64"
-	CRTPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-${RUNTIME_VERSION}-multi
+	CRTPREFIX=$RUNTIME_DIR/$BUILD_ARCH-mingw-w64-${RUNTIME_VERSION}-multi
 } || {
-	CRTPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-${RUNTIME_VERSION}-nomulti
-	[[ $BUILD_ARCHITECTURE == i686 ]] && {
+	CRTPREFIX=$RUNTIME_DIR/$BUILD_ARCH-mingw-w64-${RUNTIME_VERSION}-nomulti
+	[[ $BUILD_ARCH == i686 ]] && {
 		LIBCONF="--enable-lib32 --disable-lib64"
 	} || {
 		LIBCONF="--disable-lib32 --enable-lib64"

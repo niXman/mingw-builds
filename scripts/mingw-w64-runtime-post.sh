@@ -52,9 +52,9 @@ function runtime_post_install {
 	[[ ! -d $PREFIX/$TARGET ]] && mkdir -p $PREFIX/$TARGET
 
 	[[ $USE_MULTILIB == yes ]] && {
-		RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-$RUNTIME_VERSION-multi
+		RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCH-mingw-w64-$RUNTIME_VERSION-multi
 	} || {
-		RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-$RUNTIME_VERSION-nomulti
+		RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCH-mingw-w64-$RUNTIME_VERSION-nomulti
 	}
 
 	cp -rfv $RUNTIMEPREFIX/* $PREFIX/$TARGET || { echo "1"; return 1; }
@@ -63,39 +63,39 @@ function runtime_post_install {
 	mkdir -pv $PREFIX/bin $PREFIX/$TARGET/{lib,include}
 
 	# iconv
-	cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || { echo "3"; return 1; }
+	cp -fv $PREREQ_DIR/$BUILD_ARCH-libiconv-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || { echo "3"; return 1; }
 	[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
-		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/lib/*.dll.a $PREFIX/$TARGET/lib/ || { echo "4"; return 1; }
-		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/ || { echo "5"; return 1; }
-		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/$TARGET/lib/ || { echo "6"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCH-libiconv-$LINK_TYPE_SUFFIX/lib/*.dll.a $PREFIX/$TARGET/lib/ || { echo "4"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCH-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/ || { echo "5"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCH-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/$TARGET/lib/ || { echo "6"; return 1; }
 	}
 	[[ $GCC_DEPS_LINK_TYPE == *--enable-static* ]] && {
-		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || { echo "7"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCH-libiconv-$LINK_TYPE_SUFFIX/lib/*.a $PREFIX/$TARGET/lib/ || { echo "7"; return 1; }
 	}
 
 	# zlib
-	cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || { echo "8"; return 1; }
+	cp -fv $PREREQ_DIR/$BUILD_ARCH-zlib-$LINK_TYPE_SUFFIX/include/*.h $PREFIX/$TARGET/include/ || { echo "8"; return 1; }
 	[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
-		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/lib/libz.dll.a $PREFIX/$TARGET/lib/ || { echo "9"; return 1; }
-		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/ || { echo "10"; return 1; }
-		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/$TARGET/lib/ || { echo "11"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCH-zlib-$LINK_TYPE_SUFFIX/lib/libz.dll.a $PREFIX/$TARGET/lib/ || { echo "9"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCH-zlib-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/ || { echo "10"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCH-zlib-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/$TARGET/lib/ || { echo "11"; return 1; }
 	}
 	[[ $GCC_DEPS_LINK_TYPE == *--enable-static* ]] && {
-		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/lib/libz.a $PREFIX/$TARGET/lib/ || { echo "12"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCH-zlib-$LINK_TYPE_SUFFIX/lib/libz.a $PREFIX/$TARGET/lib/ || { echo "12"; return 1; }
 	}
 
 	# winpthreads
-	cp -fv $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-$RUNTIME_VERSION/bin/libwinpthread-1.dll $PREFIX/bin/ || { echo "13"; return 1; }
-	cp -fv $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-$RUNTIME_VERSION/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || { echo "14"; return 1; }
-	cp -fv $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-$RUNTIME_VERSION/lib/libwinpthread.dll.a $PREFIX/$TARGET/lib/ || { echo "15"; return 1; }
-	cp -fv $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-$RUNTIME_VERSION/lib/libpthread.dll.a $PREFIX/$TARGET/lib/ || { echo "16"; return 1; }
-	cp -fv $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-$RUNTIME_VERSION/lib/libwinpthread.a $PREFIX/$TARGET/lib/ || { echo "17"; return 1; }
-	cp -fv $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-$RUNTIME_VERSION/lib/libpthread.a $PREFIX/$TARGET/lib/ || { echo "18"; return 1; }
-	cp -fv $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-$RUNTIME_VERSION/include/*.h $PREFIX/$TARGET/include/ || { echo "19"; return 1; }
+	cp -fv $RUNTIME_DIR/$BUILD_ARCH-winpthreads-$RUNTIME_VERSION/bin/libwinpthread-1.dll $PREFIX/bin/ || { echo "13"; return 1; }
+	cp -fv $RUNTIME_DIR/$BUILD_ARCH-winpthreads-$RUNTIME_VERSION/bin/libwinpthread-1.dll $PREFIX/$TARGET/lib/ || { echo "14"; return 1; }
+	cp -fv $RUNTIME_DIR/$BUILD_ARCH-winpthreads-$RUNTIME_VERSION/lib/libwinpthread.dll.a $PREFIX/$TARGET/lib/ || { echo "15"; return 1; }
+	cp -fv $RUNTIME_DIR/$BUILD_ARCH-winpthreads-$RUNTIME_VERSION/lib/libpthread.dll.a $PREFIX/$TARGET/lib/ || { echo "16"; return 1; }
+	cp -fv $RUNTIME_DIR/$BUILD_ARCH-winpthreads-$RUNTIME_VERSION/lib/libwinpthread.a $PREFIX/$TARGET/lib/ || { echo "17"; return 1; }
+	cp -fv $RUNTIME_DIR/$BUILD_ARCH-winpthreads-$RUNTIME_VERSION/lib/libpthread.a $PREFIX/$TARGET/lib/ || { echo "18"; return 1; }
+	cp -fv $RUNTIME_DIR/$BUILD_ARCH-winpthreads-$RUNTIME_VERSION/include/*.h $PREFIX/$TARGET/include/ || { echo "19"; return 1; }
 
 	[[ $USE_MULTILIB == yes ]] && {
-		local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
-		local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
+		local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCH)
+		local _reverse_arch=$(func_get_reverse_arch $BUILD_ARCH)
 
 		mkdir -pv $PREFIX/$TARGET/lib$_reverse_bits
 
@@ -133,7 +133,7 @@ function runtime_post_install {
 
 	[[ $GCC_DEPS_LINK_TYPE == *--enable-shared* ]] && {
 		cp -fv $PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
-		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
+		cp -fv $PREREQ_DIR/$BUILD_ARCH-libiconv-$LINK_TYPE_SUFFIX/bin/*.dll $PREFIX/bin/
 	}
 
 	return 0

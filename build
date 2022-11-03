@@ -158,21 +158,21 @@ while [[ $# > 0 ]]; do
 			}
 		;;
 		--arch=*)
-			readonly BUILD_ARCHITECTURE=${1/--arch=/}
-			case $BUILD_ARCHITECTURE in
+			readonly BUILD_ARCH=${1/--arch=/}
+			case $BUILD_ARCH in
 				i686)
 					case $EXCEPTIONS_MODEL in
 						dwarf|sjlj|dwarfseh) ;;
-						*) die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate." ;;
+						*) die "\"$BUILD_ARCH\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate." ;;
 					esac
 				;;
 				x86_64)
 					case $EXCEPTIONS_MODEL in
 						seh|sjlj|dwarfseh) ;;
-						*) die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate." ;;
+						*) die "\"$BUILD_ARCH\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate." ;;
 					esac
 				;;
-				*) die "Unsupported architecture: \"$BUILD_ARCHITECTURE\". terminate."  ;;
+				*) die "Unsupported architecture: \"$BUILD_ARCH\". terminate."  ;;
 			esac
 		;;
 		--march-x32=*) PROCESSOR_OPTIMIZATION_ARCH_32=${1/--march-x32=/} ;;
@@ -372,9 +372,9 @@ while [[ $# > 0 ]]; do
 	shift
 done
 
-HOST=$(func_get_host $BUILD_ARCHITECTURE)
-BUILD=$(func_get_build $BUILD_ARCHITECTURE)
-TARGET=$(func_get_target $BUILD_ARCHITECTURE)
+HOST=$(func_get_host $BUILD_ARCH)
+BUILD=$(func_get_build $BUILD_ARCH)
+TARGET=$(func_get_target $BUILD_ARCH)
 
 # **************************************************************************
 
@@ -432,12 +432,12 @@ mkdir -p \
 
 # **************************************************************************
 
-[[ -z ${BUILD_ARCHITECTURE} ]] && [[ ${FETCH_MODE} == no ]] && {
+[[ -z ${BUILD_ARCH} ]] && [[ ${FETCH_MODE} == no ]] && {
 	die "Build architecture is not specified. terminate."
 }
 
 [[ $IS_64BIT_HOST == no ]] && {
-	[[ $BUILD_ARCHITECTURE == x86_64 ]] && {
+	[[ $BUILD_ARCH == x86_64 ]] && {
 		die "you can't build 64-bit toolchain using 32-bit OS. terminate."
 	}
 	[[ $USE_MULTILIB == yes ]] && {
@@ -447,14 +447,14 @@ mkdir -p \
 
 case $EXCEPTIONS_MODEL in
 	dwarf)
-		[[ ${BUILD_ARCHITECTURE} == x86_64 && ${FETCH_MODE} == no ]] && {
+		[[ ${BUILD_ARCH} == x86_64 && ${FETCH_MODE} == no ]] && {
 			die "DWARF exceptions not allowed on x86_64 architecture. terminate."
 		}
 		readonly EXCEPTIONS_MODEL_I686=dwarf
 		readonly EXCEPTIONS_MODEL_X86_64=seh
 	;;
 	seh)
-		[[ ${BUILD_ARCHITECTURE} == i686 && ${FETCH_MODE} == no ]] && {
+		[[ ${BUILD_ARCH} == i686 && ${FETCH_MODE} == no ]] && {
 			die "SEH exceptions not allowed on i686 architecture. terminate."
 		}
 		
@@ -470,9 +470,9 @@ case $EXCEPTIONS_MODEL in
 		readonly EXCEPTIONS_MODEL_X86_64=sjlj
 	;;
 	dwarfseh)
-		[[ -z ${BUILD_ARCHITECTURE} ]] && { EXCEPTIONS_MODEL=""; }
-		[[ ${BUILD_ARCHITECTURE} == x86_64 ]] && { EXCEPTIONS_MODEL=seh; }
-		[[ ${BUILD_ARCHITECTURE} == i686 ]] && { EXCEPTIONS_MODEL=dwarf; }
+		[[ -z ${BUILD_ARCH} ]] && { EXCEPTIONS_MODEL=""; }
+		[[ ${BUILD_ARCH} == x86_64 ]] && { EXCEPTIONS_MODEL=seh; }
+		[[ ${BUILD_ARCH} == i686 ]] && { EXCEPTIONS_MODEL=dwarf; }
 		readonly EXCEPTIONS_MODEL_I686=dwarf
 		readonly EXCEPTIONS_MODEL_X86_64=seh
 	;;
@@ -493,17 +493,12 @@ if ! [[ -z "$PROVIDED_TOOLCHAIN" ]] ; then
 	func_check_user_toolchain "$PROVIDED_TOOLCHAIN"
 
 	echo "Using provided toolchain: $PROVIDED_TOOLCHAIN"
-	unset TOOLCHAINS_DIR i686_HOST_MINGW_PATH x86_64_HOST_MINGW_PATH
 	TOOLCHAINS_DIR="$PROVIDED_TOOLCHAIN"
 	i686_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw32
 	x86_64_HOST_MINGW_PATH=$TOOLCHAINS_DIR/mingw64
 else
 	echo "Using downloaded toolchain"
 fi
-
-readonly TOOLCHAINS_DIR
-readonly i686_HOST_MINGW_PATH
-readonly x86_64_HOST_MINGW_PATH
 
 if [[ -z "$PROVIDED_TOOLCHAIN" ]]; then
 	if [[ $CROSS_BUILDS == no ]]; then
@@ -537,8 +532,8 @@ fi
 		readonly GCC_PART_NAME=${GCC_PART_NAME//./}
 		readonly RUNTIME_PART_NAME=${RUNTIME_VERSION//./}
 		readonly RUNTIME_MAJOR_VERSION=$(echo $RUNTIME_VERSION | sed 's@^[^0-9]*\([0-9]\+\).*@\1@')
-		BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCHITECTURE}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL-rt_${RUNTIME_PART_NAME}${REV_STRING}
-		MINGW_BUILD_NAME=${BUILD_ARCHITECTURE}-${GCC_NAME/gcc-/}
+		BASE_BUILD_DIR=$ROOT_DIR/${BUILD_ARCH}-$GCC_PART_NAME-$THREADS_MODEL-$EXCEPTIONS_MODEL-rt_${RUNTIME_PART_NAME}${REV_STRING}
+		MINGW_BUILD_NAME=${BUILD_ARCH}-${GCC_NAME/gcc-/}
 		[[ $BUILD_SHARED_GCC == no ]] && {
 			BASE_BUILD_DIR=$BASE_BUILD_DIR-s
 			MINGW_BUILD_NAME=$MINGW_BUILD_NAME-static
@@ -546,7 +541,7 @@ fi
 		MINGW_BUILD_NAME=$MINGW_BUILD_NAME$([[ $USE_MULTILIB == yes ]] && echo -n -multilib)-$THREADS_MODEL-$EXCEPTIONS_MODEL
 		readonly MINGW_BUILD_NAME=$MINGW_BUILD_NAME-rt_${RUNTIME_VERSION}$([[ -n $REV_NUM ]] && echo -n -rev$REV_NUM)
 
-		readonly MINGWPREFIX=/mingw$(func_get_arch_bit ${BUILD_ARCHITECTURE})
+		readonly MINGWPREFIX=/mingw$(func_get_arch_bit ${BUILD_ARCH})
 		readonly PREFIX=${BASE_BUILD_DIR}${MINGWPREFIX}
 		readonly LIBS_DIR=$PREFIX/opt
 
@@ -554,7 +549,7 @@ fi
 				readonly PROCESSOR_OPTIMIZATION="--with-arch-32=$PROCESSOR_OPTIMIZATION_ARCH_32 --with-arch-64=$PROCESSOR_OPTIMIZATION_ARCH_64"
 				readonly PROCESSOR_TUNE="--with-tune-32=$PROCESSOR_OPTIMIZATION_TUNE_32 --with-tune-64=$PROCESSOR_OPTIMIZATION_TUNE_64"
 		} || {
-			[[ $BUILD_ARCHITECTURE == i686 ]] && {
+			[[ $BUILD_ARCH == i686 ]] && {
 				readonly PROCESSOR_OPTIMIZATION="--with-arch=$PROCESSOR_OPTIMIZATION_ARCH_32"
 				readonly PROCESSOR_TUNE="--with-tune=$PROCESSOR_OPTIMIZATION_TUNE_32"
 			} || {
@@ -563,8 +558,8 @@ fi
 			}
 		}
 	} || {
-		readonly BASE_BUILD_DIR=$ROOT_DIR/$BUILD_MODE-${BUILD_ARCHITECTURE}$REV_STRING
-		readonly PREFIX=$BASE_BUILD_DIR/${BUILD_MODE_VERSION}-${BUILD_ARCHITECTURE}
+		readonly BASE_BUILD_DIR=$ROOT_DIR/$BUILD_MODE-${BUILD_ARCH}$REV_STRING
+		readonly PREFIX=$BASE_BUILD_DIR/${BUILD_MODE_VERSION}-${BUILD_ARCH}
 		readonly LIBS_DIR=$PREFIX
 	}
 
@@ -589,10 +584,10 @@ fi
 	}
 }
 
-readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
-readonly COMMON_CXXFLAGS="$BASE_CXXFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
-readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
-readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCHITECTURE}-zlib-$LINK_TYPE_SUFFIX/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib"
+readonly COMMON_CFLAGS="$BASE_CFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCH}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
+readonly COMMON_CXXFLAGS="$BASE_CXXFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCH}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
+readonly COMMON_CPPFLAGS="$BASE_CPPFLAGS -I$LIBS_DIR/include -I$PREREQ_DIR/${BUILD_ARCH}-zlib-$LINK_TYPE_SUFFIX/include -I$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/include"
+readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARCH}-zlib-$LINK_TYPE_SUFFIX/lib -L$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/lib"
 
 #echo "PROCESSOR_OPTIMIZATION=\"$PROCESSOR_OPTIMIZATION\""
 #echo "PROCESSOR_TUNE=\"$PROCESSOR_TUNE\""
@@ -604,7 +599,7 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 # **************************************************************************
 
 [[ $CROSS_BUILDS == no ]] && {
-	case $BUILD_ARCHITECTURE in
+	case $BUILD_ARCH in
 		i686)
 			[[ ! -f $i686_HOST_MINGW_PATH/bin/gcc ]] && {
 				die "gcc is not exists in the \"$i686_HOST_MINGW_PATH/bin\" directory. terminate."
@@ -626,7 +621,7 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 	esac
 
 	[[ $LINK_TYPE_SUFFIX == shared ]] && {
-		export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/bin:$PATH
+		export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCH-libiconv-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCH-zlib-$LINK_TYPE_SUFFIX/bin:$PATH
 	}
 }
 
@@ -635,7 +630,7 @@ readonly COMMON_LDFLAGS="$BASE_LDFLAGS -L$LIBS_DIR/lib -L$PREREQ_DIR/${BUILD_ARC
 readonly REVERSE_HOST=$(func_get_reverse_triplet $HOST)
 readonly REVERSE_BUILD=$(func_get_reverse_triplet $BUILD)
 readonly REVERSE_TARGET=$(func_get_reverse_triplet $TARGET)
-readonly REVERSE_ARCHITECTURE=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
+readonly REVERSE_ARCHITECTURE=$(func_get_reverse_arch $BUILD_ARCH)
 
 [[ $USE_MULTILIB == yes ]] && {
 	readonly ENABLE_TARGETS=${TARGET},${REVERSE_TARGET}
@@ -649,16 +644,16 @@ readonly REVERSE_ARCHITECTURE=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
 	echo -n "-> fetch sources for building ${BUILD_MODE_VERSION}-"
 	[[ $BUILD_MODE == gcc ]] && {
 		[[ $USE_MULTILIB == yes && $EXCEPTIONS_MODEL == sjlj ]] && echo -n "multilib-"
-		[[ -z ${BUILD_ARCHITECTURE} ]] && { echo -n "any"; } || { echo -n "${BUILD_ARCHITECTURE}"; }
+		[[ -z ${BUILD_ARCH} ]] && { echo -n "any"; } || { echo -n "${BUILD_ARCH}"; }
 		[[ -z ${EXCEPTIONS_MODEL} ]] && { echo ""; } || { echo "-${EXCEPTIONS_MODEL}"; }
 	} || {
-		echo -n "${BUILD_ARCHITECTURE}"
+		echo -n "${BUILD_ARCH}"
 	}
 } || {
 	[[ $BUILD_MODE == gcc ]] && {
 		echo "-> start building $MINGW_BUILD_NAME with \"$ENABLE_LANGUAGES\" languages supported"
 	} || {
-		echo "-> start building $BUILD_MODE_VERSION-$BUILD_ARCHITECTURE"
+		echo "-> start building $BUILD_MODE_VERSION-$BUILD_ARCH"
 	}
 }
 
@@ -688,7 +683,7 @@ for rule in ${SUBTARGETS[@]}; do
 	PKG_ARCHITECTURE=${rule_arr[1]}
 	
 	[[ -z $PKG_ARCHITECTURE ]] && {
-		PKG_ARCHITECTURE=$BUILD_ARCHITECTURE
+		PKG_ARCHITECTURE=$BUILD_ARCH
 		PKG_DISPLAY_NAME=$sub
 	} || {
 		PKG_DISPLAY_NAME=$sub-$PKG_ARCHITECTURE
@@ -890,10 +885,10 @@ for rule in ${SUBTARGETS[@]}; do
 
 		func_dbg_hook $sub "test"
 		[[ ${#PKG_TESTS[@]} >0 ]] && {
-			mkdir -p $TESTS_ROOT_DIR/$BUILD_ARCHITECTURE
+			mkdir -p $TESTS_ROOT_DIR/$BUILD_ARCH
 			[[ $USE_MULTILIB == yes ]] && {
-				_reverse_arch=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
-				_reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
+				_reverse_arch=$(func_get_reverse_arch $BUILD_ARCH)
+				_reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCH)
 				mkdir -p $TESTS_ROOT_DIR/${_reverse_arch}
 				cp -f $( find $PREFIX/$TARGET/lib${_reverse_bits} -type f \( -iname *.dll \) ) \
 					$TESTS_ROOT_DIR/${_reverse_arch}/
@@ -935,7 +930,7 @@ func_clear_env
 			$ARCHIVES_DIR \
 			$SRCS_DIR \
 			$GCC_NAME \
-			$BUILD_ARCHITECTURE \
+			$BUILD_ARCH \
 			$EXCEPTIONS_MODEL \
 			$THREADS_MODEL \
 			$REV_NUM \
@@ -948,7 +943,7 @@ func_clear_env
 			$SF_PASSWORD \
 			$GCC_NAME \
 			$mingw_archive_name \
-			$BUILD_ARCHITECTURE \
+			$BUILD_ARCH \
 			$THREADS_MODEL \
 			$EXCEPTIONS_MODEL \
 	)
@@ -989,14 +984,14 @@ func_clear_env
 			func_update_repository_file \
 				$TMP/$(basename "$REPOSITORY_FILE") \
 				$(func_map_gcc_name_to_gcc_version $GCC_NAME) \
-				$BUILD_ARCHITECTURE \
+				$BUILD_ARCH \
 				$THREADS_MODEL \
 				$EXCEPTIONS_MODEL \
 				$REV_NUM \
 				$(func_create_url_for_archive \
 					$PROJECT_ROOT_URL \
 					$GCC_NAME \
-					$BUILD_ARCHITECTURE \
+					$BUILD_ARCH \
 					$THREADS_MODEL \
 					$EXCEPTIONS_MODEL \
 				) \

@@ -36,7 +36,7 @@
 # **************************************************************************
 
 PKG_VERSION=0.18.4
-PKG_NAME=$BUILD_ARCHITECTURE-cloog-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_NAME=$BUILD_ARCH-cloog-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=cloog-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(

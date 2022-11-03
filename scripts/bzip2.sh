@@ -59,7 +59,7 @@ PKG_PATCHES=(
 #
 
 PKG_EXECUTE_AFTER_PATCH=(
-	"./autogen.sh"
+	"bash autogen.sh"
 )
 
 #

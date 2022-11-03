@@ -60,7 +60,7 @@ function gcc_post_install {
 	}
 
 	local _gcc_version=$(func_map_gcc_name_to_gcc_version $_GCC_NAME)
-	local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
+	local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCH)
 	# libgcc_s.a
 	cp -f $PREFIX/lib/gcc/$TARGET/lib/libgcc_s.a $PREFIX/$TARGET/lib/ \
 		|| die "Cannot copy libgcc_s.a to $PREFIX/$TARGET/lib"

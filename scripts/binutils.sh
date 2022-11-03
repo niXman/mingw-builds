@@ -38,9 +38,9 @@
 PKG_VERSION=2.38
 PKG_NAME=binutils-${PKG_VERSION}
 [[ $USE_MULTILIB == yes ]] && {
-	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-multi
+	PKG_NAME=$BUILD_ARCH-$PKG_NAME-multi
 } || {
-	PKG_NAME=$BUILD_ARCHITECTURE-$PKG_NAME-nomulti
+	PKG_NAME=$BUILD_ARCH-$PKG_NAME-nomulti
 }
 PKG_DIR_NAME=binutils-${PKG_VERSION}
 PKG_TYPE=.tar.xz
@@ -64,11 +64,11 @@ PKG_PATCHES=(
 #
 
 [[ $USE_MULTILIB == yes ]] && {
-	BINUTILSPREFIX=$PREREQ_DIR/$BUILD_ARCHITECTURE-binutils-multi
-	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-multi
+	BINUTILSPREFIX=$PREREQ_DIR/$BUILD_ARCH-binutils-multi
+	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCH-mingw-w64-multi
 } || {
-	BINUTILSPREFIX=$PREREQ_DIR/$BUILD_ARCHITECTURE-binutils-nomulti
-	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCHITECTURE-mingw-w64-nomulti
+	BINUTILSPREFIX=$PREREQ_DIR/$BUILD_ARCH-binutils-nomulti
+	RUNTIMEPREFIX=$RUNTIME_DIR/$BUILD_ARCH-mingw-w64-nomulti
 }
 
 PKG_CONFIGURE_FLAGS=(
@@ -93,7 +93,7 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-gold
 	--enable-install-libiberty
 	#
-	--with-libiconv-prefix=$PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX
+	--with-libiconv-prefix=$PREREQ_DIR/$BUILD_ARCH-libiconv-$LINK_TYPE_SUFFIX
 	#
 	--disable-rpath
 	--disable-nls
@@ -107,7 +107,7 @@ PKG_CONFIGURE_FLAGS=(
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
-	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
+	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCH == i686 ]] && echo -Wl,--large-address-aware )\""
 )
 
 #

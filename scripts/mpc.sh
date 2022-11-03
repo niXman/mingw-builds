@@ -36,7 +36,7 @@
 # **************************************************************************
 
 PKG_VERSION=1.2.1
-PKG_NAME=$BUILD_ARCHITECTURE-mpc-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_NAME=$BUILD_ARCH-mpc-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=mpc-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(

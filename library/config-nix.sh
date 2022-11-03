@@ -41,9 +41,9 @@ readonly HOST_MINGW_BUILD_REV=
 readonly i686_HOST_MINGW_PATH_URL=
 readonly x86_64_HOST_MINGW_PATH_URL=
 
-readonly TOOLCHAINS_DIR=/usr/bin
-readonly i686_HOST_MINGW_PATH=$TOOLCHAINS_DIR
-readonly x86_64_HOST_MINGW_PATH=$TOOLCHAINS_DIR
+TOOLCHAINS_DIR=/usr/bin
+i686_HOST_MINGW_PATH=$TOOLCHAINS_DIR
+x86_64_HOST_MINGW_PATH=$TOOLCHAINS_DIR
 
 # **************************************************************************
 

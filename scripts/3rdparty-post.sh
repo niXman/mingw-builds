@@ -49,7 +49,7 @@ function python_deps_post {
 			local _toolchain_path=$PREFIX
 		;;
 		*)
-			local _toolchain_path=$(eval "echo \${${BUILD_ARCHITECTURE}_HOST_MINGW_PATH}")
+			local _toolchain_path=$(eval "echo \${${BUILD_ARCH}_HOST_MINGW_PATH}")
 		;;
 	esac
 	local _gcc_dll=( \

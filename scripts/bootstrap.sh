@@ -45,11 +45,11 @@ PKG_INSTALL_FLAGS=( dummy )
 PKG_EXECUTE_AFTER_INSTALL=()
 
 function clean {
-	find $RUNTIME_DIR -mindepth 1 -maxdepth 1 -type d -name $BUILD_ARCHITECTURE* -exec rm -rf {} \;
-	find $PREREQ_DIR -mindepth 1 -maxdepth 1 -type d -name $BUILD_ARCHITECTURE* -exec rm -rf {} \;
-	find $PREREQ_BUILD_DIR -mindepth 1 -maxdepth 1 -type d -name $BUILD_ARCHITECTURE* -exec rm -rf {} \;
-	# find $PREREQ_LOGS_DIR -mindepth 1 -maxdepth 1 -type d -name $BUILD_ARCHITECTURE* -exec rm -rf {} \;
-	find $ROOT_DIR -mindepth 1 -maxdepth 3 -type d -path "*/$BUILD_ARCHITECTURE*$GCC_PART_NAME*$THREADS_MODEL*$EXCEPTIONS_MODEL*$RUNTIME_VERSION*$REV_NUM*/build/*" ! -path "*/$PKG_NAME" -exec rm -rf {} \;
+	find $RUNTIME_DIR -mindepth 1 -maxdepth 1 -type d -name $BUILD_ARCH* -exec rm -rf {} \;
+	find $PREREQ_DIR -mindepth 1 -maxdepth 1 -type d -name $BUILD_ARCH* -exec rm -rf {} \;
+	find $PREREQ_BUILD_DIR -mindepth 1 -maxdepth 1 -type d -name $BUILD_ARCH* -exec rm -rf {} \;
+	# find $PREREQ_LOGS_DIR -mindepth 1 -maxdepth 1 -type d -name $BUILD_ARCH* -exec rm -rf {} \;
+	find $ROOT_DIR -mindepth 1 -maxdepth 3 -type d -path "*/$BUILD_ARCH*$GCC_PART_NAME*$THREADS_MODEL*$EXCEPTIONS_MODEL*$RUNTIME_VERSION*$REV_NUM*/build/*" ! -path "*/$PKG_NAME" -exec rm -rf {} \;
 	return 0
 }
 

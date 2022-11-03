@@ -36,7 +36,7 @@
 # **************************************************************************
 
 PKG_VERSION=1.2
-PKG_NAME=$BUILD_ARCHITECTURE-ppl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
+PKG_NAME=$BUILD_ARCH-ppl-${PKG_VERSION}-$LINK_TYPE_SUFFIX
 PKG_DIR_NAME=ppl-${PKG_VERSION}
 PKG_TYPE=.tar.xz
 PKG_URLS=(
