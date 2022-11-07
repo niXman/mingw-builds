@@ -226,7 +226,7 @@ while [[ $# > 0 ]]; do
 			ROOT_DIR=${1/--buildroot=/}
 			ROOT_DIR=${ROOT_DIR//:/:\/}
 			ROOT_DIR=${ROOT_DIR//\/\//\/}
-			ROOT_DIR="$(eval cd ${ROOT_DIR} && pwd -P)"
+			ROOT_DIR=$(eval echo ${ROOT_DIR})
 			mkdir -p ${ROOT_DIR} || die "incorrect buildroot directory: \"${ROOT_DIR}\". terminate."
 			pushd ${ROOT_DIR} > /dev/null
 			ROOT_DIR=$PWD
