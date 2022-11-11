@@ -52,7 +52,7 @@ readonly RUN_ARGS="$@"
 	echo "usage:"
 	echo "  ./${0##*/} --mode=[clang|gcc|python]-version --arch=<i686|x86_64> [OPTIONS]"
 	echo "  help:"
-	echo "    --buildroot=<path>         - specifies the build root directory"
+	echo "    --buildroot=<path>         - specifies the build root directory (path without spaces)"
 	echo "    --fetch-only               - download sources without building"
 	echo "    --patch-on-fetch           - patch sources when fetching them"
 	echo "    --update-sources           - try to update sources from repositories before build"
@@ -79,6 +79,7 @@ readonly RUN_ARGS="$@"
 	echo "                                 available: win32, posix"
 	echo "    --arch=<i686|x86_64>       - specifies the architecture"
 	echo "    --mode=<[clang|gcc|python]-version>  - specify building software with version"
+	echo "    --provided-toolchain=<path> - specifies the path with already existing local toolchain instead of download it"
 	echo "    --with-testsuite           - run testsuite for packages if possible"
 	echo "    --version                  - print the version of the MinGW-W64 builds scripts"
 	echo "    --bin-compress             - compressing binaries"
@@ -226,6 +227,7 @@ while [[ $# > 0 ]]; do
 			ROOT_DIR=${1/--buildroot=/}
 			ROOT_DIR=${ROOT_DIR//:/:\/}
 			ROOT_DIR=${ROOT_DIR//\/\//\/}
+			ROOT_DIR=$(eval echo ${ROOT_DIR})
 			mkdir -p ${ROOT_DIR} || die "incorrect buildroot directory: \"${ROOT_DIR}\". terminate."
 			pushd ${ROOT_DIR} > /dev/null
 			ROOT_DIR=$PWD
