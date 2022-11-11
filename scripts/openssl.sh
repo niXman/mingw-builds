@@ -63,13 +63,13 @@ PKG_CONFIGURE_FLAGS=(
 	threads
 	zlib
 	enable-camellia
-    enable-capieng
-    enable-idea
-    enable-mdc2
-    enable-rc5
-    enable-rfc3779
-    -D__MINGW_USE_VC2005_COMPAT
-    -DOPENSSLBIN="\\\"\\\\\\\"${LIBS_DIR}/bin\\\\\\\"\\\""
+	enable-capieng
+	enable-idea
+	enable-mdc2
+	enable-rc5
+	enable-rfc3779
+	-D__MINGW_USE_VC2005_COMPAT
+	-DOPENSSLBIN="\\\"\\\\\\\"${LIBS_DIR}/bin\\\\\\\"\\\""
 	$( [[ $BUILD_ARCHITECTURE == i686 ]] \
 		&& echo "mingw" \
 		|| echo "mingw64" \

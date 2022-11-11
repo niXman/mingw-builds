@@ -80,8 +80,9 @@ PKG_CONFIGURE_FLAGS=(
 	--disable-tui
 	--disable-gdbtk
 	#
-	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -fcommon\""
-	CXXFLAGS="\"$COMMON_CXXFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
+	# the _WIN32_WINNT hack here because of: https://sourceware.org/pipermail/gdb/2022-November/050432.html
+	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1 -fcommon -D_WIN32_WINNT=0x0601\""
+	CXXFLAGS="\"$COMMON_CXXFLAGS -D__USE_MINGW_ANSI_STDIO=1 -D_WIN32_WINNT=0x0601\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS $( [[ $BUILD_ARCHITECTURE == i686 ]] && echo -Wl,--large-address-aware )\""
 )
@@ -97,7 +98,7 @@ PKG_MAKE_FLAGS=(
 
 PKG_INSTALL_FLAGS=(
 	-j$JOBS
-	install
+	$( [[ $STRIP_ON_INSTALL == yes ]] && echo install-strip || echo install )
 )
 
 # **************************************************************************
