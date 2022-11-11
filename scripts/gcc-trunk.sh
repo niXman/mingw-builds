@@ -59,13 +59,17 @@ PKG_PATCHES=(
 	gcc/gcc-libgomp-ftime64.patch
 	gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch
 	gcc/gcc-10-libgcc-ldflags.patch
-	gcc/gcc-13-threads-win32-implemented-on-win32-api.patch
+	$( [[ -z $WIN32_THREADS_WITHOUT_THREADS ]] \
+		&& echo "gcc/gcc-13-threads-win32-implemented-on-win32-api.patch" \
+	)
 )
 
 #
 
 PKG_EXECUTE_AFTER_PATCH=(
-	"autoreconf-2.69 libstdc++-v3"
+	$( [[ -z $WIN32_THREADS_WITHOUT_THREADS ]] \
+		&& echo "autoreconf-2.69 libstdc++-v3" \
+	)
 )
 
 PKG_CONFIGURE_FLAGS=(
