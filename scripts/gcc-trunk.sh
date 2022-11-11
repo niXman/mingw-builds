@@ -66,11 +66,11 @@ PKG_PATCHES=(
 
 #
 
-PKG_EXECUTE_AFTER_PATCH=(
-	$( [[ -z $WIN32_THREADS_WITHOUT_THREADS ]] \
-		&& echo "autoreconf-2.69 libstdc++-v3" \
+[[ -z $WIN32_THREADS_WITHOUT_THREADS ]] && {
+	PKG_EXECUTE_AFTER_PATCH=(
+		"autoreconf-2.69 libstdc++-v3"
 	)
-)
+}
 
 PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
