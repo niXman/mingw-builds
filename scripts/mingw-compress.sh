@@ -49,6 +49,7 @@ function func_compress_mingw() {
 					$BUILD_ARCHITECTURE \
 					$EXCEPTIONS_MODEL \
 					$THREADS_MODEL \
+					$MSVCRT_VERSION \
 					$REV_NUM \
 			)
 		;;

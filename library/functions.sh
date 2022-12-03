@@ -1020,17 +1020,18 @@ function func_create_mingw_archive_name {
 	# $4 - architecture
 	# $5 - exceptions model
 	# $6 - threads model
-	# $7 - revision number
+	# $7 - default msvcrt
+	# $8 - revision number
 
 	local _archive=$1/$4-$( \
 		func_map_gcc_name_to_gcc_build_name \
 			$2 \
 			$3 \
-	)-$6-$5
+	)-$6-$5-$7
 
 	_archive=$_archive-rt_${RUNTIME_VERSION}
-	[[ -n $7 ]] && {
-		_archive=$_archive-rev$7
+	[[ -n $8 ]] && {
+		_archive=$_archive-rev$8
 	}
 
 	echo "$_archive.7z"

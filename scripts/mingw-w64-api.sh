@@ -69,9 +69,7 @@ PKG_CONFIGURE_FLAGS=(
 	$( [[ -n "$WIN32_WINNT_VERSION" ]] \
 		&& echo "--with-default-win32-winnt=$WIN32_WINNT_VERSION"
 	)
-	$( [[ -n "$MSVCRT_VERSION" ]] \
-		&& echo "--with-default-msvcrt=$MSVCRT_VERSION"
-	)
+	--with-default-msvcrt=$MSVCRT_VERSION
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
