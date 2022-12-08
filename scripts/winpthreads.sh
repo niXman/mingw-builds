@@ -61,17 +61,6 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-shared
 	--enable-static
 	#
-    # this linkage is only needed on the initial bootstrap of a ucrt mingw-build
-    # build using a non-ucrt toolchain, such as a mingw-builds gcc msvcrt (the default).
-    # when using the --provided-toolchain option (intended to be used with ucrt
-    # mingw-builds) with a first/initial bootstrap build of a toolchain with ucrt,
-    # this linkage isn't needed then either. so assume the first ucrt mingw-build
-    # toolchain would be built with a "--rev=0" arg.
-	$( [[ $MSVCRT_VERSION == ucrt ]] && \
-		[[ $BOOTSTRAPING == no ]] && \
-			[[ $RUNTIME_MAJOR_VERSION -ge 10 ]] && \
-                [[ $REV_NUM -eq 0 ]] && \
-                    echo "LIBS=\"-lucrtbase\"" )
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
 	CPPFLAGS="\"$COMMON_CPPFLAGS\""
