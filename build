@@ -546,8 +546,8 @@ if [[ -z "$PROVIDED_TOOLCHAIN" ]] ; then
 		$TOOLCHAINS_DIR \
 		$i686_HOST_MINGW_PATH \
 		$x86_64_HOST_MINGW_PATH \
-		${i686_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_I686} \
-		${x86_64_HOST_MINGW_PATH_URL//"{exceptions}"/$EXCEPTIONS_MODEL_X86_64}
+		$(echo $i686_HOST_MINGW_PATH_URL | sed "s/{exceptions}/$EXCEPTIONS_MODEL_I686/g; s/{msvcrt}/$MSVCRT_VERSION/g") \
+		$(echo $x86_64_HOST_MINGW_PATH_URL | sed "s/{exceptions}/$EXCEPTIONS_MODEL_X86_64/g; s/{msvcrt}/$MSVCRT_VERSION/g")
 fi
 
 # **************************************************************************
