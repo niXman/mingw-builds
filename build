@@ -72,8 +72,6 @@ readonly RUN_ARGS="$@"
 	echo "    --with-default-msvcrt=     - specifies msvc version the toolchain will target"
 	echo "                                 <msvcrt|msvcr80|msvcr90|msvcr100|msvcr110|msvcr120|ucrt>"
 	echo "    --with-default-win32-winnt=<ver>     - specifies default windows version the toolchain will target"
-	echo "    --win32-threads-without-threads - specifies not to use the patch (gcc.gnu.org/pipermail/libstdc++/2022-October/054895.html)"
-	echo "                                 for builds with win32 threads model"
 	echo "    --use-lto                  - build with LTO using"
 	echo "    --no-gcc-lto               - disable LTO when building GCC"
 	echo "    --no-bootstrap             - do not bootstrap GCC"
@@ -406,7 +404,6 @@ while [[ $# > 0 ]]; do
 		--provided-toolchain=*)
 			PROVIDED_TOOLCHAIN=${1/--provided-toolchain=/}
 		;;
-		--win32-threads-without-threads) WIN32_THREADS_WITHOUT_THREADS=yes ;;
 		*)
 			die "bad command line: \"$1\". terminate."
 		;;
