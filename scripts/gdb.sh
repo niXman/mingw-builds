@@ -77,7 +77,7 @@ PKG_CONFIGURE_FLAGS=(
 	--with-expat
 	--with-libiconv
 	--with-zlib
-	--disable-tui
+	--enable-tui
 	--disable-gdbtk
 	#
 	# the _WIN32_WINNT hack here because of: https://sourceware.org/pipermail/gdb/2022-November/050432.html
