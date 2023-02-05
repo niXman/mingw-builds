@@ -6,7 +6,7 @@
 // Copyright (c) 2012-2015 by Alexpux (alexpux doggy gmail dotty com)
 // All rights reserved.
 //
-// Project: MinGW-W64 ( http://sourceforge.net/projects/mingw-w64/ )
+// Project: MinGW-Builds ( https://github.com/niXman/mingw-builds )
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:

@@ -1,6 +1,6 @@
 # MinGW Builds [![x86_64 and i686 release builds](https://github.com/niXman/mingw-builds/actions/workflows/build_cmake.yml/badge.svg)](https://github.com/niXman/mingw-builds/actions/workflows/build_cmake.yml)
 
-The scripts provided by the MinGW-W64 project[1] are designed
+The scripts provided by the MinGW-Builds project[1] are designed
 for building the dual-target(i686/x86_64) MinGW-W64 compiler for i686/x86_64 hosts.
 
 The scripts are distributed under the 'BSD 3' license[2].
@@ -153,6 +153,6 @@ Big thanks for these patches to:
   2012-2015 Ray Donnelly, Alexey Pavlov
 ```
 
-[1] http://sourceforge.net/projects/mingw-w64/
+[1] https://github.com/niXman/mingw-builds/
 
 [2] http://www.opensource.org/licenses/BSD-3-Clause

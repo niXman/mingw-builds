@@ -36,11 +36,11 @@
 # **************************************************************************
 
 MINGW_W64_BUILDS_VERSION="MinGW-W64-builds-5.0.0"
-MINGW_W64_PKG_STRING="Built by MinGW-W64 project"
+MINGW_W64_PKG_STRING="Built by MinGW-Builds project"
 
 # **************************************************************************
 
-PROJECT_ROOT_URL=https://sourceforge.net/projects/mingw-w64
+PROJECT_ROOT_URL=https://github.com/niXman/mingw-builds
 BUG_URL=$PROJECT_ROOT_URL
 PROJECT_FS_ROOT_DIR=/home/frs/project/mingw-w64
 
