@@ -1,0 +1,103 @@
+diff --git a/gcc/gcc.cc b/gcc/gcc.cc
+index fbcc9d03314..8564e7bbfb4 100644
+--- a/gcc/gcc.cc
++++ b/gcc/gcc.cc
+@@ -10306,7 +10306,7 @@ replace_outfile_spec_function (int argc, const char **argv)
+   int i;
+   /* Must have exactly two arguments.  */
+   if (argc != 2)
+-    abort ();
++    fancy_abort (__FILE__, __LINE__, __FUNCTION__);
+ 
+   for (i = 0; i < n_infiles; i++)
+     {
+@@ -10327,7 +10327,7 @@ remove_outfile_spec_function (int argc, const char **argv)
+   int i;
+   /* Must have exactly one argument.  */
+   if (argc != 1)
+-    abort ();
++    fancy_abort (__FILE__, __LINE__, __FUNCTION__);
+ 
+   for (i = 0; i < n_infiles; i++)
+     {
+@@ -10349,17 +10349,17 @@ compare_version_strings (const char *v1, const char *v2)
+ 
+   if (regcomp (&r, "^([1-9][0-9]*|0)(\\.([1-9][0-9]*|0))*$",
+ 	       REG_EXTENDED | REG_NOSUB) != 0)
+-    abort ();
++    fancy_abort (__FILE__, __LINE__, __FUNCTION__);
+   rresult = regexec (&r, v1, 0, NULL, 0);
+   if (rresult == REG_NOMATCH)
+     fatal_error (input_location, "invalid version number %qs", v1);
+   else if (rresult != 0)
+-    abort ();
++    fancy_abort (__FILE__, __LINE__, __FUNCTION__);
+   rresult = regexec (&r, v2, 0, NULL, 0);
+   if (rresult == REG_NOMATCH)
+     fatal_error (input_location, "invalid version number %qs", v2);
+   else if (rresult != 0)
+-    abort ();
++    fancy_abort (__FILE__, __LINE__, __FUNCTION__);
+ 
+   return strverscmp (v1, v2);
+ }
+@@ -10402,7 +10402,7 @@ version_compare_spec_function (int argc, const char **argv)
+   if (argc < 3)
+     fatal_error (input_location, "too few arguments to %%:version-compare");
+   if (argv[0][0] == '\0')
+-    abort ();
++    fancy_abort (__FILE__, __LINE__, __FUNCTION__);
+   if ((argv[0][1] == '<' || argv[0][1] == '>') && argv[0][0] != '!')
+     nargs = 2;
+   if (argc != nargs + 3)
+@@ -10467,7 +10467,7 @@ include_spec_function (int argc, const char **argv)
+   char *file;
+ 
+   if (argc != 1)
+-    abort ();
++    fancy_abort (__FILE__, __LINE__, __FUNCTION__);
+ 
+   file = find_a_file (&startfile_prefixes, argv[0], R_OK, true);
+   read_specs (file ? file : argv[0], false, false);
+@@ -10484,7 +10484,7 @@ find_file_spec_function (int argc, const char **argv)
+   const char *file;
+ 
+   if (argc != 1)
+-    abort ();
++    fancy_abort (__FILE__, __LINE__, __FUNCTION__);
+ 
+   file = find_file (argv[0]);
+   return file;
+@@ -10500,7 +10500,7 @@ find_plugindir_spec_function (int argc, const char **argv ATTRIBUTE_UNUSED)
+   const char *option;
+ 
+   if (argc != 0)
+-    abort ();
++    fancy_abort (__FILE__, __LINE__, __FUNCTION__);
+ 
+   option = concat ("-iplugindir=", find_file ("plugin"), NULL);
+   return option;
+diff --git a/gcc/system.h b/gcc/system.h
+index e10c34f70ec..316c7e5f05c 100644
+--- a/gcc/system.h
++++ b/gcc/system.h
+@@ -779,7 +779,6 @@ extern int vsnprintf (char *, size_t, const char *, va_list);
+    reporting the location of the error in the source file.  */
+ extern void fancy_abort (const char *, int, const char *)
+ 					 ATTRIBUTE_NORETURN ATTRIBUTE_COLD;
+-#define abort() fancy_abort (__FILE__, __LINE__, __FUNCTION__)
+ 
+ /* Use gcc_assert(EXPR) to test invariants.  */
+ #if ENABLE_ASSERT_CHECKING
+diff --git a/libcpp/system.h b/libcpp/system.h
+index e80cf029d88..f92b27a6b3b 100644
+--- a/libcpp/system.h
++++ b/libcpp/system.h
+@@ -401,7 +401,6 @@ extern void abort (void);
+ /* Redefine abort to report an internal error w/o coredump, and
+    reporting the location of the error in the source file.  */
+ extern void fancy_abort (const char *, int, const char *) ATTRIBUTE_NORETURN;
+-#define abort() fancy_abort (__FILE__, __LINE__, __FUNCTION__)
+ 
+ /* Use gcc_assert(EXPR) to test invariants.  */
+ #if ENABLE_ASSERT_CHECKING
