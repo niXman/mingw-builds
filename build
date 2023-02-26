@@ -460,7 +460,7 @@ mkdir -p \
 
 # **************************************************************************
 
-[[ -z ${BUILD_ARCHITECTURE} ]] && [[ ${FETCH_MODE} == no ]] && {
+[[ -z ${BUILD_ARCHITECTURE} ]] && {
 	die "Build architecture is not specified. terminate."
 }
 
@@ -475,14 +475,14 @@ mkdir -p \
 
 case $EXCEPTIONS_MODEL in
 	dwarf)
-		[[ ${BUILD_ARCHITECTURE} == x86_64 && ${FETCH_MODE} == no ]] && {
+		[[ ${BUILD_ARCHITECTURE} == x86_64 ]] && {
 			die "DWARF exceptions not allowed on x86_64 architecture. terminate."
 		}
 		readonly EXCEPTIONS_MODEL_I686=dwarf
 		readonly EXCEPTIONS_MODEL_X86_64=seh
 	;;
 	seh)
-		[[ ${BUILD_ARCHITECTURE} == i686 && ${FETCH_MODE} == no ]] && {
+		[[ ${BUILD_ARCHITECTURE} == i686 ]] && {
 			die "SEH exceptions not allowed on i686 architecture. terminate."
 		}
 		
