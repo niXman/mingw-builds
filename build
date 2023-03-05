@@ -198,18 +198,8 @@ while [[ $# > 0 ]]; do
 		--arch=*)
 			readonly BUILD_ARCHITECTURE=${1/--arch=/}
 			case $BUILD_ARCHITECTURE in
-				i686)
-					case $EXCEPTIONS_MODEL in
-						dwarf|sjlj|dwarfseh) ;;
-						*) die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate." ;;
-					esac
-				;;
-				x86_64)
-					case $EXCEPTIONS_MODEL in
-						seh|sjlj|dwarfseh) ;;
-						*) die "\"$BUILD_ARCHITECTURE\" is not valid architecture model for exception model \"$EXCEPTIONS_MODEL\". terminate." ;;
-					esac
-				;;
+				x86_64|i686)
+                ;;
 				*) die "Unsupported architecture: \"$BUILD_ARCHITECTURE\". terminate."  ;;
 			esac
 		;;
@@ -460,7 +450,7 @@ mkdir -p \
 
 # **************************************************************************
 
-[[ -z ${BUILD_ARCHITECTURE} ]] && {
+[[ -z $BUILD_ARCHITECTURE ]] && {
 	die "Build architecture is not specified. terminate."
 }
 
@@ -469,8 +459,16 @@ mkdir -p \
 		die "you can't build 64-bit toolchain using 32-bit OS. terminate."
 	}
 	[[ $USE_MULTILIB == yes ]] && {
-		die "you can't build multitarget MinGW using 32-bit OS. terminate."
+		die "you can't build multitarget MinGW-W64 using 32-bit OS. terminate."
 	}
+}
+
+[[ -z $EXCEPTIONS_MODEL ]] && {
+    [[ $BUILD_ARCHITECTURE == i686 ]] && {
+        EXCEPTIONS_MODEL=dwarf
+    } || {
+        EXCEPTIONS_MODEL=seh
+    }
 }
 
 case $EXCEPTIONS_MODEL in
@@ -517,7 +515,7 @@ esac
 # **************************************************************************
 # Install host toolchains
 
-if ! [[ -z "$PROVIDED_TOOLCHAIN" ]] ; then
+if [[ -n $PROVIDED_TOOLCHAIN ]] ; then
 	func_check_user_toolchain "$PROVIDED_TOOLCHAIN"
 
 	echo "Using provided toolchain: $PROVIDED_TOOLCHAIN"

@@ -51,9 +51,7 @@ PKG_PATCHES=(
 	gcc/gcc-5.1-iconv.patch
 	gcc/gcc-4.8-libstdc++export.patch
 	gcc/gcc-12-fix-for-windows-not-minding-non-existant-parent-dirs.patch
-	gcc/gcc-4.8.2-windows-lrealpath-no-force-lowercase-nor-backslash.patch
 	gcc/gcc-5.1.0-make-xmmintrin-header-cplusplus-compatible.patch
-	gcc/gcc-12-fix-mingw-pch.patch
 	gcc/gcc-5-dwarf-regression.patch
 	gcc/gcc-12-ktietz-libgomp.patch
 	gcc/gcc-libgomp-ftime64.patch
