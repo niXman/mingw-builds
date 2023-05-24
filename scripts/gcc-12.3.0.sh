@@ -109,6 +109,9 @@ PKG_CONFIGURE_FLAGS=(
 		&& echo "--enable-sjlj-exceptions" \
 	)
 	#
+	$( [[ $RUNTIME_MAJOR_VERSION -ge 11 ]] \
+		&& echo "--disable-libssp" \
+	)
 	--disable-libstdcxx-pch
 	--disable-libstdcxx-debug
 	$( [[ $BOOTSTRAPING == yes ]] \
