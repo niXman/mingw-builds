@@ -40,7 +40,7 @@ PKG_NAME=gcc-${PKG_VERSION}
 PKG_DIR_NAME=gcc-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
 PKG_URLS=(
-	"https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
+	"https://ftpmirror.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
 )
 PKG_PRIORITY=main
 
