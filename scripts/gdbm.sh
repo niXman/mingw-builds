@@ -40,7 +40,7 @@ PKG_NAME=gdbm-${PKG_VERSION}
 PKG_DIR_NAME=gdbm-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://ftp.gnu.org/gnu/gdbm/gdbm-${PKG_VERSION}${PKG_TYPE}"
+	"https://ftpmirror.gnu.org/gnu/gdbm/gdbm-${PKG_VERSION}${PKG_TYPE}"
 )
 PKG_PRIORITY=extra
 

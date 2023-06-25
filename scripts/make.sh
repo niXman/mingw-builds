@@ -40,7 +40,7 @@ PKG_NAME=make-${PKG_VERSION}
 PKG_DIR_NAME=make-${PKG_VERSION}
 PKG_TYPE=.tar.bz2
 PKG_URLS=(
-	"https://ftp.gnu.org/gnu/make/make-${PKG_VERSION}${PKG_TYPE}"
+	"https://ftpmirror.gnu.org/gnu/make/make-${PKG_VERSION}${PKG_TYPE}"
 )
 
 #

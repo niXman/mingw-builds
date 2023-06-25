@@ -40,7 +40,7 @@ PKG_NAME=ncurses-${PKG_VERSION}
 PKG_DIR_NAME=ncurses-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://ftp.gnu.org/gnu/ncurses/ncurses-${PKG_VERSION}${PKG_TYPE}"
+	"https://ftpmirror.gnu.org/gnu/ncurses/ncurses-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
