@@ -968,15 +968,16 @@ function func_map_gcc_name_to_gcc_version {
 		gcc-4_7-branch)	echo "4.7.5" ;;
 		gcc-4_8-branch)	echo "4.8.6" ;;
 		gcc-4_9-branch)	echo "4.9.5" ;;
-		gcc-5-branch)	echo "5.6.0" ;;
-		gcc-6-branch)	echo "6.5.0" ;;
-		gcc-7-branch)	echo "7.6.0" ;;
-		gcc-8-branch)	echo "8.6.0" ;;
-		gcc-9-branch)	echo "9.6.0" ;;
-		gcc-10-branch)	echo "10.5.0" ;;
-		gcc-11-branch)	echo "11.3.0" ;;
-		gcc-12-branch)	echo "12.3.0" ;;
-		gcc-trunk)		echo "13.0.0" ;;
+		gcc-5-branch)	echo "5.5.1" ;;
+		gcc-6-branch)	echo "6.5.1" ;;
+		gcc-7-branch)	echo "7.5.1" ;;
+		gcc-8-branch)	echo "8.5.1" ;;
+		gcc-9-branch)	echo "9.5.1" ;;
+		gcc-10-branch)	echo "10.4.1" ;;
+		gcc-11-branch)	echo "11.4.1" ;;
+		gcc-12-branch)	echo "12.3.1" ;;
+		gcc-13-branch)	echo "13.1.1" ;;
+		gcc-trunk)		echo "14.0.0" ;;
 		*) die "gcc name error: $1. terminate." ;;
 	esac
 }
