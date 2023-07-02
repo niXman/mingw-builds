@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=5.2.5
+PKG_VERSION=5.4.3
 PKG_NAME=xz-${PKG_VERSION}
 PKG_DIR_NAME=xz-${PKG_VERSION}
 PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"https://tukaani.org/xz/xz-${PKG_VERSION}${PKG_TYPE}"
+	"https://github.com/tukaani-project/xz/releases/download/v${PKG_VERSION}/xz-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
