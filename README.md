@@ -129,6 +129,7 @@ At the moment, successfully building the following versions:
   gcc-11.1.0
   gcc-11.2.0
   gcc-11.3.0
+  gcc-11.4.0
   gcc-12.1.0
   gcc-12.2.0
   gcc-12.3.0
