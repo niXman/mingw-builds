@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=10
-PKG_NAME=gcc-${PKG_VERSION}-branch
-PKG_DIR_NAME=gcc-${PKG_VERSION}-branch
-PKG_TYPE=git
+PKG_VERSION=10.5.0
+PKG_NAME=gcc-${PKG_VERSION}
+PKG_DIR_NAME=gcc-${PKG_VERSION}
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"https://gcc.gnu.org/git/gcc.git|branch:releases/gcc-$PKG_VERSION|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
+	"https://ftpmirror.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=main
@@ -66,7 +66,7 @@ PKG_PATCHES=(
 	$( [[ $RUNTIME_MAJOR_VERSION -ge 10 ]] \
 		&& echo "gcc/0001-gcc-config-i386-mingw32.h-Ensure-lmsvcrt-precede-lke.patch" \
 	)
-	gcc/gcc-11-replace-abort-with-fancy_abort.patch
+    gcc/gcc-11-replace-abort-with-fancy_abort.patch
 )
 
 #
