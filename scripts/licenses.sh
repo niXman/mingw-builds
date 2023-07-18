@@ -54,6 +54,7 @@ function func_get_licenses {
 		tcl
 		tk
 		xz
+		openssl
 		sqlite
 		ncurses
 		readline
