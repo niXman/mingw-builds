@@ -1,5 +1,5 @@
---- make.orig/main.c
-+++ make/main.c
+--- make.orig/src/main.c
++++ make/src/main.c
 @@ -971,8 +971,11 @@
  
  #endif
