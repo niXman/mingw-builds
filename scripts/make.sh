@@ -35,10 +35,10 @@
 
 # **************************************************************************
 
-PKG_VERSION=4.2.1
+PKG_VERSION=4.4.1
 PKG_NAME=make-${PKG_VERSION}
 PKG_DIR_NAME=make-${PKG_VERSION}
-PKG_TYPE=.tar.bz2
+PKG_TYPE=.tar.gz
 PKG_URLS=(
 	"https://ftpmirror.gnu.org/gnu/make/make-${PKG_VERSION}${PKG_TYPE}"
 )
@@ -53,6 +53,8 @@ PKG_PRIORITY=main
 PKG_PATCHES=(
 	make/make-linebuf-mingw.patch
 	make/make-getopt.patch
+	make/make-4.3_undef-HAVE_STRUCT_DIRENT_D_TYPE.patch
+	make/make-4.4-timestamps.patch
 )
 
 #
