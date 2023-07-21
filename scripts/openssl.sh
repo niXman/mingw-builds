@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=1.1.1k
+PKG_VERSION=3.1.1
 PKG_NAME=openssl-${PKG_VERSION}
 PKG_DIR_NAME=openssl-${PKG_VERSION}
 PKG_TYPE=.tar.gz
@@ -50,13 +50,14 @@ PKG_CONFIGURE_SCRIPT=Configure
 #
 
 PKG_PATCHES=(
-	openssl/openssl-1.1.1-relocation.patch
+	openssl/openssl-3.0.8-relocation.patch
 )
 
 #
 
 PKG_CONFIGURE_FLAGS=(
 	--prefix=$LIBS_DIR
+	--libdir=$LIBS_DIR/lib
 	--openssldir=$LIBS_DIR/ssl
 	#
 	shared
@@ -82,7 +83,7 @@ PKG_MAKE_FLAGS=(
 	-j$JOBS
 	ZLIB_INCLUDE="\"-I$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/include\""
 	depend
-	all
+	build_sw
 )
 
 #
@@ -95,7 +96,8 @@ PKG_TESTSUITE_FLAGS=(
 
 PKG_INSTALL_FLAGS=(
 	# -j$JOBS
-	install
+	install_sw
+	install_ssldirs
 )
 
 # **************************************************************************
