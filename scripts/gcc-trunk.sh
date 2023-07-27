@@ -53,11 +53,11 @@ PKG_PATCHES=(
 	gcc/gcc-12-fix-for-windows-not-minding-non-existant-parent-dirs.patch
 	gcc/gcc-5.1.0-make-xmmintrin-header-cplusplus-compatible.patch
 	gcc/gcc-5-dwarf-regression.patch
-	gcc/gcc-12-ktietz-libgomp.patch
+	gcc/gcc-13.2.0-ktietz-libgomp.patch
 	gcc/gcc-libgomp-ftime64.patch
 	gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch
 	gcc/gcc-10-libgcc-ldflags.patch
-    gcc/gcc-12-replace-abort-with-fancy_abort.patch
+	gcc/gcc-12-replace-abort-with-fancy_abort.patch
 )
 
 #
