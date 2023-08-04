@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=trunk
+PKG_VERSION=13.2.0
 PKG_NAME=gcc-${PKG_VERSION}
 PKG_DIR_NAME=gcc-${PKG_VERSION}
-PKG_TYPE=git
+PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"https://gcc.gnu.org/git/gcc.git|branch:master|repo:$PKG_TYPE|module:$PKG_DIR_NAME"
+	"https://ftpmirror.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=main

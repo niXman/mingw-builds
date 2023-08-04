@@ -1,0 +1,55 @@
+diff --git a/libgomp/team.c b/libgomp/team.c
+index 54dfca8080a..33d2e4388bd 100644
+--- a/libgomp/team.c
++++ b/libgomp/team.c
+@@ -181,7 +181,7 @@ gomp_new_team (unsigned nthreads)
+       team = gomp_aligned_alloc (__alignof (struct gomp_team),
+ 				 sizeof (*team) + nthreads * extra);
+ #else
+-      team = team_malloc (sizeof (*team) + nthreads * extra);
++      team = gomp_malloc_cleared (sizeof (*team) + nthreads * extra);
+ #endif
+ 
+ #ifndef HAVE_SYNC_BUILTINS
+@@ -1114,7 +1114,7 @@ struct gomp_task_icv *
+ gomp_new_icv (void)
+ {
+   struct gomp_thread *thr = gomp_thread ();
+-  struct gomp_task *task = gomp_malloc (sizeof (struct gomp_task));
++  struct gomp_task *task = gomp_malloc_cleared (sizeof (struct gomp_task));
+   gomp_init_task (task, NULL, &gomp_global_icv);
+   thr->task = task;
+ #ifdef LIBGOMP_USE_PTHREADS
+diff --git a/libgomp/testsuite/config/default.exp b/libgomp/testsuite/config/default.exp
+index 01569e6ab62..c1ea978bd52 100644
+--- a/libgomp/testsuite/config/default.exp
++++ b/libgomp/testsuite/config/default.exp
+@@ -13,3 +13,7 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program; see the file COPYING3.  If not see
+ # <http://www.gnu.org/licenses/>.
++
++# Support for old dejagnu.  Must be loaded here, not in libstdc++.exp, to
++# make sure all existing procs are loaded when their presence is tested.
++load_file $srcdir/../../gcc/testsuite/lib/dejapatches.exp
+diff --git a/libgomp/work.c b/libgomp/work.c
+index 99b79df76e9..f993d6e7a8d 100644
+--- a/libgomp/work.c
++++ b/libgomp/work.c
+@@ -85,6 +85,7 @@ alloc_work_share (struct gomp_team *team)
+ #else
+   ws = gomp_malloc (team->work_share_chunk * sizeof (struct gomp_work_share));
+ #endif
++  memset (ws, 0, team->work_share_chunk * sizeof (struct gomp_work_share));
+   ws->next_alloc = team->work_shares[0].next_alloc;
+   team->work_shares[0].next_alloc = ws;
+   team->work_share_list_alloc = &ws[1];
+@@ -197,7 +198,7 @@ gomp_work_share_start (size_t ordered)
+       ws = gomp_aligned_alloc (__alignof (struct gomp_work_share),
+ 			       sizeof (*ws));
+ #else
+-      ws = gomp_malloc (sizeof (*ws));
++      ws = gomp_malloc_cleared (sizeof (*ws));
+ #endif
+       gomp_init_work_share (ws, ordered, 1);
+       thr->ts.work_share = ws;
