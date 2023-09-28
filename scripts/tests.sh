@@ -121,10 +121,10 @@ PKG_TESTS["dll_test2"]=dll_test2_list[@]
 [[ "$DISABLE_GCC_LTO" != yes ]] && { PKG_TESTS["lto_test"]=lto_test_list[@]; }
 PKG_TESTS["omp_test"]=omp_test_list[@]
 PKG_TESTS["pthread_test"]=pthread_test_list[@]
-[[ `echo $TESTS_GCC_VERSION | cut -d. -f1` -ge 13 || $THREADS_MODEL == posix ]] && { PKG_TESTS["stdthread_test"]=stdthread_test_list[@]; }
+[[ `echo $TESTS_GCC_VERSION | cut -d. -f1` -ge 13 || $THREADS_MODEL != win32 ]] && { PKG_TESTS["stdthread_test"]=stdthread_test_list[@]; }
 PKG_TESTS["lasterror_test1"]=lasterror_test1_list[@]
 PKG_TESTS["lasterror_test2"]=lasterror_test2_list[@]
 PKG_TESTS["time_test"]=time_test_list[@]
-[[ `echo $TESTS_GCC_VERSION | cut -d. -f1` -ge 13 || $THREADS_MODEL == posix ]] && { PKG_TESTS["sleep_test"]=sleep_test_list[@]; }
+[[ `echo $TESTS_GCC_VERSION | cut -d. -f1` -ge 13 || $THREADS_MODEL != win32 ]] && { PKG_TESTS["sleep_test"]=sleep_test_list[@]; }
 [[ `echo $TESTS_GCC_VERSION | cut -d. -f1` -ge 6 ]] && { PKG_TESTS["random_device"]=random_device_list[@]; }
 [[ `echo $TESTS_GCC_VERSION | cut -d. -f1` -ge 8 ]] && { PKG_TESTS["filesystem"]=filesystem_list[@]; }

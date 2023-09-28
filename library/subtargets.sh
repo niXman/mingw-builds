@@ -59,6 +59,16 @@ function func_get_subtargets {
 		$( [[ $1 == clang || $2 == 4* ]] && echo cloog )
 		mingw-w64-download
 		mingw-w64-api
+		$( \
+			[[ $THREADS_MODEL == mcf ]] && { \
+				[[ $USE_MULTILIB == yes ]] && { \
+					echo "mcfgthread|$BUILD_ARCHITECTURE"; \
+					echo "mcfgthread|$REVERSE_ARCHITECTURE"; \
+				} || { \
+					echo mcfgthread; \
+				} \
+			} \
+		)
 		mingw-w64-crt
 		$( \
 			[[ $USE_MULTILIB == yes ]] && { \

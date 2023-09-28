@@ -67,7 +67,7 @@ readonly RUN_ARGS="$@"
 	echo "    --bootstrapall             - bootstraping GCC & all prerequisites"
 	echo "    --no-multilib              - build GCC without multilib support"
 	echo "    --rev=N                    - specifies number of the build revision"
-	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++, available: win32, posix"
+	echo "    --threads=<model>          - specifies the threads model for GCC/libstdc++, available: win32, posix, mcf"
 	echo "    --static-gcc               - build static GCC"
 	echo "    --with-default-msvcrt=     - specifies msvc version the toolchain will target"
 	echo "                                 <msvcrt|msvcr80|msvcr90|msvcr100|msvcr110|msvcr120|ucrt>"
@@ -375,10 +375,10 @@ while [[ $# > 0 ]]; do
 		--threads=*)
 			THREADS_MODEL=${1/--threads=/}
 			case $THREADS_MODEL in
-				win32|posix)
+				win32|posix|mcf)
 				;;
 				*)
-					die "\"$THREADS_MODEL\" is not valid threads model. available models: posix, win32. terminate"
+					die "\"$THREADS_MODEL\" is not valid threads model. available models: posix, win32, mcf. terminate"
 				;;
 			esac
 		;;
@@ -661,6 +661,10 @@ case $BUILD_ARCHITECTURE in
 		}
 	;;
 esac
+
+[[ $THREADS_MODEL == mcf ]] && {
+	export PATH=$PREREQ_DIR/$BUILD_ARCHITECTURE-mcfgthread/bin:$PATH
+}
 
 [[ $LINK_TYPE_SUFFIX == shared ]] && {
 	export PATH=$PREREQ_DIR/$HOST-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX/bin:$PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/bin:$PATH
