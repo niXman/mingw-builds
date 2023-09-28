@@ -1,0 +1,329 @@
+From fb2ac382e29f407014f8ff8ad5de6698d342e0da Mon Sep 17 00:00:00 2001
+From: LIU Hao <lh_mouse@126.com>
+Date: Sat, 22 Oct 2022 23:31:33 +0800
+Subject: [PATCH 4/5] crt: Implement standard-conforming termination support
+ with mcfgthread
+
+This commit implements these functions in accordance with the ISO C
+standard and the Itanium C++ ABI (except for `atexit()` which behaves
+in a per-module way like its old behavior, and also on Linux):
+
+  * `atexit()`, C89
+  * `exit()`, C89
+  * `__cxa_atexit()`, Itanium C++ ABI
+  * `_exit()`, POSIX
+  * `_Exit()`, C99
+  * `at_quick_exit()`, C99
+  * `quick_exit()`, C99
+  * `__cxa_at_quick_exit()`, GNU extension
+
+Implementation details:
+
+  1. An object with the name `__dso_handle` is defined for each
+     module (EXE or DLL).
+  2. Per-module cleanup callbacks should be registered with
+     `__MCF_cxa_atexit()` or `__MCF_cxa_at_quick_exit()`, passing
+     `&__dso_handle` as its third argument.
+  3. When a process calls `exit()` or returns from `main()`,
+     `__MCF_cxa_finalize(NULL)` is called, which executes all
+     callbacks registered with `__MCF_cxa_atexit()` in reverse
+     order.
+  4. When a DLL is unloaded neither by calling `exit()` nor by
+     returning from `main()` (in other words, by `FreeLibrary()`),
+     `__MCF_cxa_finalize(&__dso_handle)`, which executes all
+     callbacks registered with `__MCF_cxa_atexit()` with the same
+     DSO handle in reverse order. Callbacks that have been
+     registered with `__MCF_cxa_at_quick_exit()` are deleted.
+  5. All standard I/O streams are flushed before the process
+     terminates.
+
+Signed-off-by: LIU Hao <lh_mouse@126.com>
+---
+ mingw-w64-crt/crt/crtdll.c             | 29 ++++++++++++++++++++++++-
+ mingw-w64-crt/crt/crtexe.c             | 14 ++++++++++++
+ mingw-w64-crt/crt/exit_wrappers.c      | 26 ++++++++++++++++++++++
+ mingw-w64-crt/crt/tls_atexit.c         | 30 +++++++++++++++++++++-----
+ mingw-w64-crt/crt/ucrt_exit_wrappers.c |  8 +++++++
+ mingw-w64-crt/crt/ucrtbase_compat.c    |  7 ++++--
+ 6 files changed, 106 insertions(+), 8 deletions(-)
+
+diff --git a/mingw-w64-crt/crt/crtdll.c b/mingw-w64-crt/crt/crtdll.c
+index e264d4e96..768c0f44e 100644
+--- a/mingw-w64-crt/crt/crtdll.c
++++ b/mingw-w64-crt/crt/crtdll.c
+@@ -31,6 +31,12 @@
+ #endif
+ #include <sect_attribs.h>
+ #include <locale.h>
++#include <stdio.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/cxa.h>
++#endif
++
++extern HANDLE __dso_handle;
+ 
+ extern void __cdecl _initterm(_PVFV *,_PVFV *);
+ extern void __main ();
+@@ -182,7 +188,14 @@ __DllMainCRTStartup (HANDLE hDllHandle, DWORD dwReason, LPVOID lpreserved)
+ 	  }
+     }
+   if (dwReason == DLL_PROCESS_ATTACH)
+-    __main ();
++    {
++#ifdef __USING_MCFGTHREAD__
++      /* Register `fflush(NULL)` before user-defined constructors, so
++       * it will be executed after all user-defined destructors.  */
++      __MCF_cxa_atexit ((__MCF_cxa_dtor_cdecl*)(intptr_t) fflush, NULL, &__dso_handle);
++#endif
++      __main ();
++    }
+   retcode = DllMain(hDllHandle,dwReason,lpreserved);
+   if (dwReason == DLL_PROCESS_ATTACH && ! retcode)
+     {
+@@ -196,6 +209,16 @@ __DllMainCRTStartup (HANDLE hDllHandle, DWORD dwReason, LPVOID lpreserved)
+ 	if (_CRT_INIT (hDllHandle, dwReason, lpreserved) == FALSE)
+ 	  retcode = FALSE;
+     }
++#ifdef __USING_MCFGTHREAD__
++  if (dwReason == DLL_PROCESS_DETACH && lpreserved == NULL)
++    {
++      /* Call `__cxa_finalize(dso_handle)` if the library is unloaded
++       * dynamically. This conforms to the Itanium C++ ABI. Note it is
++       * not called in case of process termination, where a call to
++       * `__cxa_finalize(NULL)` shall have been made instead.  */
++      __MCF_cxa_finalize (&__dso_handle);
++    }
++#endif
+ i__leave:
+   __native_dllmain_reason = UINT_MAX;
+   return retcode ;
+@@ -204,7 +227,11 @@ i__leave:
+ 
+ int __cdecl atexit (_PVFV func)
+ {
++#ifdef __USING_MCFGTHREAD__
++    return __MCF_cxa_atexit ((__MCF_cxa_dtor_cdecl*)(intptr_t) func, NULL, &__dso_handle);
++#else
+     return _register_onexit_function(&atexit_table, (_onexit_t)func);
++#endif
+ }
+ 
+ char __mingw_module_is_dll = 1;
+diff --git a/mingw-w64-crt/crt/crtexe.c b/mingw-w64-crt/crt/crtexe.c
+index 03bda5912..7f501400a 100644
+--- a/mingw-w64-crt/crt/crtexe.c
++++ b/mingw-w64-crt/crt/crtexe.c
+@@ -20,6 +20,10 @@
+ #include <tchar.h>
+ #include <sect_attribs.h>
+ #include <locale.h>
++#include <stdio.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/cxa.h>
++#endif
+ 
+ #if defined(__SEH__) && (!defined(__clang__) || __clang_major__ >= 7)
+ #define SEH_INLINE_ASM
+@@ -45,6 +49,7 @@ int *__cdecl __p__commode(void);
+ extern int _fmode;
+ extern int _commode;
+ extern int _dowildcard;
++extern HANDLE __dso_handle;
+ 
+ extern _CRTIMP void __cdecl _initterm(_PVFV *, _PVFV *);
+ 
+@@ -258,6 +263,11 @@ __tmainCRTStartup (void)
+     _fpreset ();
+ 
+     duplicate_ppstrings (argc, &argv);
++#ifdef __USING_MCFGTHREAD__
++    /* Register `fflush(NULL)` before user-defined constructors, so
++     * it will be executed after all user-defined destructors.  */
++    __MCF_cxa_atexit ((__MCF_cxa_dtor_cdecl*)(intptr_t) fflush, NULL, &__dso_handle);
++#endif
+     __main (); /* C++ initialization. */
+ #ifdef _UNICODE
+     __winitenv = envp;
+@@ -334,7 +344,11 @@ static void duplicate_ppstrings (int ac, _TCHAR ***av)
+ 
+ int __cdecl atexit (_PVFV func)
+ {
++#ifdef __USING_MCFGTHREAD__
++    return __MCF_cxa_atexit ((__MCF_cxa_dtor_cdecl*)(intptr_t) func, NULL, &__dso_handle);
++#else
+     return _onexit((_onexit_t)func) ? 0 : -1;
++#endif
+ }
+ 
+ char __mingw_module_is_dll = 0;
+diff --git a/mingw-w64-crt/crt/exit_wrappers.c b/mingw-w64-crt/crt/exit_wrappers.c
+index 256c26d07..ab6896f96 100644
+--- a/mingw-w64-crt/crt/exit_wrappers.c
++++ b/mingw-w64-crt/crt/exit_wrappers.c
+@@ -5,6 +5,10 @@
+  */
+ 
+ #include <_mingw.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/exit.h>
++#include <mcfgthread/cxa.h>
++#endif
+ 
+ /* `exit()`, C89  */
+ void exit(int status) __attribute__((__noreturn__));
+@@ -12,7 +16,11 @@ extern void (*__MINGW_IMP_SYMBOL(exit))(int) __attribute__((__noreturn__));
+ 
+ void exit(int status)
+ {
++#ifdef __USING_MCFGTHREAD__
++  __MCF_exit(status);
++#else
+   (*__MINGW_IMP_SYMBOL(exit))(status);
++#endif
+ }
+ 
+ /* `_exit()`, POSIX  */
+@@ -21,5 +29,23 @@ extern void (*__MINGW_IMP_SYMBOL(_exit))(int) __attribute__((__noreturn__));
+ 
+ void _exit(int status)
+ {
++#ifdef __USING_MCFGTHREAD__
++  __MCF__Exit(status);
++#else
+   (*__MINGW_IMP_SYMBOL(_exit))(status);
++#endif
+ }
++
++#ifdef __USING_MCFGTHREAD__
++/* `at_quick_exit()`, C99  */
++typedef void (__cdecl *_PVFV)(void);
++int at_quick_exit(_PVFV func);
++
++typedef void* HANDLE;
++extern HANDLE __dso_handle;
++
++int at_quick_exit(_PVFV func)
++{
++  return __MCF_cxa_at_quick_exit ((__MCF_cxa_dtor_cdecl*)(intptr_t) func, NULL, &__dso_handle);
++}
++#endif  /* __USING_MCFGTHREAD__  */
+diff --git a/mingw-w64-crt/crt/tls_atexit.c b/mingw-w64-crt/crt/tls_atexit.c
+index 0412fa4ba..ed36b935c 100644
+--- a/mingw-w64-crt/crt/tls_atexit.c
++++ b/mingw-w64-crt/crt/tls_atexit.c
+@@ -4,6 +4,29 @@
+  * No warranty is given; refer to the file DISCLAIMER.PD within this package.
+  */
+ 
++typedef void (__thiscall * dtor_fn)(void*);
++int __mingw_cxa_atexit(dtor_fn dtor, void *obj, void *dso);
++int __mingw_cxa_thread_atexit(dtor_fn dtor, void *obj, void *dso);
++
++/* This is the per-module DSO handle as required by Itanium ABI.  */
++void* __dso_handle;
++
++#ifdef __USING_MCFGTHREAD__
++
++#include <mcfgthread/cxa.h>
++
++int __mingw_cxa_atexit(dtor_fn dtor, void *obj, void *dso)
++{
++  return __MCF_cxa_atexit(dtor, obj, dso);
++}
++
++int __mingw_cxa_thread_atexit(dtor_fn dtor, void *obj, void *dso)
++{
++  return __MCF_cxa_thread_atexit(dtor, obj, dso);
++}
++
++#else  /* __USING_MCFGTHREAD__  */
++
+ #include <sect_attribs.h>
+ 
+ #ifndef WIN32_LEAN_AND_MEAN
+@@ -18,10 +41,6 @@
+ #include <process.h>
+ 
+ 
+-typedef void (__thiscall * dtor_fn)(void*);
+-int __mingw_cxa_atexit(dtor_fn dtor, void *obj, void *dso);
+-int __mingw_cxa_thread_atexit(dtor_fn dtor, void *obj, void *dso);
+-
+ typedef struct dtor_obj dtor_obj;
+ struct dtor_obj {
+   dtor_fn dtor;
+@@ -29,7 +48,6 @@ struct dtor_obj {
+   dtor_obj *next;
+ };
+ 
+-HANDLE __dso_handle;
+ extern char __mingw_module_is_dll;
+ 
+ static CRITICAL_SECTION lock;
+@@ -170,3 +188,5 @@ static void WINAPI tls_callback(HANDLE hDllHandle, DWORD dwReason, LPVOID __UNUS
+ }
+ 
+ _CRTALLOC(".CRT$XLB") PIMAGE_TLS_CALLBACK __xl_b = (PIMAGE_TLS_CALLBACK) tls_callback;
++
++#endif  /* __USING_MCFGTHREAD__  */
+diff --git a/mingw-w64-crt/crt/ucrt_exit_wrappers.c b/mingw-w64-crt/crt/ucrt_exit_wrappers.c
+index 112d8e3c7..4ef52a687 100644
+--- a/mingw-w64-crt/crt/ucrt_exit_wrappers.c
++++ b/mingw-w64-crt/crt/ucrt_exit_wrappers.c
+@@ -14,7 +14,11 @@ extern void (*__MINGW_IMP_SYMBOL(quick_exit))(int) __attribute__((__noreturn__))
+ 
+ void quick_exit(int status)
+ {
++#ifdef __USING_MCFGTHREAD__
++  __MCF_quick_exit(status);
++#else
+   (*__MINGW_IMP_SYMBOL(quick_exit))(status);
++#endif
+ }
+ 
+ /* `_Exit()`, C99  */
+@@ -23,5 +27,9 @@ extern void (*__MINGW_IMP_SYMBOL(_Exit))(int) __attribute__((__noreturn__));
+ 
+ void _Exit(int status)
+ {
++#ifdef __USING_MCFGTHREAD__
++  __MCF__Exit(status);
++#else
+   (*__MINGW_IMP_SYMBOL(_Exit))(status);
++#endif
+ }
+diff --git a/mingw-w64-crt/crt/ucrtbase_compat.c b/mingw-w64-crt/crt/ucrtbase_compat.c
+index 9eb33e534..893388b90 100644
+--- a/mingw-w64-crt/crt/ucrtbase_compat.c
++++ b/mingw-w64-crt/crt/ucrtbase_compat.c
+@@ -55,8 +55,6 @@ _CRTIMP int __cdecl _configure_wide_argv(int mode);
+ // Declared in new.h, but only visible to C++
+ _CRTIMP int __cdecl _set_new_mode(int _NewMode);
+ 
+-extern char __mingw_module_is_dll;
+-
+ 
+ // Wrappers with legacy msvcrt.dll style API, based on the new ucrtbase.dll functions.
+ int __cdecl __getmainargs(int * _Argc, char *** _Argv, char ***_Env, int _DoWildCard, _startupinfo *_StartInfo)
+@@ -90,6 +88,10 @@ _onexit_t __cdecl _onexit(_onexit_t func)
+ 
+ _onexit_t __cdecl (*__MINGW_IMP_SYMBOL(_onexit))(_onexit_t func) = _onexit;
+ 
++// When using mcfgthread, `at_quick_exit()` is provided in 'exit_wrappers.c'.
++#ifndef __USING_MCFGTHREAD__
++extern char __mingw_module_is_dll;
++
+ int __cdecl at_quick_exit(void (__cdecl *func)(void))
+ {
+   // In a DLL, we can't register a function with _crt_at_quick_exit, because
+@@ -101,6 +103,7 @@ int __cdecl at_quick_exit(void (__cdecl *func)(void))
+ }
+ 
+ int __cdecl (*__MINGW_IMP_SYMBOL(at_quick_exit))(void (__cdecl *)(void)) = at_quick_exit;
++#endif  // __USING_MCFGTHREAD__
+ 
+ extern void (*__MINGW_IMP_SYMBOL(_exit))(int) __attribute__((__noreturn__));
+ 
+-- 
+2.41.0
+
