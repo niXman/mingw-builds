@@ -522,6 +522,10 @@ esac
 	die "\"$EXCEPTIONS_MODEL\" exceptions not allowed on multilib architecture. terminate."
 }
 
+[[ $BUILD_MODE == gcc && $THREADS_MODEL == mcf && `func_map_gcc_name_to_gcc_version $BUILD_MODE_VERSION | cut -d. -f1` -lt 13 ]] && {
+	die "\"$THREADS_MODEL\" thread model requires GCC 13 or later. terminate."
+}
+
 [[ $BUILD_MODE != gcc && $COMPRESSING_SRCS == yes ]] && {
 	die "compressing sources for \"$BUILD_MODE\" mode is currently unimplemented. terminate."
 }
