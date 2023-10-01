@@ -93,6 +93,16 @@ function runtime_post_install {
 	cp -fv $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-$RUNTIME_VERSION/lib/libpthread.a $PREFIX/$TARGET/lib/ || { echo "18"; return 1; }
 	cp -fv $RUNTIME_DIR/$BUILD_ARCHITECTURE-winpthreads-$RUNTIME_VERSION/include/*.h $PREFIX/$TARGET/include/ || { echo "19"; return 1; }
 
+	[[ $THREADS_MODEL == mcf ]] && {
+		# mcfgthread
+		mkdir -pv $PREFIX/$TARGET/include/mcfgthread
+		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-mcfgthread/bin/libmcfgthread-1.dll $PREFIX/bin/ || { echo "101"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-mcfgthread/bin/libmcfgthread-1.dll $PREFIX/$TARGET/lib/ || { echo "102"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-mcfgthread/lib/libmcfgthread.dll.a $PREFIX/$TARGET/lib/ || { echo "103"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-mcfgthread/lib/libmcfgthread.a $PREFIX/$TARGET/lib/ || { echo "104"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-mcfgthread/include/mcfgthread/*.h $PREFIX/$TARGET/include/mcfgthread/ || { echo "105"; return 1; }
+		cp -fv $PREREQ_DIR/$BUILD_ARCHITECTURE-mcfgthread/include/mcfgthread/*.hpp $PREFIX/$TARGET/include/mcfgthread/ || { echo "106"; return 1; }
+	}
 
 	[[ $USE_MULTILIB == yes ]] && {
 		local _reverse_bits=$(func_get_reverse_arch_bit $BUILD_ARCHITECTURE)
@@ -124,6 +134,13 @@ function runtime_post_install {
 		cp -fv $RUNTIME_DIR/$_reverse_arch-winpthreads-$RUNTIME_VERSION/lib/libpthread.dll.a $PREFIX/$TARGET/lib$_reverse_bits/ || { echo "28"; return 1; }
 		cp -fv $RUNTIME_DIR/$_reverse_arch-winpthreads-$RUNTIME_VERSION/lib/libwinpthread.a $PREFIX/$TARGET/lib$_reverse_bits/ || { echo "29"; return 1; }
 		cp -fv $RUNTIME_DIR/$_reverse_arch-winpthreads-$RUNTIME_VERSION/lib/libpthread.a $PREFIX/$TARGET/lib$_reverse_bits/ || { echo "30"; return 1; }
+
+		[[ $THREADS_MODEL == mcf ]] && {
+			# mcfgthread
+			cp -fv $PREREQ_DIR/$_reverse_arch-mcfgthread/bin/libmcfgthread-1.dll $PREFIX/$TARGET/lib$_reverse_bits/ || { echo "107"; return 1; }
+			cp -fv $PREREQ_DIR/$_reverse_arch-mcfgthread/lib/libmcfgthread.dll.a $PREFIX/$TARGET/lib$_reverse_bits/ || { echo "108"; return 1; }
+			cp -fv $PREREQ_DIR/$_reverse_arch-mcfgthread/lib/libmcfgthread.a $PREFIX/$TARGET/lib$_reverse_bits/ || { echo "109"; return 1; }
+		}
 
 		mkdir -pv $BUILDS_DIR/$GCC_NAME/$TARGET/$_reverse_bits/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3}
 		echo $BUILDS_DIR/$GCC_NAME/$TARGET/$_reverse_bits/{libgcc,libgfortran,libgomp,libitm,libquadmath,libssp,libstdc++-v3} \

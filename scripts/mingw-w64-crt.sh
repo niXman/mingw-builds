@@ -55,6 +55,21 @@ PKG_PATCHES=(
 		    echo "mingw-w64/bceadc54d8f32b3f14c69074892e2718eac08e3b.patch"
 		}
 	)
+	$( [[ $RUNTIME_MAJOR_VERSION -ge 11 ]] && {
+		echo "mingw-w64/9001-crt-Mark-atexit-as-DATA-because-it-s-always-overridd.patch"
+		[[ $RUNTIME_MAJOR_VERSION -ge 12 ]] && {
+			echo "mingw-w64/9002-crt-Provide-wrappers-for-exit-in-libmingwex.patch"
+		} || {
+			echo "mingw-w64/9002-v11-crt-Provide-wrappers-for-exit-in-libmingwex.patch"
+		}
+		echo "mingw-w64/9003-crt-Implement-standard-conforming-termination-suppor.patch"
+	})
+)
+
+#
+
+PKG_EXECUTE_AFTER_PATCH=(
+	"automake"
 )
 
 #
@@ -71,6 +86,14 @@ PKG_PATCHES=(
 	}
 }
 
+[[ -d $PREREQ_DIR ]] && {
+	pushd $PREREQ_DIR > /dev/null
+	PREREQW_DIR=`pwd -W`
+	popd > /dev/null
+}
+
+MY_CPPFLAGS=$( [[ $THREADS_MODEL == mcf ]] && echo "-D__USING_MCFGTHREAD__ -I$PREREQW_DIR/$BUILD_ARCHITECTURE-mcfgthread/include" )
+
 PKG_CONFIGURE_FLAGS=(
 	--host=$HOST
 	--build=$BUILD
@@ -85,7 +108,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS $MY_CPPFLAGS\""
 	LDFLAGS="\"$COMMON_LDFLAGS\""
 )
 
