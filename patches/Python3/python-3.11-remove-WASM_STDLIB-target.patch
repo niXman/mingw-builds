@@ -1,0 +1,14 @@
+diff --git a/Makefile.pre.in b/Makefile.pre.in
+index d5a9e2b8aa..2137d8ab13 100644
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -857,8 +857,7 @@ $(DLLLIBRARY) libpython$(LDVERSION).dll.a: $(LIBRARY_OBJS) python_nt.o
+ # --preload-file turns a relative asset path into an absolute path.
+ 
+ .PHONY: wasm_stdlib
+-wasm_stdlib: $(WASM_STDLIB)
+-$(WASM_STDLIB): $(srcdir)/Lib/*.py $(srcdir)/Lib/*/*.py \
++wasm_stdlib: $(srcdir)/Lib/*.py $(srcdir)/Lib/*/*.py \
+ 	    $(srcdir)/Tools/wasm/wasm_assets.py \
+ 	    Makefile pybuilddir.txt Modules/Setup.local
+ 	$(PYTHON_FOR_BUILD) $(srcdir)/Tools/wasm/wasm_assets.py \

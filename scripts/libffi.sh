@@ -35,21 +35,19 @@
 
 # **************************************************************************
 
-PKG_VERSION=3.2.1
+PKG_VERSION=3.4.4
 PKG_NAME=libffi-${PKG_VERSION}
 PKG_DIR_NAME=libffi-${PKG_VERSION}
 PKG_TYPE=.tar.gz
 PKG_URLS=(
-	"https://sourceware.org/pub/libffi/libffi-${PKG_VERSION}${PKG_TYPE}"
+	"https://github.com/libffi/libffi/releases/download/v${PKG_VERSION}/libffi-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
 
 #
 
-PKG_PATCHES=(
-	libffi/fix_return_size.patch
-)
+PKG_PATCHES=()
 
 #
 
@@ -60,7 +58,7 @@ PKG_CONFIGURE_FLAGS=(
 	#
 	--prefix=$LIBS_DIR
 	#
-	$LINK_TYPE_STATIC
+	$LINK_TYPE_SHARED
 	#
 	CFLAGS="\"$COMMON_CFLAGS\""
 	CXXFLAGS="\"$COMMON_CXXFLAGS\""
