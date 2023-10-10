@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=3.9.10
+PKG_VERSION=3.11.6
 PKG_NAME=Python-${PKG_VERSION}
 PKG_DIR_NAME=Python-${PKG_VERSION}
 PKG_TYPE=git
@@ -48,13 +48,13 @@ PKG_PRIORITY=extra
 #
 
 PKG_EXECUTE_AFTER_UNCOMPRESS=(
-	"git reset --hard 12d1cb5" # Reset to this commit hash for reproducible builds
+	"git reset --hard f8ce319d46c25b8afe6083284315169d8f418880" # Reset to this commit hash for reproducible builds
 )
 
 #
 
 PKG_PATCHES=(
-	python3/0100-get-libraries-tuple-append-list.patch
+	Python3/python-3.11-remove-WASM_STDLIB-target.patch
 )
 
 #
@@ -101,10 +101,12 @@ PKG_CONFIGURE_FLAGS=(
 	# --with-tzpath=$LIBS_DIR/share/zoneinfo
 	--enable-optimizations
 	#
-	LIBFFI_INCLUDEDIR="$LIBSW_DIR/lib/libffi-$LIBFFI_VERSION/include"
-	CFLAGS="\"$COMMON_CFLAGS -D__USE_MINGW_ANSI_STDIO=1\""
-	CPPFLAGS="\"$COMMON_CPPFLAGS $MY_CPPFLAGS\""
+	LIBFFI_INCLUDEDIR="$LIBSW_DIR/include"
+	PKG_CONFIG_PATH="$PREREQ_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/lib/pkgconfig:$LIBS_DIR/lib/pkgconfig"
+	CFLAGS="\"$COMMON_CFLAGS $MY_CPPFLAGS -D__USE_MINGW_ANSI_STDIO=1 -DNCURSES_STATIC\""
+	CPPFLAGS="\"$COMMON_CPPFLAGS $MY_CPPFLAGS -D__USE_MINGW_ANSI_STDIO=1 -DNCURSES_STATIC\""
 	LDFLAGS="\"$COMMON_LDFLAGS -L$PREREQW_DIR/$BUILD_ARCHITECTURE-zlib-$LINK_TYPE_SUFFIX/lib -L$LIBSW_DIR/lib\""
+	LIBS="\"-lffi -ltcl -ltk -lole32 -loleaut32 -luuid\""
 )
 
 #

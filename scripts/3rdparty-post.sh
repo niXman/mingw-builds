@@ -68,6 +68,7 @@ function python_deps_post {
 	rm -f $LIBS_DIR/bin/{infotocap.exe,c_rehash,ncursesw5-config,reset.exe,sqlite3.exe,tabs.exe}
 	rm -f $LIBS_DIR/bin/{tic.exe,toe.exe,tput.exe,tset.exe,wish.exe,wish86.exe,xmlwf,testgdbm.exe}
 	rm -f $LIBS_DIR/bin/{lzmadec.exe,lzmainfo.exe,unxz.exe,xz*}
+	rm -f $LIBS_DIR/bin/*-w64-mingw32-{captoinfo.exe,clear.exe,infocmp.exe,infotocap.exe,reset.exe,tabs.exe,tic.exe,toe.exe,tput.exe,tset.exe}
 
 	#rm -rf $LIBS_DIR/include
 	rm -rf $LIBS_DIR/lib/pkgconfig

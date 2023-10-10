@@ -696,7 +696,7 @@ readonly REVERSE_ARCHITECTURE=$(func_get_reverse_arch $BUILD_ARCHITECTURE)
 		[[ -z ${BUILD_ARCHITECTURE} ]] && { echo -n "any"; } || { echo -n "${BUILD_ARCHITECTURE}"; }
 		[[ -z ${EXCEPTIONS_MODEL} ]] && { echo ""; } || { echo "-${EXCEPTIONS_MODEL}"; }
 	} || {
-		echo -n "${BUILD_ARCHITECTURE}"
+		echo "${BUILD_ARCHITECTURE}"
 	}
 } || {
 	[[ $BUILD_MODE == gcc ]] && {

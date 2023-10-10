@@ -101,6 +101,7 @@ function func_test_installed_packages {
 		texinfo
 		autogen
 		dejagnu
+		pkgconf
 	)
 
 	echo "--> installing required packages..."
