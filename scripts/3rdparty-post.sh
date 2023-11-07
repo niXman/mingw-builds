@@ -74,6 +74,7 @@ function python_deps_post {
 	rm -rf $LIBS_DIR/lib/pkgconfig
 	#find $LIBS_DIR/lib -maxdepth 1 -type f -name *.a -print0 | xargs -0 rm -f
 	find $LIBS_DIR/lib -type f -name *.la -print0 | xargs -0 rm -f
+	find $LIBS_DIR/lib -type d -name __pycache__ -print0 | xargs -0 rm -rf
 	rm -rf $LIBS_DIR/man
 	rm -rf $LIBS_DIR/share/man
 	rm -rf $LIBS_DIR/share/info
