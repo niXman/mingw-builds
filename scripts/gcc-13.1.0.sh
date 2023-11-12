@@ -57,7 +57,8 @@ PKG_PATCHES=(
 	gcc/gcc-libgomp-ftime64.patch
 	gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch
 	gcc/gcc-10-libgcc-ldflags.patch
-    gcc/gcc-12-replace-abort-with-fancy_abort.patch
+	gcc/gcc-12-replace-abort-with-fancy_abort.patch
+	gcc/gcc-13-mcf-sjlj-avoid-infinite-recursion.patch
 )
 
 #
