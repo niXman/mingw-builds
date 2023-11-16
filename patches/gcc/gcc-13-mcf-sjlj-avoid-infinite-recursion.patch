@@ -1,0 +1,22 @@
+--- a/libgcc/unwind-sjlj.c
++++ b/libgcc/unwind-sjlj.c
+@@ -111,8 +111,19 @@
+ fc_key_init_once (void)
+ {
+   static __gthread_once_t once = __GTHREAD_ONCE_INIT;
++#ifdef __USING_MCFGTHREAD__
++  if (_MCF_once_wait (&once, NULL) == 1)
++    {
++      fc_key_init ();
++      _MCF_once_release (&once);
++    }
++
++  if (use_fc_key < 0)
++    use_fc_key = 0;
++#else
+   if (__gthread_once (&once, fc_key_init) != 0 || use_fc_key < 0)
+     use_fc_key = 0;
++#endif
+ }
+ #endif
+ 
