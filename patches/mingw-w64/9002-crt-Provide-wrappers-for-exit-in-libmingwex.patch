@@ -1,7 +1,7 @@
-From 5ef09e6baf078e9db654027dc8b25ae7e502f6b8 Mon Sep 17 00:00:00 2001
+From d17fd0989a78c244653347418b42eefe83882f38 Mon Sep 17 00:00:00 2001
 From: LIU Hao <lh_mouse@126.com>
 Date: Fri, 7 Oct 2022 22:46:50 +0800
-Subject: [PATCH 3/5] crt: Provide wrappers for `*exit()` in libmingwex
+Subject: [PATCH 2/3] crt: Provide wrappers for `*exit()` in libmingwex
 
 This should have no effect on functionality, but allows further
 customization of them.
@@ -44,10 +44,10 @@ Signed-off-by: LIU Hao <lh_mouse@126.com>
  create mode 100644 mingw-w64-crt/crt/ucrt_exit_wrappers.c
 
 diff --git a/mingw-w64-crt/Makefile.am b/mingw-w64-crt/Makefile.am
-index 24f86c6c6..54799d6be 100644
+index d94461c00..c27a5d21c 100644
 --- a/mingw-w64-crt/Makefile.am
 +++ b/mingw-w64-crt/Makefile.am
-@@ -129,7 +129,7 @@ src_libmingw32=include/oscalls.h include/internal.h include/sect_attribs.h \
+@@ -117,7 +117,7 @@ src_libmingw32=include/oscalls.h include/internal.h include/sect_attribs.h \
    crt/usermatherr.c   \
    crt/xtxtmode.c      crt/crt_handler.c    \
    crt/tlsthrd.c       crt/tlsmthread.c     crt/tlsmcrt.c   \
@@ -222,7 +222,7 @@ index 1f8f95b17..255080a2e 100644
  F_NON_I386(expf F_X86_ANY(DATA))
  F_ARM_ANY(expl == exp)
 diff --git a/mingw-w64-crt/lib-common/ucrtbase.def.in b/mingw-w64-crt/lib-common/ucrtbase.def.in
-index 0b83b04e7..3fb041727 100644
+index 000861ee3..76175405a 100644
 --- a/mingw-w64-crt/lib-common/ucrtbase.def.in
 +++ b/mingw-w64-crt/lib-common/ucrtbase.def.in
 @@ -30,7 +30,7 @@ _CreateFrameInfo
@@ -249,7 +249,7 @@ index 0b83b04e7..3fb041727 100644
  erfl F_X86_ANY(DATA)
 -exit
 +exit DATA
- exp F_X86_ANY(DATA)
+ exp
  exp2
  exp2f
 @@ -2501,7 +2501,7 @@ putwc
@@ -768,5 +768,5 @@ index 3a153da53..18ab94522 100644
  expf
  fabs
 -- 
-2.41.0
+2.42.0
 
