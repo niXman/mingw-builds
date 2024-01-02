@@ -120,6 +120,9 @@ PKG_CONFIGURE_FLAGS=(
 	--disable-rpath
 	--disable-win32-registry
 	--enable-nls
+	--with-libintl-prefix=/usr/lib
+	--with-libintl-type=autostaticshared
+	--with-included-gettext
 	--disable-werror
 	--disable-symvers
 	#
