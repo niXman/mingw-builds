@@ -110,7 +110,7 @@ PKG_CONFIGURE_FLAGS=(
 	)
 	--disable-rpath
 	--disable-win32-registry
-	--disable-nls
+	--enable-nls
 	--disable-werror
 	--disable-symvers
 	#

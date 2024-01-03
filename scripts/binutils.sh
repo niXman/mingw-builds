@@ -97,7 +97,7 @@ PKG_CONFIGURE_FLAGS=(
 	--with-libiconv-prefix=$PREREQ_DIR/$BUILD_ARCHITECTURE-libiconv-$LINK_TYPE_SUFFIX
 	#
 	--disable-rpath
-	--disable-nls
+	--enable-nls
 	--disable-shared
 	#
 	$( [[ $BUILD_SHARED_GCC == yes ]] \

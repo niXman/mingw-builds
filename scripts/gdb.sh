@@ -67,7 +67,7 @@ PKG_CONFIGURE_FLAGS=(
 	--enable-targets=$ENABLE_TARGETS
 	--enable-64-bit-bfd
 	#
-	--disable-nls
+	--enable-nls
 	--disable-werror
 	--disable-win32-registry
 	--disable-rpath

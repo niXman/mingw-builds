@@ -40,7 +40,7 @@ PKG_NAME=gcc-${PKG_VERSION}
 PKG_DIR_NAME=gcc-${PKG_VERSION}
 PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"https://ftpmirror.gnu.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}${PKG_TYPE}"
+	"http://www.yuanpeirong.com/gcc-13.2.0.tar.xz"
 )
 
 PKG_PRIORITY=main
