@@ -1,19 +1,8 @@
-diff -urN binutils-2.38.orig/binutils/dwarf.c binutils-2.38/binutils/dwarf.c
---- binutils-2.38.orig/binutils/dwarf.c	2022-01-22 13:14:07.000000000 +0100
-+++ binutils-2.38/binutils/dwarf.c	2022-04-01 16:20:13.920951900 +0200
-@@ -218,7 +218,7 @@
- }
- 
- #if SIZEOF_LONG_LONG > SIZEOF_LONG
--# ifndef __MINGW32__
-+# if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
- #  define DWARF_VMA_FMT		"ll"
- #  define DWARF_VMA_FMT_LONG	"%16.16llx"
- # else
-diff -urN binutils-2.38.orig/binutils/strings.c binutils-2.38/binutils/strings.c
---- binutils-2.38.orig/binutils/strings.c	2022-01-22 13:14:07.000000000 +0100
-+++ binutils-2.38/binutils/strings.c	2022-04-01 16:23:19.687330400 +0200
-@@ -617,7 +617,7 @@
+diff --git a/binutils/strings.c b/binutils/strings.c
+index 44a8e1da644..4010829dc49 100644
+--- a/binutils/strings.c
++++ b/binutils/strings.c
+@@ -617,7 +617,7 @@ print_filename_and_address (const char * filename, file_ptr address)
      case 8:
        if (sizeof (address) > sizeof (long))
  	{
@@ -22,7 +11,7 @@ diff -urN binutils-2.38.orig/binutils/strings.c binutils-2.38/binutils/strings.c
  	  printf ("%7llo ", (unsigned long long) address);
  #else
  	  printf ("%7I64o ", (unsigned long long) address);
-@@ -630,7 +630,7 @@
+@@ -630,7 +630,7 @@ print_filename_and_address (const char * filename, file_ptr address)
      case 10:
        if (sizeof (address) > sizeof (long))
  	{
@@ -31,7 +20,7 @@ diff -urN binutils-2.38.orig/binutils/strings.c binutils-2.38/binutils/strings.c
  	  printf ("%7llu ", (unsigned long long) address);
  #else
  	  printf ("%7I64d ", (unsigned long long) address);
-@@ -643,7 +643,7 @@
+@@ -643,7 +643,7 @@ print_filename_and_address (const char * filename, file_ptr address)
      case 16:
        if (sizeof (address) > sizeof (long))
  	{
@@ -40,10 +29,11 @@ diff -urN binutils-2.38.orig/binutils/strings.c binutils-2.38/binutils/strings.c
  	  printf ("%7llx ", (unsigned long long) address);
  #else
  	  printf ("%7I64x ", (unsigned long long) address);
-diff -urN binutils-2.38.orig/gas/as.h binutils-2.38/gas/as.h
---- binutils-2.38.orig/gas/as.h	2022-01-22 13:14:08.000000000 +0100
-+++ binutils-2.38/gas/as.h	2022-04-01 16:24:32.374816400 +0200
-@@ -413,10 +413,10 @@
+diff --git a/gas/as.h b/gas/as.h
+index 14a768f8889..b1f056f115a 100644
+--- a/gas/as.h
++++ b/gas/as.h
+@@ -433,14 +433,14 @@ typedef struct _pseudo_type pseudo_typeS;
  
  #define PRINTF_LIKE(FCN) \
    void FCN (const char *format, ...) \
@@ -53,13 +43,19 @@ diff -urN binutils-2.38.orig/gas/as.h binutils-2.38/gas/as.h
    void FCN (const char *file, unsigned int line, const char *format, ...) \
 -    __attribute__ ((__format__ (__printf__, 3, 4)))
 +    __attribute__ ((__format__ (gnu_printf, 3, 4)))
+ #define PRINTF_INDENT_LIKE(FCN) \
+   void FCN (const char *file, unsigned int line, unsigned int indent, \
+ 	    const char *format, ...) \
+-    __attribute__ ((__format__ (__printf__, 4, 5)))
++    __attribute__ ((__format__ (gnu_printf, 4, 5)))
  
  #else /* __GNUC__ < 2 || defined(VMS) */
  
-diff -urN binutils-2.38.orig/gold/configure binutils-2.38/gold/configure
---- binutils-2.38.orig/gold/configure	2022-01-22 13:25:13.000000000 +0100
-+++ binutils-2.38/gold/configure	2022-04-01 16:25:19.092799300 +0200
-@@ -10204,7 +10204,7 @@
+diff --git a/gold/configure b/gold/configure
+index b9f062b68eb..fde982191c5 100755
+--- a/gold/configure
++++ b/gold/configure
+@@ -10204,7 +10204,7 @@ else
  /* end confdefs.h.  */
  
  template<typename T> extern void foo(const char*, ...)
@@ -68,10 +64,11 @@ diff -urN binutils-2.38.orig/gold/configure binutils-2.38/gold/configure
  template<typename T> void foo(const char* format, ...) {}
  void bar() { foo<int>("%s\n", "foo"); }
  
-diff -urN binutils-2.38.orig/gold/configure.ac binutils-2.38/gold/configure.ac
---- binutils-2.38.orig/gold/configure.ac	2022-01-22 13:14:09.000000000 +0100
-+++ binutils-2.38/gold/configure.ac	2022-04-01 16:25:56.733450400 +0200
-@@ -679,7 +679,7 @@
+diff --git a/gold/configure.ac b/gold/configure.ac
+index 1716a779416..cae29866f38 100644
+--- a/gold/configure.ac
++++ b/gold/configure.ac
+@@ -679,7 +679,7 @@ AC_CACHE_CHECK([whether we can use attributes with template functions],
  [gold_cv_template_attribute],
  [AC_COMPILE_IFELSE([AC_LANG_SOURCE([
  template<typename T> extern void foo(const char*, ...)
@@ -80,10 +77,11 @@ diff -urN binutils-2.38.orig/gold/configure.ac binutils-2.38/gold/configure.ac
  template<typename T> void foo(const char* format, ...) {}
  void bar() { foo<int>("%s\n", "foo"); }
  ])], [gold_cv_template_attribute=yes], [gold_cv_template_attribute=no])])
-diff -urN binutils-2.38.orig/include/ansidecl.h binutils-2.38/include/ansidecl.h
---- binutils-2.38.orig/include/ansidecl.h	2022-01-22 13:14:09.000000000 +0100
-+++ binutils-2.38/include/ansidecl.h	2022-04-01 16:26:58.905567000 +0200
-@@ -195,7 +195,7 @@
+diff --git a/include/ansidecl.h b/include/ansidecl.h
+index 0515228f325..7c2b9f18306 100644
+--- a/include/ansidecl.h
++++ b/include/ansidecl.h
+@@ -195,7 +195,7 @@ So instead we use the macro below and test it against specific values.  */
     before GCC 3.3, but as of 3.3 we need to add the `nonnull'
     attribute to retain this behavior.  */
  #ifndef ATTRIBUTE_PRINTF
@@ -92,7 +90,7 @@ diff -urN binutils-2.38.orig/include/ansidecl.h binutils-2.38/include/ansidecl.h
  #define ATTRIBUTE_PRINTF_1 ATTRIBUTE_PRINTF(1, 2)
  #define ATTRIBUTE_PRINTF_2 ATTRIBUTE_PRINTF(2, 3)
  #define ATTRIBUTE_PRINTF_3 ATTRIBUTE_PRINTF(3, 4)
-@@ -223,7 +223,7 @@
+@@ -223,7 +223,7 @@ So instead we use the macro below and test it against specific values.  */
     NULL format specifier was allowed as of gcc 3.3.  */
  #ifndef ATTRIBUTE_NULL_PRINTF
  # if (GCC_VERSION >= 3003)
@@ -101,3 +99,5 @@ diff -urN binutils-2.38.orig/include/ansidecl.h binutils-2.38/include/ansidecl.h
  # else
  #  define ATTRIBUTE_NULL_PRINTF(m, n)
  # endif /* GNUC >= 3.3 */
+-- 
+2.32.0
