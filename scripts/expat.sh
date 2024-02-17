@@ -35,12 +35,12 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.5.0
+PKG_VERSION=2.6.2
 PKG_NAME=expat-${PKG_VERSION}
 PKG_DIR_NAME=expat-${PKG_VERSION}
 PKG_TYPE=.tar.xz
 PKG_URLS=(
-	"https://sourceforge.net/projects/expat/files/expat/${PKG_VERSION}/${PKG_NAME}${PKG_TYPE}"
+	"https://github.com/libexpat/libexpat/releases/download/R_${PKG_VERSION//./_}/expat-${PKG_VERSION}${PKG_TYPE}"
 )
 
 PKG_PRIORITY=extra
