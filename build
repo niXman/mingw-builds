@@ -90,6 +90,7 @@ readonly RUN_ARGS="$@"
 	echo "    --src-upload               - upload sources archive to sf-project"
 	echo "    --sf-user=<username>       - username to upload to sf-project"
 	echo "    --sf-pass=<user_pass>      - password to upload to sf-project"
+	echo "    --gnu-url-prefix='<url>'   - URL prefix of a GNU mirror server to use (default: https://ftpmirror.gnu.org/gnu)"
 	echo "    --cflags='<flags>'         - additional CFLAGS"
 	echo "    --cxxflags='<flags>'       - additional CXXFLAGS"
 	echo "    --cppflags='<flags>'       - additional CPPFLAGS"
@@ -451,6 +452,10 @@ while [[ $# > 0 ]]; do
 		--src-upload) UPLOAD_SOURCES=yes ;;
 		--sf-user=*) SF_USER=${1/--sf-user=/} ;;
 		--sf-pass=*) SF_PASSWORD=${1/--sf-pass=/} ;;
+		--gnu-url-prefix=*)
+			GNU_URL_PREFIX=${1/--gnu-url-prefix=/}
+			GNU_URL_PREFIX=${GNU_URL_PREFIX%/}
+		;;
 		--debug-upload) DEBUG_UPLOAD=yes ;;
 		--short-output) SHORT_OUTPUT=yes ;;
 		--logviewer-command=*) LOGVIEWER=${1/--logviewer-command=/} ;;

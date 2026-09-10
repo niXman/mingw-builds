@@ -46,6 +46,12 @@ PROJECT_FS_ROOT_DIR=/home/frs/project/mingw-w64
 
 # **************************************************************************
 
+# URL prefix of a GNU mirror server without a trailing slash
+# See https://www.gnu.org/prep/ftp.html
+GNU_URL_PREFIX=https://ftpmirror.gnu.org/gnu
+
+# **************************************************************************
+
 # Need for MSYS2
 export MSYSTEM=MINGW32
 export LC_ALL=en_US.UTF-8
