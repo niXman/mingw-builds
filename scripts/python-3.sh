@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=3.14.6
+PKG_VERSION=3.14.7
 PKG_NAME=Python-${PKG_VERSION}
 PKG_DIR_NAME=Python-${PKG_VERSION}
 PKG_TYPE=git
@@ -48,13 +48,12 @@ PKG_PRIORITY=extra
 #
 
 PKG_EXECUTE_AFTER_UNCOMPRESS=(
-	"git reset --hard 5d7d5021e59614313678db107f47e9249329cf91" # Reset to this commit hash for reproducible builds
+	"git reset --hard 56cdb4b201d96f26cdcb1f7c2b93086298f7df11" # Reset to this commit hash for reproducible builds
 )
 
 #
 
 PKG_PATCHES=(
-	Python3/python-3.11-_cursesmodule-fix-array-type.patch
 	Python3/python-3.13-fix-incompatible-pointer-types.patch
 	Python3/python-3.12-fix-tk.patch
 )

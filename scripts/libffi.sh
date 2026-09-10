@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=3.5.2
+PKG_VERSION=3.8.0
 PKG_NAME=libffi-${PKG_VERSION}
 PKG_DIR_NAME=libffi-${PKG_VERSION}
 PKG_TYPE=.tar.gz
