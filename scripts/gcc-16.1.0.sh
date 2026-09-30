@@ -60,7 +60,7 @@ PKG_PATCHES=(
 	gcc/gcc-12-replace-abort-with-fancy_abort.patch
 	gcc/gcc-13-mcf-sjlj-avoid-infinite-recursion.patch
 	gcc/gcc-16.1.0-libstdcxx-atomic-check.patch
-	gcc/fix-under-aligned-indirect-AVX-argument-return-stack-slots-win64.patch
+	gcc/function-honour-over-alignment-in-align_stack_local.patch
 	gcc/return-256-512-bit-vectors-in-registers-x86_64-MS-ABI.patch
 )
 
