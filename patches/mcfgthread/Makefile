@@ -3,8 +3,7 @@ mcfgthread_cflags = \
 	-D_WIN32_WINNT=0x0601 \
 	-D__USE_MINGW_ANSI_STDIO \
 	-D_CRT_SECURE_NO_WARNINGS \
-	-U_FORTIFY_SOURCE \
-	-fno-stack-protector \
+	-fstack-protector \
 	-fno-omit-frame-pointer \
 	-momit-leaf-frame-pointer \
 	-fmerge-all-constants \
@@ -60,6 +59,7 @@ mcfgthread_public_headers = \
 	dtor_queue.h \
 	exit.h \
 	tls.h \
+	cpu_collection.h \
 	gthr_aux.h \
 	gthr.h \
 	gthr_libobjc.h \
@@ -80,7 +80,8 @@ mcfgthread_obj_min = \
 	cxa.o \
 	dtor_queue.o \
 	exit.o \
-	tls.o
+	tls.o \
+	cpu_collection.o
 
 mcfgthread_obj_ex = \
 	gthr_aux.o \
@@ -107,7 +108,7 @@ shared/%.o: $(SOURCE_DIR)/src/%.c
 	mkdir -p shared
 	$(CC) $(CFLAGS) $(mcfgthread_cflags) -ffreestanding -D__MCF_IN_DLL -I. -o $@ -c $<
 
-version.o: $(SOURCE_DIR)/src/version.rc $(SOURCE_DIR)/src/mcfgthread.manifest
+version.o: $(SOURCE_DIR)/src/version.rc
 	$(RC) -I. -c65001 -o $@ -i $<
 
 %.i386.def: $(SOURCE_DIR)/src/%.def.in

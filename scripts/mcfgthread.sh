@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-PKG_VERSION=2.4-ga.2
+PKG_VERSION=2.5-ga.1
 PKG_NAME=$PKG_ARCHITECTURE-mcfgthread-${PKG_VERSION}
 PKG_DIR_NAME=mcfgthread-${PKG_VERSION}
 PKG_TYPE=.tar.gz
