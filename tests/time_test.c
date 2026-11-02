@@ -196,8 +196,6 @@ void test_clock_nanosleep()
     printf("[%10"PRId64".%09d] clock_gettime (CLOCK_REALTIME)\n", (__int64) tp.tv_sec, (int) tp.tv_nsec);
 }
 
-extern int __cdecl getntptimeofday(struct timespec *tp, struct timezone *tz);
-
 __int64 timespec_diff_as_ms(struct timespec *__old, struct timespec *__new)
 {
     return (__new->tv_sec - __old->tv_sec) * POW10_3
@@ -272,9 +270,9 @@ int main() {
 
     test_clock_nanosleep();
 
-    getntptimeofday(&tp, NULL);
+    clock_gettime(CLOCK_REALTIME, &tp);
     rc = nanosleep(&request, &remain);
-    getntptimeofday(&tp2, NULL);
+    clock_gettime(CLOCK_REALTIME, &tp2);
 
     if (rc != 0) {
         printf("remain: %d.%09d\n", (int) remain.tv_sec, (int) remain.tv_nsec);

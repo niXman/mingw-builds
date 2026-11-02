@@ -1,0 +1,984 @@
+From 91543cb6f7ac1a3ee68aed2b0a77a1d5c547df9d Mon Sep 17 00:00:00 2001
+From: LIU Hao <lh_mouse@126.com>
+Date: Mon, 28 Sep 2026 17:55:32 +0800
+Subject: [PATCH 9003/9004] crt: Implement standard-conforming termination
+ support with mcfgthread
+
+Signed-off-by: LIU Hao <lh_mouse@126.com>
+---
+ mingw-w64-crt/Makefile.am                     |  4 +++
+ mingw-w64-crt/crt/crtdll.c                    | 13 +++++++++
+ mingw-w64-crt/crt/crtdll_atexit_register.c    |  7 +++++
+ mingw-w64-crt/crt/crtexe.c                    |  7 +++++
+ mingw-w64-crt/crt/tls_atexit.c                | 17 +++++++++++
+ mingw-w64-crt/def-include/crt-aliases.def.in  |  4 +--
+ .../api-ms-win-crt-runtime-l1-1-0.def.in      |  8 +++---
+ mingw-w64-crt/lib-common/msvcr120_app.def.in  |  2 +-
+ mingw-w64-crt/lib-common/msvcrt.def.in        |  2 +-
+ .../lib-common/ucrtbase-common.def.in         |  8 +++---
+ mingw-w64-crt/lib32/crtdll.def.in             |  2 +-
+ mingw-w64-crt/lib32/msvcr100.def.in           |  2 +-
+ mingw-w64-crt/lib32/msvcr100d.def.in          |  2 +-
+ mingw-w64-crt/lib32/msvcr110.def.in           |  2 +-
+ mingw-w64-crt/lib32/msvcr110d.def.in          |  2 +-
+ mingw-w64-crt/lib32/msvcr120.def.in           |  2 +-
+ mingw-w64-crt/lib32/msvcr120d.def.in          |  2 +-
+ mingw-w64-crt/lib32/msvcr40d.def.in           |  2 +-
+ mingw-w64-crt/lib32/msvcr70.def.in            |  2 +-
+ mingw-w64-crt/lib32/msvcr70d.def.in           |  2 +-
+ mingw-w64-crt/lib32/msvcr71.def.in            |  2 +-
+ mingw-w64-crt/lib32/msvcr71d.def.in           |  2 +-
+ mingw-w64-crt/lib32/msvcr80.def.in            |  2 +-
+ mingw-w64-crt/lib32/msvcr80d.def.in           |  2 +-
+ mingw-w64-crt/lib32/msvcr90.def.in            |  2 +-
+ mingw-w64-crt/lib32/msvcr90d.def.in           |  2 +-
+ mingw-w64-crt/lib32/msvcrt10.def.in           |  2 +-
+ mingw-w64-crt/lib32/msvcrt20.def.in           |  2 +-
+ mingw-w64-crt/lib32/msvcrt40.def.in           |  2 +-
+ mingw-w64-crt/lib32/msvcrtd.def.in            |  2 +-
+ mingw-w64-crt/lib64/msvcr100.def.in           |  2 +-
+ mingw-w64-crt/lib64/msvcr100d.def.in          |  2 +-
+ mingw-w64-crt/lib64/msvcr110.def.in           |  2 +-
+ mingw-w64-crt/lib64/msvcr110d.def.in          |  2 +-
+ mingw-w64-crt/lib64/msvcr120.def.in           |  2 +-
+ mingw-w64-crt/lib64/msvcr120d.def.in          |  2 +-
+ mingw-w64-crt/lib64/msvcr80.def.in            |  2 +-
+ mingw-w64-crt/lib64/msvcr80d.def.in           |  2 +-
+ mingw-w64-crt/lib64/msvcr90.def.in            |  2 +-
+ mingw-w64-crt/lib64/msvcr90d.def.in           |  2 +-
+ mingw-w64-crt/libarm32/kernelbase.def         |  4 +--
+ mingw-w64-crt/libarm32/msvcr110.def.in        |  2 +-
+ mingw-w64-crt/libarm32/msvcr110d.def.in       |  2 +-
+ mingw-w64-crt/libarm32/msvcr120.def.in        |  2 +-
+ mingw-w64-crt/libarm32/msvcr120d.def.in       |  2 +-
+ mingw-w64-crt/misc/_exit.c                    | 25 +++++++++++++++++
+ mingw-w64-crt/misc/exit.c                     |  7 +++++
+ mingw-w64-crt/misc/ucrt__exit.c               | 28 +++++++++++++++++++
+ mingw-w64-crt/misc/ucrt_at_quick_exit.c       |  7 +++++
+ mingw-w64-crt/misc/ucrt_exit.c                | 25 +++++++++++++++++
+ mingw-w64-crt/misc/ucrt_quick_exit.c          | 25 +++++++++++++++++
+ 51 files changed, 212 insertions(+), 49 deletions(-)
+ create mode 100644 mingw-w64-crt/misc/_exit.c
+ create mode 100644 mingw-w64-crt/misc/ucrt__exit.c
+ create mode 100644 mingw-w64-crt/misc/ucrt_exit.c
+ create mode 100644 mingw-w64-crt/misc/ucrt_quick_exit.c
+
+diff --git a/mingw-w64-crt/Makefile.am b/mingw-w64-crt/Makefile.am
+index eee9a3ee1..1294dcc45 100644
+--- a/mingw-w64-crt/Makefile.am
++++ b/mingw-w64-crt/Makefile.am
+@@ -182,6 +182,7 @@ src_msvcrt_common=\
+   misc/__mingw_isleadbyte_cp.c \
+   misc/__mingw_mbrtowc_cp.c \
+   misc/__mingw_wcrtomb_cp.c \
++  misc/_exit.c \
+   misc/_onexit.c \
+   misc/exit.c \
+   misc/mbrlen.c \
+@@ -447,6 +448,9 @@ src_ucrtbase=\
+   misc/ucrt__wgetmainargs.c \
+   misc/ucrt_amsg_exit.c \
+   misc/ucrt_at_quick_exit.c \
++  misc/ucrt_exit.c \
++  misc/ucrt__exit.c \
++  misc/ucrt_quick_exit.c \
+   misc/ucrt_mbsinit.c \
+   misc/ucrt_tzset.c \
+   math/_huge.c \
+diff --git a/mingw-w64-crt/crt/crtdll.c b/mingw-w64-crt/crt/crtdll.c
+index 15ee52a7c..ef94f8237 100644
+--- a/mingw-w64-crt/crt/crtdll.c
++++ b/mingw-w64-crt/crt/crtdll.c
+@@ -16,6 +16,9 @@
+ #endif
+ #include <sect_attribs.h>
+ #include <locale.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/cxa.h>
++#endif
+ 
+ extern void __cdecl __mingw_dll_do_global_ctors (void);
+ extern void __cdecl __mingw_dll_do_global_dtors (void);
+@@ -211,6 +214,16 @@ DllMainCRTStartup (HANDLE hDllHandle, DWORD dwReason, LPVOID lpreserved)
+     {
+ 	retcode = _CRT_INIT (hDllHandle, dwReason, lpreserved);
+     }
++#ifdef __USING_MCFGTHREAD__
++  if (dwReason == DLL_PROCESS_DETACH && lpreserved == NULL)
++    {
++      /* Call `__cxa_finalize(dso_handle)` if the library is unloaded
++       * dynamically. This conforms to the Itanium C++ ABI. Note it is
++       * not called in case of process termination, where a call to
++       * `__cxa_finalize(NULL)` shall have been made instead.  */
++      __MCF_cxa_finalize (&__dso_handle);
++    }
++#endif
+ i__leave:
+   __native_dllmain_reason = UINT_MAX;
+   return retcode ;
+diff --git a/mingw-w64-crt/crt/crtdll_atexit_register.c b/mingw-w64-crt/crt/crtdll_atexit_register.c
+index 06c708316..c856dca63 100644
+--- a/mingw-w64-crt/crt/crtdll_atexit_register.c
++++ b/mingw-w64-crt/crt/crtdll_atexit_register.c
+@@ -6,14 +6,21 @@
+ 
+ #include <stdlib.h>
+ #include <corecrt_startup.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/cxa.h>
++#endif
+ 
+ static _onexit_table_t atexit_table;
+ 
+ int __cdecl atexit(_PVFV func)
+ {
++#ifdef __USING_MCFGTHREAD__
++  return __MCF_cxa_atexit(func, NULL, &__dso_handle);
++#else
+   /* Do not use msvcrt's atexit() or UCRT's _crt_atexit() function as it
+    * cannot be called from DLL library which may be unloaded at runtime. */
+   return _register_onexit_function(&atexit_table, (_onexit_t)func);
++#endif
+ }
+ 
+ static int __cdecl __mingw_dll_atexit_table_func(int execute)
+diff --git a/mingw-w64-crt/crt/crtexe.c b/mingw-w64-crt/crt/crtexe.c
+index ca9b00691..a3a6f4680 100644
+--- a/mingw-w64-crt/crt/crtexe.c
++++ b/mingw-w64-crt/crt/crtexe.c
+@@ -16,6 +16,9 @@
+ #include <locale.h>
+ #include <float.h>
+ #include <corecrt_startup.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/cxa.h>
++#endif
+ 
+ #if defined(__SEH__) && (!defined(__clang__) || __clang_major__ >= 7)
+ #define SEH_INLINE_ASM
+@@ -335,12 +338,16 @@ static int duplicate_ppstrings (int ac, _TCHAR ***av)
+ 
+ int __cdecl atexit (_PVFV func)
+ {
++#ifdef __USING_MCFGTHREAD__
++    return __MCF_cxa_atexit(func, NULL, &__dso_handle);
++#else
+     /*
+      * msvcrt def file renames the real atexit() function to _crt_atexit().
+      * UCRT provides atexit() function only under name _crt_atexit().
+      * So redirect call to _crt_atexit() function.
+      */
+     return _crt_atexit(func);
++#endif
+ }
+ 
+ const char __mingw_module_is_dll = 0;
+diff --git a/mingw-w64-crt/crt/tls_atexit.c b/mingw-w64-crt/crt/tls_atexit.c
+index bb0390fa0..9208faa02 100644
+--- a/mingw-w64-crt/crt/tls_atexit.c
++++ b/mingw-w64-crt/crt/tls_atexit.c
+@@ -16,12 +16,27 @@
+ #include <stdlib.h>
+ #include <corecrt_startup.h>
+ #include <process.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/cxa.h>
++#endif
+ 
+ 
+ typedef void (__thiscall * dtor_fn)(void*);
+ int __mingw_cxa_atexit(dtor_fn dtor, void *obj, void *dso);
+ int __mingw_cxa_thread_atexit(dtor_fn dtor, void *obj, void *dso);
+ 
++#ifdef __USING_MCFGTHREAD__
++
++int __mingw_cxa_atexit(dtor_fn dtor, void *obj, void *dso) {
++  return __MCF_cxa_atexit(dtor, obj, dso);
++}
++
++int __mingw_cxa_thread_atexit(dtor_fn dtor, void *obj, void *dso) {
++  return __MCF_cxa_thread_atexit(dtor, obj, dso);
++}
++
++#else  /* __USING_MCFGTHREAD__  */
++
+ typedef struct dtor_obj dtor_obj;
+ struct dtor_obj {
+   dtor_fn dtor;
+@@ -208,3 +223,5 @@ WINBOOL (WINAPI *const __mingw_cxa_tls_callback_ptr)(HANDLE,DWORD,LPVOID) = tls_
+ /* Force inclusion of code which calls __mingw_cxa_tls_callback_ptr */
+ extern const int __mingw_cxa_tls_callback_caller_provider;
+ static __attribute__((used)) const void *const _include_mingw_cxa_tls_callback_caller = &__mingw_cxa_tls_callback_caller_provider;
++
++#endif  /* __USING_MCFGTHREAD__  */
+diff --git a/mingw-w64-crt/def-include/crt-aliases.def.in b/mingw-w64-crt/def-include/crt-aliases.def.in
+index 64e53d555..a985997c5 100644
+--- a/mingw-w64-crt/def-include/crt-aliases.def.in
++++ b/mingw-w64-crt/def-include/crt-aliases.def.in
+@@ -243,9 +243,7 @@ putwchar == _fputwchar
+ #endif
+ 
+ ; This is list of symbol aliases for C99 functions
+-#ifndef UCRTBASE
+-_Exit == _exit
+-#endif
++; _Exit is provided by misc/_Exit.c as a wrapper calling the local _exit()
+ ; ADD_UNDERSCORE(logb)
+ #ifdef WITH_NEXTAFTER_ALIAS
+ ADD_UNDERSCORE(nextafter)
+diff --git a/mingw-w64-crt/lib-common/api-ms-win-crt-runtime-l1-1-0.def.in b/mingw-w64-crt/lib-common/api-ms-win-crt-runtime-l1-1-0.def.in
+index a500af3ee..9e717476d 100644
+--- a/mingw-w64-crt/lib-common/api-ms-win-crt-runtime-l1-1-0.def.in
++++ b/mingw-w64-crt/lib-common/api-ms-win-crt-runtime-l1-1-0.def.in
+@@ -4,7 +4,7 @@ EXPORTS
+ 
+ #include "func.def.in"
+ 
+-_Exit
++; _Exit is provided by misc/ucrt__exit.c as an alias of the local _exit()
+ F_I386(__control87_2)
+ __doserrno
+ __fpe_flt_rounds
+@@ -42,7 +42,7 @@ _endthread
+ _endthreadex
+ _errno
+ _execute_onexit_table
+-_exit
++__ucrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __ucrt__exit symbol
+ _fpieee_flt
+ _fpreset F_LD80(DATA) ; mingw-w64 provides _fpreset() function as a wrapper in CRT_fp8.c and CRT_fp10.c
+ _get_doserrno
+@@ -96,7 +96,7 @@ _wcserror_s
+ _wperror
+ _wsystem
+ abort
+-exit
++__ucrt_exit DATA == exit ; mingw-w64 provides exit() function as wrapper around renamed __ucrt_exit symbol
+ ; Don't use the float env functions from UCRT; fesetround doesn't seem to have
+ ; any effect on the FPU control word as required by other libmingwex math
+ ; routines.
+@@ -110,7 +110,7 @@ fesetexceptflag DATA
+ fesetround DATA
+ fetestexcept DATA
+ perror
+-quick_exit
++__ucrt_quick_exit DATA == quick_exit ; mingw-w64 provides quick_exit() function as wrapper around renamed __ucrt_quick_exit symbol
+ raise
+ set_terminate
+ signal
+diff --git a/mingw-w64-crt/lib-common/msvcr120_app.def.in b/mingw-w64-crt/lib-common/msvcr120_app.def.in
+index 4790462af..b0d8e4bc1 100644
+--- a/mingw-w64-crt/lib-common/msvcr120_app.def.in
++++ b/mingw-w64-crt/lib-common/msvcr120_app.def.in
+@@ -1243,7 +1243,7 @@ F_I386(_except1)
+ F_I386(_except_handler2)
+ F_I386(_except_handler3)
+ F_I386(_except_handler4_common)
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _exit_app
+ _expand
+ _fclose_nolock
+diff --git a/mingw-w64-crt/lib-common/msvcrt.def.in b/mingw-w64-crt/lib-common/msvcrt.def.in
+index 313e7ef8e..c2bdf66c6 100644
+--- a/mingw-w64-crt/lib-common/msvcrt.def.in
++++ b/mingw-w64-crt/lib-common/msvcrt.def.in
+@@ -583,7 +583,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fcloseall
+ _fcvt
+diff --git a/mingw-w64-crt/lib-common/ucrtbase-common.def.in b/mingw-w64-crt/lib-common/ucrtbase-common.def.in
+index 36d840a0b..3ddfcab48 100644
+--- a/mingw-w64-crt/lib-common/ucrtbase-common.def.in
++++ b/mingw-w64-crt/lib-common/ucrtbase-common.def.in
+@@ -60,7 +60,7 @@ F_DEBUG(_CrtSetReportMode)
+ F_I386(_CxxThrowException@8)
+ F_NON_I386(_CxxThrowException)
+ F_I386(_EH_prolog)
+-_Exit
++; _Exit is provided by misc/ucrt__exit.c as an alias of the local _exit()
+ _FCbuild
+ _FCmulcc
+ _FCmulcr
+@@ -345,7 +345,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__ucrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __ucrt__exit symbol
+ _expand
+ F_DEBUG(_expand_dbg)
+ _fclose_nolock
+@@ -2328,7 +2328,7 @@ erfcf
+ F_LD64(erfcl) ; Can't use long double functions from the CRT on x86
+ erff
+ F_LD64(erfl) ; Can't use long double functions from the CRT on x86
+-exit
++__ucrt_exit DATA == exit ; mingw-w64 provides exit() function as wrapper around renamed __ucrt_exit symbol
+ exp
+ exp2
+ exp2f
+@@ -2518,7 +2518,7 @@ putwc
+ putwchar
+ qsort
+ qsort_s
+-quick_exit
++__ucrt_quick_exit DATA == quick_exit ; mingw-w64 provides quick_exit() function as wrapper around renamed __ucrt_quick_exit symbol
+ raise
+ rand
+ rand_s
+diff --git a/mingw-w64-crt/lib32/crtdll.def.in b/mingw-w64-crt/lib32/crtdll.def.in
+index 41a989f74..06873ef18 100644
+--- a/mingw-w64-crt/lib32/crtdll.def.in
++++ b/mingw-w64-crt/lib32/crtdll.def.in
+@@ -157,7 +157,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fcloseall
+ _fcvt
+diff --git a/mingw-w64-crt/lib32/msvcr100.def.in b/mingw-w64-crt/lib32/msvcr100.def.in
+index d4dbf565b..724453879 100644
+--- a/mingw-w64-crt/lib32/msvcr100.def.in
++++ b/mingw-w64-crt/lib32/msvcr100.def.in
+@@ -830,7 +830,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fclose_nolock
+ _fcloseall
+diff --git a/mingw-w64-crt/lib32/msvcr100d.def.in b/mingw-w64-crt/lib32/msvcr100d.def.in
+index 6e7fbf6dc..9e91a10db 100644
+--- a/mingw-w64-crt/lib32/msvcr100d.def.in
++++ b/mingw-w64-crt/lib32/msvcr100d.def.in
+@@ -883,7 +883,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fclose_nolock
+diff --git a/mingw-w64-crt/lib32/msvcr110.def.in b/mingw-w64-crt/lib32/msvcr110.def.in
+index 3d0e93d4c..62abd0083 100644
+--- a/mingw-w64-crt/lib32/msvcr110.def.in
++++ b/mingw-w64-crt/lib32/msvcr110.def.in
+@@ -953,7 +953,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fclose_nolock
+ _fcloseall
+diff --git a/mingw-w64-crt/lib32/msvcr110d.def.in b/mingw-w64-crt/lib32/msvcr110d.def.in
+index d9245d21e..2f74d6073 100644
+--- a/mingw-w64-crt/lib32/msvcr110d.def.in
++++ b/mingw-w64-crt/lib32/msvcr110d.def.in
+@@ -1006,7 +1006,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fclose_nolock
+diff --git a/mingw-w64-crt/lib32/msvcr120.def.in b/mingw-w64-crt/lib32/msvcr120.def.in
+index 3f239a7c8..b0ea07ec3 100644
+--- a/mingw-w64-crt/lib32/msvcr120.def.in
++++ b/mingw-w64-crt/lib32/msvcr120.def.in
+@@ -972,7 +972,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fclose_nolock
+ _fcloseall
+diff --git a/mingw-w64-crt/lib32/msvcr120d.def.in b/mingw-w64-crt/lib32/msvcr120d.def.in
+index dcbb81081..9c8a1e713 100644
+--- a/mingw-w64-crt/lib32/msvcr120d.def.in
++++ b/mingw-w64-crt/lib32/msvcr120d.def.in
+@@ -1025,7 +1025,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fclose_nolock
+diff --git a/mingw-w64-crt/lib32/msvcr40d.def.in b/mingw-w64-crt/lib32/msvcr40d.def.in
+index c8374ac05..4e806b1ef 100644
+--- a/mingw-w64-crt/lib32/msvcr40d.def.in
++++ b/mingw-w64-crt/lib32/msvcr40d.def.in
+@@ -1126,7 +1126,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fcloseall
+diff --git a/mingw-w64-crt/lib32/msvcr70.def.in b/mingw-w64-crt/lib32/msvcr70.def.in
+index d28083ee5..1c3acf50a 100644
+--- a/mingw-w64-crt/lib32/msvcr70.def.in
++++ b/mingw-w64-crt/lib32/msvcr70.def.in
+@@ -314,7 +314,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fcloseall
+ _fcvt
+diff --git a/mingw-w64-crt/lib32/msvcr70d.def.in b/mingw-w64-crt/lib32/msvcr70d.def.in
+index d37f93db3..65789f290 100644
+--- a/mingw-w64-crt/lib32/msvcr70d.def.in
++++ b/mingw-w64-crt/lib32/msvcr70d.def.in
+@@ -353,7 +353,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fcloseall
+diff --git a/mingw-w64-crt/lib32/msvcr71.def.in b/mingw-w64-crt/lib32/msvcr71.def.in
+index 0fa753af6..f43d02fe7 100644
+--- a/mingw-w64-crt/lib32/msvcr71.def.in
++++ b/mingw-w64-crt/lib32/msvcr71.def.in
+@@ -306,7 +306,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fcloseall
+ _fcvt
+diff --git a/mingw-w64-crt/lib32/msvcr71d.def.in b/mingw-w64-crt/lib32/msvcr71d.def.in
+index 1bdc528e7..77322919e 100644
+--- a/mingw-w64-crt/lib32/msvcr71d.def.in
++++ b/mingw-w64-crt/lib32/msvcr71d.def.in
+@@ -345,7 +345,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fcloseall
+diff --git a/mingw-w64-crt/lib32/msvcr80.def.in b/mingw-w64-crt/lib32/msvcr80.def.in
+index 37e1c4fe9..be4ccf5f5 100644
+--- a/mingw-w64-crt/lib32/msvcr80.def.in
++++ b/mingw-w64-crt/lib32/msvcr80.def.in
+@@ -457,7 +457,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fclose_nolock
+ _fcloseall
+diff --git a/mingw-w64-crt/lib32/msvcr80d.def.in b/mingw-w64-crt/lib32/msvcr80d.def.in
+index d35ddf35a..1ac188388 100644
+--- a/mingw-w64-crt/lib32/msvcr80d.def.in
++++ b/mingw-w64-crt/lib32/msvcr80d.def.in
+@@ -524,7 +524,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fclose_nolock
+diff --git a/mingw-w64-crt/lib32/msvcr90.def.in b/mingw-w64-crt/lib32/msvcr90.def.in
+index eb1bb1543..5040c18fd 100644
+--- a/mingw-w64-crt/lib32/msvcr90.def.in
++++ b/mingw-w64-crt/lib32/msvcr90.def.in
+@@ -457,7 +457,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fclose_nolock
+ _fcloseall
+diff --git a/mingw-w64-crt/lib32/msvcr90d.def.in b/mingw-w64-crt/lib32/msvcr90d.def.in
+index bbd4dbbfa..9a0f18505 100644
+--- a/mingw-w64-crt/lib32/msvcr90d.def.in
++++ b/mingw-w64-crt/lib32/msvcr90d.def.in
+@@ -514,7 +514,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fclose_nolock
+diff --git a/mingw-w64-crt/lib32/msvcrt10.def.in b/mingw-w64-crt/lib32/msvcrt10.def.in
+index bdb510e01..9d3c6c46e 100644
+--- a/mingw-w64-crt/lib32/msvcrt10.def.in
++++ b/mingw-w64-crt/lib32/msvcrt10.def.in
+@@ -943,7 +943,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fcloseall
+ _fcvt
+diff --git a/mingw-w64-crt/lib32/msvcrt20.def.in b/mingw-w64-crt/lib32/msvcrt20.def.in
+index 35af9269d..fe3490d55 100644
+--- a/mingw-w64-crt/lib32/msvcrt20.def.in
++++ b/mingw-w64-crt/lib32/msvcrt20.def.in
+@@ -981,7 +981,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fcloseall
+ _fcvt
+diff --git a/mingw-w64-crt/lib32/msvcrt40.def.in b/mingw-w64-crt/lib32/msvcrt40.def.in
+index b6d2296fb..ad08b1fe3 100644
+--- a/mingw-w64-crt/lib32/msvcrt40.def.in
++++ b/mingw-w64-crt/lib32/msvcrt40.def.in
+@@ -1099,7 +1099,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fcloseall
+ _fcvt
+diff --git a/mingw-w64-crt/lib32/msvcrtd.def.in b/mingw-w64-crt/lib32/msvcrtd.def.in
+index 18d057d17..d7423ad53 100644
+--- a/mingw-w64-crt/lib32/msvcrtd.def.in
++++ b/mingw-w64-crt/lib32/msvcrtd.def.in
+@@ -291,7 +291,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fcloseall
+diff --git a/mingw-w64-crt/lib64/msvcr100.def.in b/mingw-w64-crt/lib64/msvcr100.def.in
+index 8f187148a..24abf7181 100644
+--- a/mingw-w64-crt/lib64/msvcr100.def.in
++++ b/mingw-w64-crt/lib64/msvcr100.def.in
+@@ -784,7 +784,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fclose_nolock
+ _fcloseall
+diff --git a/mingw-w64-crt/lib64/msvcr100d.def.in b/mingw-w64-crt/lib64/msvcr100d.def.in
+index fcc5c3933..38f0dfb9e 100644
+--- a/mingw-w64-crt/lib64/msvcr100d.def.in
++++ b/mingw-w64-crt/lib64/msvcr100d.def.in
+@@ -835,7 +835,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fclose_nolock
+diff --git a/mingw-w64-crt/lib64/msvcr110.def.in b/mingw-w64-crt/lib64/msvcr110.def.in
+index 53933fdbb..1a7410fdd 100644
+--- a/mingw-w64-crt/lib64/msvcr110.def.in
++++ b/mingw-w64-crt/lib64/msvcr110.def.in
+@@ -909,7 +909,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fclose_nolock
+ _fcloseall
+diff --git a/mingw-w64-crt/lib64/msvcr110d.def.in b/mingw-w64-crt/lib64/msvcr110d.def.in
+index c289a95db..e3601f2a3 100644
+--- a/mingw-w64-crt/lib64/msvcr110d.def.in
++++ b/mingw-w64-crt/lib64/msvcr110d.def.in
+@@ -960,7 +960,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fclose_nolock
+diff --git a/mingw-w64-crt/lib64/msvcr120.def.in b/mingw-w64-crt/lib64/msvcr120.def.in
+index c844b8ed2..9bcfcd3d8 100644
+--- a/mingw-w64-crt/lib64/msvcr120.def.in
++++ b/mingw-w64-crt/lib64/msvcr120.def.in
+@@ -926,7 +926,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fclose_nolock
+ _fcloseall
+diff --git a/mingw-w64-crt/lib64/msvcr120d.def.in b/mingw-w64-crt/lib64/msvcr120d.def.in
+index 53b7f2f13..808d3db9f 100644
+--- a/mingw-w64-crt/lib64/msvcr120d.def.in
++++ b/mingw-w64-crt/lib64/msvcr120d.def.in
+@@ -977,7 +977,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fclose_nolock
+diff --git a/mingw-w64-crt/lib64/msvcr80.def.in b/mingw-w64-crt/lib64/msvcr80.def.in
+index f81bcf073..0ea1b7662 100644
+--- a/mingw-w64-crt/lib64/msvcr80.def.in
++++ b/mingw-w64-crt/lib64/msvcr80.def.in
+@@ -397,7 +397,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fclose_nolock
+ _fcloseall
+diff --git a/mingw-w64-crt/lib64/msvcr80d.def.in b/mingw-w64-crt/lib64/msvcr80d.def.in
+index 5936415f1..2f25318d0 100644
+--- a/mingw-w64-crt/lib64/msvcr80d.def.in
++++ b/mingw-w64-crt/lib64/msvcr80d.def.in
+@@ -458,7 +458,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fclose_nolock
+diff --git a/mingw-w64-crt/lib64/msvcr90.def.in b/mingw-w64-crt/lib64/msvcr90.def.in
+index 5d186d763..f9b0e38bc 100644
+--- a/mingw-w64-crt/lib64/msvcr90.def.in
++++ b/mingw-w64-crt/lib64/msvcr90.def.in
+@@ -401,7 +401,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fclose_nolock
+ _fcloseall
+diff --git a/mingw-w64-crt/lib64/msvcr90d.def.in b/mingw-w64-crt/lib64/msvcr90d.def.in
+index 2668848fe..e58d131b8 100644
+--- a/mingw-w64-crt/lib64/msvcr90d.def.in
++++ b/mingw-w64-crt/lib64/msvcr90d.def.in
+@@ -452,7 +452,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fclose_nolock
+diff --git a/mingw-w64-crt/libarm32/kernelbase.def b/mingw-w64-crt/libarm32/kernelbase.def
+index 62d79176d..daeb287e0 100644
+--- a/mingw-w64-crt/libarm32/kernelbase.def
++++ b/mingw-w64-crt/libarm32/kernelbase.def
+@@ -1882,7 +1882,7 @@ __wgetmainargs
+ _amsg_exit
+ _c_exit
+ _cexit
+-_exit
++_exit DATA
+ _initterm
+ _initterm_e
+ _invalid_parameter
+@@ -1890,7 +1890,7 @@ _invalid_parameter
+ _purecall
+ _time64
+ _crt_atexit == atexit ; rename atexit to _crt_atexit for compatibility with UCRT, real atexit function provided by mingw-w64
+-exit
++exit DATA
+ hgets
+ hwprintf
+ lstrcmp
+diff --git a/mingw-w64-crt/libarm32/msvcr110.def.in b/mingw-w64-crt/libarm32/msvcr110.def.in
+index 4decd8f69..0d5b0f37f 100644
+--- a/mingw-w64-crt/libarm32/msvcr110.def.in
++++ b/mingw-w64-crt/libarm32/msvcr110.def.in
+@@ -901,7 +901,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fclose_nolock
+ _fcloseall
+diff --git a/mingw-w64-crt/libarm32/msvcr110d.def.in b/mingw-w64-crt/libarm32/msvcr110d.def.in
+index 81fc74679..0867e8d93 100644
+--- a/mingw-w64-crt/libarm32/msvcr110d.def.in
++++ b/mingw-w64-crt/libarm32/msvcr110d.def.in
+@@ -952,7 +952,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fclose_nolock
+diff --git a/mingw-w64-crt/libarm32/msvcr120.def.in b/mingw-w64-crt/libarm32/msvcr120.def.in
+index 2baa561d1..e5b8ef9e1 100644
+--- a/mingw-w64-crt/libarm32/msvcr120.def.in
++++ b/mingw-w64-crt/libarm32/msvcr120.def.in
+@@ -900,7 +900,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _fclose_nolock
+ _fcloseall
+diff --git a/mingw-w64-crt/libarm32/msvcr120d.def.in b/mingw-w64-crt/libarm32/msvcr120d.def.in
+index afd9d451f..a39977509 100644
+--- a/mingw-w64-crt/libarm32/msvcr120d.def.in
++++ b/mingw-w64-crt/libarm32/msvcr120d.def.in
+@@ -951,7 +951,7 @@ _execv
+ _execve
+ _execvp
+ _execvpe
+-_exit
++__msvcrt__exit DATA == _exit ; mingw-w64 provides _exit() function as wrapper around renamed __msvcrt__exit symbol
+ _expand
+ _expand_dbg
+ _fclose_nolock
+diff --git a/mingw-w64-crt/misc/_exit.c b/mingw-w64-crt/misc/_exit.c
+new file mode 100644
+index 000000000..031f8fbac
+--- /dev/null
++++ b/mingw-w64-crt/misc/_exit.c
+@@ -0,0 +1,25 @@
++/**
++ * This file has no copyright assigned and is placed in the Public Domain.
++ * This file is part of the mingw-w64 runtime package.
++ * No warranty is given; refer to the file DISCLAIMER.PD within this package.
++ */
++
++#include <stdlib.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/exit.h>
++#endif
++
++extern void (__cdecl *__MINGW_IMP_SYMBOL(__msvcrt__exit))(int code) __MINGW_ATTRIB_NORETURN;
++
++__MINGW_ATTRIB_NORETURN void __cdecl _exit(int code)
++{
++#ifdef __USING_MCFGTHREAD__
++  __MCF__Exit(code);
++#else
++  __MINGW_IMP_SYMBOL(__msvcrt__exit)(code);
++#endif
++}
++typeof(_exit) *__MINGW_IMP_SYMBOL(_exit) = _exit;
++
++void __cdecl __MINGW_NOTHROW _Exit(int code) __MINGW_ATTRIB_NORETURN __attribute__((alias("_exit")));
++typeof(_Exit) *__MINGW_IMP_SYMBOL(_Exit) = _Exit;
+diff --git a/mingw-w64-crt/misc/exit.c b/mingw-w64-crt/misc/exit.c
+index 88e1b3ac4..8686b180d 100644
+--- a/mingw-w64-crt/misc/exit.c
++++ b/mingw-w64-crt/misc/exit.c
+@@ -5,17 +5,24 @@
+  */
+ 
+ #include <stdlib.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/exit.h>
++#endif
+ 
+ void (__cdecl *__mingw_prepare_thread_local_exe_atexit_callback_ptr)(void) __attribute__((common)); /* tentative */
+ extern void (__cdecl *__MINGW_IMP_SYMBOL(__msvcrt_exit))(int code) __MINGW_ATTRIB_NORETURN;
+ 
+ __MINGW_ATTRIB_NORETURN void __cdecl exit(int code)
+ {
++#ifdef __USING_MCFGTHREAD__
++  __MCF_exit(code);
++#else
+   /* __mingw_prepare_thread_local_exe_atexit_callback_ptr is thread safe and
+    * also can be called multiple times. Registration is done under CRT lock
+    * and execution of the registered callback is done exactly once. */
+   if (__mingw_prepare_thread_local_exe_atexit_callback_ptr)
+     __mingw_prepare_thread_local_exe_atexit_callback_ptr();
+   __MINGW_IMP_SYMBOL(__msvcrt_exit)(code);
++#endif
+ }
+ typeof(exit) *__MINGW_IMP_SYMBOL(exit) = exit;
+diff --git a/mingw-w64-crt/misc/ucrt__exit.c b/mingw-w64-crt/misc/ucrt__exit.c
+new file mode 100644
+index 000000000..a01381737
+--- /dev/null
++++ b/mingw-w64-crt/misc/ucrt__exit.c
+@@ -0,0 +1,28 @@
++/**
++ * This file has no copyright assigned and is placed in the Public Domain.
++ * This file is part of the mingw-w64 runtime package.
++ * No warranty is given; refer to the file DISCLAIMER.PD within this package.
++ */
++
++#undef __MSVCRT_VERSION__
++#define _UCRT
++
++#include <stdlib.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/exit.h>
++#endif
++
++extern void (__cdecl *__MINGW_IMP_SYMBOL(__ucrt__exit))(int code) __MINGW_ATTRIB_NORETURN;
++
++__MINGW_ATTRIB_NORETURN void __cdecl _exit(int code)
++{
++#ifdef __USING_MCFGTHREAD__
++  __MCF__Exit(code);
++#else
++  __MINGW_IMP_SYMBOL(__ucrt__exit)(code);
++#endif
++}
++typeof(_exit) *__MINGW_IMP_SYMBOL(_exit) = _exit;
++
++void __cdecl __MINGW_NOTHROW _Exit(int code) __MINGW_ATTRIB_NORETURN __attribute__((alias("_exit")));
++typeof(_Exit) *__MINGW_IMP_SYMBOL(_Exit) = _Exit;
+diff --git a/mingw-w64-crt/misc/ucrt_at_quick_exit.c b/mingw-w64-crt/misc/ucrt_at_quick_exit.c
+index ac5361472..f27eb7ef3 100644
+--- a/mingw-w64-crt/misc/ucrt_at_quick_exit.c
++++ b/mingw-w64-crt/misc/ucrt_at_quick_exit.c
+@@ -9,16 +9,23 @@
+ 
+ #include <stdlib.h>
+ #include <corecrt_startup.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/cxa.h>
++#endif
+ 
+ extern const char __mingw_module_is_dll;
+ 
+ int __cdecl at_quick_exit(void (__cdecl *func)(void))
+ {
++#ifdef __USING_MCFGTHREAD__
++  return __MCF_cxa_at_quick_exit(func, NULL, &__dso_handle);
++#else
+   // In a DLL, we can't register a function with _crt_at_quick_exit, because
+   // we can't unregister it when the DLL is unloaded. This matches how
+   // at_quick_exit/quick_exit work with MSVC with a dynamically linked CRT.
+   if (__mingw_module_is_dll)
+     return 0;
+   return _crt_at_quick_exit(func);
++#endif
+ }
+ int __cdecl (*__MINGW_IMP_SYMBOL(at_quick_exit))(void (__cdecl *)(void)) = at_quick_exit;
+diff --git a/mingw-w64-crt/misc/ucrt_exit.c b/mingw-w64-crt/misc/ucrt_exit.c
+new file mode 100644
+index 000000000..a06ecb787
+--- /dev/null
++++ b/mingw-w64-crt/misc/ucrt_exit.c
+@@ -0,0 +1,25 @@
++/**
++ * This file has no copyright assigned and is placed in the Public Domain.
++ * This file is part of the mingw-w64 runtime package.
++ * No warranty is given; refer to the file DISCLAIMER.PD within this package.
++ */
++
++#undef __MSVCRT_VERSION__
++#define _UCRT
++
++#include <stdlib.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/exit.h>
++#endif
++
++extern void (__cdecl *__MINGW_IMP_SYMBOL(__ucrt_exit))(int code) __MINGW_ATTRIB_NORETURN;
++
++__MINGW_ATTRIB_NORETURN void __cdecl exit(int code)
++{
++#ifdef __USING_MCFGTHREAD__
++  __MCF_exit(code);
++#else
++  __MINGW_IMP_SYMBOL(__ucrt_exit)(code);
++#endif
++}
++typeof(exit) *__MINGW_IMP_SYMBOL(exit) = exit;
+diff --git a/mingw-w64-crt/misc/ucrt_quick_exit.c b/mingw-w64-crt/misc/ucrt_quick_exit.c
+new file mode 100644
+index 000000000..3010b42cb
+--- /dev/null
++++ b/mingw-w64-crt/misc/ucrt_quick_exit.c
+@@ -0,0 +1,25 @@
++/**
++ * This file has no copyright assigned and is placed in the Public Domain.
++ * This file is part of the mingw-w64 runtime package.
++ * No warranty is given; refer to the file DISCLAIMER.PD within this package.
++ */
++
++#undef __MSVCRT_VERSION__
++#define _UCRT
++
++#include <stdlib.h>
++#ifdef __USING_MCFGTHREAD__
++#include <mcfgthread/exit.h>
++#endif
++
++extern void (__cdecl *__MINGW_IMP_SYMBOL(__ucrt_quick_exit))(int code) __MINGW_ATTRIB_NORETURN;
++
++__MINGW_ATTRIB_NORETURN void __cdecl quick_exit(int code)
++{
++#ifdef __USING_MCFGTHREAD__
++  __MCF_quick_exit(code);
++#else
++  __MINGW_IMP_SYMBOL(__ucrt_quick_exit)(code);
++#endif
++}
++typeof(quick_exit) *__MINGW_IMP_SYMBOL(quick_exit) = quick_exit;
+-- 
+2.56.0
